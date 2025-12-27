@@ -13,30 +13,30 @@ const TabBilling = () => {
             <div className="card-body pass-info">
                 <div className="mb-4 d-flex align-items-center justify-content-between">
                     <h5 className="fw-bold mb-0 me-4">
-                        <span className="d-block mb-2">Billing Address:</span>
-                        <span className="fs-12 fw-normal text-muted text-truncate-1-line">A billing address is the address associated with a payment method.</span>
+                        <span className="d-block mb-2">Fatura Adresi:</span>
+                        <span className="fs-12 fw-normal text-muted text-truncate-1-line">Fatura adresinizi girin.</span>
                     </h5>
-                    <a href="#" className="btn btn-sm btn-light-brand">Same as Customer Info</a>
+                    <a href="#" className="btn btn-sm btn-light-brand">Müşteri Bilgileriyle Aynı</a>
                 </div>
 
                 <TextArea
                     icon="feather-map-pin"
-                    label={"Address"}
+                    label={"Adres"}
                     labelId={"addressInput"}
-                    placeholder={"Address"}
+                    placeholder={"Adres"}
                 />
-                <Input
+                {/* <Input
                     icon='feather-tag'
-                    label={"Zip Code"}
+                    label={"Zip Kodu"}
                     labelId={"zipCodeInput"}
-                    placeholder={"Zip Code"}
+                    placeholder={"Zip Kodu"}
                     name={"zipCode"}
                     type="number"
-                />
+                /> */}
 
                 <div className="row mb-4 align-items-center">
                     <div className="col-lg-4">
-                        <label className="fw-semibold">Country: </label>
+                        <label className="fw-semibold">Ülke: </label>
                     </div>
                     <div className="col-lg-8">
                         <SelectDropdown
@@ -51,9 +51,9 @@ const TabBilling = () => {
                         />
                     </div>
                 </div>
-                <div className="row mb-4 align-items-center">
+                {/* <div className="row mb-4 align-items-center">
                     <div className="col-lg-4">
-                        <label className="fw-semibold">State: </label>
+                        <label className="fw-semibold">Eyalet </label>
                     </div>
                     <div className="col-lg-8">
                         <SelectDropdown
@@ -63,10 +63,10 @@ const TabBilling = () => {
                             onSelectOption={(option) => setSelectedOption(option)}
                         />
                     </div>
-                </div>
+                </div> */}
                 <div className="row mb-4 align-items-center">
                     <div className="col-lg-4">
-                        <label className="fw-semibold">City: </label>
+                        <label className="fw-semibold">Şehir: </label>
                     </div>
                     <div className="col-lg-8">
                         <SelectDropdown
@@ -82,29 +82,29 @@ const TabBilling = () => {
             <div className="card-body pass-info">
                 <div className="mb-4 d-flex align-items-center justify-content-between">
                     <h5 className="fw-bold mb-0 me-4">
-                        <span className="d-block mb-2">Shipping Address:</span>
-                        <span className="fs-12 fw-normal text-muted text-truncate-1-line">A shipping address is the address to which a purchased item or service is to be delivered.</span>
+                        <span className="d-block mb-2">Teslimat Adresi</span>
+                        {/* <span className="fs-12 fw-normal text-muted text-truncate-1-line">A shipping address is the address to which a purchased item or service is to be delivered.</span> */}
                     </h5>
-                    <a href="#" className="btn btn-sm btn-light-brand">Copy Billing Address</a>
+                    <a href="#" className="btn btn-sm btn-light-brand">Fatura adresini kopyala</a>
                 </div>
                 <TextArea
                     icon="feather-map-pin"
-                    label={"Address"}
+                    label={"Adres"}
                     labelId={"addressInput"}
-                    placeholder={"Address"}
+                    placeholder={"Adres"}
                 />
-                <Input
+                {/* <Input
                     icon='feather-tag'
                     label={"Zip Code"}
                     labelId={"zipCodeInput"}
                     placeholder={"Zip Code"}
                     name={"zipCode"}
                     type="number"
-                />
+                /> */}
 
                 <div className="row mb-4 align-items-center">
                     <div className="col-lg-4">
-                        <label className="fw-semibold">Country: </label>
+                        <label className="fw-semibold">Ülke: </label>
                     </div>
                     <div className="col-lg-8">
                         <SelectDropdown
@@ -119,7 +119,7 @@ const TabBilling = () => {
                         />
                     </div>
                 </div>
-                <div className="row mb-4 align-items-center">
+                {/* <div className="row mb-4 align-items-center">
                     <div className="col-lg-4">
                         <label className="fw-semibold">State: </label>
                     </div>
@@ -131,10 +131,10 @@ const TabBilling = () => {
                             onSelectOption={(option) => setSelectedOption(option)}
                         />
                     </div>
-                </div>
+                </div> */}
                 <div className="row mb-4 align-items-center">
                     <div className="col-lg-4">
-                        <label className="fw-semibold">City: </label>
+                        <label className="fw-semibold">Şehir: </label>
                     </div>
                     <div className="col-lg-8">
                         <SelectDropdown

@@ -8,7 +8,7 @@ const propsalDiscountOptions = [
     { value: 'after-tax', label: 'After Tax' },
 ]
 const propsalVisibilityOptions = [
-    { value: 'public', label: 'Public', icon: "feather-globe" },
+    { value: 'public', label: 'Public', icon: "feather-globe" }, 
     { value: 'private', label: 'Private', icon: "feather-lock" },
     { value: 'personal', label: 'Personal', icon: "feather-user" },
     { value: 'customs', label: 'Customs', icon: "feather-settings" },
@@ -44,7 +44,7 @@ const customerViewOptions = [
 const customerListTagsOptions = [
     { value: 'vip', label: 'VIP', color: '#17c666' },
     { value: 'bugs', label: 'Bugs', color: '#3dc7be' },
-    { value: 'team', label: 'Team', color: '#3454d1' },
+    { value: 'team', label: 'Team', color: '#3454d1' }, 
     { value: 'updates', label: 'Updates', color: '#17c666' },
     { value: 'personal', label: 'Personal', color: '#ffa21d' },
     { value: 'promotions', label: 'Promotions', color: '#ea4d4d' },
@@ -55,9 +55,14 @@ const customerListTagsOptions = [
     { value: 'primary', label: 'Primary', color: '#41b2c4' },
 ];
 const customerListStatusOptions = [
-    { value: 'active', label: 'Active', color: '#17c666' },
-    { value: 'inactive', label: 'Inactive', color: '#ffa21d' },
-    { value: 'declined', label: 'Declined', color: '#ea4d4d' },
+    { value: 'new', label: 'Yeni', color: '#3b82f6' },
+  { value: 'contacted', label: 'İletişim Kuruldu', color: '#0ea5e9' },
+  { value: 'proposal_sent', label: 'Teklif Gönderildi', color: '#f59e0b' },
+  { value: 'waiting_approval', label: 'Onay Bekliyor', color: '#f97316' },
+  { value: 'approved', label: 'Onaylandı', color: '#22c55e' },
+  { value: 'won', label: 'Kazanıldı', color: '#16a34a' },
+  { value: 'lost', label: 'Kaybedildi', color: '#ef4444' },
+  { value: 'inactive', label: 'Pasif', color: '#6b7280' },
 ];
 const customerCreatePrivacyOptions = [
     { value: 'onlyme', label: 'Only Me', icon: 'feather-lock' },

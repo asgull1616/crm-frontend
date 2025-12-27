@@ -94,8 +94,8 @@ const TabNotificationsContent = () => {
                 <table className="table mb-0">
                     <thead>
                         <tr>
-                            <th>Description</th>
-                            <th className="wd-250 text-end">Actions</th>
+                            <th>Tanım</th>
+                            <th className="wd-250 text-end">Eylemler</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -115,7 +115,7 @@ const TabNotificationsContent = () => {
             </div>
             <hr />
             <div className="notify-activity-section">
-                <div className="px-4 mb-4 d-flex justify-content-between">
+                {/* <div className="px-4 mb-4 d-flex justify-content-between">
                     <h5 className="fw-bold">Account Activity</h5>
                     <a href="#" className="btn btn-sm btn-light-brand">View Alls</a>
                 </div>
@@ -135,7 +135,7 @@ const TabNotificationsContent = () => {
                         title="Someone mentions or follows me"
                         description="If you received a notification that someone mentioned or followed you, take a moment to read it and understand what it means."
                     />
-                </div>
+                </div> */}
             </div>
         </div>
     )

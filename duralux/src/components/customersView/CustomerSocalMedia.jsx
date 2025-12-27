@@ -12,7 +12,7 @@ const CustomerSocalMedia = () => {
     return (
         <div className="card stretch stretch-full">
             <div className="card-header">
-                <h5 className="card-title">Social</h5>
+                <h5 className="card-title">Sosyal</h5>
                 <Dropdown dropdownItems={customerProfileOption} triggerPosition='25,25' dropdownMenuStyle={"wd-250"} />
             </div>
             <div className="card-body">
@@ -23,13 +23,13 @@ const CustomerSocalMedia = () => {
                     <span className="mx-2 text-gray-300">/</span>
                     <a href="https://www.facebook.com/wrapcoders" target="_blank" className="text-truncate-1-line">https://www.facebook.com/<span className="text-muted">wrapcoders</span></a>
                 </div>
-                <div className="d-flex align-items-center mb-3">
+                {/* <div className="d-flex align-items-center mb-3">
                     <div className="avatar-text bg-gray-100">
                         <FiTwitter size={16} />
                     </div>
                     <span className="mx-2 text-gray-300">/</span>
                     <a href="https://www.twitter.com/wrapcoders" target="_blank" className="text-truncate-1-line">https://www.twitter.com/<span className="text-muted">wrapcoders</span></a>
-                </div>
+                </div> */}
                 <div className="d-flex align-items-center mb-3">
                     <div className="avatar-text bg-gray-100">
                         <FiGithub size={16} />
@@ -44,16 +44,16 @@ const CustomerSocalMedia = () => {
                     <span className="mx-2 text-gray-300">/</span>
                     <a href="https://www.linkedin.com/wrapcoders" target="_blank" className="text-truncate-1-line">https://www.linkedin.com/<span className="text-muted">wrapcoders</span></a>
                 </div>
-                <div className="d-flex align-items-center">
+                {/* <div className="d-flex align-items-center">
                     <div className="avatar-text bg-gray-100">
                         <FiYoutube size={16} />
                     </div>
                     <span className="mx-2 text-gray-300">/</span>
                     <a href="https://www.youtube.com/wrapcoders" target="_blank" className="text-truncate-1-line">https://www.youtube.com/<span className="text-muted">wrapcoders</span></a>
-                </div>
+                </div> */}
             </div>
             <a href="#" className="ladda-button zoom-out" data-toggle="tooltip" data-bs-trigger="hover" data-title="Refresh Now">
-                <span>Refresh</span>
+                <span>Yineleme</span>
                 <span className="spinner"></span>
             </a>
         </div>

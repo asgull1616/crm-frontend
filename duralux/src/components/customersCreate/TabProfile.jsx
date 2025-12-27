@@ -25,14 +25,14 @@ const TabProfile = () => {
             <div className="card-body personal-info">
                 <div className="mb-4 d-flex align-items-center justify-content-between">
                     <h5 className="fw-bold mb-0 me-4">
-                        <span className="d-block mb-2">Personal Information:</span>
-                        <span className="fs-12 fw-normal text-muted text-truncate-1-line">Following information is publicly displayed, be careful! </span>
+                        <span className="d-block mb-2">Müşteri Bilgileri:</span>
+                        {/* <span className="fs-12 fw-normal text-muted text-truncate-1-line">Following information is publicly displayed, be careful! </span> */}
                     </h5>
-                    <a href="#" className="btn btn-sm btn-light-brand">Add New</a>
+                    <a href="#" className="btn btn-sm btn-light-brand">Ekleyin</a>
                 </div>
                 <div className="row mb-4 align-items-center">
                     <div className="col-lg-4">
-                        <label className="fw-semibold">Avatar: </label>
+                        <label className="fw-semibold">Resim: </label>
                     </div>
                     <div className="col-lg-8">
                         <div className="mb-4 mb-md-0 d-flex gap-4 your-brand">
@@ -43,20 +43,20 @@ const TabProfile = () => {
                                 </div>
                                 <input className="file-upload" type="file" accept="image/*" id='img' hidden />
                             </label>
-                            <div className="d-flex flex-column gap-1">
+                            {/* <div className="d-flex flex-column gap-1">
                                 <div className="fs-11 text-gray-500 mt-2"># Upload your prifile</div>
                                 <div className="fs-11 text-gray-500"># Avatar size 150x150</div>
                                 <div className="fs-11 text-gray-500"># Max upload size 2mb</div>
                                 <div className="fs-11 text-gray-500"># Allowed file types: png, jpg, jpeg</div>
-                            </div>
+                            </div> */}
                         </div>
                     </div>
                 </div>
                 <Input
                     icon='feather-user'
-                    label={"Name"}
+                    label={"İsim"}
                     labelId={"nameInput"}
-                    placeholder={"Name"}
+                    placeholder={"isim"}
                     name={"name"}
                 />
                 <Input
@@ -69,31 +69,31 @@ const TabProfile = () => {
                 />
                 <Input
                     icon='feather-link-2'
-                    label={"Username"}
+                    label={"Kullanıcı Adı"}
                     labelId={"usernameInput"}
-                    placeholder={"Username"}
+                    placeholder={"Kullanıcı Adı"}
                     name={"username"}
                     centerLink={true}
                 />
                 <Input
                     icon='feather-phone'
-                    label={"Phone"}
+                    label={"Telefon"}
                     labelId={"phoneInput"}
-                    placeholder={"Phone"}
+                    placeholder={"Telefon"}
                     name={"phone"}
                 />
                 <Input
                     icon='feather-compass'
-                    label={"Company"}
+                    label={"Şirket"}
                     labelId={"companyInput"}
-                    placeholder={"Company"}
+                    placeholder={"Şirket"}
                     name={"company"}
                 />
                 <Input
                     icon='feather-briefcase'
-                    label={"Designation"}
+                    label={"Unvan"}
                     labelId={"designationInput"}
-                    placeholder={"Designation"}
+                    placeholder={"Unvan"}
                     name={"designation"}
                 />
                 <Input
@@ -112,20 +112,20 @@ const TabProfile = () => {
                 />
                 <TextArea
                     icon="feather-map-pin"
-                    label={"Address"}
+                    label={"Adres"}
                     labelId={"addressInput"}
-                    placeholder={"Address"}
+                    placeholder={"Adres"}
                 />
                 <TextArea
                     icon="feather-type"
-                    label={"description"}
+                    label={"Tanım"}
                     labelId={"descriptionInput"}
-                    placeholder={"Description"}
+                    placeholder={"Tanım"}
                     row='5'
                 />
             </div>
             <hr className="my-0" />
-            <div className="card-body additional-info">
+            {/* <div className="card-body additional-info">
                 <div className="mb-4 d-flex align-items-center justify-content-between">
                     <h5 className="fw-bold mb-0 me-4">
                         <span className="d-block mb-2">Additional Information:</span>
@@ -276,7 +276,7 @@ const TabProfile = () => {
                         />
                     </div>
                 </div>
-            </div>
+            </div> */}
         </div>
     )
 }

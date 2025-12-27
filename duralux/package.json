@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
+    "dev": "next dev -H 192.168.1.239",
     "build": "next build",
     "start": "next start",
     "lint": "next lint"
@@ -41,4 +41,6 @@
     "sweetalert2": "^11.14.1",
     "sweetalert2-react-content": "^5.0.7"
   }
+
+  
 }

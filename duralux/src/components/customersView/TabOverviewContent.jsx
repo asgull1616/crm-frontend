@@ -5,17 +5,17 @@ import ImageGroup from '@/components/shared/ImageGroup'
 import HorizontalProgress from '@/components/shared/HorizontalProgress';
 
 const informationData = [
-    { label: 'Full Name', value: 'Alexandra Della' },
-    { label: 'Surname', value: 'Della' },
-    { label: 'Company', value: 'Theme Ocean' },
-    { label: 'Date of Birth', value: '26 May, 2000' },
-    { label: 'Mobile Number', value: '+01 (375) 5896 3214' },
-    { label: 'Email Address', value: 'alex.della@outlook.com' },
-    { label: 'Location', value: 'California, United States' },
-    { label: 'Joining Date', value: '20 Dec, 2023' },
-    { label: 'Country', value: 'United States' },
-    { label: 'Communication', value: 'Email, Phone' },
-    { label: 'Allow Changes', value: 'YES' },
+    { label: 'İsim Soyisim', value: 'Alexandra Della' },
+    { label: 'Soyisim', value: 'Della' },
+    { label: 'Şirket', value: 'Theme Ocean' },
+    { label: 'Doğum Tarihi', value: '26 May, 2000' },
+    { label: 'Telefon Numarası', value: '+01 (375) 5896 3214' },
+    { label: 'Email Adresi', value: 'alex.della@outlook.com' },
+    { label: 'Konum', value: 'California, United States' },
+    { label: 'İşe Başlama Tarihi', value: '20 Dec, 2023' },
+    { label: 'Ülke', value: 'United States' },
+    { label: 'İletişim', value: 'Email, Phone' },
+    { label: 'Değişikliklere İzin Ver', value: 'YES' },
     { label: 'Website', value: 'https://wrapbootstrap.com/user/theme_ocean' },
 ];
 const TabOverviewContent = () => {
@@ -27,35 +27,26 @@ const TabOverviewContent = () => {
         >
             <div className="about-section mb-5">
                 <div className="mb-4 d-flex align-items-center justify-content-between">
-                    <h5 className="fw-bold mb-0">Profile About:</h5>
+                    <h5 className="fw-bold mb-0">Müşteri Hakkında:</h5>
                     <a href="#" className="btn btn-sm btn-light-brand">
-                        Updates
+                        Güncelle
                     </a>
                 </div>
                 <p>
-                    John Doe is a frontend developer with over 5 years of experience creating
-                    high-quality, user-friendly websites and web applications. He has a strong
-                    understanding of web development technologies and a keen eye for design.
+                  Buraya
                 </p>
                 <p>
-                    John is proficient in languages such as HTML, CSS, and JavaScript, and is
-                    experienced in using popular frontend frameworks such as React and
-                    Angular. He is also well-versed in user experience design and uses his
-                    knowledge to create engaging and intuitive user interfaces.
+                    müşteri
                 </p>
                 <p>
-                    Throughout his career, John has worked on a wide range of projects for
-                    clients in various industries, including e-commerce, healthcare, and
-                    education. He takes a collaborative approach to development and enjoys
-                    working closely with clients and other developers to bring their ideas to
-                    life.
+                  bilgileri.
                 </p>
             </div>
             <div className="profile-details mb-5">
                 <div className="mb-4 d-flex align-items-center justify-content-between">
-                    <h5 className="fw-bold mb-0">Profile Details:</h5>
+                    <h5 className="fw-bold mb-0">Profil Detayları:</h5>
                     <a href="#" className="btn btn-sm btn-light-brand">
-                        Edit Profile
+                        Profili Düzenle
                     </a>
                 </div>
                 {informationData.map((item, index) => (
@@ -65,7 +56,7 @@ const TabOverviewContent = () => {
                     </div>
                 ))}
             </div>
-            <div
+            {/* <div
                 className="alert alert-dismissible mb-4 p-4 d-flex alert-soft-warning-message profile-overview-alert"
                 role="alert"
             >
@@ -92,15 +83,15 @@ const TabOverviewContent = () => {
                         aria-label="Close"
                     />
                 </div>
-            </div>
+            </div> */}
             <div className="project-section">
                 <div className="mb-4 d-flex align-items-center justify-content-between">
-                    <h5 className="fw-bold mb-0">Projects Details:</h5>
+                    <h5 className="fw-bold mb-0">Proje Detayları:</h5>
                     <a href="#" className="btn btn-sm btn-light-brand">
-                        View Alls
+                        Görüntüle
                     </a>
                 </div>
-                <div className="row">
+                {/* <div className="row">
                     {
                         projectsData.runningProjects.slice(0, 2).map(({ id, progress, project_logo, project_category, project_name, status, team_members, progress_color, badge_color }) => (
                             <div key={id} className="col-xxl-6 col-xl-12 col-md-6">
@@ -154,7 +145,7 @@ const TabOverviewContent = () => {
                             </div>
                         ))
                     }
-                </div>
+                </div> */}
             </div>
         </div>
 

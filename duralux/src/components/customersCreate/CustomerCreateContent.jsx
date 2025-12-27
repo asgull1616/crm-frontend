@@ -13,23 +13,23 @@ const CustomerCreateContent = () => {
                 <div className="card-header p-0">
                     <ul className="nav nav-tabs flex-wrap w-100 text-center customers-nav-tabs" id="myTab" role="tablist">
                         <li className="nav-item flex-fill border-top" role="presentation">
-                            <a href="$" className="nav-link active" data-bs-toggle="tab" data-bs-target="#profileTab" role="tab">Profile</a>
+                            <a href="$" className="nav-link active" data-bs-toggle="tab" data-bs-target="#profileTab" role="tab"> Müşteri Profili</a>
                         </li>
                         <li className="nav-item flex-fill border-top" role="presentation">
-                            <a href="$" className="nav-link" data-bs-toggle="tab" data-bs-target="#passwordTab" role="tab">Password</a>
+                            <a href="$" className="nav-link" data-bs-toggle="tab" data-bs-target="#passwordTab" role="tab">Şifre</a>
                         </li>
                         <li className="nav-item flex-fill border-top" role="presentation">
-                            <a href="$" className="nav-link" data-bs-toggle="tab" data-bs-target="#billingTab" role="tab">Billing & Shipping</a>
+                            <a href="$" className="nav-link" data-bs-toggle="tab" data-bs-target="#billingTab" role="tab">Fatura & Teslimat Adresi</a>
                         </li>
-                        <li className="nav-item flex-fill border-top" role="presentation">
+                        {/* <li className="nav-item flex-fill border-top" role="presentation">
                             <a href="$" className="nav-link" data-bs-toggle="tab" data-bs-target="#subscriptionTab" role="tab">Subscription</a>
-                        </li>
-                        <li className="nav-item flex-fill border-top" role="presentation">
-                            <a href="$" className="nav-link" data-bs-toggle="tab" data-bs-target="#notificationsTab" role="tab">Notifications</a>
-                        </li>
-                        <li className="nav-item flex-fill border-top" role="presentation">
+                        </li> */}
+                        {/* <li className="nav-item flex-fill border-top" role="presentation">
+                            <a href="$" className="nav-link" data-bs-toggle="tab" data-bs-target="#notificationsTab" role="tab">Bildirimler</a>
+                        </li> */}
+                        {/* <li className="nav-item flex-fill border-top" role="presentation">
                             <a href="$" className="nav-link" data-bs-toggle="tab" data-bs-target="#connectionTab" role="tab">Connection</a>
-                        </li>
+                        </li> */}
                     </ul>
                 </div>
                 <div className="tab-content">

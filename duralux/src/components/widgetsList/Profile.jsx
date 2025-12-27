@@ -20,7 +20,7 @@ const Profile = () => {
                         <a href="#" className="fs-14 fw-bold d-block"> Alexandra Della</a>
                         <a href="#" className="fs-12 fw-normal text-muted d-block">alex.della@outlook.com</a>
                     </div>
-                    <div className="fs-12 fw-normal text-muted text-center d-flex flex-wrap gap-3 mb-4">
+                    {/* <div className="fs-12 fw-normal text-muted text-center d-flex flex-wrap gap-3 mb-4">
                         <div className="flex-fill py-3 px-4 rounded-1 d-none d-sm-block border border-dashed border-gray-5">
                             <h6 className="fs-15 fw-bolder">28.65K</h6>
                             <p className="fs-12 text-muted mb-0">Followers</p>
@@ -33,15 +33,15 @@ const Profile = () => {
                             <h6 className="fs-15 fw-bolder">43.67K</h6>
                             <p className="fs-12 text-muted mb-0">Engagement</p>
                         </div>
-                    </div>
+                    </div> */}
                 </div>
                 <ul className="list-unstyled mb-4">
                     <li className="hstack justify-content-between mb-4">
-                        <span className="text-muted fw-medium hstack gap-3"><FiMapPin size={16} />Location</span>
+                        <span className="text-muted fw-medium hstack gap-3"><FiMapPin size={16} />Konum</span>
                         <a href="#" className="float-end">California, USA</a>
                     </li>
                     <li className="hstack justify-content-between mb-4">
-                        <span className="text-muted fw-medium hstack gap-3"><FiPhone size={16} />Phone</span>
+                        <span className="text-muted fw-medium hstack gap-3"><FiPhone size={16} />Telefon</span>
                         <a href="#" className="float-end">+01 (375) 2589 645</a>
                     </li>
                     <li className="hstack justify-content-between mb-0">
@@ -52,11 +52,11 @@ const Profile = () => {
                 <div className="d-flex gap-2 text-center pt-4">
                     <a href="#" className="w-50 btn btn-light-brand">
                         <FiTrash2 size={16} className='me-2' />
-                        <span>Delete</span>
+                        <span>Sil</span>
                     </a>
                     <a href="#" className="w-50 btn btn-primary">
                         <FiEdit size={16} className='me-2' />
-                        <span>Edit Profile</span>
+                        <span>Profili Düzenle</span>
                     </a>
                 </div>
             </div>
