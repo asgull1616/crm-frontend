@@ -215,25 +215,25 @@ export const menuList = [
     },
     {
         id: 7,
-        name: "Projeler",
+        name: "Görevler",
         path: "#",
         icon: 'feather-briefcase',
         dropdownMenu: [
             {
                 id: 1,
-                name: "Projects",
+                name: "Görevler",
                 path: "/projects/list",
                 subdropdownMenu: false
             },
             {
                 id: 2,
-                name: "Projects Görüntüle",
+                name: "Görevleri Görüntüle",
                 path: "/projects/view",
                 subdropdownMenu: false
             },
             {
                 id: 3,
-                name: "Projects Yarat",
+                name: "Görev Yarat",
                 path: "/projects/create",
                 subdropdownMenu: false
             }
