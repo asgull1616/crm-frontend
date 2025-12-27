@@ -10,15 +10,15 @@ const TabProjectType = ({ setFormData, formData, error, setError }) => {
             <form id="project-type">
                 <fieldset>
                     <div className="mb-5">
-                        <h2 className="fs-16 fw-bold">Project type</h2>
-                        <p className="text-muted">Select project type first.</p>
+                        <h2 className="fs-16 fw-bold">Görev</h2>
+                        <p className="text-muted">Proje tipini seçin.</p>
                         {error && <label id="project-type-error" className="error"><FiAlertTriangle /> This field is required.</label>}
                     </div>
                     <fieldset>
                         <ProjectTypeCard
                             icon={"feather-user"}
-                            title={"Personal Project"}
-                            description={"If you need more info, please check it out"}
+                            title={"Kişisel Görev"}
+                            // description={"If you need more info, please check it out"}
                             id={"project_personal"}
                             name={"project-type"}
                             isRequired={true}
@@ -28,8 +28,8 @@ const TabProjectType = ({ setFormData, formData, error, setError }) => {
                         />
                         <ProjectTypeCard
                             icon={"feather-users"}
-                            title={"Team Project"}
-                            description={"Create corporate account to manage users"}
+                            title={"Ekip Görevi"}
+                            // description={"Create corporate account to manage users"}
                             id={"project_team"}
                             name={"project-type"}
                             isRequired={false}
@@ -42,15 +42,15 @@ const TabProjectType = ({ setFormData, formData, error, setError }) => {
                 <hr className="mb-5" />
                 <fieldset>
                     <div className="mb-5">
-                        <h2 className="fs-16 fw-bold">Project manage</h2>
-                        <p className="text-muted">Who can manage projects</p>
+                        <h2 className="fs-16 fw-bold">Görev Yönetimi</h2>
+                        <p className="text-muted">Görevi Kim Yönetebilir</p>
                         {error && <label id="project-type-error" className="error"><FiAlertTriangle /> This field is required.</label>}
                     </div>
                     <fieldset>
                         <ProjectTypeCard
                             icon={"feather-globe"}
-                            title={"Everyone"}
-                            description={"All users now can to see it, but guests can't access."}
+                            title={"Herkes"}
+                            description={"Tüm kullanıcılar görebilir ancak misafirler (kayıtsız kullanıcılar) erişemez."}
                             id={"project_everyone"}
                             name={"project-manage"}
                             isRequired={true}
@@ -60,8 +60,8 @@ const TabProjectType = ({ setFormData, formData, error, setError }) => {
                         />
                         <ProjectTypeCard
                             icon={"feather-shield"}
-                            title={"Only Admin's"}
-                            description={"Only admin's can manage everythings."}
+                            title={"Sadece Yöneticiler"}
+                            description={"Sadece yöneticiler her şeyi yönetebilir."}
                             id={"project_admin"}
                             name={"project-manage"}
                             isRequired={false}
@@ -71,8 +71,8 @@ const TabProjectType = ({ setFormData, formData, error, setError }) => {
                         />
                         <ProjectTypeCard
                             icon={"feather-settings"}
-                            title={"Only to Specific People"}
-                            description={"Only some specific people can able to see it."}
+                            title={"Sadece Belirli Kişiler"}
+                            description={"Sadece seçilen belirli kişiler bunu görebilir."}
                             id={"project_specific"}
                             name={"project-manage"}
                             isRequired={false}

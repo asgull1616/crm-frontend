@@ -125,7 +125,7 @@ const TabProjectOverview = () => {
                         <div className="card-body">
                             <div className="row">
                                 <div className="col-md-6 mb-4">
-                                    <label className="form-label">Project</label>
+                                    <label className="form-label">Görev</label>
                                     <p>#01 - CRM Applications - G.Cute</p>
                                 </div>
                                 <div className="col-md-6 mb-4">
@@ -133,31 +133,31 @@ const TabProjectOverview = () => {
                                     <p>Project Hours</p>
                                 </div>
                                 <div className="col-md-6 mb-4">
-                                    <label className="form-label">Status</label>
+                                    <label className="form-label">Durum</label>
                                     <p>In Progress</p>
                                 </div>
-                                <div className="col-md-6 mb-4">
+                                {/* <div className="col-md-6 mb-4">
                                     <label className="form-label">Customer</label>
                                     <p>Green Cute</p>
-                                </div>
+                                </div> */}
                                 <div className="col-md-6 mb-4">
-                                    <label className="form-label">Start Date </label>
+                                    <label className="form-label">Başlangıç Tarihi </label>
                                     <p>2023-02-25</p>
                                 </div>
                                 <div className="col-md-6 mb-4">
-                                    <label className="form-label">End Date </label>
+                                    <label className="form-label">Bitiş Tarihi </label>
                                     <p>2023-03-20</p>
                                 </div>
-                                <div className="col-md-6 mb-4">
+                                {/* <div className="col-md-6 mb-4">
                                     <label className="form-label">Hourly Rate</label>
                                     <p>$25.00</p>
-                                </div>
-                                <div className="col-md-6 mb-4">
+                                </div> */}
+                                {/* <div className="col-md-6 mb-4">
                                     <label className="form-label">Logged Hours</label>
                                     <p>00:00:00</p>
-                                </div>
+                                </div> */}
                                 <div className="col-md-12">
-                                    <label className="form-label">Description</label>
+                                    <label className="form-label">Tanım</label>
                                     <p>CRM (Customer Relationship Management) applications are software tools that help organizations manage interactions with their customers, streamline sales and marketing activities, and improve overall customer satisfaction. There are many different CRM applications available, ranging from simple contact management tools to more sophisticated platforms that integrate with other business systems.</p>
                                     <p className="fw-semibold mt-4">Some of the common features of CRM applications include:</p>
                                     <ul>
@@ -174,7 +174,7 @@ const TabProjectOverview = () => {
                     </div>
                 </div>
                 <div className="col-xl-4">
-                    <div className="row">
+                    {/* <div className="row">
                         <HourCard
                             icon="feather-log-in"
                             color="primary"
@@ -203,15 +203,15 @@ const TabProjectOverview = () => {
                             hours="00:00"
                             totalBilled="00:00"
                         />
-                    </div>
+                    </div> */}
                     <div className="row">
                         <div className="col-xl-12 col-md-6">
                             <div className="card stretch stretch-full">
                                 <div className="card-body">
-                                    <div className="d-flex justify-content-between">
+                                    {/* <div className="d-flex justify-content-between">
                                         <div className="fw-semibold">16 / 25 Open Tasks</div>
                                         <i className="text-warning"><FiCheckCircle size={16} /></i>
-                                    </div>
+                                    </div> */}
                                     <div className="progress mt-2 ht-3">
                                         <div className="progress-bar bg-warning" role="progressbar" style={{ width: '78%' }} />
                                     </div>
@@ -221,10 +221,10 @@ const TabProjectOverview = () => {
                         <div className="col-xl-12 col-md-6">
                             <div className="card stretch stretch-full">
                                 <div className="card-body">
-                                    <div className="d-flex justify-content-between">
+                                    {/* <div className="d-flex justify-content-between">
                                         <div className="fw-semibold">25 / 25 Days Left</div>
                                         <i className="text-success" ><FiCalendar size={16} /></i>
-                                    </div>
+                                    </div> */}
                                     <div className="progress mt-2 ht-3">
                                         <div className="progress-bar bg-success" role="progressbar" style={{ width: '100%' }} />
                                     </div>
@@ -232,14 +232,14 @@ const TabProjectOverview = () => {
                             </div>
                         </div>
                     </div>
-                    <div className="card stretch stretch-full">
+                    {/* <div className="card stretch stretch-full">
                         <ReactApexChart
                             options={chartOptions}
                             series={chartOptions?.series}
                             type='area'
                             height={270}
                         />
-                    </div>
+                    </div> */}
                 </div>
             </div>
         </div>
