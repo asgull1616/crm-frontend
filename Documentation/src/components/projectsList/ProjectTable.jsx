@@ -8,12 +8,12 @@ import { projectTableData } from '@/utils/fackData/projectTableData';
 
 const actions = [
     { label: "Edit", icon: <FiEdit3 /> },
-    // { label: "Print", icon: <FiPrinter /> },
+    { label: "Print", icon: <FiPrinter /> },
     { label: "Remind", icon: <FiClock /> },
-    // { type: "divider" },
-    // { label: "Archive", icon: <FiArchive /> },
-    // { label: "Report Spam", icon: <FiAlertOctagon />, },
-    // { type: "divider" },
+    { type: "divider" },
+    { label: "Archive", icon: <FiArchive /> },
+    { label: "Report Spam", icon: <FiAlertOctagon />, },
+    { type: "divider" },
     { label: "Delete", icon: <FiTrash2 />, },
 ];
 

@@ -4,32 +4,32 @@ import getIcon from '@/utils/getIcon'
 import Link from 'next/link'
 
 const socialLinkOptions = [
-    { label: "Github", icon: "feather-github", shareCount: "39.57K" },
-    { label: "Twitter", icon: "feather-twitter", shareCount: "64.37K" },
-    { label: "Youtube", icon: "feather-youtube", shareCount: "53.76K" },
-    { label: "Linkedin", icon: "feather-linkedin", shareCount: "42.69K" },
-    { label: "Facebook", icon: "feather-facebook", shareCount: "95.65K" },
-    { label: "Instagram", icon: "feather-instagram", shareCount: "32.69K" },
-    { type: "divider" },
-    { label: "Copy Link", icon: "feather-link", shareCount: "" },
-    { label: "Share via QR", icon: "feather-grid", shareCount: "" },
-    { label: "Share via Email", icon: "feather-mail", shareCount: "" },
-    { label: "Share via Message", icon: "feather-message-square", shareCount: "" },
+    // { label: "Github", icon: "feather-github", shareCount: "39.57K" },
+    // { label: "Twitter", icon: "feather-twitter", shareCount: "64.37K" },
+    // { label: "Youtube", icon: "feather-youtube", shareCount: "53.76K" },
+    // { label: "Linkedin", icon: "feather-linkedin", shareCount: "42.69K" },
+    // { label: "Facebook", icon: "feather-facebook", shareCount: "95.65K" },
+    // { label: "Instagram", icon: "feather-instagram", shareCount: "32.69K" },
+    // { type: "divider" },
+    { label: "Bağlantıyı Kopyala", icon: "feather-link", shareCount: "" },
+    // { label: "Share via QR", icon: "feather-grid", shareCount: "" },
+    { label: "E-posta ile Gönder", icon: "feather-mail", shareCount: "" },
+   /* { label: "Share via Message", icon: "feather-message-square", shareCount: "" },*/
 ]
 const moreOptions = [
-    { label: "Pin Project", icon: "feather-map-pin" },
-    { label: "Edit Project", icon: "feather-edit" },
-    { label: "Copy Project", icon: "feather-copy" },
+    { label: "Görevi Sabitle", icon: "feather-map-pin" },
+    { label: "Görevi Düzenle", icon: "feather-edit" },
+    { label: "Görevi Kopyala", icon: "feather-copy" },
     { type: "divider" },
-    { label: "Make as Hold", icon: "feather-pause" },
-    { label: "Make as Started", icon: "feather-star" },
-    { label: "Make as Finished", icon: "feather-check-circle" },
-    { label: "Make as Cancelled", icon: "feather-delete" },
+    { label: "Beklemeye Al", icon: "feather-pause" },
+    { label: "Başlatıldı Olarak İşaretle", icon: "feather-star" },
+    { label: "Tamamlandı Olarak İşaretle", icon: "feather-check-circle" },
+    { label: "İptal Et", icon: "feather-delete" },
     { type: "divider" },
-    { label: "Export Project", icon: "feather-cast" },
-    { label: "Project View", icon: "feather-eye" },
+    // { label: "Export Project", icon: "feather-cast" },
+    { label: "Görevi Gör", icon: "feather-eye" },
     { type: "divider" },
-    { label: "Delete Project", icon: "feather-trash-2" },
+    { label: "Görevi Sil", icon: "feather-trash-2" },
 ]
 const ProjectViewHeader = () => {
     return (
@@ -58,12 +58,12 @@ const ProjectViewHeader = () => {
             </div>
             <Link href="/projects/create" className="btn btn-primary">
                 <FiPlus size={16} className='me-2' />
-                <span>Create Project</span>
+                <span>Görev Oluştur</span>
             </Link>
             <div className="filter-dropdown">
                 <a href="#" className="btn btn-primary" data-bs-toggle="dropdown" data-bs-offset="0,11">
                     <FiShare2 size={16} className='me-2' />
-                    <span>Share Project</span>
+                    <span>Görevi Paylaş</span>
                 </a>
                 <ul className="dropdown-menu dropdown-menu-start">
                     {
