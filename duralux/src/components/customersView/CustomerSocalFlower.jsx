@@ -8,7 +8,7 @@ const CustomerSocalFlower = () => {
     return (
         <div className="card stretch stretch-full">
             <div className="card-header">
-                <h2 className="card-title">Suggestions</h2>
+                <h2 className="card-title">Önerilenler</h2>
                 <Dropdown dropdownItems={customerProfileOption} triggerPosition='25,25' dropdownMenuStyle={"wd-250"} />
             </div>
             <div className="card-body">
@@ -32,7 +32,7 @@ const CustomerSocalFlower = () => {
                 }
             </div>
             <a href="#" className="ladda-button zoom-out" data-toggle="tooltip" data-bs-trigger="hover" data-title="Refresh Now">
-                <span>Refresh</span>
+                <span>Yenile</span>
                 <span className="spinner"></span>
             </a>
         </div>

@@ -10,11 +10,11 @@ const CustomersCreateHeader = () => {
         <div className="d-flex align-items-center gap-2 page-header-right-items-wrapper">
             <a href="#" className="btn btn-light-brand" onClick={handleClick}>
                 <FiLayers size={16} className='me-2' />
-                <span>Save as Draft</span>
+                <span>Taslak Olarak Kaydet</span>
             </a>
             <a href="#" className="btn btn-primary" onClick={handleClick}>
                 <FiUserPlus size={16} className='me-2' />
-                <span>Create Customer</span>
+                <span>Müşteri Oluştur</span>
             </a>
         </div>
     )

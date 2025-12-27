@@ -10,14 +10,14 @@ import Link from 'next/link';
 
 
 const actions = [
-    { label: "Edit", icon: <FiEdit3 /> },
-    { label: "Print", icon: <FiPrinter /> },
-    { label: "Remind", icon: <FiClock /> },
-    { type: "divider" },
-    { label: "Archive", icon: <FiArchive /> },
-    { label: "Report Spam", icon: <FiAlertOctagon />, },
-    { type: "divider" },
-    { label: "Delete", icon: <FiTrash2 />, },
+    { label: "Düzenle", icon: <FiEdit3 /> },
+    // { label: "Print", icon: <FiPrinter /> },
+    // { label: "Remind", icon: <FiClock /> },
+    // { type: "divider" },
+    // { label: "Archive", icon: <FiArchive /> },
+    // { label: "Report Spam", icon: <FiAlertOctagon />, },
+    // { type: "divider" },
+    { label: "Sil", icon: <FiTrash2 />, }, 
 ];
 
 const TableCell = memo(({ options, defaultSelect }) => {
@@ -100,32 +100,32 @@ const CustomersTable = () => {
             header: () => 'Email',
             cell: (info) => <a href="apps-email.html">{info.getValue()}</a>
         },
-        {
-            accessorKey: 'group',
-            header: () => 'Group',
-            cell: (info) => {
-                const x = info.getValue()
-                return (
-                    <Select
-                        defaultValue={x.defaultSelect}
-                        isMulti
-                        name="tags"
-                        options={x.tags}
-                        className="basic-multi-select"
-                        classNamePrefix="select"
-                        hideSelectedOptions={false}
-                        isSearchable={false}
-                        // onChange={(e) => console.log(e)}
-                        formatOptionLabel={tags => (
-                            <div className="user-option d-flex align-items-center gap-2">
-                                <span style={{ marginTop: "1px", backgroundColor: `${tags.color}` }} className={`wd-7 ht-7 rounded-circle`}></span>
-                                <span>{tags.label}</span>
-                            </div>
-                        )}
-                    />
-                )
-            }
-        },
+        // {
+        //     accessorKey: 'group',
+        //     header: () => 'Group',
+        //     cell: (info) => {
+        //         const x = info.getValue()
+        //         return (
+        //             <Select
+        //                 defaultValue={x.defaultSelect}
+        //                 isMulti
+        //                 name="tags"
+        //                 options={x.tags}
+        //                 className="basic-multi-select"
+        //                 classNamePrefix="select"
+        //                 hideSelectedOptions={false}
+        //                 isSearchable={false}
+        //                 // onChange={(e) => console.log(e)}
+        //                 formatOptionLabel={tags => (
+        //                     <div className="user-option d-flex align-items-center gap-2">
+        //                         <span style={{ marginTop: "1px", backgroundColor: `${tags.color}` }} className={`wd-7 ht-7 rounded-circle`}></span>
+        //                         <span>{tags.label}</span>
+        //                     </div>
+        //                 )}
+        //             />
+        //         )
+        //     }
+        // },
         {
             accessorKey: 'phone',
             header: () => 'Phone',
