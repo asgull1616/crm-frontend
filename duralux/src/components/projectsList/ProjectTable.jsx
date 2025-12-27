@@ -8,12 +8,12 @@ import { projectTableData } from '@/utils/fackData/projectTableData';
 
 const actions = [
     { label: "Edit", icon: <FiEdit3 /> },
-    { label: "Print", icon: <FiPrinter /> },
+    // { label: "Print", icon: <FiPrinter /> },
     { label: "Remind", icon: <FiClock /> },
-    { type: "divider" },
-    { label: "Archive", icon: <FiArchive /> },
-    { label: "Report Spam", icon: <FiAlertOctagon />, },
-    { type: "divider" },
+    // { type: "divider" },
+    // { label: "Archive", icon: <FiArchive /> },
+    // { label: "Report Spam", icon: <FiAlertOctagon />, },
+    // { type: "divider" },
     { label: "Delete", icon: <FiTrash2 />, },
 ];
 
@@ -71,7 +71,7 @@ const ProjectTable = () => {
 
         {
             accessorKey: 'project-name',
-            header: () => 'Project-name',
+            header: () => 'Görevler',
             cell: (info) => {
                 const roles = info.getValue();
                 return (
@@ -97,50 +97,50 @@ const ProjectTable = () => {
                 className: 'project-name-td'
             }
         },
-        {
-            accessorKey: 'customer',
-            header: () => 'Customer',
-            cell: (info) => {
-                const roles = info.getValue();
-                return (
-                    <a href="#" className="hstack gap-3">
-                        {
-                            roles?.img ?
-                                <div className="avatar-image avatar-md">
-                                    <img src={roles?.img} alt="" className="img-fluid" />
-                                </div>
-                                :
-                                <div className="text-white avatar-text user-avatar-text avatar-md">{roles?.name.substring(0, 1)}</div>
-                        }
-                        <div>
-                            <span className="text-truncate-1-line">{roles?.name}</span>
-                            <small className="fs-12 fw-normal text-muted">{roles?.email}</small>
-                        </div>
-                    </a>
-                )
-            }
-        },
+        // {
+        //     accessorKey: 'customer',
+        //     header: () => 'Customer',
+        //     cell: (info) => {
+        //         const roles = info.getValue();
+        //         return (
+        //             <a href="#" className="hstack gap-3">
+        //                 {
+        //                     roles?.img ?
+        //                         <div className="avatar-image avatar-md">
+        //                             <img src={roles?.img} alt="" className="img-fluid" />
+        //                         </div>
+        //                         :
+        //                         <div className="text-white avatar-text user-avatar-text avatar-md">{roles?.name.substring(0, 1)}</div>
+        //                 }
+        //                 <div>
+        //                     <span className="text-truncate-1-line">{roles?.name}</span>
+        //                     <small className="fs-12 fw-normal text-muted">{roles?.email}</small>
+        //                 </div>
+        //             </a>
+        //         )
+        //     }
+        // },
         {
             accessorKey: 'start-date',
-            header: () => 'Start Date',
+            header: () => 'Başlangıç Tarihi',
         },
         {
             accessorKey: 'end-date',
-            header: () => 'End Date',
+            header: () => 'Bitiş Tarihi',
         },
         {
             accessorKey: 'assigned',
-            header: () => 'Assigned',
+            header: () => 'Sorumlu Kişi',
             cell: (info) => <TableCell options={info.getValue().assigned} defaultSelect={info.getValue().defaultSelect} />
         },
         {
             accessorKey: 'status',
-            header: () => 'Status',
+            header: () => 'Durum',
             cell: (info) => <TableCell options={info.getValue().status} defaultSelect={info.getValue().defaultSelect} />
         },
         {
             accessorKey: 'actions',
-            header: () => "Actions",
+            header: () => "işlemler",
             cell: info => (
                 <div className="hstack gap-2 justify-content-end">
                     <a href="proposal-view.html" className="avatar-text avatar-md">
