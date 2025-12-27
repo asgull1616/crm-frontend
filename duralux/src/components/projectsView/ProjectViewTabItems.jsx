@@ -20,18 +20,18 @@ const ProjectViewTabItems = () => {
                         <li className="nav-item" role="presentation">
                             <button className="nav-link active" data-bs-toggle="tab" data-bs-target="#overviewTab">Overview</button>
                         </li>
-                        <li className="nav-item" role="presentation">
+                        {/* <li className="nav-item" role="presentation">
                             <button className="nav-link" data-bs-toggle="tab" data-bs-target="#activityTab">Activity</button>
-                        </li>
-                        <li className="nav-item" role="presentation">
+                        </li> */}
+                        {/* <li className="nav-item" role="presentation">
                             <button className="nav-link" data-bs-toggle="tab" data-bs-target="#timesheetsTab">Timesheets</button>
                         </li>
                         <li className="nav-item" role="presentation">
                             <button className="nav-link" data-bs-toggle="tab" data-bs-target="#milestonesTab">Milestones</button>
-                        </li>
-                        <li className="nav-item" role="presentation">
+                        </li> */}
+                        {/* <li className="nav-item" role="presentation">
                             <button className="nav-link" data-bs-toggle="tab" data-bs-target="#discussionsTab">Discussions</button>
-                        </li>
+                        </li> */}
                     </ul>
                 </div>
             </div>

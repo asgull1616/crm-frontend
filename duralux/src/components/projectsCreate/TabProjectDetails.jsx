@@ -24,8 +24,8 @@ const TabProjectDetails = () => {
             <form id="project-details">
                 <fieldset>
                     <div className="mb-5">
-                        <h2 className="fs-16 fw-bold">Project details</h2>
-                        <p className="text-muted">You project details gose here.</p>
+                        <h2 className="fs-16 fw-bold">Görev Detayı</h2>
+                        {/* <p className="text-muted">You project details gose here.</p> */}
                     </div>
                     <fieldset>
                         <div className="mb-4">
@@ -33,19 +33,19 @@ const TabProjectDetails = () => {
                             <input type="text" className="form-control" id="projectName" name="projectName" defaultValue="Website design and development" required />
                         </div>
                         <div className="mb-4 ">
-                            <label className="form-label">Project Description <span className="text-danger">*</span></label>
+                            <label className="form-label">Görev Tanımı <span className="text-danger">*</span></label>
                             <JoditEditor
                                 value={value}
                                 config={config}
                                 onChange={(htmlString) => setValue(htmlString)}
                             />
                         </div>
-                        <div className="mb-4">
+                        {/* <div className="mb-4">
                             <label htmlFor="ratePerHour" className="form-label">Rate Per Hour <span className="text-danger">*</span></label>
                             <input type="number" className="form-control" id="ratePerHour" name="ratePerHour" defaultValue={20} required />
-                        </div>
+                        </div> */}
                         <div className="mb-4">
-                            <label htmlFor="projectClient" className="form-label">Project Client <span className="text-danger">*</span></label>
+                            <label htmlFor="projectClient" className="form-label">Görev Sahibi <span className="text-danger">*</span></label>
                             <SelectDropdown
                                 options={propasalLeadOptions}
                                 selectedOption={selectedOption}
@@ -53,7 +53,7 @@ const TabProjectDetails = () => {
                                 onSelectOption={(option) => setSelectedOption(option)}
                             />
                         </div>
-                        <div className="mb-4">
+                        {/* <div className="mb-4">
                             <label htmlFor="billingType" className="form-label">Billing type <span className="text-danger">*</span></label>
                             <SelectDropdown
                                 options={projectBillingOptions}
@@ -61,10 +61,10 @@ const TabProjectDetails = () => {
                                 defaultSelect="tasks-hours"
                                 onSelectOption={(option) => setSelectedOption(option)}
                             />
-                        </div>
+                        </div> */}
                         <div className="mb-4">
 
-                            <label htmlFor="projectStatus" className="form-label">Project status <span className="text-danger">*</span></label>
+                            <label htmlFor="projectStatus" className="form-label">Görev Durumu <span className="text-danger">*</span></label>
                             <SelectDropdown
                                 options={projectStatusOptions}
                                 selectedOption={selectedOption}
@@ -73,7 +73,7 @@ const TabProjectDetails = () => {
                             />
 
                         </div>
-                        <div className="mb-4">
+                        {/* <div className="mb-4">
                             <label htmlFor="projectTags" className="form-label">Project tags <span className="text-danger">*</span></label>
                             <MultiSelectTags
                                 options={customerListTagsOptions}
@@ -81,9 +81,9 @@ const TabProjectDetails = () => {
                                 defaultSelect={[customerListTagsOptions[10]]}
                                 onSelectOption={(option) => setSelectedOption(option)}
                             />
-                        </div>
+                        </div> */}
                         <div className="mb-4">
-                            <label htmlFor="projectReleaseDate" className="form-label">Release Date <span className="text-danger">*</span></label>
+                            <label htmlFor="projectReleaseDate" className="form-label">Teslim Tarihi <span className="text-danger">*</span></label>
                             <div className='input-group date '>
                                 <DatePicker
                                     placeholderText='Pick start date'
@@ -104,15 +104,15 @@ const TabProjectDetails = () => {
                         <hr className="mb-5" />
                         <div className="custom-control custom-checkbox mb-2">
                             <input type="checkbox" className="custom-control-input" id="sendProjectEmail" defaultChecked />
-                            <label className="custom-control-label c-pointer" htmlFor="sendProjectEmail">Send project created email.</label>
+                            <label className="custom-control-label c-pointer" htmlFor="sendProjectEmail">Görev oluşturulduğunda e-posta gönder..</label>
                         </div>
                         <div className="custom-control custom-checkbox mb-2">
                             <input type="checkbox" className="custom-control-input" id="calculateTasks" defaultChecked />
-                            <label className="custom-control-label c-pointer" htmlFor="calculateTasks">Calculate progress through tasks.</label>
+                            <label className="custom-control-label c-pointer" htmlFor="calculateTasks">İlerlemeyi alt görevlere göre hesapla.</label>
                         </div>
                         <div className="custom-control custom-checkbox mb-2">
                             <input type="checkbox" className="custom-control-input" id="allowNotifications" defaultChecked />
-                            <label className="custom-control-label c-pointer" htmlFor="allowNotifications">Allow Notifications by Phone or Email.</label>
+                            <label className="custom-control-label c-pointer" htmlFor="allowNotifications">Telefon veya e-posta bildirimlerine izin ver..</label>
                         </div>
                     </fieldset>
                 </fieldset>
