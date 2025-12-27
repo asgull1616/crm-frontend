@@ -12,7 +12,7 @@ const page = () => {
             </PageHeader>
             <div className='main-content'>
                 <div className='row'>
-                    <CustomersTable />
+                    <CustomersTable /> 
                 </div>
             </div>
             <Footer />

@@ -75,7 +75,7 @@ const CustomersTable = () => {
 
         {
             accessorKey: 'customer',
-            header: () => 'Customer',
+            header: () => 'Musteri',
             cell: (info) => {
                 const roles = info.getValue();
                 return (
@@ -102,7 +102,7 @@ const CustomersTable = () => {
         },
         {
             accessorKey: 'group',
-            header: () => 'Group',
+            header: () => 'Grup',
             cell: (info) => {
                 const x = info.getValue()
                 return (
@@ -128,7 +128,7 @@ const CustomersTable = () => {
         },
         {
             accessorKey: 'phone',
-            header: () => 'Phone',
+            header: () => 'Telefon',
             cell: (info) => <a href="tel:">{info.getValue()}</a>
             // meta: {
             //     className: "fw-bold text-dark"
@@ -136,11 +136,11 @@ const CustomersTable = () => {
         },
         {
             accessorKey: 'date',
-            header: () => 'Date',
+            header: () => 'Tarih',
         },
         {
             accessorKey: 'status',
-            header: () => 'Status',
+            header: () => 'Durum',
             cell: (info) => <TableCell options={info?.getValue().status} defaultSelect={info?.getValue().defaultSelect} />
         },
         {

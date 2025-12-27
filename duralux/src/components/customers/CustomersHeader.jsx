@@ -47,7 +47,7 @@ const CustomersHeader = () => {
                 />
                 <Link href="/customers/create" className="btn btn-primary">
                     <FiPlus size={16} className='me-2' />
-                    <span>Create Customer</span>
+                    <span>Müşteri Oluştur</span>
                 </Link>
             </div>
 
