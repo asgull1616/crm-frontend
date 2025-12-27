@@ -6,7 +6,7 @@ const LoginForm = ({ registerPath, resetPath }) => {
     return (
         <>
             <h2 className="fs-20 fw-bolder mb-4">Giriş Yap</h2>
-            <h4 className="fs-13 fw-bold mb-2">Hesabınıza Giriş Yapın</h4>
+            <h4 className="fs-13 fw-bold mb-2">Hesaba Giriş Yapın</h4>
             <p className="fs-12 fw-medium text-muted"></p>
             <form action="index.html" className="w-100 mt-4 pt-2">
                 <div className="mb-4">
