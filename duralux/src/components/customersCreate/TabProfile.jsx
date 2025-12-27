@@ -13,7 +13,7 @@ import { customerCreatePrivacyOptions, customerListStatusOptions, customerListTa
 import useLocationData from '@/hooks/useLocationData'
 import useDatePicker from '@/hooks/useDatePicker'
 
-const TabProfile = () => {
+const   TabProfile = () => {
     const [selectedOption, setSelectedOption] = useState(null);
     const { startDate, endDate, setStartDate, setEndDate, renderFooter } = useDatePicker();
     const { countries, states, cities, loading, error, fetchStates, fetchCities, } = useLocationData();
@@ -30,7 +30,7 @@ const TabProfile = () => {
                     </h5>
                     <a href="#" className="btn btn-sm btn-light-brand">Ekleyin</a>
                 </div>
-                <div className="row mb-4 align-items-center">
+                {/* <div className="row mb-4 align-items-center">
                     <div className="col-lg-4">
                         <label className="fw-semibold">Resim: </label>
                     </div>
@@ -43,20 +43,20 @@ const TabProfile = () => {
                                 </div>
                                 <input className="file-upload" type="file" accept="image/*" id='img' hidden />
                             </label>
-                            {/* <div className="d-flex flex-column gap-1">
+                            <div className="d-flex flex-column gap-1">
                                 <div className="fs-11 text-gray-500 mt-2"># Upload your prifile</div>
                                 <div className="fs-11 text-gray-500"># Avatar size 150x150</div>
                                 <div className="fs-11 text-gray-500"># Max upload size 2mb</div>
                                 <div className="fs-11 text-gray-500"># Allowed file types: png, jpg, jpeg</div>
-                            </div> */}
+                            </div>
                         </div>
                     </div>
-                </div>
+                </div> */}
                 <Input
                     icon='feather-user'
-                    label={"İsim"}
+                    label={"İsim Soyisim"}
                     labelId={"nameInput"}
-                    placeholder={"isim"}
+                    placeholder={"isim Soyisim"}
                     name={"name"}
                 />
                 <Input

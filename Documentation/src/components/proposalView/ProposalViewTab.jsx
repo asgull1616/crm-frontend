@@ -29,17 +29,17 @@ const ProposalViewTab = () => {
                     <div className="nav-tabs-wrapper page-content-left-sidebar-wrapper">
                         <ul className="nav nav-tabs nav-tabs-custom-style flex-nowrap" id="myTab" role="tablist">
                             <li className="nav-item" role="presentation">
-                                <button className="nav-link active" data-bs-toggle="tab" data-bs-target="#proposalTab">Proposal</button>
+                                <button className="nav-link active" data-bs-toggle="tab" data-bs-target="#proposalTab">Teklifler</button>
                             </li>
                             <li className="nav-item" role="presentation">
-                                <button className="nav-link" data-bs-toggle="tab" data-bs-target="#tasksTab">Tasks</button>
+                                <button className="nav-link" data-bs-toggle="tab" data-bs-target="#tasksTab">Görevler</button>
                             </li>
-                            <li className="nav-item" role="presentation">
-                                <button className="nav-link" data-bs-toggle="tab" data-bs-target="#notesTab">Notes</button>
-                            </li>
-                            <li className="nav-item" role="presentation">
+                            {/* <li className="nav-item" role="presentation">
+                                <button className="nav-link" data-bs-toggle="tab" data-bs-target="#notesTab">Notlar</button>
+                            </li> */}
+                            {/* <li className="nav-item" role="presentation">
                                 <button className="nav-link" data-bs-toggle="tab" data-bs-target="#commentTab">Comments</button>
-                            </li>
+                            </li> */}
                         </ul>
                     </div>
                     <div className="page-content-right-sidebar-wrapper">
