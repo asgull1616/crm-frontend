@@ -15,11 +15,11 @@ const CustomersViewHeader = () => {
             </a>
             <a href="#" className="btn btn-icon btn-light-brand">
                 <FiEye size={16} className='me-2' />
-                <span>Follow</span>
+                <span>Takip Et</span>
             </a>
             <Link href="/customers/create" className="btn btn-primary">
                 <FiPlus size={16} className='me-2' />
-                <span>Create Customer</span>
+                <span>Müşteri Oluştur</span>
             </Link>
         </div>
     )

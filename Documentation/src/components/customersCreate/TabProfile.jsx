@@ -124,7 +124,7 @@ const TabProfile = () => {
                     row='5'
                 />
             </div>
-            <hr className="my-0" />
+            {/* <hr className="my-0" />
             <div className="card-body additional-info">
                 <div className="mb-4 d-flex align-items-center justify-content-between">
                     <h5 className="fw-bold mb-0 me-4">
@@ -276,7 +276,7 @@ const TabProfile = () => {
                         />
                     </div>
                 </div>
-            </div>
+            </div> */}
         </div>
     )
 }

@@ -15,30 +15,30 @@ const CustomerContent = () => {
             <div className="col-xxl-4 col-xl-6">
                 <Profile />
                 <CustomerSocalMedia />
-                <CustomerSocalFlower />
+                {/* <CustomerSocalFlower /> */}
             </div>
             <div className="col-xxl-8 col-xl-6">
                 <div className="card border-top-0">
                     <div className="card-header p-0">
                         <ul className="nav nav-tabs flex-wrap w-100 text-center customers-nav-tabs" id="myTab" role="tablist">
                             <li className="nav-item flex-fill border-top" role="presentation">
-                                <a href="#" className="nav-link active" data-bs-toggle="tab" data-bs-target="#overviewTab" role="tab">Overview</a>
+                                <a href="#" className="nav-link active" data-bs-toggle="tab" data-bs-target="#overviewTab" role="tab">Genel Bakış</a>
                             </li>
-                            <li className="nav-item flex-fill border-top" role="presentation">
+                            {/* <li className="nav-item flex-fill border-top" role="presentation">
                                 <a href="#" className="nav-link" data-bs-toggle="tab" data-bs-target="#billingTab" role="tab">Billing</a>
+                            </li> */}
+                            <li className="nav-item flex-fill border-top" role="presentation">
+                                <a href="#" className="nav-link" data-bs-toggle="tab" data-bs-target="#activityTab" role="tab">Aktivite</a>
                             </li>
                             <li className="nav-item flex-fill border-top" role="presentation">
-                                <a href="#" className="nav-link" data-bs-toggle="tab" data-bs-target="#activityTab" role="tab">Activity</a>
+                                <a href="#" className="nav-link" data-bs-toggle="tab" data-bs-target="#notificationsTab" role="tab">Bildirimler</a>
                             </li>
-                            <li className="nav-item flex-fill border-top" role="presentation">
-                                <a href="#" className="nav-link" data-bs-toggle="tab" data-bs-target="#notificationsTab" role="tab">Notifications</a>
-                            </li>
-                            <li className="nav-item flex-fill border-top" role="presentation">
+                            {/* <li className="nav-item flex-fill border-top" role="presentation">
                                 <a href="#" className="nav-link" data-bs-toggle="tab" data-bs-target="#connectionTab" role="tab">Connection</a>
-                            </li>
-                            <li className="nav-item flex-fill border-top" role="presentation">
+                            </li> */}
+                            {/* <li className="nav-item flex-fill border-top" role="presentation">
                                 <a href="#" className="nav-link" data-bs-toggle="tab" data-bs-target="#securityTab" role="tab">Security</a>
-                            </li>
+                            </li> */}
                         </ul>
                     </div>
                     <div className="tab-content">

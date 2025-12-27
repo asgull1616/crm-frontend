@@ -7,30 +7,30 @@ const TabPassword = () => {
             <div className="card-body pass-info">
                 <div className="mb-4 d-flex align-items-center justify-content-between">
                     <h5 className="fw-bold mb-0 me-4">
-                        <span className="d-block mb-2">Password Information:</span>
-                        <span className="fs-12 fw-normal text-muted text-truncate-1-line">You can only change your password twice within 24 hours! </span>
+                        <span className="d-block mb-2">Şifre Bilgileri:</span>
+                        <span className="fs-12 fw-normal text-muted text-truncate-1-line">Şifrenizi 24 saat içinde yalnızca iki kez değiştirebilirsiniz! </span>
                     </h5>
-                    <a href="#" className="btn btn-sm btn-light-brand">Reset</a>
+                    <a href="#" className="btn btn-sm btn-light-brand">Sıfırla</a>
                 </div>
                 <div className="row mb-4 align-items-center">
                     <div className="col-lg-4">
-                        <label htmlFor="Input" className="fw-semibold">Password: </label>
+                        <label htmlFor="Input" className="fw-semibold">Şifre: </label>
                     </div>
                     <div className="col-lg-8">
                         <div className="input-group">
                             <div className="input-group-text"><FiKey /></div>
-                            <input type="password" className="form-control" id="Input" placeholder="Password" />
+                            <input type="password" className="form-control" id="Input" placeholder="Şifre" />
                         </div>
                     </div>
                 </div>
                 <div className="row mb-4 align-items-center">
                     <div className="col-lg-4">
-                        <label htmlFor="Input" className="fw-semibold">Password Confirm: </label>
+                        <label htmlFor="Input" className="fw-semibold">Şifreyi Onayla: </label>
                     </div>
                     <div className="col-lg-8 generate-pass">
                         <div className="input-group field">
                             <div className="input-group-text"><FiKey /></div>
-                            <input type="password" className="form-control password" id="newPassword" placeholder="Password Confirm" />
+                            <input type="password" className="form-control password" id="newPassword" placeholder="Şifreyi Onayla" />
                             <div className="input-group-text c-pointer gen-pass"><FiHash /></div>
                             <div className="input-group-text border-start bg-gray-2 c-pointer"><FiEye /></div>
                         </div>
@@ -43,38 +43,39 @@ const TabPassword = () => {
                     </div>
                 </div>
                 <div className="pass-hint">
-                    <p className="fw-bold">Password Requirements:</p>
+                    <p className="fw-bold">Parola Gereksinimleri:</p>
                     <ul className="fs-12 ps-1 ms-2 text-muted">
-                        <li className="mb-1">At least one lowercase character</li>
-                        <li className="mb-1">Minimum 8 characters long - the more, the better</li>
-                        <li>At least one number, symbol, or whitespace character</li>
+                        <li className="mb-1">En az 1 küçük harf</li>
+                        <li className="mb-1">
+En az 8 karakter uzunluğunda olmalı, ne kadar uzun olursa o kadar iyi.</li>
+                        <li>En az bir sayı, sembol veya boşluk karakteri</li>
                     </ul>
                 </div>
             </div>
             <hr className="my-0" />
-            <div className="card-body pass-security">
+            {/* <div className="card-body pass-security">
                 <div className="mb-4 d-flex align-items-center justify-content-between">
                     <h5 className="fw-bold mb-0 me-4">
-                        <span className="d-block mb-2">Security preferences:</span>
-                        <span className="fs-12 fw-normal text-muted text-truncate-1-line">Keep your account more secure with following preferences. </span>
+                        <span className="d-block mb-2">Güvenlik Tercihleri:</span>
+                        <span className="fs-12 fw-normal text-muted text-truncate-1-line">Hesabınızı daha güvenli hale getirmek için aşağıdaki tercihleri kullanın. </span>
                     </h5>
-                    <a href="#" className="btn btn-sm btn-light-brand">Check Auth</a>
+                    <a href="#" className="btn btn-sm btn-light-brand">Doğrula</a>
                 </div>
                 <Card
                     icon={FiEye}
-                    title={"Enable 2-step authentication"}
-                    description={"Protects you against password theft by requesting an authentication code via SMS on every login."}
+                    title={"Enable 2-step verification"}
+                    description={"Her girişte ek bir güvenlik katmanı sağlamak için 2 adımlı doğrulamayı etkinleştirin."}
                     isChecked={false}
                     id="one"
                 />
                 <Card
                     icon={FiShield}
                     title={"Ask to change password on every 6 months"}
-                    description={"A simple but an effective way to be protected against data leaks and password theft."}
+                    description={"veri sıklığıyla şifre değişikliği isteyerek hesabınızı güvende tutun."}
                     isChecked={false}
                     id="two"
                 />
-            </div>
+            </div> */}
         </div>
     )
 }

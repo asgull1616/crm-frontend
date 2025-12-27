@@ -21,8 +21,8 @@ const TabActivityContent = () => {
         <div className="tab-pane fade" id="activityTab" role="tabpanel">
             <div className="recent-activity p-4 pb-0">
                 <div className="mb-4 pb-2 d-flex justify-content-between">
-                    <h5 className="fw-bold">Recent Activity:</h5>
-                    <a href="#" className="btn btn-sm btn-light-brand">View Alls</a>
+                    <h5 className="fw-bold">İşlemler:</h5>
+                    <a href="#" className="btn btn-sm btn-light-brand">Göster</a>
                 </div>
                 <ul className="list-unstyled activity-feed">
                     {profileActivityData.map((item, index) => (
@@ -41,12 +41,12 @@ const TabActivityContent = () => {
                 </ul>
                 <a href="#" className="d-flex align-items-center text-muted">
                     <FiMoreHorizontal className='fs-12' />
-                    <span className="fs-10 text-uppercase ms-2 text-truncate-1-line">Load More</span>
+                    <span className="fs-10 text-uppercase ms-2 text-truncate-1-line">Daha Fazla</span>
                 </a>
             </div>
             <hr />
             <div className="logs-history mb-0">
-                <div className="px-4 mb-4 d-flex justify-content-between">
+                {/* <div className="px-4 mb-4 d-flex justify-content-between">
                     <h5 className="fw-bold">Logs History</h5>
                     <a href="#" className="btn btn-sm btn-light-brand">View Alls</a>
                 </div>
@@ -72,7 +72,7 @@ const TabActivityContent = () => {
                             ))}
                         </tbody>
                     </table>
-                </div>
+                </div> */}
             </div>
         </div>
     )
