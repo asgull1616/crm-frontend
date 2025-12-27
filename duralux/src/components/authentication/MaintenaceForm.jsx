@@ -4,18 +4,18 @@ import { FiFacebook, FiGithub, FiInstagram, FiLinkedin, FiTwitter } from 'react-
 const MaintenaceForm = () => {
     return (
         <>
-            <h2 className="fs-20 fw-bolder mb-4">Maintenance</h2>
-            <h4 className="fs-13 fw-bold mb-2">Now we are under maintenance</h4>
-            <p className="fs-12 fw-medium text-muted">Sorry for the inconvenience but we're performing some maintenance at the moment.</p>
+            <h2 className="fs-20 fw-bolder mb-4">Bakım Çalışması</h2>
+            <h4 className="fs-13 fw-bold mb-2">Şu anda bakım aşamasındayız</h4>
+            <p className="fs-12 fw-medium text-muted">Verdiğimiz rahatsızlıktan dolayı özür dileriz; şu anda sistemi iyileştirmek için bazı çalışmalar yapıyoruz.</p>
             <form action="#" className="w-100 mt-4 pt-2">
                 <div className="mb-4">
-                    <input type="email" className="form-control" placeholder="Enter Your Email" required />
+                    <input type="email" className="form-control" placeholder="E-posta Adresinizi Girin" required />
                 </div>
                 <div className="mt-5">
-                    <button type="submit" className="btn btn-lg btn-primary w-100">Notify Me</button>
+                    <button type="submit" className="btn btn-lg btn-primary w-100">Bana Haber Ver</button>
                 </div>
             </form>
-            <div className="mt-5 d-flex justify-content-center gap-2">
+            {/* <div className="mt-5 d-flex justify-content-center gap-2">
                 <a href="#" className="avatar-text avatar-md" data-toggle="tooltip" data-title="Follow on Facebook">
                     <FiFacebook />
                 </a>
@@ -31,7 +31,7 @@ const MaintenaceForm = () => {
                 <a href="#" className="avatar-text avatar-md" data-toggle="tooltip" data-title="Follow on Linkedin">
                     <FiLinkedin />
                 </a>
-            </div>
+            </div> */}
         </>
     )
 }

@@ -179,12 +179,12 @@ const leadsSourceOptions = [
 ]
 
 const projectStatusOptions = [
-    { value: "in-projress", label: "In Projress", color: "#3454d1" },
-    { value: "not-started", label: "Not Started", color: "#ffa21d" },
-    { value: "on-hold", label: "On Hold", color: "#17c666" },
-    { value: "declined", label: "Declined", color: "#ea4d4d" },
-    { value: "finished", label: "Finished", color: "#41b2c4" },
-    { value: 'active', label: 'Active', color: '#17c666' }
+    { value: "in-projress", label: "Yeni", color: "#3454d1" },
+    { value: "not-started", label: "Devam Ediyor", color: "#ffa21d" },
+    { value: "on-hold", label: "Tamamlandı", color: "#17c666" },
+    { value: "declined", label: "Beklemede", color: "#ea4d4d" },
+    // { value: "finished", label: "Fieeeehed", color: "#41b2c4" },
+    // { value: 'active', label: 'Aeeeve', color: '#17c666' }
 ]
 const projectBillingOptions = [
     { value: "fixed-rate", label: "Fixed Rate", color: "#3454d1" },
