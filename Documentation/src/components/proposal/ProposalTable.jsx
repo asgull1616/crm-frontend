@@ -61,7 +61,7 @@ const ProposalTable = () => {
 
     {
       accessorKey: 'proposal',
-      header: () => 'Proposal',
+      header: () => 'Teklifler',
       cell: (info) => <a href='#' className='fw-bold'>{info.getValue()}</a>
     },
     {

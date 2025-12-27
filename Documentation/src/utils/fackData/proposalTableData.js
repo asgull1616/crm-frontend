@@ -11,7 +11,7 @@ export const proposalTableData = [
         "amount": "$249.99 USD",
         "date": "2023-04-25, 03:42PM",
         "status": {
-            "content": "Sent",
+            "content": "Gönderildi",
             "color": "bg-soft-success text-success"
         }
     },
@@ -27,7 +27,7 @@ export const proposalTableData = [
         "amount": "	$120.50 USD",
         "date": "2023-05-20, 12:23PM",
         "status": {
-            "content": "Open",
+            "content": "Açıldı",
             "color": "bg-soft-danger text-danger"
         }
     },
@@ -43,7 +43,7 @@ export const proposalTableData = [
         "amount": "	$300.50 USD",
         "date": "2023-01-02, 10:36AM",
         "status": {
-            "content": "Sent",
+            "content": "Gönderildi",
             "color": "bg-soft-success text-success"
         }
     },
@@ -59,7 +59,7 @@ export const proposalTableData = [
         "amount": "$249.99 USD",
         "date": "22023-04-25, 04:22PM",
         "status": {
-            "content": "Draft",
+            "content": "Taslak",
             "color": "bg-gray-200 text-dark"
         }
     },
@@ -75,7 +75,7 @@ export const proposalTableData = [
         "amount": "$150.00 USD",
         "date": "2023-02-15, 05:23PM",
         "status": {
-            "content": "Sent",
+            "content": "Gönderildi",
             "color": "bg-soft-success text-success"
         }
     },
@@ -91,7 +91,7 @@ export const proposalTableData = [
         "amount": "$249.99 USD",
         "date": "2023-04-25, 11:43AM",
         "status": {
-            "content": "Paid",
+            "content": "Ödendi",
             "color": "bg-soft-success text-success"
         }
     },
@@ -107,7 +107,7 @@ export const proposalTableData = [
         "amount": "$120.50 USD",
         "date": "2023-05-20, 03:46PM",
         "status": {
-            "content": "Unpaid",
+            "content": "Ödenmedi",
             "color": "bg-soft-danger text-danger"
         }
     },
@@ -123,7 +123,7 @@ export const proposalTableData = [
         "amount": "$300.00 USD",
         "date": "2023-01-02, 02:35PM",
         "status": {
-            "content": "Paid",
+            "content": "Ödendi",
             "color": "bg-soft-success text-success"
         }
     },
@@ -139,7 +139,7 @@ export const proposalTableData = [
         "amount": "$249.99 USD",
         "date": "2023-04-25,06:35PM",
         "status": {
-            "content": "Draft",
+            "content": "Taslak",
             "color": "bg-gray-200 text-dark"
         }
     },
@@ -155,7 +155,7 @@ export const proposalTableData = [
         "amount": "$249.99 USD",
         "date": "2023-04-25, 11:43AM",
         "status": {
-            "content": "Paid",
+            "content": "Ödendi",
             "color": "bg-soft-success text-success"
         }
     },
@@ -171,7 +171,7 @@ export const proposalTableData = [
         "amount": "$249.99 USD",
         "date": "2023-04-25, 03:42PM",
         "status": {
-            "content": "Sent",
+            "content": "Gönderildi",
             "color": "bg-soft-success text-success"
         }
     },
@@ -187,7 +187,7 @@ export const proposalTableData = [
         "amount": "$249.99 USD",
         "date": "2023-04-25, 11:43AM",
         "status": {
-            "content": "Paid",
+            "content": "Ödendi",
             "color": "bg-soft-success text-success"
         }
     },

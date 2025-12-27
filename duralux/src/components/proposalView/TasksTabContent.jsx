@@ -30,18 +30,18 @@ const tags = [
 ]
 
 const status = [
-    { label: "In Progress", color: "bg-primary" },
-    { label: "Pending", color: "bg-secondary" },
-    { label: "Completed", color: "bg-success" },
-    { label: "Rejected", color: "bg-danger" },
-    { label: "Upcoming", color: "bg-warning" },
+    { label: "Taslak", color: "bg-primary" },
+    { label: "Onaylandı", color: "bg-secondary" },
+    { label: "Reddedildi", color: "bg-success" },
+    { label: "Gönderildi", color: "bg-danger" },
+    // { label: "Upcoming", color: "bg-warning" },
 ];
 const priority = [
-    { label: "Low", color: "bg-primary" },
-    { label: "Normal", color: "bg-secondary" },
-    { label: "Medium", color: "bg-success" },
-    { label: "High", color: "bg-warning" },
-    { label: "Urgent", color: "bg-danger" },
+    { label: "Düşük", color: "bg-primary" },
+    { label: "Orta", color: "bg-secondary" },
+    { label: "Yüksek", color: "bg-success" },
+    // { label: "High", color: "bg-warning" },
+    // { label: "Urgent", color: "bg-danger" },
 ];
 
 const TasksTabContent = () => {
@@ -50,9 +50,9 @@ const TasksTabContent = () => {
             <div className="row">
                 <div className="col-lg-12">
                     <div className="card stretch stretch-full">
-                        <div className="card-body task-header d-lg-flex align-items-center justify-content-between">
+                        {/* <div className="card-body task-header d-lg-flex align-items-center justify-content-between">
                             <div className="mb-4 mb-lg-0">
-                                <h4 className="mb-3 fw-bold text-truncate-1-line">Duralux || CRM Applications & Admin Dashboar</h4>
+                                <h4 className="mb-3 fw-bold text-truncate-1-line">Codyol CRM</h4>
                                 <span className="badge bg-soft-primary text-primary me-2">In Prograss</span>
                                 <span className="badge bg-soft-warning text-warning">Recurring Task </span>
                             </div>
@@ -68,57 +68,57 @@ const TasksTabContent = () => {
                                 </a>
                                 <a href="#" className="btn btn-success" data-toggle="tooltip" data-title="Timesheets">
                                     <FiClock size={17} className='me-2' />
-                                    <span>Start Timer</span>
+                                    <span>Zamanlayıcıyı Başlat</span>
                                 </a>
                             </div>
-                        </div>
+                        </div> */}
                     </div>
                 </div>
                 <div className="col-xxl-8 col-xl-6">
                     <div className="card stretch stretch-full">
                         <div className="card-header">
-                            <h5 className="card-title">Description</h5>
+                            <h5 className="card-title">Tanım</h5>
                             <a href="#" className="avatar-text avatar-md" data-toggle="tooltip" title="Update Description">
                                 <FiEdit strokeWidth={1.6} />
                             </a>
                         </div>
                         <div className="card-body">
-                            <p>Web Design Company is still a broad term and refers to any company that specializes in designing and creating websites. These companies typically offer a range of services including website design, development, and maintenance. They may also offer other related services such as search engine optimization (SEO), e-commerce solutions, and website hosting.</p>
+                            <p>Umut, vazgeçmeyenlerin en güçlü silahıdır.</p>
                             <ul className="list-unstyled text-muted mb-0">
                                 <li className="d-flex align-items-start mb-3">
                                     <span className="avatar-text avatar-sm bg-soft-success text-success me-3">
                                         <FiCheck className='fs-10' />
                                     </span>
-                                    <span>Participated in the initial wave of developers learning and implementing the React.JS library. </span>
+                                    <span>Umut varsa yol vardır. </span>
                                 </li>
                                 <li className="d-flex align-items-start mb-3">
                                     <span className="avatar-text avatar-sm bg-soft-success text-success me-3">
                                         <FiCheck className='fs-10' />
                                     </span>
-                                    <span>Tested, debugged, and shipped 10s of 1000s of lines of code to various development teams. This lead to 100% bug-free deployment. </span>
+                                    <span>Başarı, umudunu koruyabilenlerin işidir.</span>
                                 </li>
                                 <li className="d-flex align-items-start mb-3">
                                     <span className="avatar-text avatar-sm bg-soft-success text-success me-3">
                                         <FiCheck className='fs-10' />
                                     </span>
-                                    <span>Introduced Kanban Board style ticketing system to promote highly efficient asynchronous and synchronous work, increasing efficiency by 12%. </span>
+                                    <span>Vazgeçmediğin sürece, hiçbir yol bitmiş sayılmaz.</span>
                                 </li>
                                 <li className="d-flex align-items-start mb-3">
                                     <span className="avatar-text avatar-sm bg-soft-success text-success me-3">
                                         <FiCheck className='fs-10' />
                                     </span>
-                                    <span>Utilized HTML, CSS, and JavaScript to create 100+ responsive landing pages for both company and client. </span>
+                                    <span>yeter bu kadar. </span>
                                 </li>
                                 <li className="d-flex align-items-start mb-3">
                                     <span className="avatar-text avatar-sm bg-soft-success text-success me-3">
                                         <FiCheck className='fs-10' />
                                     </span>
-                                    <span>Tested, debugged, and shipped 10s of 1000s of lines of code to various development teams. This lead to 100% bug-free deployment. </span>
+                                    <span>halledin. </span>
                                 </li>
                             </ul>
                         </div>
                     </div>
-                    <div className="card stretch stretch-full">
+                    {/* <div className="card stretch stretch-full">
                         <div className="card-header">
                             <h5 className="card-title">Checklist</h5>
                             <Dropdown triggerClass='avatar-md' triggerPosition={"25, 25"} tooltipTitle={"Options"} dropdownItems={checkListOptions} />
@@ -126,8 +126,8 @@ const TasksTabContent = () => {
                         <div className="card-body task-checklist">
                             <CheckList />
                         </div>
-                    </div>
-                    <div className="card stretch stretch-full">
+                    </div> */}
+                    {/* <div className="card stretch stretch-full">
                         <div className="card-header">
                             <h5 className="card-title">Topics</h5>
                             <a href="#" className="btn btn-md btn-light-brand">
@@ -183,20 +183,20 @@ const TasksTabContent = () => {
                                 </div>
                             </div>
                         </div>
-                    </div>
+                    </div> */}
                 </div>
                 <div className="col-xxl-4 col-xl-6">
                     <div className="card stretch stretch-full">
                         <div className="card-body task-info">
                             <div className="mb-4">
-                                <h5 className="card-title mb-1">Task Info</h5>
-                                <span className="fs-12 fw-normal text-muted d-block">Created at 2023-02-12 08:47:47</span>
+                                <h5 className="card-title mb-1">Görev Bilgisi</h5>
+                                {/* <span className="fs-12 fw-normal text-muted d-block">Created at 2023-02-12 08:47:47</span> */}
                             </div>
                             <div className="task-info-list">
                                 <div className="row align-items-center mb-3 task-list-row">
                                     <div className="col-6">
                                         <FiStar size={16} strokeWidth={1.7} className='me-2' />
-                                        <span className="fw-semibold">Status:</span>
+                                        <span className="fw-semibold">Durum:</span>
                                     </div>
                                     <div className="col-6 d-flex">
                                         <span className="border-bottom border-bottom-dashed border-gray-5">In Progress</span>
@@ -212,7 +212,7 @@ const TasksTabContent = () => {
                                 <div className="row align-items-center mb-3 task-list-row">
                                     <div className="col-6">
                                         <FiAirplay size={16} strokeWidth={1.7} className='me-2' />
-                                        <span className="fw-semibold">Priority:</span>
+                                        <span className="fw-semibold">Öncelik:</span>
                                     </div>
                                     <div className="col-6 d-flex">
                                         <span className="border-bottom border-bottom-dashed border-gray-5">Medium</span>
@@ -228,7 +228,7 @@ const TasksTabContent = () => {
                                 <div className="row align-items-center mb-3 task-list-row">
                                     <div className="col-6">
                                         <FiActivity size={16} strokeWidth={1.7} className='me-2' />
-                                        <span className="fw-semibold">Start Date:</span>
+                                        <span className="fw-semibold">Başlangıç Tarihi:</span>
                                     </div>
                                     <div className="col-6 d-flex">
                                         <span className="border-bottom border-bottom-dashed border-gray-5">26 May, 2023</span>
@@ -242,7 +242,7 @@ const TasksTabContent = () => {
                                 <div className="row align-items-center mb-3 task-list-row">
                                     <div className="col-6">
                                         <FiCalendar size={16} strokeWidth={1.7} className='me-2' />
-                                        <span className="fw-semibold">Due Date:</span>
+                                        <span className="fw-semibold">Bitiş Tarihi:</span>
                                     </div>
                                     <div className="col-6 d-flex">
                                         <span className="border-bottom border-bottom-dashed border-gray-5">30 May, 2023</span>
@@ -253,7 +253,7 @@ const TasksTabContent = () => {
                                         </div>
                                     </div>
                                 </div>
-                                <div className="row align-items-center mb-3 task-list-row">
+                                {/* <div className="row align-items-center mb-3 task-list-row">
                                     <div className="col-6">
                                         <FiClock size={16} strokeWidth={1.7} className='me-2' />
                                         <span className="fw-semibold">Hourly Rate:</span>
@@ -266,11 +266,11 @@ const TasksTabContent = () => {
                                             </a>
                                         </div>
                                     </div>
-                                </div>
+                                </div> */}
                                 <div className="row align-items-center mb-3 task-list-row">
                                     <div className="col-6">
                                         <FiClipboard size={16} strokeWidth={1.7} className='me-2' />
-                                        <span className="fw-semibold">Billable:</span>
+                                        <span className="fw-semibold">Fatura:</span>
                                     </div>
                                     <div className="col-6 d-flex">
                                         <span className="border-bottom border-bottom-dashed border-gray-5">Billable</span>
@@ -284,7 +284,7 @@ const TasksTabContent = () => {
                                 <div className="row align-items-center mb-3 task-list-row">
                                     <div className="col-6">
                                         <FiDollarSign size={16} strokeWidth={1.7} className='me-2' />
-                                        <span className="fw-semibold">Amount:</span>
+                                        <span className="fw-semibold">Miktar:</span>
                                     </div>
                                     <div className="col-6 d-flex">
                                         <span className="border-bottom border-bottom-dashed border-gray-5">$250.00</span>
@@ -295,7 +295,7 @@ const TasksTabContent = () => {
                                         </div>
                                     </div>
                                 </div>
-                                <div className="row align-items-center mb-3 task-list-row">
+                                {/* <div className="row align-items-center mb-3 task-list-row">
                                     <div className="col-6">
                                         <FiPower size={16} strokeWidth={1.7} className='me-2' />
                                         <span className="fw-semibold">Login:</span>
@@ -308,8 +308,8 @@ const TasksTabContent = () => {
                                             </a>
                                         </div>
                                     </div>
-                                </div>
-                                <div className="row align-items-center">
+                                </div> */}
+                                {/* <div className="row align-items-center">
                                     <div className="col-6">
                                         <FiBell size={16} strokeWidth={1.7} className='me-2' />
                                         <span className="fw-semibold">Remainders:</span>
@@ -317,11 +317,11 @@ const TasksTabContent = () => {
                                     <div className="col-6">
                                         <a href="#" className="text-primary">Create Remain</a>
                                     </div>
-                                </div>
+                                </div> */}
                             </div>
                         </div>
                     </div>
-                    <div className="card stretch stretch-full">
+                    {/* <div className="card stretch stretch-full">
                         <div className="card-body task-tags">
                             <div className="mb-4">
                                 <h5 className="card-title mb-1">Tags</h5>
@@ -329,8 +329,8 @@ const TasksTabContent = () => {
                             </div>
                             <MultiSelectTags options={tags} defaultSelect={[tags[0], tags[3], tags[8], tags[6]]} />
                         </div>
-                    </div>
-                    <div className="card stretch stretch-full">
+                    </div> */}
+                    {/* <div className="card stretch stretch-full">
                         <div className="card-body task-assignees">
                             <div className="mb-4">
                                 <h5 className="card-title mb-1">Assignees</h5>
@@ -347,7 +347,7 @@ const TasksTabContent = () => {
                             </div>
                             <MultiSelectImg options={taskAssigneeOptions} defaultSelect={[taskAssigneeOptions[1], taskAssigneeOptions[3], taskAssigneeOptions[4]]} />
                         </div>
-                    </div>
+                    </div> */}
                 </div>
             </div>
         </div>

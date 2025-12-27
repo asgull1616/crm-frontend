@@ -8,60 +8,38 @@ import useJoditConfig from '@/hooks/useJoditConfig'
 
 
 const editorContent = `  <p>
-                                    "Web Design Company" is still a broad term and refers to any
-                                    company that specializes in designing and creating websites. These
-                                    companies typically offer a range of services including website
-                                    design, development, and maintenance. They may also offer other
-                                    related services such as search engine optimization (SEO),
-                                    e-commerce solutions, and website hosting.
+                                    bu k
                                 </p>
                                 <br />
                                 <p>
-                                    Web design companies vary greatly in terms of size, focus, and
-                                    services offered. Some are large, full-service agencies that work
-                                    with big-name clients, while others are small, boutique studios
-                                    that specialize in creating unique, custom websites for smaller
-                                    businesses.
+                                   kısım
                                 </p>
                                 <br />
                                 <p>
-                                    If you are interested in finding a web design company, here are
-                                    some factors you may want to consider:
+                                  teklifte
                                 </p>
                                 <br />
                                 <p>
-                                    <strong className="text-dark">Portfolio:</strong> Look at the
-                                    company's portfolio to see if they have experience working with
-                                    businesses similar to yours, and if you like the style and quality
-                                    of their work.
+                                 ne 
                                 </p>
                                 <br />
                                 <p>
-                                    <strong className="text-dark">Services:</strong> Make sure the
-                                    company offers the services you need, such as website design,
-                                    development, and maintenance.
+                                olduğunu
                                 </p>
                                 <br />
                                 <p>
-                                    <strong className="text-dark">Cost:</strong> Get quotes from
-                                    several companies to compare prices and make sure you are getting
-                                    a fair deal.
+                                anlatacak.
                                 </p>
                                 <br />
                                 <p>
-                                    <strong className="text-dark">Reputation:</strong> Read online
-                                    reviews and check the company's rating with organizations such as
-                                    the Better Business Bureau to make sure they have a good
-                                    reputation.
+                                    <strong className="text-dark">Reputation:</strong> ppepepep
                                 </p>
                                 <br />
                                 <p>
                                     <strong className="text-dark">
                                         Communication and responsiveness:
                                     </strong>{" "}
-                                    Good communication is key to a successful web design project, so
-                                    make sure the company you choose is responsive and easy to work
-                                    with.
+                                  ossooslslsl
                                 </p>`
 const ProposalTabContent = () => {
     const [value, setValue] = useState(editorContent);
@@ -75,11 +53,11 @@ const ProposalTabContent = () => {
                         <div className="card-body">
                             <div className="d-sm-flex justify-content-between">
                                 <div className="proposal-from">
-                                    <h4 className="fw-bold mb-4">From:</h4>
+                                    <h4 className="fw-bold mb-4">Form:</h4>
                                     <div className="fs-13 text-muted lh-lg">
                                         <div>
                                             <span className="fw-semibold text-dark border-bottom border-bottom-dashed">
-                                                Phone:
+                                                Telefon:
                                             </span>
                                             <span>(123) 456-7890</span>
                                         </div>
@@ -91,7 +69,7 @@ const ProposalTabContent = () => {
                                         </div>
                                         <address>
                                             <span className="fw-semibold text-dark border-bottom border-bottom-dashed">
-                                                Address:
+                                                Adres:
                                             </span>
                                             <span>P.O. Box 18728,</span>
                                             <br />
@@ -104,9 +82,9 @@ const ProposalTabContent = () => {
                                             <a href="#" className="avatar-text avatar-sm">
                                                 <FiFacebook />
                                             </a>
-                                            <a href="#" className="avatar-text avatar-sm">
+                                            {/* <a href="#" className="avatar-text avatar-sm">
                                                 <FiTwitter />
-                                            </a>
+                                            </a> */}
                                             <a href="#" className="avatar-text avatar-sm">
                                                 <FiInstagram />
                                             </a>
@@ -125,19 +103,25 @@ const ProposalTabContent = () => {
                                     <div className="fs-13 lh-lg">
                                         <div>
                                             <span className="fw-semibold text-dark border-bottom border-bottom-dashed">
-                                                Proposal:
+                                                Teklif No:
                                             </span>
                                             <span className="fw-bold text-primary">#NXL369852</span>
                                         </div>
+                                            <div>
+                                            <span className="fw-semibold text-dark border-bottom border-bottom-dashed">
+                                                Müşteri Adı:
+                                            </span>
+                                            <span className="fw-bold text-primary">sasad</span>
+                                        </div>
                                         <div>
                                             <span className="fw-semibold text-dark border-bottom border-bottom-dashed">
-                                                Due Date:
+                                               Son Tarih:
                                             </span>
                                             <span className="text-muted">28 May, 2023</span>
                                         </div>
                                         <div>
                                             <span className="fw-semibold text-dark border-bottom border-bottom-dashed">
-                                                Issued Date:
+                                               Oluşturma Tarihi:
                                             </span>
                                             <span className="text-muted">25 May, 2023</span>
                                         </div>
@@ -145,7 +129,7 @@ const ProposalTabContent = () => {
                                     <div className="fs-13 text-muted lh-lg mt-3">
                                         <div>
                                             <span className="fw-semibold text-dark border-bottom border-bottom-dashed">
-                                                Phone:
+                                                Telefon:
                                             </span>
                                             <span>(123) 456-7890</span>
                                         </div>
@@ -157,7 +141,7 @@ const ProposalTabContent = () => {
                                         </div>
                                         <address className="mb-0">
                                             <span className="fw-semibold text-dark border-bottom border-bottom-dashed">
-                                                Address:
+                                                Adres:
                                             </span>
                                             <span>9498 Harvard Street,</span>
                                             <br />
@@ -173,7 +157,7 @@ const ProposalTabContent = () => {
                 <div className="col-lg-12">
                     <div className="card stretch stretch-full">
                         <div className="card-header">
-                            <h5 className="card-title">Proposal</h5>
+                            <h5 className="card-title">Teklif Notları</h5>
                             <a
                                 href="#"
                                 className="avatar-text avatar-md"
@@ -192,13 +176,13 @@ const ProposalTabContent = () => {
                         </div>
                     </div>
                 </div>
-                <div className="col-lg-12">
+                {/* <div className="col-lg-12">
                     <div className="card stretch stretch-full">
                         <div className="card-header">
-                            <h5 className="card-title">Services</h5>
+                            <h5 className="card-title">Servisler</h5>
                             <a href="#" className="btn btn-md btn-light-brand">
                                 <FiPlus className='me-2' />
-                                <span>New Services</span>
+                                <span>Servis Ekle</span>
                             </a>
                         </div>
                         <div className="card-body">
@@ -217,8 +201,8 @@ const ProposalTabContent = () => {
                             </div>
                         </div>
                     </div>
-                </div>
-                <div className="col-lg-12">
+                </div> */}
+                {/* <div className="col-lg-12">
                     <div className="card stretch stretch-full">
                         <div className="card-header">
                             <h5 className="card-title">FAQ's</h5>
@@ -246,7 +230,7 @@ const ProposalTabContent = () => {
                             </div>
                         </div>
                     </div>
-                </div>
+                </div> */}
             </div>
         </div>
 
