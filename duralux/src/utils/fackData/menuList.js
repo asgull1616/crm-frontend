@@ -98,31 +98,31 @@ export const menuList = [
     // },
     {
         id: 3,
-        name: "proposal",
+        name: "Teklifler",
         path: "#",
         icon: 'feather-at-sign',
         dropdownMenu: [
             {
                 id: 1,
-                name: "Proposal",
+                name: "Teklifler ",
                 path: "/proposal/list",
                 subdropdownMenu: false
             },
             {
                 id: 2,
-                name: "Proposal View",
+                name: "Teklifler Görüntüle",
                 path: "/proposal/view",
                 subdropdownMenu: false
             },
             {
                 id: 3,
-                name: "Proposal Edit",
+                name: "Teklifleri Görüntüle",
                 path: "/proposal/edit",
                 subdropdownMenu: false
             },
             {
                 id: 4,
-                name: "Proposal Create",
+                name: "Teklif Oluştur",
                 path: "/proposal/create",
                 subdropdownMenu: false
             },
@@ -157,25 +157,25 @@ export const menuList = [
     // },
     {
         id: 5,
-        name: "customers",
+        name: "Müşteriler",
         path: "#",
         icon: 'feather-users',
         _dropdownMenu: [
             {
                 id: 1,
-                name: "Customers",
+                name: "Müşteriler",
                 path: "/customers/list",
                 subdropdownMenu: false
             },
             {
                 id: 2,
-                name: "Customers View",
+                name: "Müşteri Görüntüle",
                 path: "/customers/view",
                 subdropdownMenu: false
             },
             {
                 id: 3,
-                name: "Customers Create",
+                name: "Müşterileri Oluştur",
                 path: "/customers/create",
                 subdropdownMenu: false
             }
@@ -189,25 +189,25 @@ export const menuList = [
     },
     {
         id: 6,
-        name: "leads",
+        name: "Ekipler",
         path: "#",
         icon: 'feather-alert-circle',
         dropdownMenu: [
             {
                 id: 1,
-                name: "Leads",
+                name: "Ekipler",
                 path: "/leads/list",
                 subdropdownMenu: false
             },
             {
                 id: 2,
-                name: "Leads View",
+                name: "Ekipleri GÖrüntüle",
                 path: "/leads/view",
                 subdropdownMenu: false
             },
             {
                 id: 3,
-                name: "Leads Create",
+                name: "Ekip Oluştur",
                 path: "/leads/create",
                 subdropdownMenu: false
             }
@@ -215,7 +215,7 @@ export const menuList = [
     },
     {
         id: 7,
-        name: "projects",
+        name: "Projeler",
         path: "#",
         icon: 'feather-briefcase',
         dropdownMenu: [
@@ -227,13 +227,13 @@ export const menuList = [
             },
             {
                 id: 2,
-                name: "Projects View",
+                name: "Projects Görüntüle",
                 path: "/projects/view",
                 subdropdownMenu: false
             },
             {
                 id: 3,
-                name: "Projects Create",
+                name: "Projects Yarat",
                 path: "/projects/create",
                 subdropdownMenu: false
             }
@@ -279,7 +279,7 @@ export const menuList = [
     // },
     {
         id: 9,
-        name: "settings",
+        name: "Ayarlar",
         path: "#",
         icon: 'feather-settings',
         dropdownMenu: [
@@ -365,13 +365,13 @@ export const menuList = [
     },
     {
         id: 10,
-        name: "authentication",
+        name: "Giriş / Kimlik Doğrulama",
         path: "#",
         icon: 'feather-power',
         dropdownMenu: [
             {
                 id: 1,
-                name: "login",
+                name: "Giriş",
                 path: "#",
                 subdropdownMenu: [
                     // {
@@ -393,7 +393,7 @@ export const menuList = [
             },
             {
                 id: 2,
-                name: "register",
+                name: "Kayıt",
                 path: "#",
                 subdropdownMenu: [
                     // {
