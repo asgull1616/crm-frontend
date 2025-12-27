@@ -1,24 +1,37 @@
 'use client'
 import React, { useEffect } from 'react'
 import Table from '@/components/shared/table/Table'
-import { FiAlertOctagon, FiArchive, FiClock, FiEdit3, FiEye, FiMoreHorizontal, FiPrinter, FiSend, FiTrash2 } from 'react-icons/fi'
+import {
+  FiEye,
+  FiEdit3,
+  FiSend,
+  FiRefreshCw,
+  FiCheckCircle,
+  FiXCircle,
+  FiMessageSquare,
+  FiFileText,
+  FiTrash2,
+    FiMoreHorizontal,
+} from "react-icons/fi";
 import Dropdown from '@/components/shared/Dropdown';
 import { proposalTableData } from '@/utils/fackData/proposalTableData';
 import Link from 'next/link';
 
 
 const actions = [
-  { label: "Edit", icon: <FiEdit3 /> },
-  { label: "Print", icon: <FiPrinter /> },
-  { label: "Remind", icon: <FiClock /> },
+  { label: "Düzenle", icon: <FiEdit3 /> },
   { type: "divider" },
-  { label: "Archive", icon: <FiArchive /> },
-  { label: "Report Spam", icon: <FiAlertOctagon />, },
+  { label: "Müşteriye Gönder", icon: <FiSend /> },
+  { label: "Tekrar Gönder", icon: <FiRefreshCw /> },
   { type: "divider" },
-  { label: "Delete", icon: <FiTrash2 />, },
+  { label: "Onayla", icon: <FiCheckCircle />, variant: "success" },
+  { label: "Reddet", icon: <FiXCircle />, variant: "danger" },
+  { type: "divider" },
+  { label: "Not Ekle", icon: <FiMessageSquare /> },
+  { label: "PDF İndir", icon: <FiFileText /> },
+  { type: "divider" },
+  { label: "Sil", icon: <FiTrash2 />, variant: "danger" },
 ];
-
-
 
 
 const ProposalTable = () => {
@@ -61,12 +74,12 @@ const ProposalTable = () => {
 
     {
       accessorKey: 'proposal',
-      header: () => 'Proposal',
+      header: () => 'Teklif ID',
       cell: (info) => <a href='#' className='fw-bold'>{info.getValue()}</a>
     },
     {
       accessorKey: 'client',
-      header: () => 'Client',
+      header: () => 'Müşteri',
       cell: (info) => {
         const roles = info.getValue();
         return (
@@ -89,27 +102,27 @@ const ProposalTable = () => {
     },
     {
       accessorKey: 'subject',
-      header: () => 'Subject',
+      header: () => 'Konu',
     },
     {
       accessorKey: 'amount',
-      header: () => 'Amount',
+      header: () => 'Tutar',
       meta: {
         className: "fw-bold text-dark"
       }
     },
     {
       accessorKey: 'date',
-      header: () => 'Date',
+      header: () => 'Oluşturulma Tarihi',
     },
     {
       accessorKey: 'status',
-      header: () => 'Status',
+      header: () => 'Durum',
       cell: (info) => <div className={`badge ${info.getValue().color}`}>{info.getValue().content}</div>
     },
     {
       accessorKey: 'actions',
-      header: () => "Actions",
+      header: () => "Eylemler",
       cell: info => (
         <div className="hstack gap-2 justify-content-end">
           <a href="#" className="avatar-text avatar-md" data-bs-toggle="offcanvas" data-bs-target="#proposalSent">

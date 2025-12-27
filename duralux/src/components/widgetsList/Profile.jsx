@@ -8,14 +8,14 @@ const Profile = () => {
         <div className="card stretch stretch-full">
             <div className="card-body">
                 <div className="mb-4 text-center">
-                    <div className="wd-150 ht-150 mx-auto mb-3 position-relative">
+                    {/* <div className="wd-150 ht-150 mx-auto mb-3 position-relative">
                         <div className="avatar-image wd-150 ht-150 border border-5 border-gray-3">
                             <Image width={140} height={140} sizes='100vw' src="/images/avatar/1.png" alt="img" className="img-fluid" />
                         </div>
                         <div className="wd-10 ht-10 text-success rounded-circle position-absolute translate-middle" style={{ top: "76%", right: "10px" }}>
                             <BsPatchCheckFill size={16} />
                         </div>
-                    </div>
+                    </div> */}
                     <div className="mb-4">
                         <a href="#" className="fs-14 fw-bold d-block"> Alexandra Della</a>
                         <a href="#" className="fs-12 fw-normal text-muted d-block">alex.della@outlook.com</a>

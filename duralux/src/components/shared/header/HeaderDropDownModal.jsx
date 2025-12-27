@@ -2,7 +2,7 @@ import React, { Fragment } from 'react'
 import { FiChevronRight, FiPlus } from 'react-icons/fi'
 import getIcon from '@/utils/getIcon';
 import Link from 'next/link';
-
+ 
 const menuData = [
     {
         name: 'applications',
@@ -28,7 +28,7 @@ const menuData = [
     },
     {
         name: 'proposal',
-        icon: 'feather-at-sign',
+        icon: 'feather-at-sign', 
         subMenu: [
             { name: "Proposal", path: "/proposal/list", },
             { name: "Proposal View", path: "/proposal/view", },
