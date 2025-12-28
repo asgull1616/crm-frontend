@@ -83,37 +83,37 @@ const TasksTabContent = () => {
                             </a>
                         </div>
                         <div className="card-body">
-                            <p>Umut, vazgeçmeyenlerin en güçlü silahıdır.</p>
+                            <p>sadasdsd</p>
                             <ul className="list-unstyled text-muted mb-0">
                                 <li className="d-flex align-items-start mb-3">
                                     <span className="avatar-text avatar-sm bg-soft-success text-success me-3">
                                         <FiCheck className='fs-10' />
                                     </span>
-                                    <span>Umut varsa yol vardır. </span>
+                                    <span>dsddds </span>
                                 </li>
                                 <li className="d-flex align-items-start mb-3">
                                     <span className="avatar-text avatar-sm bg-soft-success text-success me-3">
                                         <FiCheck className='fs-10' />
                                     </span>
-                                    <span>Başarı, umudunu koruyabilenlerin işidir.</span>
+                                    <span>ddd.</span>
                                 </li>
                                 <li className="d-flex align-items-start mb-3">
                                     <span className="avatar-text avatar-sm bg-soft-success text-success me-3">
                                         <FiCheck className='fs-10' />
                                     </span>
-                                    <span>Vazgeçmediğin sürece, hiçbir yol bitmiş sayılmaz.</span>
+                                    <span>Vddssddcmaz.</span>
                                 </li>
                                 <li className="d-flex align-items-start mb-3">
                                     <span className="avatar-text avatar-sm bg-soft-success text-success me-3">
                                         <FiCheck className='fs-10' />
                                     </span>
-                                    <span>yeter bu kadar. </span>
+                                    <span>vdsvsdvd. </span>
                                 </li>
                                 <li className="d-flex align-items-start mb-3">
                                     <span className="avatar-text avatar-sm bg-soft-success text-success me-3">
                                         <FiCheck className='fs-10' />
                                     </span>
-                                    <span>halledin. </span>
+                                    <span>dvsdvdsv </span>
                                 </li>
                             </ul>
                         </div>
@@ -185,14 +185,14 @@ const TasksTabContent = () => {
                         </div>
                     </div> */}
                 </div>
-                <div className="col-xxl-4 col-xl-6">
+                {/* <div className="col-xxl-4 col-xl-6">
                     <div className="card stretch stretch-full">
                         <div className="card-body task-info">
                             <div className="mb-4">
                                 <h5 className="card-title mb-1">Görev Bilgisi</h5>
                                 {/* <span className="fs-12 fw-normal text-muted d-block">Created at 2023-02-12 08:47:47</span> */}
                             </div>
-                            <div className="task-info-list">
+                            {/* <div className="task-info-list">
                                 <div className="row align-items-center mb-3 task-list-row">
                                     <div className="col-6">
                                         <FiStar size={16} strokeWidth={1.7} className='me-2' />
@@ -252,7 +252,7 @@ const TasksTabContent = () => {
                                             </a>
                                         </div>
                                     </div>
-                                </div>
+                                </div> */}
                                 {/* <div className="row align-items-center mb-3 task-list-row">
                                     <div className="col-6">
                                         <FiClock size={16} strokeWidth={1.7} className='me-2' />
@@ -267,7 +267,7 @@ const TasksTabContent = () => {
                                         </div>
                                     </div>
                                 </div> */}
-                                <div className="row align-items-center mb-3 task-list-row">
+                                {/* <div className="row align-items-center mb-3 task-list-row">
                                     <div className="col-6">
                                         <FiClipboard size={16} strokeWidth={1.7} className='me-2' />
                                         <span className="fw-semibold">Fatura:</span>
@@ -294,7 +294,7 @@ const TasksTabContent = () => {
                                             </a>
                                         </div>
                                     </div>
-                                </div>
+                                </div>  */}
                                 {/* <div className="row align-items-center mb-3 task-list-row">
                                     <div className="col-6">
                                         <FiPower size={16} strokeWidth={1.7} className='me-2' />
@@ -318,9 +318,9 @@ const TasksTabContent = () => {
                                         <a href="#" className="text-primary">Create Remain</a>
                                     </div>
                                 </div> */}
-                            </div>
+                            {/* </div>
                         </div>
-                    </div>
+                    </div> */}
                     {/* <div className="card stretch stretch-full">
                         <div className="card-body task-tags">
                             <div className="mb-4">
@@ -349,8 +349,8 @@ const TasksTabContent = () => {
                         </div>
                     </div> */}
                 </div>
-            </div>
-        </div>
+            // </div>
+        // </div>
     )
 }
 

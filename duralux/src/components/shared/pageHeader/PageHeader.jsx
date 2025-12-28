@@ -23,7 +23,7 @@ const PageHeader = ({ children }) => {
                     <h5 className="m-b-10 text-capitalize">{folderName}</h5>
                 </div>
                 <ul className="breadcrumb">
-                    <li className="breadcrumb-item"><Link href="/">Home</Link></li>
+                    <li className="breadcrumb-item"><Link href="/">Ana Sayfa</Link></li>
                     <li className="breadcrumb-item text-capitalize">{fileName}</li>
                 </ul>
             </div>
@@ -32,7 +32,7 @@ const PageHeader = ({ children }) => {
                     <div className="d-flex d-md-none">
                         <Link href="#" onClick={() => setOpenSidebar(false)} className="page-header-right-close-toggle">
                             <FiArrowLeft size={16} className="me-2" />
-                            <span>Back</span>
+                            <span>Geri Dönün</span>
                         </Link>
                     </div>
                     {children}

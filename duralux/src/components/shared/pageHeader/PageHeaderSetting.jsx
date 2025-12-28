@@ -19,10 +19,10 @@ const PageHeaderSetting = () => {
             </div>
             <div className="page-header-right ms-auto">
                 <div className="d-flex align-items-center gap-3 page-header-right-items-wrapper">
-                    <a href="#" className="text-danger">Cancel</a>
+                    <a href="#" className="text-danger">İptal</a>
                     <a href="#" className="btn btn-primary" onClick={handleClick}>
                         <FiSave size={16} className='me-2' />
-                        <span>Save Changes</span>
+                        <span>Değişiklikleri Kaydet</span>
                     </a>
                 </div>
             </div>

@@ -12,12 +12,12 @@ const LeadsCreateHeader = () => {
     <div className="d-flex align-items-center gap-2 page-header-right-items-wrapper">
       <a href="#" className="btn btn-light-brand " onClick={handleClick}>
         <FiLayers size={16} className='me-2'/>
-        <span>Save as Draft</span>
+        <span>Kaydet</span>
       </a>
       <a href="#" className="btn btn-primary " onClick={handleClick}>
         <FiUserPlus size={16} className='me-2'/>
-        <span>Create Lead</span>
-      </a>
+        <span>Ekip Üyesi Oluştur</span>
+      </a>  
     </div>
   )
 }

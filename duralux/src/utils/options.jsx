@@ -21,12 +21,12 @@ const propasalLeadOptions = [
     { value: 'ecommerce', label: 'Olive Delarosa - Custom graphics and icon design', img: "/images/avatar/1.png" },
 ]
 const propsalStatusOptions = [
-    { value: 'sent', label: 'Sent', color: "#41b2c4" },
-    { value: 'draft', label: 'Draft', color: "#64748b" },
-    { value: 'open', label: 'Open', color: "#3454d1" },
-    { value: 'revised', label: 'Revised', color: "#ffa21d" },
-    { value: 'declined', label: 'Declined', color: "#ea4d4d" },
-    { value: 'accepted', label: 'Accepted', color: "#17c666" },
+    { value: 'sent', label: 'Gönderildi', color: "#41b2c4" },
+    { value: 'draft', label: 'Taslak', color: "#64748b" },
+    // { value: 'open', label: 'Open', color: "#3454d1" },
+    { value: 'revised', label: 'Süresi Doldu', color: "#ffa21d" },
+    { value: 'declined', label: 'Reddedildi', color: "#ea4d4d" },
+    { value: 'accepted', label: 'Kabul Edildi', color: "#17c666" },
 ]
 
 const customerViewOptions = [
@@ -160,12 +160,12 @@ const taskAssigneeOptions = [
 ]
 
 const leadsStatusOptions = [
-    { value: "new", label: "New", color: "#3454d1" },
-    { value: "contacted", label: "Contacted", color: "#41b2c4" },
-    { value: "working", label: "Working", color: "#ffa21d" },
-    { value: "qualified", label: "Qualified", color: "#17c666" },
-    { value: "declined", label: "Declined", color: "#ea4d4d" },
-    { value: "customer", label: "Customer", color: "#6610f2" },
+    { value: "new", label: "Admin", color: "#3454d1" },
+    { value: "contacted", label: "Kullanıcı", color: "#41b2c4" },
+    // { value: "working", label: "Working", color: "#ffa21d" },
+    // { value: "qualified", label: "Qualified", color: "#17c666" },
+    // { value: "declined", label: "Declined", color: "#ea4d4d" },
+    // { value: "customer", label: "Customer", color: "#6610f2" },
 ]
 
 const leadsSourceOptions = [

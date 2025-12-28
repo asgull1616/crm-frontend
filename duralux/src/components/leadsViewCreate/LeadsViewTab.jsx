@@ -13,25 +13,25 @@ const LeadsViewTab = () => {
                     <div className="d-flex d-md-none">
                         <a href="#" className="page-content-left-close-toggle">
                             <i className="feather-arrow-left me-2"></i>
-                            <span>Back</span>
+                            <span>Geri Dön</span>
                         </a>
                     </div>
                     <ul className="nav nav-tabs nav-tabs-custom-style" id="myTab" role="tablist">
                         <li className="nav-item" role="presentation">
-                            <button className="nav-link active" data-bs-toggle="tab" data-bs-target="#profileTab">Profile</button>
+                            <button className="nav-link active" data-bs-toggle="tab" data-bs-target="#profileTab">Profili Görüntüle</button>
                         </li>
                         <li className="nav-item" role="presentation">
                             <button className="nav-link" data-bs-toggle="tab" data-bs-target="#proposalTab">Proposal</button>
                         </li>
-                        <li className="nav-item" role="presentation">
+                        {/* <li className="nav-item" role="presentation">
                             <button className="nav-link" data-bs-toggle="tab" data-bs-target="#tasksTab">Tasks</button>
-                        </li>
-                        <li className="nav-item" role="presentation">
+                        </li> */}
+                        {/* <li className="nav-item" role="presentation">
                             <button className="nav-link" data-bs-toggle="tab" data-bs-target="#notesTab">Notes</button>
-                        </li>
-                        <li className="nav-item" role="presentation">
+                        </li> */}
+                        {/* <li className="nav-item" role="presentation">
                             <button className="nav-link" data-bs-toggle="tab" data-bs-target="#commentTab">Comments</button>
-                        </li>
+                        </li> */}
                     </ul>
                 </div>
             </div>
