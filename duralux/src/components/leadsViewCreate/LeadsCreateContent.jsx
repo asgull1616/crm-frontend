@@ -26,14 +26,14 @@ const LeadsCreateContent = () => {
                     <div className="card-body lead-status">
                         <div className="mb-5 d-flex align-items-center justify-content-between">
                             <h5 className="fw-bold mb-0 me-4">
-                                <span className="d-block mb-2">Lead Status :</span>
-                                <span className="fs-12 fw-normal text-muted text-truncate-1-line">Typically refers to adding a new potential customer or sales prospect</span>
+                                <span className="d-block mb-2">Ekip Üyesi Ekle :</span>
+                                {/* <span className="fs-12 fw-normal text-muted text-truncate-1-line">Typically refers to adding a new potential customer or sales prospect</span> */}
                             </h5>
-                            <a href="#" className="btn btn-sm btn-light-brand">Create Invoice</a>
+                            {/* <a href="#" className="btn btn-sm btn-light-brand">Create Invoice</a> */}
                         </div>
                         <div className="row">
                             <div className="col-lg-4 mb-4">
-                                <label className="form-label">Status</label>
+                                <label className="form-label">Rol</label>
                                 <SelectDropdown
                                     options={leadsStatusOptions}
                                     selectedOption={selectedOption}
@@ -41,7 +41,7 @@ const LeadsCreateContent = () => {
                                     onSelectOption={(option) => setSelectedOption(option)}
                                 />
                             </div>
-                            <div className="col-lg-4 mb-4">
+                            {/* <div className="col-lg-4 mb-4">
                                 <label className="form-label">Source</label>
                                 <SelectDropdown
                                     options={leadsSourceOptions}
@@ -49,8 +49,8 @@ const LeadsCreateContent = () => {
                                     defaultSelect="facebook"
                                     onSelectOption={(option) => setSelectedOption(option)}
                                 />
-                            </div>
-                            <div className="col-lg-4 mb-4">
+                            </div> */}
+                            {/* <div className="col-lg-4 mb-4">
                                 <label className="form-label">Visibility:</label>
                                 <SelectDropdown
                                     options={propsalVisibilityOptions}
@@ -58,8 +58,8 @@ const LeadsCreateContent = () => {
                                     defaultSelect="public"
                                     onSelectOption={(option) => setSelectedOption(option)}
                                 />
-                            </div>
-                            <div className="col-lg-4 mb-4">
+                            </div> */}
+                            {/* <div className="col-lg-4 mb-4">
                                 <label className="form-label">Tags</label>
                                 <MultiSelectTags
                                     options={leadsTags}
@@ -72,30 +72,30 @@ const LeadsCreateContent = () => {
                                     options={taskAssigneeOptions}
                                     placeholder=""
                                 />
-                            </div>
-                            <div className="col-lg-4 mb-4">
+                            </div> */}
+                            {/* <div className="col-lg-4 mb-4">
                                 <label className="form-label">Groups</label>
                                 <MultiSelectTags
                                     options={leadsGroupsOptions}
                                     placeholder=""
                                 />
-                            </div>
+                            </div> */}
                         </div>
                     </div>
                     <hr className="mt-0" />
                     <div className="card-body general-info">
                         <div className="mb-5 d-flex align-items-center justify-content-between">
                             <h5 className="fw-bold mb-0 me-4">
-                                <span className="d-block mb-2">Lead Info :</span>
-                                <span className="fs-12 fw-normal text-muted text-truncate-1-line">General information for your lead</span>
+                                <span className="d-block mb-2">Genel Bilgi :</span>
+                                <span className="fs-12 fw-normal text-muted text-truncate-1-line">Ekip üyesi için genel bilgiler</span>
                             </h5>
-                            <a href="#" className="btn btn-sm btn-light-brand">Edit Lead</a>
+                            <a href="#" className="btn btn-sm btn-light-brand">Kullanıcıyı Düzenle</a>
                         </div>
                         <Input
                             icon='feather-user'
-                            label={"Name"}
+                            label={"Ad Soyad"}
                             labelId={"nameInput"}
-                            placeholder={"Name"}
+                            placeholder={"Ad Soyad"}
                             name={"name"}
                         />
                         <Input
@@ -108,33 +108,33 @@ const LeadsCreateContent = () => {
                         />
                         <Input
                             icon='feather-link-2'
-                            label={"Username"}
+                            label={"Kullanıcı Adı"}
                             labelId={"usernameInput"}
-                            placeholder={"Username"}
+                            placeholder={"Kullanıcı Adı"}
                             name={"username"}
                         />
                         <Input
                             icon='feather-phone'
-                            label={"Phone"}
+                            label={"Telefon"}
                             labelId={"phoneInput"}
-                            placeholder={"Phone"}
+                            placeholder={"Telefon"}
                             name={"phone"}
                         />
-                        <Input
+                        {/* <Input
                             icon='feather-compass'
                             label={"Company"}
                             labelId={"companyInput"}
                             placeholder={"Company"}
                             name={"company"}
-                        />
-                        <Input
+                        /> */}
+                        {/* <Input
                             icon='feather-briefcase'
                             label={"Designation"}
                             labelId={"designationInput"}
                             placeholder={"Designation"}
                             name={"designation"}
-                        />
-                        <Input
+                        /> */}
+                        {/* <Input
                             icon="feather-link"
                             label={"Website"}
                             labelId={"websiteInput"}
@@ -147,21 +147,21 @@ const LeadsCreateContent = () => {
                             labelId={"vatInput"}
                             placeholder={"VAT"}
                             name={"vat"}
-                        />
-                        <TextArea
+                        /> */}
+                        {/* <TextArea
                             icon="feather-map-pin"
-                            label={"Address"}
+                            label={"Adres"}
                             labelId={"addressInput"}
-                            placeholder={"Address"}
-                        />
-                        <TextArea
+                            placeholder={"Adres"}
+                        /> */}
+                        {/* <TextArea
                             icon="feather-type"
                             label={"description"}
                             labelId={"descriptionInput"}
                             placeholder={"Description"}
                             row='5'
-                        />
-                        <div className="row mb-4 align-items-center">
+                        /> */}
+                        {/* <div className="row mb-4 align-items-center">
                             <div className="col-lg-4">
                                 <label className="fw-semibold">Country: </label>
                             </div>
@@ -177,8 +177,8 @@ const LeadsCreateContent = () => {
                                     }}
                                 />
                             </div>
-                        </div>
-                        <div className="row mb-4 align-items-center">
+                        </div> */}
+                        {/* <div className="row mb-4 align-items-center">
                             <div className="col-lg-4">
                                 <label className="fw-semibold">State: </label>
                             </div>
@@ -190,10 +190,10 @@ const LeadsCreateContent = () => {
                                     onSelectOption={(option) => setSelectedOption(option)}
                                 />
                             </div>
-                        </div>
-                        <div className="row mb-4 align-items-center">
+                        </div> */}
+                        {/* <div className="row mb-4 align-items-center">
                             <div className="col-lg-4">
-                                <label className="fw-semibold">City: </label>
+                                <label className="fw-semibold">Şehir: </label>
                             </div>
                             <div className="col-lg-8">
                                 <SelectDropdown
@@ -203,8 +203,8 @@ const LeadsCreateContent = () => {
                                     onSelectOption={(option) => setSelectedOption(option)}
                                 />
                             </div>
-                        </div>
-                        <div className="row mb-4 align-items-center">
+                        </div> */}
+                        {/* <div className="row mb-4 align-items-center">
                             <div className="col-lg-4">
                                 <label className="fw-semibold">Time Zone: </label>
                             </div>
@@ -216,8 +216,8 @@ const LeadsCreateContent = () => {
                                     onSelectOption={(option) => setSelectedOption(option)}
                                 />
                             </div>
-                        </div>
-                        <div className="row mb-4 align-items-center">
+                        </div> */}
+                        {/* <div className="row mb-4 align-items-center">
                             <div className="col-lg-4">
                                 <label className="fw-semibold">Languages: </label>
                             </div>
@@ -227,8 +227,8 @@ const LeadsCreateContent = () => {
                                     defaultSelect={[languagesData[25], languagesData[10], languagesData[45]]}
                                 />
                             </div>
-                        </div>
-                        <div className="row mb-4 align-items-center">
+                        </div> */}
+                        {/* <div className="row mb-4 align-items-center">
                             <div className="col-lg-4">
                                 <label className="fw-semibold">Currency: </label>
                             </div>
@@ -240,7 +240,7 @@ const LeadsCreateContent = () => {
                                     onSelectOption={(option) => setSelectedOption(option)}
                                 />
                             </div>
-                        </div>
+                        </div> */}
                     </div>
                 </div>
             </div>

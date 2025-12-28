@@ -2,15 +2,15 @@ export const menuList = [
     {
         id: 0,
         name: "dashboards",
-        path: "#",
+        path: "/",
         icon: 'feather-airplay',
         dropdownMenu: [
-            {
-                id: 1,
-                name: "CRM",
-                path: "/",
-                subdropdownMenu: false
-            },
+            // {
+            //     id: 1,
+            //     name: "CRM",
+            //     path: "/",
+            //     subdropdownMenu: false
+            // },
             // {
             //     id: 2,
             //     name: "Analytics",
@@ -104,22 +104,22 @@ export const menuList = [
         dropdownMenu: [
             {
                 id: 1,
-                name: "Teklifler ",
+                name: "Teklifleri Görüntüle",
                 path: "/proposal/list",
                 subdropdownMenu: false
             },
-            {
-                id: 2,
-                name: "Teklifler Görüntüle",
-                path: "/proposal/view",
-                subdropdownMenu: false
-            },
-            {
-                id: 3,
-                name: "Teklifleri Görüntüle",
-                path: "/proposal/edit",
-                subdropdownMenu: false
-            },
+            // {
+            //     id: 2,
+            //     name: "Teklifler Görüntüle",
+            //     path: "/proposal/view",
+            //     subdropdownMenu: false
+            // },
+            // {
+            //     id: 3,
+            //     name: "Teklifleri Görüntüle",
+            //     path: "/proposal/edit",
+            //     subdropdownMenu: false
+            // },
             {
                 id: 4,
                 name: "Teklif Oluştur",
@@ -372,18 +372,18 @@ export const menuList = [
             {
                 id: 1,
                 name: "Giriş",
-                path: "#",
+                path: "/authentication/login/minimal",
                 subdropdownMenu: [
                     // {
                     //     id: 1,
                     //     name: "Cover",
                     //     path: "/authentication/login/cover",
                     // },
-                    {
-                        id: 2,
-                        name: "Minimal",
-                        path: "/authentication/login/minimal",
-                    },
+                    // {
+                    //     id: 2,
+                    //     name: "Minimal",
+                    //     path: "/authentication/login/minimal",
+                    // },
                     // {
                     //     id: 3,
                     //     name: "Creative",
@@ -394,18 +394,18 @@ export const menuList = [
             {
                 id: 2,
                 name: "Kayıt",
-                path: "#",
+                path: "/authentication/register/minimal",
                 subdropdownMenu: [
                     // {
                     //     id: 1,
                     //     name: "Cover",
                     //     path: "/authentication/register/cover",
                     // },
-                    {
-                        id: 2,
-                        name: "Minimal",
-                        path: "/authentication/register/minimal",
-                    },
+                    // {
+                    //     id: 2,
+                    //     name: "Minimal",
+                    //     path: "/authentication/register/minimal",
+                    // },
                     // {
                     //     id: 3,
                     //     name: "Creative",
