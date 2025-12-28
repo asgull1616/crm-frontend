@@ -7,11 +7,11 @@ const TabAttachement = () => {
         <section className="step-body mt-4">
             <div>
                 <div className="mb-5">
-                    <h2 className="fs-16 fw-bold">Attachement files</h2>
-                    <p className="text-muted">If you need more info, please check <a href="#">help center</a></p>
+                    <h2 className="fs-16 fw-bold">Dosya Ekleme</h2>
+                    <p className="text-muted"> <a href="#"></a></p>
                 </div>
                 <div className="mb-4">
-                    <label htmlFor="choose-file" className="custom-file-upload" id="choose-file-label"> Upload Document </label>
+                    <label htmlFor="choose-file" className="custom-file-upload" id="choose-file-label"> Doküman Yükle </label>
                     <input name="uploadDocument" type="file" id="choose-file" style={{ display: 'none' }} />
                 </div>
                 <div className="row">
@@ -23,32 +23,32 @@ const TabAttachement = () => {
                         category={"Webapps"}
                     /> */}
                     <AttachementCard
-                        title={"UI/UX Design Templates"}
+                        title={"UI/UX Tasarım Şablonları"}
                         iconSrc={"/images/file-icons/zip.png"}
                         category1={"Project"}
-                        category2={"Dashboard"}
-                        category3={"Webapps"}
+                        // category2={"Dashboard"}
+                        // category3={"Webapps"}
                     />
                     <AttachementCard
-                        title={"UI/UX Design Templates"}
+                        title={"UI/UX Tasarım Şablonları"}
                         iconSrc={"/images/file-icons/png.png"}
                         category1={"Project"}
-                        category2={"Dashboard"}
-                        category3={"Webapps"}
+                        // category2={"Dashboard"}
+                        // category3={"Webapps"}
                     />
                     <AttachementCard
-                        title={"UI/UX Design Templates"}
+                        title={"UI/UX Tasarım Şablonları"}
                         iconSrc={"/images/file-icons/pdf.png"}
                         category1={"Project"}
-                        category2={"Dashboard"}
-                        category3={"Webapps"}
+                        // category2={"Dashboard"}
+                        // category3={"Webapps"}
                     />
                     <AttachementCard
-                        title={"UI/UX Design Templates"}
+                        title={"UI/UX Tasarım Şablonları"}
                         iconSrc={"/images/file-icons/psd.png"}
                         category1={"Project"}
-                        category2={"Dashboard"}
-                        category3={"Webapps"}
+                        // category2={"Dashboard"}
+                        // category3={"Webapps"}
                     />
                 </div>
             </div>

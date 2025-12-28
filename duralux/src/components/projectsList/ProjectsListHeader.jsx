@@ -6,22 +6,22 @@ import ProjectsStatistics from '../widgetsStatistics/ProjectsStatistics'
 import Link from 'next/link'
 
 const options = [
-  { label: "Alls", color: "bg-primary" },
-  { label: "On Hold", color: "bg-indigo" },
-  { label: "Pending", color: "bg-warning" },
-  { label: "Finished", color: "bg-success" },
-  { label: "Declined", color: "bg-danger" },
-  { label: "In Progress", color: "bg-teal" },
-  { label: "Not Started", color: "bg-success" },
-  { label: "My Projects", color: "bg-warning" }
+  { label: "Hepsi", color: "bg-primary" },
+  // { label: "On Hold", color: "bg-indigo" },
+  { label: "Beklemede", color: "bg-warning" },
+  { label: "Tamamlandı", color: "bg-success" },
+  // { label: "Declined", color: "bg-danger" },
+  { label: "Devam Ediyor", color: "bg-teal" },
+  { label: "Başlanmadı", color: "bg-success" },
+   { label: "Görevlerim", color: "bg-warning" }
 ];
 const ProjectsListHeader = () => {
   return (
     <>
       <div className="d-flex align-items-center gap-2 page-header-right-items-wrapper">
-        <a href="#" className="btn btn-icon btn-light-brand" data-bs-toggle="collapse" data-bs-target="#collapseOne">
+        {/* <a href="#" className="btn btn-icon btn-light-brand" data-bs-toggle="collapse" data-bs-target="#collapseOne">
           <FiBarChart size={16} />
-        </a>
+        </a> */}
         <Dropdown
           dropdownItems={options}
           triggerPosition={"0, 10"}
@@ -41,7 +41,7 @@ const ProjectsListHeader = () => {
         />
         <Link href="/projects/create" className="btn btn-primary">
           <FiPlus size={16} className='me-2' />
-          <span>Create Prject</span>
+          <span>Görev Oluştur</span>
         </Link>
       </div>
       <div id="collapseOne" className="accordion-collapse collapse page-header-collapse">

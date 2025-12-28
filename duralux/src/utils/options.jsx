@@ -197,11 +197,11 @@ const projectNotificationsOptions = [
     { value: "all", label: "All contact with notification", icon: "feather-bell" },
 ]
 const projectRoalOptions = [
-    { value: "admin", label: "Admin", color: "#3454d1" },
-    { value: "guest", label: "Guest", color: "#41b2c4" },
-    { value: "editor", label: "Editor", color: "#ea4d4d" },
-    { value: "owner", label: "Owner", color: "#ffa21d" },
-    { value: "customer", label: "Customer", color: "#17c666" }
+    { value: "admin", label: "Yönetici", color: "#3454d1" },
+    { value: "guest", label: "Ekip Üyesi", color: "#41b2c4" },
+    // { value: "editor", label: "Editor", color: "#ea4d4d" },
+    // { value: "owner", label: "Owner", color: "#ffa21d" },
+    { value: "customer", label: "Müşteri", color: "#17c666" }
 ]
 export {
     propsalRelatedOptions,

@@ -15,7 +15,7 @@ const TabProjectDetails = () => {
     useEffect(() => {
         setStartDate(new Date())
         setValue(`
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. Asperiores beatae inventore reiciendis ipsum natus, porro recusandae sunt accusantium reprehenderit aliquid commodi est veniam sit molestiae, nesciunt cupiditate. Laborum, culpa maxime.
+            
             `)
     }, []);
 
@@ -29,8 +29,8 @@ const TabProjectDetails = () => {
                     </div>
                     <fieldset>
                         <div className="mb-4">
-                            <label htmlFor="projectName" className="form-label">Project Name <span className="text-danger">*</span></label>
-                            <input type="text" className="form-control" id="projectName" name="projectName" defaultValue="Website design and development" required />
+                            <label htmlFor="projectName" className="form-label">Görev Adı <span className="text-danger">*</span></label>
+                            <input type="text" className="form-control" id="projectName" name="projectName" defaultValue="" required />
                         </div>
                         <div className="mb-4 ">
                             <label className="form-label">Görev Tanımı <span className="text-danger">*</span></label>
