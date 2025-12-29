@@ -21,7 +21,7 @@ const LeadsViewTab = () => {
                             <button className="nav-link active" data-bs-toggle="tab" data-bs-target="#profileTab">Profili Görüntüle</button>
                         </li>
                         <li className="nav-item" role="presentation">
-                            <button className="nav-link" data-bs-toggle="tab" data-bs-target="#proposalTab">Proposal</button>
+                            <button className="nav-link" data-bs-toggle="tab" data-bs-target="#proposalTab">Teklifler</button>
                         </li>
                         {/* <li className="nav-item" role="presentation">
                             <button className="nav-link" data-bs-toggle="tab" data-bs-target="#tasksTab">Tasks</button>

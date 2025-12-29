@@ -30,9 +30,9 @@ const CustomerContent = () => {
                             <li className="nav-item flex-fill border-top" role="presentation">
                                 <a href="#" className="nav-link" data-bs-toggle="tab" data-bs-target="#activityTab" role="tab">Aktivite</a>
                             </li>
-                            <li className="nav-item flex-fill border-top" role="presentation">
+                            {/* <li className="nav-item flex-fill border-top" role="presentation">
                                 <a href="#" className="nav-link" data-bs-toggle="tab" data-bs-target="#notificationsTab" role="tab">Bildirimler</a>
-                            </li>
+                            </li> */}
                             {/* <li className="nav-item flex-fill border-top" role="presentation">
                                 <a href="#" className="nav-link" data-bs-toggle="tab" data-bs-target="#connectionTab" role="tab">Connection</a>
                             </li> */}
