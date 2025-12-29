@@ -6,10 +6,10 @@ import getIcon from '@/utils/getIcon'
 const ReactApexChart = dynamic(() => import('react-apexcharts'), { ssr: false });
 
 const overviewInfo = [
-    { title: "Tasks Completed", icon: "feather-star", total_number: "35", completed_number: "22", progress: "28", chartColor: "#3454d1", color: "primary" },
-    { title: "New Tasks", icon: "feather-file-text", total_number: "20", completed_number: "5", progress: "34", chartColor: "#25b865", color: "success" },
-    { title: "Project Done", icon: "feather-airplay", total_number: "30", completed_number: "20", progress: "42", chartColor: "#d13b4c", color: "danger" },
-]
+    { title: "Tamamlanan Görevler", icon: "feather-star", total_number: "35", completed_number: "22", progress: "28", chartColor: "#3454d1", color: "primary" },
+    { title: "Yeni Teklifler", icon: "feather-file-text", total_number: "20", completed_number: "5", progress: "34", chartColor: "#25b865", color: "success" },
+//     { title: "Project Done", icon: "feather-airplay", total_number: "30", completed_number: "20", progress: "42", chartColor: "#d13b4c", color: "danger" },
+ ]
 
 const TasksOverviewChart = () => {
 
@@ -30,7 +30,7 @@ const TasksOverviewChart = () => {
                                         </div>
                                         <div>
                                             <div className="fw-semibold text-dark">{title}</div>
-                                            <div className="fs-12 text-muted">{completed_number}/{total_number} completed</div>
+                                            <div className="fs-12 text-muted">{completed_number}/{total_number} tamamlandı</div>
                                         </div>
                                     </div>
                                     <div className="fs-4 fw-bold text-dark">{completed_number}/{total_number}</div>
@@ -43,8 +43,8 @@ const TasksOverviewChart = () => {
                                         height={100}
                                     />
                                     <div className="fs-12 text-muted text-nowrap">
-                                        <span className={`fw-semibold text-${color}`}>{progress}% more</span><br />
-                                        <span>from last week</span>
+                                        <span className={`fw-semibold text-${color}`}>{progress}% fazlası</span><br />
+                                        <span>geçen haftadan beri</span>
                                     </div>
                                 </div>
                             </div>

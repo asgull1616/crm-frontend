@@ -17,30 +17,30 @@ const CardHeader = ({ title, refresh, remove, expanded }) => {
       <h5 className="card-title">{title}</h5>
       <div className="card-header-action">
         <div className="card-header-btn">
-          <div data-toggle="tooltip" data-title="Delete" onClick={remove}>
+          {/* <div data-toggle="tooltip" data-title="Delete" onClick={remove}>
             <span
               className="avatar-text avatar-xs bg-danger"
               data-bs-toggle="remove"
             >
               {" "}
             </span>
-          </div>
-          <div data-toggle="tooltip" data-title="Refresh" onClick={refresh}>
+          </div> */}
+          {/* <div data-toggle="tooltip" data-title="Refresh" onClick={refresh}>
             <span
               className="avatar-text avatar-xs bg-warning"
               data-bs-toggle="refresh"
             >
               {" "}
             </span>
-          </div>
-          <div data-toggle="tooltip" data-title="Maximize/Minimize" onClick={expanded}>
+          </div> */}
+          {/* <div data-toggle="tooltip" data-title="Maximize/Minimize" onClick={expanded}>
             <span
               className="avatar-text avatar-xs bg-success"
               data-bs-toggle="expand"
             >
               {" "}
             </span>
-          </div>
+          </div> */}
         </div>
         <div className="filter-dropdown">
           <div

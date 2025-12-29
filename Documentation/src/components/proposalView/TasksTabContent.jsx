@@ -8,13 +8,13 @@ import MultiSelectTags from '@/components/shared/MultiSelectTags'
 import { taskAssigneeOptions } from '@/utils/options'
 
 const checkListOptions = [
-    { label: "New", icon: <FiAtSign /> },
-    { label: "Event", icon: <FiCalendar /> },
-    { label: "Snoozed", icon: <FiBell /> },
-    { label: "Deleted", icon: <FiTrash2 /> },
-    { type: "divider" },
-    { label: "Settings", icon: <FiSettings />, },
-    { label: "Tips & Tricks", icon: <FiLifeBuoy />, },
+    { label: "Yeni", icon: <FiAtSign /> },
+    { label: "Randevu", icon: <FiCalendar /> },
+    { label: "Ertelenenler", icon: <FiBell /> },
+    { label: "Sil", icon: <FiTrash2 /> },
+    // { type: "divider" },
+    { label: "Ayarlar", icon: <FiSettings />, },
+    // { label: "Tips & Tricks", icon: <FiLifeBuoy />, },
 ]
 
 const tags = [

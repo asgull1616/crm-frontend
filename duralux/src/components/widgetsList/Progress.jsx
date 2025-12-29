@@ -49,7 +49,7 @@ const Progress = ({ footerShow, title, btnFooter }) => {
                 </div>
                 {
                     footerShow ?
-                        <Link href="#" className="card-footer fs-11 fw-bold text-uppercase text-center">Update 30 Min Ago</Link>
+                        <Link href="#" className="card-footer fs-11 fw-bold text-uppercase text-center">30 DK ÖNCE GÜNCELLENDİ</Link>
                         :
                         ""
                 }
