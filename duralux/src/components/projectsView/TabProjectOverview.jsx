@@ -44,7 +44,7 @@ const TabProjectOverview = () => {
                         <div className="card-body task-header d-md-flex align-items-center justify-content-between">
                             <div className="me-4">
                                 <h4 className="mb-4 fw-bold d-flex">
-                                    <span className="text-truncate-1-line">Duralux || CRM Applications &amp; Admin Dashboar <span className="badge bg-soft-primary text-primary mx-3">In Prograss</span></span>
+                                    <span className="text-truncate-1-line">Görev Detayları  </span>
                                 </h4>
                                 <div className="d-flex align-items-center">
                                     <div className="filter-dropdown">
@@ -72,7 +72,7 @@ const TabProjectOverview = () => {
                                             </a>
                                             <div className="dropdown-divider" />
                                             <a href="#" className="dropdown-item">
-                                                <span> Explorer More Projects </span>
+                                                <span> Daha fazla görev görüntüle </span>
                                             </a>
                                         </div>
                                     </div>
@@ -80,17 +80,17 @@ const TabProjectOverview = () => {
                                     <div className="img-group lh-0 ms-2 justify-content-start">
                                         <ImageGroup data={imageList} avatarSize='avatar-md' />
                                         <span className="d-none d-sm-flex">
-                                            <span className="fs-12 text-muted ms-3 text-truncate-1-line">24+ members</span>
+                                            <span className="fs-12 text-muted ms-3 text-truncate-1-line"></span>
                                         </span>
                                     </div>
                                 </div>
                             </div>
                             <div className="mt-4 mt-md-0">
                                 <div className="d-flex gap-2">
-                                    <a href="#" className="btn btn-icon" data-toggle="tooltip" data-title="Make as Complete">
+                                    <a href="#" className="btn btn-icon" data-toggle="tooltip" data-title="Tamamlandı olarak işaretle">
                                         <FiCheckCircle size={16} />
                                     </a>
-                                    <a href="#" className="btn btn-icon" data-toggle="tooltip" data-title="Timesheets">
+                                    {/* <a href="#" className="btn btn-icon" data-toggle="tooltip" data-title="Timesheets">
                                         <FiCalendar size={16} />
                                     </a>
                                     <a href="#" className="btn btn-icon" data-toggle="tooltip" data-title="Statistics">
@@ -99,7 +99,7 @@ const TabProjectOverview = () => {
                                     <a href="#" className="btn btn-success" data-toggle="tooltip" data-title="Timesheets">
                                         <FiClock size={16} className='me-2' />
                                         <span>Start Timer</span>
-                                    </a>
+                                    </a> */}
                                 </div>
                             </div>
                         </div>
@@ -109,17 +109,17 @@ const TabProjectOverview = () => {
                     <div className="card stretch stretch-full">
                         <div className="card-header">
                             <div className="w-100">
-                                <div className="d-flex align-items-center justify-content-between">
+                                {/* <div className="d-flex align-items-center justify-content-between">
                                     <a href="#" className="fs-12 fw-medium text-muted">
                                         <span className="text-truncate-1-line">Projects In Progress <FiLink2 className='fs-11 ms-1' /></span>
                                     </a>
                                     <div className="ms-3">
                                         <span className="fs-12 text-muted text-truncate-1-line">16/25 Tasks Completed <span className="fs-11 text-muted">(78%)</span></span>
                                     </div>
-                                </div>
-                                <div className="progress mt-2 ht-5">
+                                </div> */}
+                                {/* <div className="progress mt-2 ht-5">
                                     <div className="progress-bar bg-primary" role="progressbar" style={{ width: '78%' }} />
-                                </div>
+                                </div> */}
                             </div>
                         </div>
                         <div className="card-body">
@@ -128,10 +128,10 @@ const TabProjectOverview = () => {
                                     <label className="form-label">Görev</label>
                                     <p>#01 - CRM Applications - G.Cute</p>
                                 </div>
-                                <div className="col-md-6 mb-4">
+                                {/* <div className="col-md-6 mb-4">
                                     <label className="form-label">Billing Type </label>
                                     <p>Project Hours</p>
-                                </div>
+                                </div> */}
                                 <div className="col-md-6 mb-4">
                                     <label className="form-label">Durum</label>
                                     <p>In Progress</p>
@@ -159,7 +159,7 @@ const TabProjectOverview = () => {
                                 <div className="col-md-12">
                                     <label className="form-label">Tanım</label>
                                     <p>CRM (Customer Relationship Management) applications are software tools that help organizations manage interactions with their customers, streamline sales and marketing activities, and improve overall customer satisfaction. There are many different CRM applications available, ranging from simple contact management tools to more sophisticated platforms that integrate with other business systems.</p>
-                                    <p className="fw-semibold mt-4">Some of the common features of CRM applications include:</p>
+                                    {/* <p className="fw-semibold mt-4">Some of the common features of CRM applications include:</p>
                                     <ul>
                                         <li>Contact Management: Allows organizations to store and manage customer data, including names, addresses, phone numbers, and email addresses.</li>
                                         <li>Sales Management: Helps organizations manage their sales pipeline, track leads and deals, and analyze sales performance.</li>
@@ -167,7 +167,7 @@ const TabProjectOverview = () => {
                                         <li>Customer Service and Support: Allows organizations to track and manage customer service requests and provide support to customers via various channels.</li>
                                         <li>Analytics and Reporting: Provides insights into customer behavior, sales trends, and other key metrics that help organizations make data-driven decisions.</li>
                                     </ul>
-                                    <p className="mb-0">Some popular CRM applications include Salesforce, Microsoft Dynamics 365, HubSpot, Zoho CRM, and Freshsales. The choice of CRM application depends on an organization's specific needs and budget.</p>
+                                    <p className="mb-0">Some popular CRM applications include Salesforce, Microsoft Dynamics 365, HubSpot, Zoho CRM, and Freshsales. The choice of CRM application depends on an organization's specific needs and budget.</p> */}
                                 </div>
                             </div>
                         </div>
@@ -212,9 +212,9 @@ const TabProjectOverview = () => {
                                         <div className="fw-semibold">16 / 25 Open Tasks</div>
                                         <i className="text-warning"><FiCheckCircle size={16} /></i>
                                     </div> */}
-                                    <div className="progress mt-2 ht-3">
+                                    {/* <div className="progress mt-2 ht-3">
                                         <div className="progress-bar bg-warning" role="progressbar" style={{ width: '78%' }} />
-                                    </div>
+                                    </div> */}
                                 </div>
                             </div>
                         </div>
@@ -225,9 +225,9 @@ const TabProjectOverview = () => {
                                         <div className="fw-semibold">25 / 25 Days Left</div>
                                         <i className="text-success" ><FiCalendar size={16} /></i>
                                     </div> */}
-                                    <div className="progress mt-2 ht-3">
+                                    {/* <div className="progress mt-2 ht-3">
                                         <div className="progress-bar bg-success" role="progressbar" style={{ width: '100%' }} />
-                                    </div>
+                                    </div> */}
                                 </div>
                             </div>
                         </div>

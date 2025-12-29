@@ -34,19 +34,19 @@ const ProposalCreateContent = () => {
                 <div className="card stretch stretch-full">
                     <div className="card-body">
                         <div className="mb-4">
-                            <label className="form-label">Subject <span className="text-danger">*</span></label>
-                            <input type="text" className="form-control" placeholder="Subject" defaultValue="" />
+                            <label className="form-label">Teklif Başlığı <span className="text-danger">*</span></label>
+                            <input type="text" className="form-control" placeholder="Konu" defaultValue="" />
                         </div>
                         <div className="mb-4">
-                            <label className="form-label">Related <span className="text-danger">*</span></label>
+                            <label className="form-label">Müşteri <span className="text-danger">*</span></label>
                             <SelectDropdown
                                 options={propsalRelatedOptions}
                                 selectedOption={selectedOption}
-                                defaultSelect="lead"
+                                defaultSelect="Müşteri Seçin"
                                 onSelectOption={(option) => setSelectedOption(option)}
                             />
                         </div>
-                        <div className="mb-4">
+                        {/* <div className="mb-4">
                             <label className="form-label">Lead <span className="text-danger">*</span></label>
                             <SelectDropdown
                                 options={propasalLeadOptions}
@@ -54,17 +54,17 @@ const ProposalCreateContent = () => {
                                 defaultSelect="ui"
                                 onSelectOption={(option) => setSelectedOption(option)}
                             />
-                        </div>
+                        </div> */}
                         <div className="mb-4">
-                            <label className="form-label">Discount </label>
+                            <label className="form-label">Miktar </label>
                             <SelectDropdown
                                 options={propsalDiscountOptions}
                                 selectedOption={selectedOption}
-                                defaultSelect="no-discount"
+                                defaultSelect="Miktar Seçin"
                                 onSelectOption={(option) => setSelectedOption(option)}
                             />
                         </div>
-                        <div className="mb-4">
+                        {/* <div className="mb-4">
                             <label className="form-label">Visibility:</label>
                             <SelectDropdown
                                 options={propsalVisibilityOptions}
@@ -72,13 +72,13 @@ const ProposalCreateContent = () => {
                                 defaultSelect="private"
                                 onSelectOption={(option) => setSelectedOption(option)}
                             />
-                        </div>
+                        </div> */}
                         <div className="row">
                             <div className="col-lg-6 mb-4">
-                                <label className="form-label">Start <span className="text-danger">*</span></label>
+                                <label className="form-label">Geçerlilik Tarihi <span className="text-danger">*</span></label>
                                 <div className='input-group date '>
                                     <DatePicker
-                                        placeholderText='Pick start date'
+                                        placeholderText='Geçerlilik Tarihi Seçin'
                                         selected={startDate}
                                         showPopperArrow={false}
                                         onChange={(date) => setStartDate(date)}
@@ -93,8 +93,18 @@ const ProposalCreateContent = () => {
                                     />
                                 </div>
                             </div>
-                            <div className="col-lg-6 mb-4">
-                                <label className="form-label">Due <span className="text-danger">*</span></label>
+                                    
+                           <div className="col-lg-6 mb-4">
+                                <label className="form-label">Durum </label>
+                                <SelectDropdown
+                                    options={propsalStatusOptions}
+                                    selectedOption={selectedOption}
+                                    defaultSelect="Durum Seçin"
+                                    onSelectOption={(option) => setSelectedOption(option)}
+                                />
+                            </div>
+                            {/* <div className="col-lg-6 mb-4">
+                                <label className="form-label">Geçerlilik Tarihi <span className="text-danger">*</span></label>
                                 <div className='input-group date '>
                                     <DatePicker
                                         placeholderText='Pick due date'
@@ -111,23 +121,23 @@ const ProposalCreateContent = () => {
                                         )}
                                     />
                                 </div>
-                            </div>
+                            </div> */}
                         </div>
-                        <div className="mb-4">
+                        {/* <div className="mb-4">
                             <label className="form-label">Tags:</label>
                             <MultiSelectTags options={taskLabelsOptions} placeholder={""} />
                         </div>
                         <div className="mb-0">
                             <label className="form-label">Assignee:</label>
                             <MultiSelectImg options={taskAssigneeOptions} placeholder={""} />
-                        </div>
+                        </div> */}
                     </div>
                 </div>
             </div>
-            <div className="col-xl-6">
+            {/* <div className="col-xl-6">
                 <div className="card stretch stretch-full">
-                    <div className="card-body">
-                        <div className="mb-4">
+                    <div className="card-body"> */}
+                        {/* <div className="mb-4">
                             <label className="form-label">To <span className="text-danger">*</span></label>
                             <SelectDropdown
                                 options={taskAssigneeOptions}
@@ -135,9 +145,9 @@ const ProposalCreateContent = () => {
                                 defaultSelect="nneth.une@gmail.com"
                                 onSelectOption={(option) => setSelectedOption(option)}
                             />
-                        </div>
-                        <div>
-                            <label className="form-label">Address <span className="text-danger">*</span></label>
+                        </div> */}
+                        {/* <div>
+                            <label className="form-label">Adres <span className="text-danger">*</span></label>
                             <div className="row">
                                 <div className="col-lg-6 mb-4">
                                     <input type="text" className="form-control mb-2" placeholder="Address Line 1" />
@@ -153,13 +163,13 @@ const ProposalCreateContent = () => {
                                 <input type="text" className="form-control" placeholder="Emial" />
                             </div>
                             <div className="col-lg-6 mb-4">
-                                <label className="form-label">Phone <span className="text-danger">*</span></label>
+                                <label className="form-label">Telefon <span className="text-danger">*</span></label>
                                 <input type="text" className="form-control" placeholder="Phone" />
                             </div>
                         </div>
                         <div className="row">
                             <div className="col-lg-6 mb-4">
-                                <label className="form-label">Country <span className="text-danger">*</span></label>
+                                <label className="form-label">Ülke <span className="text-danger">*</span></label>
                                 <SelectDropdown
                                     options={countries}
                                     selectedOption={selectedOption}
@@ -170,8 +180,8 @@ const ProposalCreateContent = () => {
                                         setSelectedOption(option)
                                     }}
                                 />
-                            </div>
-                            <div className="col-lg-6 mb-4">
+                            </div> */}
+                            {/* <div className="col-lg-6 mb-4">
                                 <label className="form-label">State</label>
                                 <SelectDropdown
                                     options={states}
@@ -179,8 +189,8 @@ const ProposalCreateContent = () => {
                                     defaultSelect={"new-york"}
                                     onSelectOption={(option) => setSelectedOption(option)}
                                 />
-                            </div>
-                        </div>
+                            </div> */}
+                        {/* </div>
                         <div className="row">
                             <div className="col-lg-6 mb-4">
                                 <label className="form-label">City </label>
@@ -190,8 +200,8 @@ const ProposalCreateContent = () => {
                                     defaultSelect="new-york"
                                     onSelectOption={(option) => setSelectedOption(option)}
                                 />
-                            </div>
-                            <div className="col-lg-6 mb-4">
+                            </div> */}
+                            {/* <div className="col-lg-6 mb-4">
                                 <label className="form-label">Timezone </label>
                                 <SelectDropdown
                                     options={timezonesData}
@@ -199,11 +209,11 @@ const ProposalCreateContent = () => {
                                     defaultSelect="Western Europe Time"
                                     onSelectOption={(option) => setSelectedOption(option)}
                                 />
-                            </div>
-                        </div>
+                            </div> */}
+                        {/* </div>
                         <hr className="my-5" />
-                        <div className="row">
-                            <div className="col-lg-6 mb-4">
+                        <div className="row"> */}
+                            {/* <div className="col-lg-6 mb-4">
                                 <label className="form-label">Currency</label>
                                 <SelectDropdown
                                     options={currencyOptionsData}
@@ -211,8 +221,8 @@ const ProposalCreateContent = () => {
                                     defaultSelect="usd"
                                     onSelectOption={(option) => setSelectedOption(option)}
                                 />
-                            </div>
-                            <div className="col-lg-6 mb-4">
+                            </div> */}
+                            {/* <div className="col-lg-6 mb-4">
                                 <label className="form-label">Status </label>
                                 <SelectDropdown
                                     options={propsalStatusOptions}
@@ -221,17 +231,17 @@ const ProposalCreateContent = () => {
                                     onSelectOption={(option) => setSelectedOption(option)}
                                 />
                             </div>
-                        </div>
-                        <hr className="my-5" />
-                        <div className="row mb-4">
+                        </div> */}
+                        {/* <hr className="my-5" /> */}
+                        {/* <div className="row mb-4">
                             <div className="form-check form-switch form-switch-sm ps-5">
                                 <input className="form-check-input c-pointer" type="checkbox" id="commentSwitch" />
                                 <label className="form-check-label fw-500 text-dark c-pointer" htmlFor="commentSwitch">Allow Comments</label>
                             </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+                        </div> */}
+                    {/* </div> */}
+                {/* </div> */}
+            {/* </div> */}
             <AddProposal previtems={previtems} />
         </>
     )

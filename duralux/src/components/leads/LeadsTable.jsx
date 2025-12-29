@@ -72,7 +72,7 @@ const LeadssTable = () => {
 
         {
             accessorKey: 'customer',
-            header: () => 'Customer',
+            header: () => 'Ad Soyad',
             cell: (info) => {
                 const roles = info.getValue();
                 return (
@@ -97,36 +97,36 @@ const LeadssTable = () => {
             header: () => 'Email',
             cell: (info) => <a href="apps-email.html">{info.getValue()}</a>
         },
-        {
-            accessorKey: 'source',
-            header: () => 'Source',
-            cell: (info) => {
-                const x = info.getValue()
-                return (
-                    <div className="hstack gap-2">
-                        <div className="avatar-text avatar-sm">
-                            {getIcon(x.icon)}
-                        </div>
-                        <a href="#">{x.media}</a>
-                    </div>
-                )
-            }
-        },
-        {
-            accessorKey: 'phone',
-            header: () => 'Phone',
-            cell: (info) => <a href="tel:">{info.getValue()}</a>
+        // {
+        //     accessorKey: 'source',
+        //     header: () => 'Source',
+        //     cell: (info) => {
+        //         const x = info.getValue()
+        //         return (
+        //             <div className="hstack gap-2">
+        //                 <div className="avatar-text avatar-sm">
+        //                     {getIcon(x.icon)}
+        //                 </div>
+        //                 <a href="#">{x.media}</a>
+        //             </div>
+        //         )
+        //     }
+        // },
+        // {
+        //     accessorKey: 'phone',
+        //     header: () => 'Telefon',
+        //     cell: (info) => <a href="tel:">{info.getValue()}</a>
             // meta: {
             //     className: "fw-bold text-dark"
             // }
-        },
+        // },
         {
             accessorKey: 'date',
-            header: () => 'Date',
+            header: () => 'İşe Alım Tarihi',
         },
         {
             accessorKey: 'status',
-            header: () => 'Status',
+            header: () => 'Durum',
             cell: (info) => <TableCell options={info?.getValue().status} defaultSelect={info?.getValue().defaultSelect} />
         },
         {

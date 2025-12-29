@@ -12,11 +12,11 @@ const ProposalEditHeader = () => {
         <div className="d-flex align-items-center gap-2 page-header-right-items-wrapper">
             <a href="#" className="btn btn-light-brand" data-bs-toggle="offcanvas" data-bs-target="#proposalSent">
                 <FiLayers size={16} className='me-2'/>
-                <span>Save & Send</span>
+                <span>Kaydet & Gönder</span>
             </a>
             <a href="#" className="btn btn-primary" onClick={handleClick}>
                 <FiSave size={16} className='me-2'/>
-                <span>Save</span>
+                <span>Kaydet</span>
             </a>
         </div>
     )

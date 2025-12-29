@@ -18,24 +18,24 @@ const ProposalSent = () => {
         <div className="offcanvas offcanvas-end proposal-sent" tabIndex={-1} id="proposalSent">
             <div className="offcanvas-header ht-80 px-4 border-bottom border-gray-5">
                 <div>
-                    <h2 className="fs-16 fw-bold text-truncate-1-line">Sent Proposal</h2>
-                    <small className="fs-12 text-muted">Sent proposal to your client's</small>
+                    <h2 className="fs-16 fw-bold text-truncate-1-line">Teklif Gönder</h2>
+                    {/* <small className="fs-12 text-muted">Sent proposal to your client's</small> */}
                 </div>
                 <button type="button" className="btn-close" data-bs-dismiss="offcanvas" aria-label="Close" />
             </div>
             <div className="py-3 px-4 d-flex justify-content-between align-items-center border-bottom border-bottom-dashed border-gray-5 bg-gray-100">
                 <div>
-                    <span className="fw-bold text-dark">Date:</span>
+                    <span className="fw-bold text-dark">Tarih:</span>
                     <span className="fs-11 fw-medium text-muted">25 MAY, 2023</span>
                 </div>
                 <div>
-                    <span className="fw-bold text-dark">Proposal No:</span>
+                    <span className="fw-bold text-dark">Teklif No:</span>
                     <span className="fs-12 fw-bold text-primary c-pointer">#NXL369852</span>
                 </div>
             </div>
             <div className="offcanvas-body">
                 <div className="form-group mb-4">
-                    <label className="form-label">From: <span className="text-danger">*</span></label>
+                    <label className="form-label">Form: <span className="text-danger">*</span></label>
                     <input type="email" className="form-control" defaultValue="wrapcode.info@gmail.com" placeholder="Clients..." readOnly required />
                 </div>
                 <div className="form-group mb-4">
@@ -43,7 +43,7 @@ const ProposalSent = () => {
                     <EmailTagInput placeholder={"To..."} className="border" />
                 </div>
                 <div className="form-group mb-4">
-                    <label className="form-label">Subject: <span className="text-danger">*</span></label>
+                    <label className="form-label">Konu: <span className="text-danger">*</span></label>
                     <input type="text" className="form-control" placeholder="Subject..." required />
                 </div>
                 <div className="form-group mb-4">

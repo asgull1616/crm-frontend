@@ -99,10 +99,10 @@ const ProjectCreateContent = () => {
                     <div className="actions clearfix">
                         <ul>
                             <li className={`${currentStep === 0 ? "disabled" : ""}`} onClick={(e) => handlePrev(e)} disabled={currentStep === 0}>
-                                <a href="#">Previous</a>
+                                <a href="#">Geri</a>
                             </li>
                             <li className={`${currentStep === steps.length - 1 ? "disabled" : ""}`} onClick={(e) => handleNext(e)} disabled={currentStep === steps.length - 1}>
-                                <a href="#">Next</a>
+                                <a href="#">İlri</a>
                             </li>
                         </ul>
 

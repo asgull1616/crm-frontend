@@ -13,7 +13,7 @@ const TablePagination = ({table}) => {
                             onClick={() => table.previousPage()}
                             disabled={!table.getCanPreviousPage()}
                         >
-                            <a href="#" className="page-link">Previous</a></li>
+                            <a href="#" className="page-link">Geri</a></li>
                         <li className="paginate_button page-item active">
                             <a href="#" aria-controls="proposalList" data-dt-idx="0" tabIndex="0" className="page-link">
                                 {table.getState().pagination.pageIndex + 1}
@@ -24,7 +24,7 @@ const TablePagination = ({table}) => {
                             onClick={() => table.nextPage()}
                             disabled={!table.getCanNextPage()}
                         >
-                            <a href="#" className="page-link">Next</a>
+                            <a href="#" className="page-link">İleri</a>
                         </li>
                     </ul>
                 </div>

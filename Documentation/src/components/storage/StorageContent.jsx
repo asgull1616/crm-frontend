@@ -13,17 +13,17 @@ import { confirmDelete } from '@/utils/confirmDelete';
 import StorageSidebar from './StorageSidebar';
 
 export const strogeOptions = [
-    { icon: <FiShare2 />, label: "Share" },
-    { icon: <FiInfo />, label: "Details", modalTarget: "#fileFolderDetailsOffcanvas" },
-    { icon: <FiEdit2 />, label: "Rename" },
-    { icon: <FiDownload />, label: "Download" },
-    { type: "divider" },
-    { icon: <FiCopy />, label: "Copy to..." },
-    { icon: <FiMove />, label: "Move to..." },
-    { icon: <FiLink2 />, label: "Open with...", link: "https://themeforest.net/user/theme_ocean" },
-    { type: "divider" },
-    { icon: <FiScissors />, label: "Backup" },
-    { icon: <FiTrash2 />, label: "Remove" },
+    { icon: <FiShare2 />, label: "Paylaş" },
+    // { icon: <FiInfo />, label: "Details", modalTarget: "#fileFolderDetailsOffcanvas" },
+    // { icon: <FiEdit2 />, label: "Rename" },
+    { icon: <FiDownload />, label: "İndir" },
+    // { type: "divider" },
+    { icon: <FiCopy />, label: "Kopyala..." },
+    // { icon: <FiMove />, label: "Move to..." },
+    // { icon: <FiLink2 />, label: "Open with...", link: "https://themeforest.net/user/theme_ocean" },
+    // { type: "divider" },
+    // { icon: <FiScissors />, label: "Backup" },
+    { icon: <FiTrash2 />, label: "Sil" },
 ]
 
 const StorageContent = () => {

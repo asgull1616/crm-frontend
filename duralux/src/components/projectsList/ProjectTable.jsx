@@ -83,11 +83,11 @@ const ProjectTable = () => {
                             <a href="projects-view.html" className="text-truncate-1-line">{roles?.title}</a>
                             <p className="fs-12 text-muted mt-2 text-truncate-1-line project-list-desc">{roles?.description}</p>
                             <div className="project-list-action fs-12 d-flex align-items-center gap-3 mt-2">
-                                <a href="#">Start</a>
+                                <a href="#">BAŞLA</a>
                                 <span className="vr text-muted"></span>
-                                <a href="#">Edit</a>
+                                <a href="#">DÜZENLE</a>
                                 <span className="vr text-muted"></span>
-                                <a href="#" className="text-danger">Delete</a>
+                                <a href="#" className="text-danger">SİL</a>
                             </div>
                         </div>
                     </div>
