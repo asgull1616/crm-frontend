@@ -201,7 +201,7 @@ export const menuList = [
             },
             {
                 id: 2,
-                name: "Ekipleri GÖrüntüle",
+                name: "Ekipleri Görüntüle",
                 path: "/leads/view",
                 subdropdownMenu: false
             },
