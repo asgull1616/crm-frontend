@@ -17,7 +17,7 @@ const steps = [
     // { name: "Budget", required: true },
     { name: "Proje Ekibi", required: false },
     // { name: "Target", required: false },
-    { name: "Attachment", required: false },
+    { name: "Dosya Yükleme", required: false },
     { name: "Tamamlandı", required: false },
 ];
 
@@ -90,19 +90,19 @@ const ProjectCreateContent = () => {
                         {/* {currentStep === 2 && <TabProjectSettings />} */}
                         {/* {currentStep === 3 && <TabProjectBudget setFormData={setFormData} formData={formData} error={error} setError={setError} />} */}
                         {currentStep === 2 && <TabProjectAssigned />}
-                        {currentStep === 3 && <TabProjectTarget />}
-                        {currentStep === 4 && <TabAttachement />}
-                        {currentStep === 5 && <TabCompleted />}
+                        {/* {currentStep === 3 && <TabProjectTarget />} */}
+                        {currentStep === 3 && <TabAttachement />}
+                        {currentStep === 4 && <TabCompleted />}
                     </div>
 
                     {/* Buttons */}
                     <div className="actions clearfix">
                         <ul>
                             <li className={`${currentStep === 0 ? "disabled" : ""}`} onClick={(e) => handlePrev(e)} disabled={currentStep === 0}>
-                                <a href="#">Previous</a>
+                                <a href="#">Geri</a>
                             </li>
                             <li className={`${currentStep === steps.length - 1 ? "disabled" : ""}`} onClick={(e) => handleNext(e)} disabled={currentStep === steps.length - 1}>
-                                <a href="#">Next</a>
+                                <a href="#">İleri</a>
                             </li>
                         </ul>
 
