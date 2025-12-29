@@ -45,7 +45,7 @@ const Project = ({ cardYSpaceClass, borderShow, title }) => {
                         )}
                     </div>
                 </div>
-                <Link href="#" className="card-footer fs-11 fw-bold text-uppercase text-center">Upcomming Projects</Link>
+                <Link href="#" className="card-footer fs-11 fw-bold text-uppercase text-center">GELECEK GÖREVLER</Link>
             </div>
             <CardLoader refreshKey={refreshKey} />
         </div>

@@ -26,11 +26,11 @@ const LatestLeads = ({title}) => {
                         <table className="table table-hover mb-0">
                             <thead>
                                 <tr className="border-b">
-                                    <th scope="row">Users</th>
-                                    <th>Proposal</th>
-                                    <th>Date</th>
-                                    <th>Status</th>
-                                    <th className="text-end">Actions</th>
+                                    <th scope="row">Müşteri</th>
+                                    <th>Teklif</th>
+                                    <th>Tarih</th>
+                                    <th>Durum</th>
+                                    <th className="text-end">İşlemler</th>
                                 </tr>
                             </thead>
                             <tbody>

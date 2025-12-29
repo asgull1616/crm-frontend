@@ -18,7 +18,7 @@ const PaymentRecordChart = () => {
     return (
         <div className="col-xxl-8">
             <div className={`card stretch stretch-full ${isExpanded ? "card-expand" : ""} ${refreshKey ? "card-loading" : ""}`}>
-                <CardHeader title={"Payment Record"} refresh={handleRefresh} remove={handleDelete} expanded={handleExpand} />
+                <CardHeader title={"Teklif Durum Grafiği"} refresh={handleRefresh} remove={handleDelete} expanded={handleExpand} />
                 <div className="card-body custom-card-action p-0">
                     <ReactApexChart
                         options={chartOptions}
@@ -28,10 +28,10 @@ const PaymentRecordChart = () => {
                 </div>
                 <div className="card-footer">
                     <div className="row g-4">
-                        <Card bg_color={"bg-primary"} price={"5,486"} progress={"81%"} title={"Awaiting"} />
-                        <Card bg_color={"bg-success"} price={"9,275"} progress={"81%"} title={"Completed"} />
-                        <Card bg_color={"bg-danger"} price={"3,868"} progress={"81%"} title={"Rejected"} />
-                        <Card bg_color={"bg-dark"} price={"50,668"} progress={"81%"} title={"Revenue"} />
+                        <Card bg_color={"bg-primary"} price={"5,486"} progress={"81%"} title={"Bekleyen Ödemeler"} />
+                        <Card bg_color={"bg-success"} price={"9,275"} progress={"81%"} title={"Tamamlanan"} />
+                        <Card bg_color={"bg-danger"} price={"3,868"} progress={"81%"} title={"Reddedilen"} />
+                        <Card bg_color={"bg-dark"} price={"50,668"} progress={"81%"} title={"Toplam Gelir"} />
                     </div>
                 </div>
                 <CardLoader refreshKey={refreshKey} />
