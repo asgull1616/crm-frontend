@@ -3,7 +3,7 @@ export const teamMembersList = [
         id: 1,
         thumbnail: "/images/avatar/1.png",
         name: "Alexandra Della",
-        position: "Frontend Developer",
+        position: "Önyüz Geliştirici",
         progress: 40,
         color:"#ea4d4d"
     },
@@ -12,7 +12,7 @@ export const teamMembersList = [
         id: 2,
         thumbnail: "",
         name: "Archie Cantones",
-        position: "UI/UX Designer",
+        position: "Kullanıcı Arayüzü / Deneyimi Tasarımcısı",
         progress: 65,
         color:"#3454d1"
     },
@@ -20,7 +20,7 @@ export const teamMembersList = [
         id: 3,
         thumbnail: "/images/avatar/3.png",
         name: "Malanie Hanvey",
-        position: "Backend Developer",
+        position: "Arkayüz Geliştirici",
         progress: 50,
         color:"#ffa21d"
     },
@@ -28,7 +28,7 @@ export const teamMembersList = [
         id: 4,
         thumbnail: "/images/avatar/7.png",
         name: "Kenneth Hune",
-        position: "Digital Marketer",
+        position: "Dijital Pazarlama Uzmanı",
         progress: 75,
         color:"#17c666"
     },
@@ -36,7 +36,7 @@ export const teamMembersList = [
         id: 5,
         thumbnail: "",
         name: "Timothy Boyd",
-        position: "Fullstack Developer",
+        position: "Tam Donanımlı Geliştirici",
         progress: 75,
         color:"#17c666"
     },
@@ -44,7 +44,7 @@ export const teamMembersList = [
         id: 6,
         thumbnail: "/images/avatar/5.png",
         name: "Edward Andrade",
-        position: "Fullstack Developer",
+        position: "Tam Donanımlı Geliştirici",
         progress: 75,
         color:"#17c666"
     },
