@@ -57,39 +57,43 @@ const CardHeader = ({ title, refresh, remove, expanded }) => {
               <i>
                 <FiAtSign />
               </i>
-              New
+             Yeni
             </Link>
-            <Link href="#" className="dropdown-item">
+            {/* <Link href="#" className="dropdown-item">
               <i>
+              //ıııı
+
+
+              //merhaba dünya
                 <FiCalendar />
               </i>
-              Event
-            </Link>
+             Olay
+            </Link> */}
             <Link href="#" className="dropdown-item">
               <i>
                 <FiBell />
               </i>
-              Snoozed
+              Ertelenen
             </Link>
             <Link href="#" className="dropdown-item">
               <i>
                 <FiTrash />
               </i>
-              Deleted
+              Sil
             </Link>
             <div className="dropdown-divider"></div>
             <Link href="#" className="dropdown-item">
               <i>
                 <FiSettings />
               </i>
-              Settings
+              Ayarlar
             </Link>
-            <Link href="#" className="dropdown-item">
+            {/* <Link href="#" className="dropdown-item">
               <i>
                 <FiLifeBuoy />
               </i>
               Tips & Tricks
-            </Link>
+            </Link> */}
           </div>
         </div>
       </div>
