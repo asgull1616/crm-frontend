@@ -1,19 +1,38 @@
+'use client'
+
 import Link from 'next/link'
 import React from 'react'
+import { useRouter } from 'next/navigation'
 import { FiFacebook, FiGithub, FiTwitter } from 'react-icons/fi'
 
 const LoginForm = ({ registerPath, resetPath }) => {
+      const router = useRouter() 
+//olması gereken login kodu bu olmalı 
+//   const handleSubmit = (e) => {
+//     e.preventDefault()
+//     router.push('/')   
+
+
+// geçici login için backendsiz
+const handleSubmit = (e) => {
+  e.preventDefault()
+
+  document.cookie = 'loggedIn=true; path=/'
+
+  router.push('/')
+  
+  } 
     return (
         <>
             <h2 className="fs-20 fw-bolder mb-4">Giriş Yap</h2>
             <h4 className="fs-13 fw-bold mb-2">Hesaba Giriş Yapın</h4>
             <p className="fs-12 fw-medium text-muted"></p>
-            <form action="index.html" className="w-100 mt-4 pt-2">
+             <form onSubmit={handleSubmit} className="w-100 mt-4 pt-2">
                 <div className="mb-4">
-                    <input type="email" className="form-control" placeholder="Kullanıcı adı veya E-mail" /*defaultValue="wrapcode.info@gmail.com" required*/ />
+                    <input type="email" className="form-control" placeholder="Kullanıcı adı veya E-mail"  />
                 </div>
                 <div className="mb-3">
-                    <input type="password" className="form-control" placeholder="Şifre" /*defaultValue="123456" required *//>
+                    <input type="password" className="form-control" placeholder="Şifre" />
                 </div>
                 <div className="d-flex align-items-center justify-content-between">
                     <div>

@@ -5,18 +5,19 @@ import { FiAlertOctagon, FiArchive, FiClock, FiEdit3, FiEye, FiMoreHorizontal, F
 import Dropdown from '@/components/shared/Dropdown';
 import SelectDropdown from '@/components/shared/SelectDropdown';
 import getIcon from '@/utils/getIcon';
+import Link from 'next/link'
 import { leadTableData } from '@/utils/fackData/leadTableData';
 
 
 const actions = [
-    { label: "Edit", icon: <FiEdit3 /> },
-    { label: "Print", icon: <FiPrinter /> },
-    { label: "Remind", icon: <FiClock /> },
-    { type: "divider" },
-    { label: "Archive", icon: <FiArchive /> },
-    { label: "Report Spam", icon: <FiAlertOctagon />, },
-    { type: "divider" },
-    { label: "Delete", icon: <FiTrash2 />, },
+    { label: "Düzenle", icon: <FiEdit3 /> },
+    // { label: "Print", icon: <FiPrinter /> },
+    // { label: "Remind", icon: <FiClock /> },
+    // { type: "divider" },
+    // { label: "Archive", icon: <FiArchive /> },
+    // { label: "Report Spam", icon: <FiAlertOctagon />, },
+    // { type: "divider" },
+    { label: "Sil", icon: <FiTrash2 />, },
 ];
 
 const TableCell = memo(({ options, defaultSelect }) => {
@@ -134,9 +135,9 @@ const LeadssTable = () => {
             header: () => "Actions",
             cell: info => (
                 <div className="hstack gap-2 justify-content-end">
-                    <a href="proposal-view.html" className="avatar-text avatar-md">
-                        <FiEye />
-                    </a>
+                      <Link href="/leads/view" className="avatar-text avatar-md">
+        <FiEye />
+      </Link>
                     <Dropdown dropdownItems={actions} triggerClassNaclassName='avatar-md' triggerPosition={"0,21"} triggerIcon={<FiMoreHorizontal />} />
                 </div>
             ),

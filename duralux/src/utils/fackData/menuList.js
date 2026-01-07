@@ -189,28 +189,28 @@ export const menuList = [
     },
     {
         id: 6,
-        name: "Ekipler",
-        path: "#",
+        name: "Ekipleri Görüntüle",
+        path: "/leads/list",
         icon: 'feather-alert-circle',
-        dropdownMenu: [
-            {
-                id: 1,
-                name: "Ekipler",
-                path: "/leads/list",
-                subdropdownMenu: false
-            },
-            {
-                id: 2,
-                name: "Ekipleri Görüntüle",
-                path: "/leads/view",
-                subdropdownMenu: false
-            },
-            {
-                id: 3,
-                name: "Ekip Oluştur",
-                path: "/leads/create",
-                subdropdownMenu: false
-            }
+       dropdownMenu: [
+        //     {
+        //         id: 1,
+        //         name: "Ekipler",
+        //         path: "/leads/list",
+        //         subdropdownMenu: false
+        //     },
+        //     {
+        //         id: 2,
+        //         name: "Ekipleri Görüntüle",
+        //         path: "/leads/view",
+        //         subdropdownMenu: false
+        //     },
+        //     {
+        //         id: 3,
+        //         name: "Ekip Oluştur",
+        //         path: "/leads/create",
+        //         subdropdownMenu: false
+        //     }
         ]
     },
     {
@@ -363,17 +363,17 @@ export const menuList = [
             },
         ]
     },
-    {
-        id: 10,
-        name: "Giriş / Kimlik Doğrulama",
-        path: "#",
-        icon: 'feather-power',
-        dropdownMenu: [
-            {
-                id: 1,
-                name: "Giriş",
-                path: "/authentication/login/minimal",
-                subdropdownMenu: [
+    // {
+    //     id: 10,
+    //     name: "Giriş / Kimlik Doğrulama",
+    //     path: "#",
+    //     icon: 'feather-power',
+    //     dropdownMenu: [
+    //         {
+    //             id: 1,
+    //             name: "Giriş",
+    //             path: "/authentication/login/minimal",
+    //             subdropdownMenu: [
                     // {
                     //     id: 1,
                     //     name: "Cover",
@@ -389,13 +389,13 @@ export const menuList = [
                     //     name: "Creative",
                     //     path: "/authentication/login/creative",
                     // },
-                ]
-            },
-            {
-                id: 2,
-                name: "Kayıt",
-                path: "/authentication/register/minimal",
-                subdropdownMenu: [
+            //     ]
+            // },
+            // {
+            //     id: 2,
+            //     name: "Kayıt",
+            //     path: "/authentication/register/minimal",
+            //     subdropdownMenu: [
                     // {
                     //     id: 1,
                     //     name: "Cover",
@@ -411,8 +411,8 @@ export const menuList = [
                     //     name: "Creative",
                     //     path: "/authentication/register/creative",
                     // },
-                ]
-            },
+            //     ]
+            // },
             // {
             //     id: 3,
             //     name: "Error 404",
@@ -501,8 +501,8 @@ export const menuList = [
             //         },
             //     ]
             // },
-        ]
-    },
+    //     ]
+    // },
     // {
     //     id: 11,
     //     name: "help center",
