@@ -89,15 +89,15 @@ const LeadsCreateContent = () => {
                                 <span className="d-block mb-2">Genel Bilgi :</span>
                                 <span className="fs-12 fw-normal text-muted text-truncate-1-line">Ekip üyesi için genel bilgiler</span>
                             </h5>
-                            <a href="#" className="btn btn-sm btn-light-brand">Kullanıcıyı Düzenle</a>
+                            {/* <a href="#" className="btn btn-sm btn-light-brand">Kullanıcıyı Düzenle</a> */}
                         </div>
-                        <Input
+                        {/* <Input
                             icon='feather-user'
                             label={"Ad Soyad"}
                             labelId={"nameInput"}
                             placeholder={"Ad Soyad"}
                             name={"name"}
-                        />
+                        /> */}
                         <Input
                             icon='feather-mail'
                             label={"Email"}
@@ -120,13 +120,13 @@ const LeadsCreateContent = () => {
                             placeholder={"Telefon"}
                             name={"phone"}
                         />
-                        {/* <Input
-                            icon='feather-compass'
-                            label={"Company"}
-                            labelId={"companyInput"}
-                            placeholder={"Company"}
-                            name={"company"}
-                        /> */}
+                        <Input
+                            icon='feather-briefcases'
+                            label={"Şifre"}
+                            labelId={"passwordInput"}
+                            placeholder={"Şifre"}
+                            name={"password"}
+                        />
                         {/* <Input
                             icon='feather-briefcase'
                             label={"Designation"}

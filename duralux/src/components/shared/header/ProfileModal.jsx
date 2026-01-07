@@ -1,4 +1,7 @@
+'use client'
+
 import Image from 'next/image'
+import Link from 'next/link'
 import React, { Fragment } from 'react'
 import { FiActivity, FiBell, FiChevronRight, FiDollarSign, FiLogOut, FiSettings, FiUser } from "react-icons/fi"
 
@@ -74,11 +77,12 @@ const ProfileModal = () => {
 
                     </div>
                 </div> */}
-                <div className="dropdown-divider"></div>
-                <a href="#" className="dropdown-item">
+                <div className="dropdown-item"></div>
+                 <Link href="/leads/view" className="dropdown-item">
                     <i ><FiUser /></i>
                     <span>Profil Detayları</span>
-                </a>
+             
+                 </Link>
                 {/* <a href="#" className="dropdown-item">
                     <i ><FiActivity /></i>
                     <span>Activity Feed</span>
@@ -96,10 +100,10 @@ const ProfileModal = () => {
                     <span>Hesap Ayarları</span>
                 </a>
                 <div className="dropdown-divider"></div>
-                <a href="./auth-login-minimal.html" className="dropdown-item">
+                      <Link href="/authentication/login/minimal" className="dropdown-item">
                     <i> <FiLogOut /></i>
                     <span>Çıkış Yap</span>
-                </a>
+                </Link>
             </div>
         </div>
     )
