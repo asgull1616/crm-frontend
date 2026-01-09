@@ -23,4 +23,4 @@ const LeadsViewContent = () => {
     )
 }
 
-export default LeadsViewContent
+export default LeadsViewContent  

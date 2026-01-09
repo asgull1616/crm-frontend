@@ -163,19 +163,19 @@ export const menuList = [
         _dropdownMenu: [
             {
                 id: 1,
-                name: "Müşteriler",
+                name: "Müşterileri Görüntüle",
                 path: "/customers/list",
                 subdropdownMenu: false
             },
-            {
-                id: 2,
-                name: "Müşteri Görüntüle",
-                path: "/customers/view",
-                subdropdownMenu: false
-            },
+            // {
+            //     id: 2,
+            //     name: "Müşteri Görüntüle",
+            //     path: "/customers/view",
+            //     subdropdownMenu: false
+            // },
             {
                 id: 3,
-                name: "Müşterileri Oluştur",
+                name: "Müşteri Oluştur",
                 path: "/customers/create",
                 subdropdownMenu: false
             }

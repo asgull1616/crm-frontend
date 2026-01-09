@@ -15,9 +15,9 @@ const CustomerCreateContent = () => {
                         <li className="nav-item flex-fill border-top" role="presentation">
                             <a href="$" className="nav-link active" data-bs-toggle="tab" data-bs-target="#profileTab" role="tab"> Müşteri Profili</a>
                         </li>
-                        <li className="nav-item flex-fill border-top" role="presentation">
+                        {/* <li className="nav-item flex-fill border-top" role="presentation">
                             <a href="$" className="nav-link" data-bs-toggle="tab" data-bs-target="#passwordTab" role="tab">Şifre</a>
-                        </li>
+                        </li>  */}
                         <li className="nav-item flex-fill border-top" role="presentation">
                             <a href="$" className="nav-link" data-bs-toggle="tab" data-bs-target="#billingTab" role="tab">Fatura & Teslimat Adresi</a>
                         </li>

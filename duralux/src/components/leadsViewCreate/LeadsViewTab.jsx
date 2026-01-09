@@ -14,15 +14,18 @@ const LeadsViewTab = () => {
                         <a href="#" className="page-content-left-close-toggle">
                             <i className="feather-arrow-left me-2"></i>
                             <span>Geri Dön</span>
-                        </a>
+                        </a> 
                     </div>
                     <ul className="nav nav-tabs nav-tabs-custom-style" id="myTab" role="tablist">
                         <li className="nav-item" role="presentation">
                             <button className="nav-link active" data-bs-toggle="tab" data-bs-target="#profileTab">Profili Görüntüle</button>
-                        </li>
-                        <li className="nav-item" role="presentation">
+                        </li> 
+                        {/* <li className="nav-item" role="presentation">
                             <button className="nav-link" data-bs-toggle="tab" data-bs-target="#proposalTab">Teklifler</button>
-                        </li>
+                        </li> */}
+                         {/* <li className="nav-item flex-fill border-top" role="presentation">
+                            <a href="$" className="nav-link" data-bs-toggle="tab" data-bs-target="#passwordTab" role="tab">Şifre</a>
+                        </li> */}
                         {/* <li className="nav-item" role="presentation">
                             <button className="nav-link" data-bs-toggle="tab" data-bs-target="#tasksTab">Tasks</button>
                         </li> */}
@@ -35,7 +38,9 @@ const LeadsViewTab = () => {
                     </ul>
                 </div>
             </div>
+        
         </div>
+        
     )
 }
 
