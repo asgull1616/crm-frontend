@@ -9,16 +9,16 @@ import { customersTableData } from '@/utils/fackData/customersTableData';
 import Link from 'next/link';
 
 
-const actions = [
-    { label: "Düzenle", icon: <FiEdit3 /> },
+// const actions = [
+    // { label: "Düzenle", icon: <FiEdit3 /> },
     // { label: "Print", icon: <FiPrinter /> },
     // { label: "Remind", icon: <FiClock /> },
     // { type: "divider" },
     // { label: "Archive", icon: <FiArchive /> },
     // { label: "Report Spam", icon: <FiAlertOctagon />, },
     // { type: "divider" },
-    { label: "Sil", icon: <FiTrash2 />, },
-];
+    // { label: "Sil", icon: <FiTrash2 />, },
+// ];
 
 const TableCell = memo(({ options, defaultSelect }) => {
     const [selectedOption, setSelectedOption] = useState(null);
@@ -146,12 +146,18 @@ const CustomersTable = () => {
         {
             accessorKey: 'actions',
             header: () => "Actions",
-            cell: info => ( 
+            cell: info => (
                 <div className="hstack gap-2 justify-content-end">
                     <Link href="/customers/view" className="avatar-text avatar-md">
                         <FiEye />
                     </Link>
-                    <Dropdown dropdownItems={actions} triggerClass='avatar-md' triggerPosition={"0,21"} triggerIcon={<FiMoreHorizontal />} />
+                    {/* <Dropdown dropdownItems={actions} triggerClass='avatar-md' triggerPosition={"0,21"} triggerIcon={<FiMoreHorizontal />} /> */}
+                    <button
+                        className="avatar-text avatar-md"
+                        onClick={() => handleDelete(info.row.original.id)}
+                    >
+                        <FiTrash2 />
+                    </button>
                 </div>
             ),
             meta: {
