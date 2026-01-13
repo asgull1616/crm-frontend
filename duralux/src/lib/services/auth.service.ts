@@ -6,5 +6,6 @@ export const authService = {
     register: (data: { username: string; email: string; password: string }) =>
         api.post('/auth/register', data),
 
+
     logout: () => api.post('/auth/logout'),
 };
