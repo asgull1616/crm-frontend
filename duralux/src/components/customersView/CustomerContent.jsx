@@ -1,4 +1,6 @@
-import React from 'react'
+'use client'
+import { useParams } from 'next/navigation'
+import { useEffect, useState } from 'react'
 import CustomerSocalMedia from './CustomerSocalMedia'
 import TabOverviewContent from './TabOverviewContent'
 import TabBillingContent from './TabBillingContent'
@@ -7,49 +9,57 @@ import TabNotificationsContent from './TabNotificationsContent'
 import TabConnections from './TabConnections'
 import TabSecurity from './TabSecurity'
 import Profile from '../widgetsList/Profile'
-import CustomerSocalFlower from './CustomerSocalFlower'
+import { customerService } from '@/lib/services/customer.service'
 
 const CustomerContent = () => {
+    const { id } = useParams()
+    const [customer, setCustomer] = useState(null)
+    const [loading, setLoading] = useState(true)
+
+    useEffect(() => {
+        if (id) loadCustomer()
+    }, [id])
+
+    const loadCustomer = async () => {
+        try {
+            const res = await customerService.getById(id)
+            setCustomer(res.data)
+        } finally {
+            setLoading(false)
+        }
+    }
+
+    if (loading) return <div>Yükleniyor...</div>
+    if (!customer) return <div>Müşteri bulunamadı</div>
+
     return (
         <>
             <div className="col-xxl-4 col-xl-6">
-                <Profile />
-                <CustomerSocalMedia />
-                {/* <CustomerSocalFlower /> */}
+                <Profile customer={customer} />
+                <CustomerSocalMedia customer={customer} />
             </div>
+
             <div className="col-xxl-8 col-xl-6">
                 <div className="card border-top-0">
                     <div className="card-header p-0">
-                        <ul className="nav nav-tabs flex-wrap w-100 text-center customers-nav-tabs" id="myTab" role="tablist">
-                            <li className="nav-item flex-fill border-top" role="presentation">
-                                <a href="#" className="nav-link active" data-bs-toggle="tab" data-bs-target="#overviewTab" role="tab">Genel Bakış</a>
+                        <ul className="nav nav-tabs flex-wrap w-100 text-center customers-nav-tabs">
+                            <li className="nav-item flex-fill border-top">
+                                <a className="nav-link active" data-bs-toggle="tab" data-bs-target="#overviewTab">
+                                    Genel Bakış
+                                </a>
                             </li>
-                            {/* <li className="nav-item flex-fill border-top" role="presentation">
-                                <a href="#" className="nav-link" data-bs-toggle="tab" data-bs-target="#billingTab" role="tab">Billing</a>
-                            </li> */}
-                            <li className="nav-item flex-fill border-top" role="presentation">
-                                <a href="#" className="nav-link" data-bs-toggle="tab" data-bs-target="#activityTab" role="tab">Aktivite</a>
+                            <li className="nav-item flex-fill border-top">
+                                <a className="nav-link" data-bs-toggle="tab" data-bs-target="#activityTab">
+                                    Aktivite
+                                </a>
                             </li>
-                            {/* <li className="nav-item flex-fill border-top" role="presentation">
-                                <a href="#" className="nav-link" data-bs-toggle="tab" data-bs-target="#notificationsTab" role="tab">Bildirimler</a>
-                            </li> */}
-                            {/* <li className="nav-item flex-fill border-top" role="presentation">
-                                <a href="#" className="nav-link" data-bs-toggle="tab" data-bs-target="#connectionTab" role="tab">Connection</a>
-                            </li> */}
-                            {/* <li className="nav-item flex-fill border-top" role="presentation">
-                                <a href="#" className="nav-link" data-bs-toggle="tab" data-bs-target="#securityTab" role="tab">Security</a>
-                            </li> */}
                         </ul>
                     </div>
+
                     <div className="tab-content">
-                        <TabOverviewContent />
-                        <div className="tab-pane fade" id="billingTab" role="tabpanel">
-                            <TabBillingContent billingHistoryshow={true} />
-                        </div>
-                        <TabActivityContent />
-                        <TabNotificationsContent />
-                        <TabConnections />
-                        <TabSecurity />
+                        <TabOverviewContent customer={customer} />
+                        <TabActivityContent customerId={customer.id} />
+                        {/* diğer tab’lar sonra */}
                     </div>
                 </div>
             </div>

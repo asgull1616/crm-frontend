@@ -1,10 +1,11 @@
 'use client'
 import React, { memo, useEffect, useState } from 'react'
 import Table from '@/components/shared/table/Table'
-import { FiEye, FiTrash2 } from 'react-icons/fi'
+import { FiEye, FiTrash2, FiEdit3 } from 'react-icons/fi'
 import Link from 'next/link'
 import SelectDropdown from '@/components/shared/SelectDropdown'
 import { customerService } from '@/lib/services/customer.service'
+
 
 
 
@@ -165,18 +166,36 @@ const tableData = (Array.isArray(customers) ? customers : []).map(c => ({
       accessorKey: 'actions',
       header: () => 'Actions',
       cell: (info) => (
-        <div className="hstack gap-2 justify-content-end">
-          <Link href={`/customers/view/${info.row.original.id}`} className="avatar-text avatar-md">
-            <FiEye />
-          </Link>
-          <button
-            className="avatar-text avatar-md"
-            onClick={() => handleDelete(info.row.original.id)}
-          >
-            <FiTrash2 />
-          </button>
-        </div>
-      ),
+  <div className="hstack gap-2 justify-content-end">
+    {/* ✏️ Güncelle */}
+    <Link
+      href={`/customers/edit/${info.row.original.id}`}
+      className="avatar-text avatar-md"
+      title="Güncelle"
+    >
+      <FiEdit3 />
+    </Link>
+
+    {/* 👁️ Detay */}
+    <Link
+      href={`/customers/view/${info.row.original.id}`}
+      className="avatar-text avatar-md"
+      title="Detayları Gör"
+    >
+      <FiEye />
+    </Link>
+
+    {/* 🗑️ Sil */}
+    <button
+      className="avatar-text avatar-md"
+      title="Sil"
+      onClick={() => handleDelete(info.row.original.id)}
+    >
+      <FiTrash2 />
+    </button>
+  </div>
+),
+
       meta: { headerClassName: 'text-end' },
     },
   ]
