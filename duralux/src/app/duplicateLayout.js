@@ -1,15 +1,37 @@
 'use client'
-import { usePathname } from "next/navigation";
-import dynamic from "next/dynamic";
+
+import { usePathname, useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 import Header from "@/components/shared/header/Header";
 import NavigationManu from "@/components/shared/navigationMenu/NavigationMenu";
 import SupportDetails from "@/components/supportDetails";
-import useBootstrapUtils from "@/hooks/useBootstrapUtils"
-// const useBootstrapUtils = dynamic(() => import('@/hooks/useBootstrapUtils'), { ssr: false })
+import useBootstrapUtils from "@/hooks/useBootstrapUtils";
 
 export default function DuplicateLayout({ children }) {
-    const pathName = usePathname()
-    useBootstrapUtils(pathName)
+    const pathName = usePathname();
+    const router = useRouter();
+    const [mounted, setMounted] = useState(false);
+
+    useBootstrapUtils(pathName);
+
+    // 🔐 SADECE CLIENT TAM HAZIR OLUNCA ÇALIŞ
+    useEffect(() => {
+        setMounted(true);
+    }, []);
+
+    useEffect(() => {
+        if (!mounted) return;
+
+        const token = sessionStorage.getItem('accessToken');
+        console.log('🔐 DUPLICATE TOKEN AFTER MOUNT:', token);
+
+        if (!token) {
+            router.push('/authentication/login/minimal');
+        }
+    }, [mounted, router]);
+
+    // ❗ HAZIR OLMADAN HİÇBİR ŞEY RENDER ETME
+    if (!mounted) return null;
 
     return (
         <>
@@ -22,6 +44,5 @@ export default function DuplicateLayout({ children }) {
             </main>
             <SupportDetails />
         </>
-
     );
 }

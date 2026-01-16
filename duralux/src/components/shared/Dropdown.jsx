@@ -1,91 +1,118 @@
-'use client'
-import React from 'react'
+'use client';
+
+import React from 'react';
 import Checkbox from './Checkbox';
 import { FiMoreVertical } from 'react-icons/fi';
 import Link from 'next/link';
 
 const Dropdown = ({
-    triggerPosition,
-    triggerClass = "avatar-sm",
-    triggerIcon,
-    triggerText,
-    dropdownItems = [],
-    dropdownPosition = "dropdown-menu-end",
-    dropdownAutoClose,
-    dropdownParentStyle,
-    dataBsToggle = "modal",
-    tooltipTitle,
-    dropdownMenuStyle,
-    iconStrokeWidth = 1.7,
-    isItemIcon = true,
-    isAvatar = true,
-    onClick,
-    active,
-    id
+  triggerPosition,
+  triggerClass = 'avatar-sm',
+  triggerIcon,
+  triggerText,
+  dropdownItems = [],
+  dropdownPosition = 'dropdown-menu-end',
+  dropdownAutoClose,
+  dropdownParentStyle,
+  tooltipTitle,
+  dropdownMenuStyle,
+  iconStrokeWidth = 1.7,
+  isItemIcon = true,
+  isAvatar = true,
 }) => {
+  return (
+    <div className={`filter-dropdown ${dropdownParentStyle || ''}`}>
+      {/* Dropdown Trigger */}
+      {tooltipTitle ? (
+        <span
+          className="d-flex c-pounter"
+          data-bs-toggle="dropdown"
+          data-bs-offset={triggerPosition}
+          data-bs-auto-close={dropdownAutoClose}
+        >
+          <div className={`avatar-text ${triggerClass}`}>
+            {triggerIcon || <FiMoreVertical />} {triggerText}
+          </div>
+        </span>
+      ) : (
+        <button
+          type="button"
+          className={`avatar-text ${triggerClass}`}
+          data-bs-toggle="dropdown"
+          data-bs-offset={triggerPosition}
+          data-bs-auto-close={dropdownAutoClose}
+        >
+          {triggerIcon || <FiMoreVertical />} {triggerText}
+        </button>
+      )}
 
-    return (
-        <>
-            <div className={`filter-dropdown ${dropdownParentStyle}`}>
-                {/* Dropdown Trigger */}
-                {
-                    tooltipTitle ?
-                        <span className="d-flex c-pounter" data-bs-toggle="dropdown" data-bs-offset={triggerPosition} data-bs-auto-close={dropdownAutoClose}>
-                            {
-                                isAvatar ?
-                                    <div className={`avatar-text ${triggerClass}`} data-toggle="tooltip" data-bs-trigger="hover" data-title={tooltipTitle} >
-                                        {triggerIcon || <FiMoreVertical />} {triggerText}
-                                    </div>
-                                    :
-                                    <div className={`${triggerClass}`} data-toggle="tooltip" data-bs-trigger="hover" data-title={tooltipTitle}>
-                                        {triggerIcon || <FiMoreVertical />} {triggerText}
-                                    </div>
-                            }
-                        </span>
-                        :
-                        isAvatar ?
-                            <Link href="#" className={`avatar-text ${triggerClass}`} data-bs-toggle="dropdown" data-bs-offset={triggerPosition} data-bs-auto-close={dropdownAutoClose} >
-                                {triggerIcon || <FiMoreVertical />} {triggerText}
-                            </Link>
-                            :
-                            <Link href="#" className={`${triggerClass}`} data-bs-toggle="dropdown" data-bs-offset={triggerPosition} data-bs-auto-close={dropdownAutoClose} >
-                                {triggerIcon || <FiMoreVertical />} {triggerText}
-                            </Link>
-                }
+      {/* Dropdown Menu */}
+      <ul className={`dropdown-menu ${dropdownMenuStyle || ''} ${dropdownPosition}`}>
+        {dropdownItems.map((item, index) => {
+          if (item.type === 'divider') {
+            return <li className="dropdown-divider" key={index} />;
+          }
 
+          return (
+            <li key={index}>
+              {item.checkbox ? (
+                <Checkbox
+                  checked={item.checked}
+                  id={item.id}
+                  name={item.label}
+                  className=""
+                />
+              ) : (
+                <button
+                  type="button"
+                  className={`dropdown-item ${
+                    item.active ? 'active' : ''
+                  }`}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
 
-                {/* Dropdown Menu */}
-                <ul className={`dropdown-menu ${dropdownMenuStyle} ${dropdownPosition}`}>
-                    {dropdownItems.map((item, index) => {
-                        if (item.type === "divider") {
-                            return <li className="dropdown-divider" key={index}></li>;
-                        }
-                        return (
-                            <li key={index} className={`${item.checkbox ? "dropdown-item" : ""}`}>
-                                {
-                                    item.checkbox ?
-                                        <Checkbox checked={item.checked} id={item.id} name={item.label} className={""} />
-                                        :
+                    // Link varsa
+                    if (item.link) {
+                      window.open(item.link, '_blank');
+                      return;
+                    }
 
-                                        <Link href={item.link || "#"} target='_blank' className={`${active === item.label ? "active" : ""} dropdown-item`}
-                                            data-bs-toggle={item.link || dataBsToggle} data-bs-target={item.modalTarget} onClick={() => onClick && onClick(item.label, id)}
-                                        >
-                                            {
-                                                isItemIcon ?
-                                                    item.icon && React.cloneElement(item.icon, { className: "me-3", size: 16, strokeWidth: iconStrokeWidth })
-                                                    :
-                                                    <span className={`wd-7 ht-7 rounded-circle me-3 ${item.color}`}></span>
-                                            }
-                                            <span>{item.label}</span>
-                                        </Link>
-                                }
-                            </li>
-                        );
-                    })}
-                </ul>
-            </div>
-        </>
-    )
-}
+                    // Modal varsa (Bootstrap uyumlu)
+                    if (item.modalTarget && window.bootstrap) {
+                      const modalEl = document.querySelector(item.modalTarget);
+                      if (modalEl) {
+                        const modal = new window.bootstrap.Modal(modalEl);
+                        modal.show();
+                      }
+                      return;
+                    }
 
-export default Dropdown
+                    // Normal action (Teams -> Sil gibi)
+                    item.onClick?.();
+                  }}
+                >
+                  {isItemIcon ? (
+                    item.icon &&
+                    React.cloneElement(item.icon, {
+                      className: 'me-3',
+                      size: 16,
+                      strokeWidth: iconStrokeWidth,
+                    })
+                  ) : (
+                    <span
+                      className={`wd-7 ht-7 rounded-circle me-3 ${item.color || ''}`}
+                    />
+                  )}
+                  <span>{item.label}</span>
+                </button>
+              )}
+            </li>
+          );
+        })}
+      </ul>
+    </div>
+  );
+};
+
+export default Dropdown;

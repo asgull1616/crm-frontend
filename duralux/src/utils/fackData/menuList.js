@@ -225,12 +225,12 @@ export const menuList = [
                 path: "/projects/list",
                 subdropdownMenu: false
             },
-            {
-                id: 2,
-                name: "Görevleri Görüntüle",
-                path: "/projects/view",
-                subdropdownMenu: false
-            },
+            //{
+             //   id: 2,
+               // name: "Görevleri Görüntüle",
+               // path: "/projects/view",
+               // subdropdownMenu: false
+            //},
             {
                 id: 3,
                 name: "Görev Yarat",
