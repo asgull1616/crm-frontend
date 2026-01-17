@@ -2,6 +2,7 @@ import React from 'react'
 import { FiLink2 } from 'react-icons/fi';
 
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 // const projectsData = [
 //     { status: 'Not Started', count: '04', description: 'Invoices Awaiting', amount: '$5,569', completionPercentage: 56, color: 'primary' },
 //     { status: 'In Progress', count: '06', description: 'Projects In Progress', amount: '16 Completed', completionPercentage: 78, color: 'success' },
@@ -9,12 +10,17 @@ import { FiLink2 } from 'react-icons/fi';
 //     { status: 'Finished', count: '25', description: 'Conversion Rate', amount: '$2,254', completionPercentage: 46, color: 'danger' }
 // ];
 =======
+=======
+>>>>>>> Stashed changes
 const projectsData = [
     { status: 'Not Started', count: '04', description: 'Invoices Awaiting', amount: '$5,569', completionPercentage: 56, color: 'primary' },
     { status: 'In Progress', count: '06', description: 'Projects In Progress', amount: '16 Completed', completionPercentage: 78, color: 'success' },
     { status: 'Cancelled', count: '02', description: 'Converted Leads', amount: '52 Completed', completionPercentage: 63, color: 'warning' },
     { status: 'Finished', count: '25', description: 'Conversion Rate', amount: '$2,254', completionPercentage: 46, color: 'danger' }
 ];
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
 
 
