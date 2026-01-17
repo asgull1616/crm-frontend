@@ -102,7 +102,11 @@ const ProjectCreateContent = () => {
                                 <a href="#">Geri</a>
                             </li>
                             <li className={`${currentStep === steps.length - 1 ? "disabled" : ""}`} onClick={(e) => handleNext(e)} disabled={currentStep === steps.length - 1}>
+<<<<<<< Updated upstream
                                 <a href="#">İlri</a>
+=======
+                                <a href="#">İleri</a>
+>>>>>>> Stashed changes
                             </li>
                         </ul>
 
