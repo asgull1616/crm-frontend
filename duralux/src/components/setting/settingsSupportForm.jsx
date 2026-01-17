@@ -8,20 +8,20 @@ import Footer from '@/components/shared/Footer';
 
 const statusOptions = [
     { value: 'open', label: 'Open', color: '#283c50' },
-    { value: 'inprogress', label: 'In Progress', color: '#3454d1' },
+    { value: 'inprogress', label: 'In Progress', color: '#E92B63' },
     { value: 'answered', label: 'Answered', color: '#ea4d4d' },
     { value: 'onhold', label: 'On Hold', color: '#28a745' },
     { value: 'closed', label: 'Closed', color: '#ffa21d' }
 ];
 const priorityOptions = [
     { value: 'low', label: 'Low', color: '#283c50' },
-    { value: 'medium', label: 'Medium', color: '#3454d1' },
+    { value: 'medium', label: 'Medium', color: '#E92B63' },
     { value: 'high', label: 'High', color: '#ea4d4d' },
     { value: 'urgent', label: 'Urgent', color: '#17c666' },
     { value: 'closed', label: 'Closed', color: '#ffa21d' }
 ];
 const fileType = [
-    { value: '.jpg', label: 'JPG', color: '#3454d1' },
+    { value: '.jpg', label: 'JPG', color: '#E92B63' },
     { value: '.png', label: 'PNG', color: '#17c666' },
     { value: '.pdf', label: 'PDF', color: '#ea4d4d' },
     { value: '.doc', label: 'DOC', color: '#64748b' },
@@ -29,7 +29,7 @@ const fileType = [
     { value: '.rar', label: 'RAR', color: '#ffa21d' }
 ];
 const orderOptions = [
-    { value: 'ascending', label: 'Ascending', color: '#3454d1' },
+    { value: 'ascending', label: 'Ascending', color: '#E92B63' },
     { value: 'descending', label: 'Descending', color: '#17c666' },
 ]
 const SettingsSupportForm = () => {

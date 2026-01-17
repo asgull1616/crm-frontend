@@ -4,7 +4,7 @@ import Link from 'next/link';
 
 const projectData = [
     { project_name: 'NFT Mobile Apps Developemnt', progress: '40', progress_color: '#ea4d4d', deadiline: '20 days left' },
-    { project_name: 'NFT Mobile Apps Developemnt', progress: '85', progress_color: '#3454d1', deadiline: '18 days left' },
+    { project_name: 'NFT Mobile Apps Developemnt', progress: '85', progress_color: '#E92B63', deadiline: '18 days left' },
     { project_name: 'NFT Mobile Apps Developemnt', progress: '50', progress_color: '#ffa21d', deadiline: '16 days left' },
     { project_name: 'NFT Mobile Apps Developemnt', progress: '75', progress_color: '#17c666', deadiline: '10 days left' }
 ];

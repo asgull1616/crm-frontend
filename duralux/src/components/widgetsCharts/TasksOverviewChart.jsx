@@ -6,7 +6,7 @@ import getIcon from '@/utils/getIcon'
 const ReactApexChart = dynamic(() => import('react-apexcharts'), { ssr: false });
 
 const overviewInfo = [
-    { title: "Tamamlanan Görevler", icon: "feather-star", total_number: "35", completed_number: "22", progress: "28", chartColor: "#3454d1", color: "primary" },
+    { title: "Tamamlanan Görevler", icon: "feather-star", total_number: "35", completed_number: "22", progress: "28", chartColor: "#E92B63", color: "primary" },
     { title: "Yeni Teklifler", icon: "feather-file-text", total_number: "20", completed_number: "5", progress: "34", chartColor: "#25b865", color: "success" },
 //     { title: "Project Done", icon: "feather-airplay", total_number: "30", completed_number: "20", progress: "42", chartColor: "#d13b4c", color: "danger" },
  ]

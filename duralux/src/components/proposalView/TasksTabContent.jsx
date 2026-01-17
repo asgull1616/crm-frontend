@@ -18,7 +18,7 @@ const checkListOptions = [
 ]
 
 const tags = [
-    { value: 'team', label: 'Team', color: '#3454d1' },
+    { value: 'team', label: 'Team', color: '#E92B63' },
     { value: 'primary', label: 'Primary', color: '#41b2c4' },
     { value: 'updates', label: 'Updates', color: '#17c666' },
     { value: 'personal', label: 'Personal', color: '#ffa21d' },

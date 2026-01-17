@@ -1,0 +1,26 @@
+/* Override dark theme inversion on large logo to preserve original colors */
+@media (prefers-color-scheme: dark) {
+  /* Ensure no inversion is applied to any large logo */
+  .logo-lg,
+  .nxl-navigation .m-header .logo-lg,
+  .nxl-header .logo-lg,
+  .b-brand .logo-lg {
+    filter: none !important;
+  }
+}
+/* Explicit dark header theme override (class-based) */
+html.app-header-dark .nxl-navigation .m-header .logo-lg {
+  filter: none !important;
+}
+
+/* Optional: if a generic html.dark class is used elsewhere */
+html.dark .nxl-navigation .m-header .logo-lg {
+  filter: none !important;
+}
+
+/* Actual app dark-skin class used by theme toggle */
+html.app-skin-dark .nxl-navigation .m-header .logo-lg {
+  filter: none !important;
+}
+
+ 

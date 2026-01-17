@@ -1,6 +1,7 @@
 'use client'
 import React, { useEffect, useState } from 'react'
 import { addDays, endOfMonth, format, isSameDay, startOfMonth } from "date-fns";
+import { tr } from 'date-fns/locale'
 import 'react-date-range/dist/styles.css'; // main style file
 import 'react-date-range/dist/theme/default.css'; // theme css file
 import { DateRangePicker, DefinedRange } from 'react-date-range';
@@ -17,7 +18,7 @@ const DateRange = ({ toggleDateRange, setToggleDateRange }) => {
 
     const predefinedRanges = [
         {
-            label: 'Today',
+            label: 'Bugün',
             range: () => ({
                 startDate: new Date(),
                 endDate: new Date(),
@@ -25,7 +26,7 @@ const DateRange = ({ toggleDateRange, setToggleDateRange }) => {
             isSelected: (range) => isSameDay(range.startDate, new Date()) && isSameDay(range.endDate, new Date())
         },
         {
-            label: 'Yesterday',
+            label: 'Dün',
             range: () => ({
                 startDate: addDays(new Date(), -1),
                 endDate: addDays(new Date(), -1),
@@ -33,7 +34,7 @@ const DateRange = ({ toggleDateRange, setToggleDateRange }) => {
             isSelected: (range) => isSameDay(range.startDate, addDays(new Date(), -1)) && isSameDay(range.endDate, addDays(new Date(), -1))
         },
         {
-            label: 'This Week',
+            label: 'Bu Hafta',
             range: () => ({
                 startDate: addDays(new Date(), -new Date().getDay()),
                 endDate: addDays(new Date(), 6 - new Date().getDay()),
@@ -41,7 +42,7 @@ const DateRange = ({ toggleDateRange, setToggleDateRange }) => {
             isSelected: (range) => isSameDay(range.startDate, addDays(new Date(), -new Date().getDay())) && isSameDay(range.endDate, addDays(new Date(), 6 - new Date().getDay()))
         },
         {
-            label: 'Last Week',
+            label: 'Geçen Hafta',
             range: () => ({
                 startDate: addDays(new Date(), -new Date().getDay() - 7),
                 endDate: addDays(new Date(), -new Date().getDay() - 1),
@@ -49,7 +50,7 @@ const DateRange = ({ toggleDateRange, setToggleDateRange }) => {
             isSelected: (range) => isSameDay(range.startDate, addDays(new Date(), -new Date().getDay() - 7)) && isSameDay(range.endDate, addDays(new Date(), -new Date().getDay() - 1))
         },
         {
-            label: 'This Month',
+            label: 'Bu Ay',
             range: () => ({
                 startDate: new Date(new Date().getFullYear(), new Date().getMonth(), 1),
                 endDate: new Date(new Date().getFullYear(), new Date().getMonth() + 1, 0),
@@ -57,7 +58,7 @@ const DateRange = ({ toggleDateRange, setToggleDateRange }) => {
             isSelected: (range) => isSameDay(range.startDate, new Date(new Date().getFullYear(), new Date().getMonth(), 1)) && isSameDay(range.endDate, new Date(new Date().getFullYear(), new Date().getMonth() + 1, 0))
         },
         {
-            label: 'Last Month',
+            label: 'Geçen Ay',
             range: () => ({
                 startDate: new Date(new Date().getFullYear(), new Date().getMonth() - 1, 1),
                 endDate: new Date(new Date().getFullYear(), new Date().getMonth(), 0),
@@ -65,7 +66,7 @@ const DateRange = ({ toggleDateRange, setToggleDateRange }) => {
             isSelected: (range) => isSameDay(range.startDate, new Date(new Date().getFullYear(), new Date().getMonth() - 1, 1)) && isSameDay(range.endDate, new Date(new Date().getFullYear(), new Date().getMonth(), 0))
         },
         {
-            label: 'Custom Date',
+            label: 'Özel Tarih',
             range: () => {
                 setShowDatePicker(true);
                 return {
@@ -90,7 +91,7 @@ const DateRange = ({ toggleDateRange, setToggleDateRange }) => {
     return (
         <>
             <span>
-                {`${format(state[0].startDate, "MMM dd,yy")} - ${format(state[0].endDate, "MMM dd,yy")}`}
+                {`${format(state[0].startDate, "dd MMM yy", { locale: tr })} - ${format(state[0].endDate, "dd MMM yy", { locale: tr })}`}
             </span>
             {
                 toggleDateRange &&
@@ -104,6 +105,7 @@ const DateRange = ({ toggleDateRange, setToggleDateRange }) => {
                         staticRanges={predefinedRanges}
                         inputRanges={[]}
                         className='range-dropdown'
+                        locale={tr}
                     />
                     {
                         showDatePicker && (
@@ -121,11 +123,12 @@ const DateRange = ({ toggleDateRange, setToggleDateRange }) => {
                                     weekdayDisplayFormat='EEEEEE'
                                     showMonthAndYearPickers={false}
                                     staticRanges={predefinedRanges}
+                                    locale={tr}
                                 />
                                 <div className='action-btns'>
-                                    <span>{`${format(state[0].startDate, "MM/dd/yy")} - ${format(state[0].endDate, "MM/dd/yy")}`}</span>
-                                    <button onClick={() => setToggleDateRange(false)} className='applyBtn btn btn-sm btn-danger'>Calcel</button>
-                                    <button onClick={() => setToggleDateRange(false)} className='applyBtn btn btn-sm btn-primary'>Applay</button>
+                                    <span>{`${format(state[0].startDate, "dd.MM.yy", { locale: tr })} - ${format(state[0].endDate, "dd.MM.yy", { locale: tr })}`}</span>
+                                    <button onClick={() => setToggleDateRange(false)} className='applyBtn btn btn-sm btn-danger'>İptal</button>
+                                    <button onClick={() => setToggleDateRange(false)} className='applyBtn btn btn-sm btn-primary'>Uygula</button>
                                 </div>
                             </div>
                         )

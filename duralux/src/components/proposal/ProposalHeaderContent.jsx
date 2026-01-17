@@ -6,7 +6,7 @@ const ProposalHeaderContent = () => {
         <div id="collapseOne" className="accordion-collapse collapse page-header-collapse proposal-header">
             <div className="accordion-body pb-2">
                 <div className="row">
-                    <Card title="Paid" value="78/100" progressClass="progress-1" price={450} strokeColor="#3454d1" />
+                    <Card title="Paid" value="78/100" progressClass="progress-1" price={450} strokeColor="#E92B63" />
                     <Card title="Pending" value="45/100" progressClass="progress-2" price={550} strokeColor="#17c666" />
                     <Card title="Overdue" value="12/100" progressClass="progress-3" price={850} strokeColor="#ffa21d" />
                     <Card title="Draft" value="3/10" progressClass="progress-4" price={900} strokeColor="#ea4d4d" />
