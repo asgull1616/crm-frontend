@@ -20,7 +20,7 @@ const Home = () => {
         <PageHeaderDate />
       </PageHeader>
       <div className='main-content'>
-        <div className='row'>
+        <div className='row'> 
           {/* <SiteOverviewStatistics /> */}
           <PaymentRecordChart />
           {/* <SalesMiscellaneous isFooterShow={true} dataList={projectsDataTwo} /> */}

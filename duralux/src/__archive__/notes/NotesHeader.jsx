@@ -1,70 +1,27 @@
 import React, { useState } from 'react'
 import Dropdown from '@/components/shared/Dropdown'
-import { emailActions, emailMoreOptions, tagsItems } from '../../__archive__/emails/EmailHeader'
-import { FiActivity, FiAirplay, FiAlignLeft, FiArrowLeft, FiCheckCircle, FiChevronLeft, FiChevronRight, FiClock, FiEye, FiFolderPlus, FiHash, FiPlus, FiSearch, FiTag } from 'react-icons/fi'
+import { emailActions, emailMoreOptions, tagsItems } from '../emails/EmailHeader'
+import { FiAlignLeft, FiChevronLeft, FiChevronRight, FiEye, FiFolderPlus, FiTag } from 'react-icons/fi'
+import { labels, taskFilter } from '../../components/tasks/TaskHeader'
 import HeaderSearchForm from '@/components/shared/pageHeader/HeaderSearchForm'
 
-export const taskOptions = [
-    { label: "All Tasks", icon: <FiHash /> },
-    { label: "My Tasks", icon: <FiCheckCircle /> },
-    { label: "Overviews", icon: <FiAirplay /> },
-    { label: "Pending Tasks", icon: <FiClock /> },
-    { label: "InProgress Tasks", icon: <FiActivity /> },
+const projectOptions = [
+    { label: "All Notes", icon: '' },
+    { label: "Lead Notes", icon: '' },
+    { label: "Client Notes", icon: '' },
+    { label: "Project Notes", icon: '' },
+    { label: "Meeting Notes", icon: '' },
+    { label: "Personal Notes", icon: '' },
+    { label: "Customer Notes", icon: '' },
 ]
-
-export const taskFilter = [
-    { label: "Title", icon: "" },
-    { label: "Priority", icon: "" },
-    { label: "Category", icon: "" },
-    { label: "Time & Date", icon: "" },
-    { type: "divider" },
-    { label: "Newest", icon: "" },
-    { label: "Oldest", icon: "" },
-    { type: "divider" },
-    { label: "Ascending", icon: "" },
-    { label: "Descending", icon: "" },
-]
-export const labels = [
-    {
-        id: "l_item_1",
-        label: "Updates",
-        checkbox: true,
-        checked: true,
-    },
-    {
-        id: "l_item_2",
-        label: "Socials",
-        checkbox: true,
-        checked: false,
-    },
-    {
-        id: "l_item_3",
-        label: "Primary",
-        checkbox: true,
-        checked: true,
-    },
-    {
-        id: "l_item_4",
-        label: "Forums",
-        checkbox: true,
-        checked: false,
-    },
-    {
-        id: "l_item_5",
-        label: "Promotions",
-        checkbox: true,
-        checked: false,
-    },
-    { type: "divider" },
-    { label: "Create Tag", icon: <FiPlus /> },
-    { label: "Manages Tag", icon: <FiTag /> },
-];
-
-
-const TaskHeader = ({ setSidebarOpen }) => {
+const NotesHeader = ({ setSidebarOpen }) => {
     const [active, setActive] = useState("Newest")
+    const [projectFilter, setProjectFilter] = useState("Project Notes")
     const handleFilter = (e) => {
         setActive(e)
+    }
+    const handleProject = (e) => {
+        setProjectFilter(e)
     }
     return (
         <div className="content-area-header sticky-top">
@@ -73,12 +30,15 @@ const TaskHeader = ({ setSidebarOpen }) => {
                     <FiAlignLeft className='fs-20' />
                 </a>
                 <Dropdown
-                    dropdownItems={taskOptions}
-                    triggerIcon={<FiCheckCircle size={16} className='me-2' />}
-                    triggerText="My Tasks"
+                    dropdownItems={projectOptions}
+                    triggerIcon={' '}
+                    triggerText={projectFilter}
                     triggerPosition={"0,18"}
                     triggerClass='btn btn-light-brand dropdown-toggle'
                     isAvatar={false}
+                    dropdownPosition='dropdown-menu-start'
+                    onClick={handleProject}
+                    active={projectFilter}
                 />
                 <Dropdown
                     dropdownItems={emailActions}
@@ -143,4 +103,4 @@ const TaskHeader = ({ setSidebarOpen }) => {
     )
 }
 
-export default TaskHeader
+export default NotesHeader

@@ -9,7 +9,7 @@ import { languagesData } from '@/utils/fackData/languagesData'
 import { timezonesData } from '@/utils/fackData/timeZonesData'
 import Loading from '@/components/shared/Loading'
 import Input from '@/components/shared/Input'
-import MultiSelectImg from '@/components/shared/MultiSelectImg'
+import MultiSelectImg from '@/components/shared/MultiSelectImg' 
 import MultiSelectTags from '@/components/shared/MultiSelectTags'
 
 
@@ -27,9 +27,7 @@ const LeadsCreateContent = () => {
                         <div className="mb-5 d-flex align-items-center justify-content-between">
                             <h5 className="fw-bold mb-0 me-4">
                                 <span className="d-block mb-2">Ekip Üyesi Ekle :</span>
-                                {/* <span className="fs-12 fw-normal text-muted text-truncate-1-line">Typically refers to adding a new potential customer or sales prospect</span> */}
                             </h5>
-                            {/* <a href="#" className="btn btn-sm btn-light-brand">Create Invoice</a> */}
                         </div>
                         <div className="row">
                             <div className="col-lg-4 mb-4">
@@ -41,45 +39,6 @@ const LeadsCreateContent = () => {
                                     onSelectOption={(option) => setSelectedOption(option)}
                                 />
                             </div>
-                            {/* <div className="col-lg-4 mb-4">
-                                <label className="form-label">Source</label>
-                                <SelectDropdown
-                                    options={leadsSourceOptions}
-                                    selectedOption={selectedOption}
-                                    defaultSelect="facebook"
-                                    onSelectOption={(option) => setSelectedOption(option)}
-                                />
-                            </div> */}
-                            {/* <div className="col-lg-4 mb-4">
-                                <label className="form-label">Visibility:</label>
-                                <SelectDropdown
-                                    options={propsalVisibilityOptions}
-                                    selectedOption={selectedOption}
-                                    defaultSelect="public"
-                                    onSelectOption={(option) => setSelectedOption(option)}
-                                />
-                            </div> */}
-                            {/* <div className="col-lg-4 mb-4">
-                                <label className="form-label">Tags</label>
-                                <MultiSelectTags
-                                    options={leadsTags}
-                                    placeholder=""
-                                />
-                            </div>
-                            <div className="col-lg-4 mb-4">
-                                <label className="form-label">Assigned</label>
-                                <MultiSelectImg
-                                    options={taskAssigneeOptions}
-                                    placeholder=""
-                                />
-                            </div> */}
-                            {/* <div className="col-lg-4 mb-4">
-                                <label className="form-label">Groups</label>
-                                <MultiSelectTags
-                                    options={leadsGroupsOptions}
-                                    placeholder=""
-                                />
-                            </div> */}
                         </div>
                     </div>
                     <hr className="mt-0" />
@@ -89,15 +48,7 @@ const LeadsCreateContent = () => {
                                 <span className="d-block mb-2">Genel Bilgi :</span>
                                 <span className="fs-12 fw-normal text-muted text-truncate-1-line">Ekip üyesi için genel bilgiler</span>
                             </h5>
-                            {/* <a href="#" className="btn btn-sm btn-light-brand">Kullanıcıyı Düzenle</a> */}
                         </div>
-                        {/* <Input
-                            icon='feather-user'
-                            label={"Ad Soyad"}
-                            labelId={"nameInput"}
-                            placeholder={"Ad Soyad"}
-                            name={"name"}
-                        /> */}
                         <Input
                             icon='feather-mail'
                             label={"Email"}
@@ -127,121 +78,8 @@ const LeadsCreateContent = () => {
                             placeholder={"Şifre"}
                             name={"password"}
                         />
-                        {/* <Input
-                            icon='feather-briefcase'
-                            label={"Designation"}
-                            labelId={"designationInput"}
-                            placeholder={"Designation"}
-                            name={"designation"}
-                        /> */}
-                        {/* <Input
-                            icon="feather-link"
-                            label={"Website"}
-                            labelId={"websiteInput"}
-                            placeholder={"Website"}
-                            name={"website"}
-                        />
-                        <Input
-                            icon="feather-dollar-sign"
-                            label={"VAT"}
-                            labelId={"vatInput"}
-                            placeholder={"VAT"}
-                            name={"vat"}
-                        /> */}
-                        {/* <TextArea
-                            icon="feather-map-pin"
-                            label={"Adres"}
-                            labelId={"addressInput"}
-                            placeholder={"Adres"}
-                        /> */}
-                        {/* <TextArea
-                            icon="feather-type"
-                            label={"description"}
-                            labelId={"descriptionInput"}
-                            placeholder={"Description"}
-                            row='5'
-                        /> */}
-                        {/* <div className="row mb-4 align-items-center">
-                            <div className="col-lg-4">
-                                <label className="fw-semibold">Country: </label>
-                            </div>
-                            <div className="col-lg-8">
-                                <SelectDropdown
-                                    options={countries}
-                                    selectedOption={selectedOption}
-                                    defaultSelect="usa"
-                                    onSelectOption={(option) => {
-                                        fetchStates(option.label);
-                                        fetchCities(option.label);
-                                        setSelectedOption(option)
-                                    }}
-                                />
-                            </div>
-                        </div> */}
-                        {/* <div className="row mb-4 align-items-center">
-                            <div className="col-lg-4">
-                                <label className="fw-semibold">State: </label>
-                            </div>
-                            <div className="col-lg-8">
-                                <SelectDropdown
-                                    options={states}
-                                    selectedOption={selectedOption}
-                                    defaultSelect={"new-york"}
-                                    onSelectOption={(option) => setSelectedOption(option)}
-                                />
-                            </div>
-                        </div> */}
-                        {/* <div className="row mb-4 align-items-center">
-                            <div className="col-lg-4">
-                                <label className="fw-semibold">Şehir: </label>
-                            </div>
-                            <div className="col-lg-8">
-                                <SelectDropdown
-                                    options={cities}
-                                    selectedOption={selectedOption}
-                                    defaultSelect="new-york"
-                                    onSelectOption={(option) => setSelectedOption(option)}
-                                />
-                            </div>
-                        </div> */}
-                        {/* <div className="row mb-4 align-items-center">
-                            <div className="col-lg-4">
-                                <label className="fw-semibold">Time Zone: </label>
-                            </div>
-                            <div className="col-lg-8">
-                                <SelectDropdown
-                                    options={timezonesData}
-                                    selectedOption={selectedOption}
-                                    defaultSelect="Western Europe Time"
-                                    onSelectOption={(option) => setSelectedOption(option)}
-                                />
-                            </div>
-                        </div> */}
-                        {/* <div className="row mb-4 align-items-center">
-                            <div className="col-lg-4">
-                                <label className="fw-semibold">Languages: </label>
-                            </div>
-                            <div className="col-lg-8">
-                                <MultiSelectTags
-                                    options={languagesData}
-                                    defaultSelect={[languagesData[25], languagesData[10], languagesData[45]]}
-                                />
-                            </div>
-                        </div> */}
-                        {/* <div className="row mb-4 align-items-center">
-                            <div className="col-lg-4">
-                                <label className="fw-semibold">Currency: </label>
-                            </div>
-                            <div className="col-lg-8">
-                                <SelectDropdown
-                                    options={currencyOptionsData}
-                                    selectedOption={selectedOption}
-                                    defaultSelect="usd"
-                                    onSelectOption={(option) => setSelectedOption(option)}
-                                />
-                            </div>
-                        </div> */}
                     </div>
+                    
                 </div>
             </div>
         </>

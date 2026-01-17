@@ -26,12 +26,7 @@ const Progress = ({ footerShow, title, btnFooter }) => {
                                 <div key={id} className="hstack justify-content-between border border-dashed rounded-3 p-3 team-card chat-single-item">
                                     <div className="hstack gap-3">
                                         {
-                                            thumbnail ?
-                                                <div className="avatar-image">
-                                                    <Image width={38} height={38} src={thumbnail} alt="img" className="img-fluid" />
-                                                </div>
-                                                :
-                                                <div className="text-white avatar-text user-avatar-text">{name.substring(0, 1)}</div>
+                                          
                                         }
                                         <div>
                                             <Link href="#">{name}</Link>

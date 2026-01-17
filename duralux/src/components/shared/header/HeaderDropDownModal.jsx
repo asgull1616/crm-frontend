@@ -4,53 +4,20 @@ import getIcon from '@/utils/getIcon';
 import Link from 'next/link';
  
 const menuData = [
-    // {
-    //     name: 'applications',
-    //     icon: 'feather-send',
-    //     subMenu: [
-    //         { name: 'Chat', path: '/applications/chat' },
-    //         { name: 'Email', path: '/applications/email' },
-    //         { name: 'Tasks', path: '/applications/tasks' },
-    //         { name: 'Notes', path: '/applications/notes' },
-    //         { name: 'Storage', path: '/applications/storage' },
-    //         { name: 'Calendar', path: '/applications/calendar' },
-    //     ],
-    // },
-    // {
-    //     name: 'reports',
-    //     icon: 'feather-cast',
-    //     subMenu: [
-    //         { name: 'Sales Report', path: '/reports/sales' },
-    //         { name: 'Leads Report', path: '/reports/leads' },
-    //         { name: 'Project Report', path: '/reports/project' },
-    //         { name: 'Timesheets Report', path: '/reports/timesheets' },
-    //     ],
-    // },
     {
         name: 'Teklifler',
         icon: 'feather-at-sign', 
         subMenu: [
             { name: "Teklifleri Görüntüle", path: "/proposal/list", },
-            // { name: "Proposal View", path: "/proposal/view", },
-            // { name: "Proposal Edit", path: "/proposal/edit", },
             { name: "Teklif Oluştur", path: "/proposal/create", },
         ],
     },
-    // {
-    //     name: 'payment',
-    //     icon: 'feather-dollar-sign',
-    //     subMenu: [
-    //         { name: "Payment", path: "/payment/list" },
-    //         { name: "Invoice View", path: "/payment/view" },
-    //         { name: "Invoice Create", path: "/payment/create" }
-    //     ],
-    // },
+ 
         {
         name: 'Müşteriler',
         icon: 'feather-users',
         subMenu: [
             { name: "Müşterilei Görüntüle", path: "/customers/list" },
-            // { name: "Customers View", path: "/customers/view" },
             { name: "Müşteri Oluştur", path: "/customers/create" }
         ],
     },
@@ -59,7 +26,6 @@ const menuData = [
         icon: 'feather-alert-circle',
         subMenu: [
             { name: 'Ekipleri Görüntüle', path: '/leads/list' },
-            // { name: 'Leads View', path: '/leads/view' },
             { name: 'Ekipler Oluştur', path: '/leads/create' }
         ]
     },
@@ -68,75 +34,10 @@ const menuData = [
         icon: 'feather-briefcase',
         subMenu: [
             { name: 'Görevleri Görüntüle', path: '/projects/list' },
-            // { name: 'Projects View', path: '/projects/view' },
             { name: 'Görev Oluştur', path: '/projects/create' }
         ]
     },
-    // {
-    //     name: 'widgets',
-    //     icon: 'feather-layout',
-    //     subMenu: [
-    //         { name: 'Lists', path: '/widgets-lists' },
-    //         { name: 'Tables', path: '/widgets-tables' },
-    //         { name: 'Charts', path: '/widgets-charts' },
-    //         { name: 'Statistics', path: '/widgets-statistics' },
-    //         { name: 'Miscellaneous', path: '/widgets-miscellaneous' }
-    //     ]
-    // },
-    // {
-    //     name: 'authentication',
-    //     icon: 'feather-power',
-    //     subMenu: [
-    //         {
-    //             name: 'login',
-    //             subSubMenu: [
-    //                 { name: 'Cover', path: '/authentication/login/cover' },
-    //                 { name: 'Minimal', path: '/authentication/login/minimal' },
-    //                 { name: 'Creative', path: '/authentication/login/creative' },
-    //             ],
-    //         },
-    //         {
-    //             name: 'register',
-    //             subSubMenu: [
-    //                 { name: 'Cover', path: '/authentication/register/cover' },
-    //                 { name: 'Minimal', path: '/authentication/register/minimal' },
-    //                 { name: 'Creative', path: '/authentication/register/creative' },
-    //             ],
-    //         },
-    //         {
-    //             name: 'Error 404',
-    //             subSubMenu: [
-    //                 { name: 'Cover', path: '/authentication/404/cover' },
-    //                 { name: 'Minimal', path: '/authentication/404/minimal' },
-    //                 { name: 'Creative', path: '/authentication/404/creative' },
-    //             ],
-    //         },
-    //         {
-    //             name: 'Reset Pass',
-    //             subSubMenu: [
-    //                 { name: 'Cover', path: '/authentication/reset/cover' },
-    //                 { name: 'Minimal', path: '/authentication/reset/minimal' },
-    //                 { name: 'Creative', path: '/authentication/reset/creative' },
-    //             ],
-    //         },
-    //         {
-    //             name: 'Verify OTP',
-    //             subSubMenu: [
-    //                 { name: 'Cover', path: '/authentication/verify/cover' },
-    //                 { name: 'Minimal', path: '/authentication/verify/minimal' },
-    //                 { name: 'Creative', path: '/authentication/verify/creative' },
-    //             ],
-    //         },
-    //         {
-    //             name: 'Maintenance',
-    //             subSubMenu: [
-    //                 { name: 'Cover', path: '/authentication/maintenance/cover' },
-    //                 { name: 'Minimal', path: '/authentication/maintenance/minimal' },
-    //                 { name: 'Creative', path: '/authentication/maintenance/creative' },
-    //             ],
-    //         },
-    //     ],
-    // },
+
 ];
 
 
@@ -181,11 +82,6 @@ const HeaderDropDownModal = () => {
                         {index === 0 && <div className="dropdown-divider"></div>}
                     </Fragment>
                 ))}
-                {/* <div className="dropdown-divider"></div>
-                <Link href="#" className="dropdown-item">
-                    <i><FiPlus /></i>
-                    <span>Add New Items</span>
-                </Link> */}
             </div>
         </div>
     )

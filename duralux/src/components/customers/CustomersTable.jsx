@@ -166,11 +166,164 @@ const CustomersTable = () => {
         },
     ]
 
+<<<<<<< Updated upstream
     return (
         <div>
             <Table data={customersTableData} columns={columns} />
         </div>
     )
+=======
+    setCustomers(items)
+  } finally {
+    setLoading(false)
+  }
+}
+
+  /* 🔹 Silme */
+  const handleDelete = async (id) => {
+    if (!confirm('Bu müşteri silinsin mi?')) return
+    await customerService.delete(id)
+    setCustomers(prev => prev.filter(c => c.id !== id))
+  }
+
+  /* 🔹 Backend → Table adapter */
+const tableData = (Array.isArray(customers) ? customers : []).map(c => ({
+  id: c.id,
+  customer: { name: c.fullName, img: null },
+  email: c.email,
+  phone: c.phone,
+  date: c.createdAt ? new Date(c.createdAt).toLocaleString() : '',
+  status: {
+    status: [
+      { label: 'Yeni', value: 'NEW' },
+  { label: 'İletişim Kuruldu', value: 'CONTACTED' },
+  { label: 'Teklif Gönderildi', value: 'OFFER_SENT' },
+  { label: 'Onay Bekliyor', value: 'WAITING_APPROVAL' },
+  { label: 'Onaylandı', value: 'APPROVED' },
+  { label: 'Kazanıldı', value: 'WON' },
+  { label: 'Kaybedildi', value: 'LOST' },
+    ],
+    defaultSelect: c.status,
+  },
+}))
+
+
+  const columns = [ 
+    {
+      accessorKey: 'id',
+      header: ({ table }) => {
+        const checkboxRef = React.useRef(null)
+
+        useEffect(() => {
+          if (checkboxRef.current) {
+            checkboxRef.current.indeterminate = table.getIsSomeRowsSelected()
+          }
+        }, [table.getIsSomeRowsSelected()])
+
+        return (
+          <input
+            type="checkbox"
+            className="custom-table-checkbox"
+            ref={checkboxRef}
+            checked={table.getIsAllRowsSelected()}
+            onChange={table.getToggleAllRowsSelectedHandler()}
+          />
+        )
+      },
+      cell: ({ row }) => (
+        <input
+          type="checkbox"
+          className="custom-table-checkbox"
+          checked={row.getIsSelected()}
+          disabled={!row.getCanSelect()}
+          onChange={row.getToggleSelectedHandler()}
+        />
+      ),
+      meta: { headerClassName: 'width-30' },
+    },
+    {
+      accessorKey: 'customer',
+      header: () => 'Müşteri',
+      cell: (info) => {
+        const c = info.getValue()
+        return (
+          <div className="hstack gap-3">
+            <div className="text-white avatar-text avatar-md">
+              {c.name.substring(0, 1)}
+            </div>
+            <span>{c.name}</span>
+          </div>
+        )
+      },
+    },
+    {
+      accessorKey: 'email',
+      header: () => 'Email',
+    },
+    {
+      accessorKey: 'phone',
+      header: () => 'Telefon',
+    },
+    {
+      accessorKey: 'date',
+      header: () => 'Tarih',
+    },
+    {
+      accessorKey: 'status',
+      header: () => 'Durum',
+      cell: (info) => (
+        <TableCell
+          options={info.getValue().status}
+          defaultSelect={info.getValue().defaultSelect}
+        />
+      ),
+    },
+    {
+      accessorKey: 'actions',
+      header: () => 'Actions',
+      cell: (info) => (
+  <div className="hstack gap-2 justify-content-end">
+    {/* ✏️ Güncelle */}
+    <Link
+      href={`/customers/edit/${info.row.original.id}`}
+      className="avatar-text avatar-md"
+      title="Güncelle"
+    >
+      <FiEdit3 />
+    </Link>
+
+    {/* 👁️ Detay */}
+    <Link
+      href={`/customers/view/${info.row.original.id}`}
+      className="avatar-text avatar-md"
+      title="Detayları Gör"
+    >
+      <FiEye />
+    </Link>
+
+    {/* 🗑️ Sil */}
+    <button
+      className="avatar-text avatar-md"
+      title="Sil"
+      onClick={() => handleDelete(info.row.original.id)}
+    >
+      <FiTrash2 />
+    </button>
+  </div>
+),
+
+      meta: { headerClassName: 'text-end' },
+    },
+  ]
+
+  if (loading) return <div>Yükleniyor…</div>
+
+  return (
+    <div>
+      <Table data={tableData} columns={columns} />
+    </div>
+  )
+>>>>>>> Stashed changes
 }
 
 export default CustomersTable

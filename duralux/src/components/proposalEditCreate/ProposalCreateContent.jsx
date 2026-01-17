@@ -1,250 +1,152 @@
 'use client'
-import React, { useState } from 'react'
-import SelectDropdown from '@/components/shared/SelectDropdown'
-import MultiSelectTags from '@/components/shared/MultiSelectTags'
-import MultiSelectImg from '@/components/shared/MultiSelectImg'
+
+import React, { useEffect, useState } from 'react'
+import { useRouter } from 'next/navigation'
 import DatePicker from 'react-datepicker'
-import useDatePicker from '@/hooks/useDatePicker'
-import { propasalLeadOptions, propsalDiscountOptions, propsalRelatedOptions, propsalStatusOptions, propsalVisibilityOptions, taskAssigneeOptions, taskLabelsOptions } from '@/utils/options'
-import { timezonesData } from '@/utils/fackData/timeZonesData'
-import { currencyOptionsData } from '@/utils/fackData/currencyOptionsData'
-import useLocationData from '@/hooks/useLocationData'
+
 import Loading from '@/components/shared/Loading'
 import AddProposal from './AddProposal'
 
+import useDatePicker from '@/hooks/useDatePicker'
+import { proposalService } from '@/lib/services/proposal.service'
+import { customerService } from '@/lib/services/customer.service'
+
 const previtems = [
-    {
-        id: 1,
-        product: "",
-        qty: 0,
-        price: 0
-    },
+  {
+    id: 1,
+    product: '',
+    qty: 0,
+    price: 0,
+  },
 ]
+
 const ProposalCreateContent = () => {
-    const [selectedOption, setSelectedOption] = useState(null);
-    const { startDate, endDate, setStartDate, setEndDate, renderFooter } = useDatePicker();
-    const { countries, states, cities, loading, error, fetchStates, fetchCities } = useLocationData();
+  const router = useRouter()
+  const { startDate, setStartDate, renderFooter } = useDatePicker()
 
+  const [customers, setCustomers] = useState([])
+  const [loading, setLoading] = useState(false)
 
-    return (
-        <>
-            {loading ? <Loading /> : ""}
+  const [title, setTitle] = useState('')
+  const [customerId, setCustomerId] = useState('')
+  const [status] = useState('DRAFT')
 
-            <div className="col-xl-6">
-                <div className="card stretch stretch-full">
-                    <div className="card-body">
-                        <div className="mb-4">
-                            <label className="form-label">Teklif Başlığı <span className="text-danger">*</span></label>
-                            <input type="text" className="form-control" placeholder="Konu" defaultValue="" />
-                        </div>
-                        <div className="mb-4">
-                            <label className="form-label">Müşteri <span className="text-danger">*</span></label>
-                            <SelectDropdown
-                                options={propsalRelatedOptions}
-                                selectedOption={selectedOption}
-                                defaultSelect="Müşteri Seçin"
-                                onSelectOption={(option) => setSelectedOption(option)}
-                            />
-                        </div>
-                        {/* <div className="mb-4">
-                            <label className="form-label">Lead <span className="text-danger">*</span></label>
-                            <SelectDropdown
-                                options={propasalLeadOptions}
-                                selectedOption={selectedOption}
-                                defaultSelect="ui"
-                                onSelectOption={(option) => setSelectedOption(option)}
-                            />
-                        </div> */}
-                        <div className="mb-4">
-                            <label className="form-label">Miktar </label>
-                            <SelectDropdown
-                                options={propsalDiscountOptions}
-                                selectedOption={selectedOption}
-                                defaultSelect="Miktar Seçin"
-                                onSelectOption={(option) => setSelectedOption(option)}
-                            />
-                        </div>
-                        {/* <div className="mb-4">
-                            <label className="form-label">Visibility:</label>
-                            <SelectDropdown
-                                options={propsalVisibilityOptions}
-                                selectedOption={selectedOption}
-                                defaultSelect="private"
-                                onSelectOption={(option) => setSelectedOption(option)}
-                            />
-                        </div> */}
-                        <div className="row">
-                            <div className="col-lg-6 mb-4">
-                                <label className="form-label">Geçerlilik Tarihi <span className="text-danger">*</span></label>
-                                <div className='input-group date '>
-                                    <DatePicker
-                                        placeholderText='Geçerlilik Tarihi Seçin'
-                                        selected={startDate}
-                                        showPopperArrow={false}
-                                        onChange={(date) => setStartDate(date)}
-                                        className='form-control'
-                                        popperPlacement="bottom-start"
-                                        calendarContainer={({ children }) => (
-                                            <div className='bg-white react-datepicker'>
-                                                {children}
-                                                {renderFooter("start")}
-                                            </div>
-                                        )}
-                                    />
-                                </div>
-                            </div>
-                                    
-                           <div className="col-lg-6 mb-4">
-                                <label className="form-label">Durum </label>
-                                <SelectDropdown
-                                    options={propsalStatusOptions}
-                                    selectedOption={selectedOption}
-                                    defaultSelect="Durum Seçin"
-                                    onSelectOption={(option) => setSelectedOption(option)}
-                                />
-                            </div>
-                            {/* <div className="col-lg-6 mb-4">
-                                <label className="form-label">Geçerlilik Tarihi <span className="text-danger">*</span></label>
-                                <div className='input-group date '>
-                                    <DatePicker
-                                        placeholderText='Pick due date'
-                                        selected={endDate}
-                                        showPopperArrow={false}
-                                        onChange={(date) => setEndDate(date)}
-                                        className='form-control'
-                                        popperPlacement="bottom-start"
-                                        calendarContainer={({ children }) => (
-                                            <div className='bg-white react-datepicker'>
-                                                {children}
-                                                {renderFooter("end")}
-                                            </div>
-                                        )}
-                                    />
-                                </div>
-                            </div> */}
-                        </div>
-                        {/* <div className="mb-4">
-                            <label className="form-label">Tags:</label>
-                            <MultiSelectTags options={taskLabelsOptions} placeholder={""} />
-                        </div>
-                        <div className="mb-0">
-                            <label className="form-label">Assignee:</label>
-                            <MultiSelectImg options={taskAssigneeOptions} placeholder={""} />
-                        </div> */}
-                    </div>
-                </div>
+  useEffect(() => {
+    customerService
+      .list()
+      .then((res) => {
+        const raw =
+          res?.data?.items ||
+          res?.data?.data ||
+          res?.data ||
+          []
+
+        setCustomers(Array.isArray(raw) ? raw : [])
+      })
+      .catch(() => {
+        setCustomers([])
+      })
+  }, [])
+
+  const handleCreateProposal = async (send = false) => {
+    if (!title || !customerId || !startDate) {
+      alert('Lütfen zorunlu alanları doldurun')
+      return
+    }
+
+    setLoading(true)
+    try {
+      await proposalService.create({
+        title,
+        customerId,
+        validUntil: startDate.toISOString(),
+        status: send ? 'SENT' : status,
+      })
+
+      router.push('/proposal/list')
+    } catch (e) {
+      console.error('BACKEND ERROR:', e?.response?.data || e)
+      alert('Teklif oluşturulamadı')
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  return (
+    <>
+      {loading && <Loading />}
+
+      <div className="col-xl-6">
+        <div className="card stretch stretch-full">
+          <div className="card-body">
+            <div className="mb-4">
+              <label className="form-label">
+                Teklif Başlığı <span className="text-danger">*</span>
+              </label>
+              <input
+                type="text"
+                className="form-control"
+                placeholder="Konu"
+                value={title}
+                onChange={(e) => setTitle(e.target.value)}
+              />
             </div>
-            {/* <div className="col-xl-6">
-                <div className="card stretch stretch-full">
-                    <div className="card-body"> */}
-                        {/* <div className="mb-4">
-                            <label className="form-label">To <span className="text-danger">*</span></label>
-                            <SelectDropdown
-                                options={taskAssigneeOptions}
-                                selectedOption={selectedOption}
-                                defaultSelect="nneth.une@gmail.com"
-                                onSelectOption={(option) => setSelectedOption(option)}
-                            />
-                        </div> */}
-                        {/* <div>
-                            <label className="form-label">Adres <span className="text-danger">*</span></label>
-                            <div className="row">
-                                <div className="col-lg-6 mb-4">
-                                    <input type="text" className="form-control mb-2" placeholder="Address Line 1" />
-                                </div>
-                                <div className="col-lg-6 mb-4">
-                                    <input type="text" className="form-control" placeholder="Address Line 2" />
-                                </div>
-                            </div>
-                        </div>
-                        <div className="row">
-                            <div className="col-lg-6 mb-4">
-                                <label className="form-label">Email <span className="text-danger">*</span></label>
-                                <input type="text" className="form-control" placeholder="Emial" />
-                            </div>
-                            <div className="col-lg-6 mb-4">
-                                <label className="form-label">Telefon <span className="text-danger">*</span></label>
-                                <input type="text" className="form-control" placeholder="Phone" />
-                            </div>
-                        </div>
-                        <div className="row">
-                            <div className="col-lg-6 mb-4">
-                                <label className="form-label">Ülke <span className="text-danger">*</span></label>
-                                <SelectDropdown
-                                    options={countries}
-                                    selectedOption={selectedOption}
-                                    defaultSelect="usa"
-                                    onSelectOption={(option) => {
-                                        fetchStates(option.label);
-                                        fetchCities(option.label);
-                                        setSelectedOption(option)
-                                    }}
-                                />
-                            </div> */}
-                            {/* <div className="col-lg-6 mb-4">
-                                <label className="form-label">State</label>
-                                <SelectDropdown
-                                    options={states}
-                                    selectedOption={selectedOption}
-                                    defaultSelect={"new-york"}
-                                    onSelectOption={(option) => setSelectedOption(option)}
-                                />
-                            </div> */}
-                        {/* </div>
-                        <div className="row">
-                            <div className="col-lg-6 mb-4">
-                                <label className="form-label">City </label>
-                                <SelectDropdown
-                                    options={cities}
-                                    selectedOption={selectedOption}
-                                    defaultSelect="new-york"
-                                    onSelectOption={(option) => setSelectedOption(option)}
-                                />
-                            </div> */}
-                            {/* <div className="col-lg-6 mb-4">
-                                <label className="form-label">Timezone </label>
-                                <SelectDropdown
-                                    options={timezonesData}
-                                    selectedOption={selectedOption}
-                                    defaultSelect="Western Europe Time"
-                                    onSelectOption={(option) => setSelectedOption(option)}
-                                />
-                            </div> */}
-                        {/* </div>
-                        <hr className="my-5" />
-                        <div className="row"> */}
-                            {/* <div className="col-lg-6 mb-4">
-                                <label className="form-label">Currency</label>
-                                <SelectDropdown
-                                    options={currencyOptionsData}
-                                    selectedOption={selectedOption}
-                                    defaultSelect="usd"
-                                    onSelectOption={(option) => setSelectedOption(option)}
-                                />
-                            </div> */}
-                            {/* <div className="col-lg-6 mb-4">
-                                <label className="form-label">Status </label>
-                                <SelectDropdown
-                                    options={propsalStatusOptions}
-                                    selectedOption={selectedOption}
-                                    defaultSelect="open"
-                                    onSelectOption={(option) => setSelectedOption(option)}
-                                />
-                            </div>
-                        </div> */}
-                        {/* <hr className="my-5" /> */}
-                        {/* <div className="row mb-4">
-                            <div className="form-check form-switch form-switch-sm ps-5">
-                                <input className="form-check-input c-pointer" type="checkbox" id="commentSwitch" />
-                                <label className="form-check-label fw-500 text-dark c-pointer" htmlFor="commentSwitch">Allow Comments</label>
-                            </div>
-                        </div> */}
-                    {/* </div> */}
-                {/* </div> */}
-            {/* </div> */}
-            <AddProposal previtems={previtems} />
-        </>
-    )
+
+            <div className="mb-4">
+              <label className="form-label">
+                Müşteri <span className="text-danger">*</span>
+              </label>
+              <select
+                className="form-control"
+                value={customerId}
+                onChange={(e) => setCustomerId(e.target.value)}
+              >
+                <option value="">Seçiniz</option>
+                {customers.map((c) => (
+                  <option key={c.id} value={c.id}>
+                    {c.fullName}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            <div className="row">
+              <div className="col-lg-6 mb-4">
+                <label className="form-label">
+                  Geçerlilik Tarihi <span className="text-danger">*</span>
+                </label>
+                <DatePicker
+                  placeholderText="Geçerlilik Tarihi Seçin"
+                  selected={startDate}
+                  onChange={(date) => setStartDate(date)}
+                  className="form-control"
+                  popperPlacement="bottom-start"
+                  calendarContainer={({ children }) => (
+                    <div className="bg-white react-datepicker">
+                      {children}
+                      {renderFooter('start')}
+                    </div>
+                  )}
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <AddProposal previtems={previtems} />
+
+      <div className="mt-4 d-flex justify-content-end gap-2">
+        <button
+          className="btn btn-primary btn-primary-action"
+          onClick={() => handleCreateProposal(true)}
+          disabled={loading}
+        >
+          KAYDET
+        </button>
+      </div>
+    </>
+  )
 }
 
 export default ProposalCreateContent

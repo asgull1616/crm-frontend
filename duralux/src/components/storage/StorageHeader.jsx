@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import Dropdown from '@/components/shared/Dropdown'
-import { emailActions, tagsItems } from '../emails/EmailHeader'
+import { emailActions, tagsItems } from '../../__archive__/emails/EmailHeader'
 import { FiAlertOctagon, FiAlertTriangle, FiAlignLeft, FiArchive, FiBellOff, FiDatabase, FiEye, FiEyeOff, FiFilePlus, FiFileText, FiFolderPlus, FiGrid, FiHardDrive, FiImage, FiList, FiMusic, FiPlus, FiSearch, FiSlash, FiSliders, FiTag, FiTrash2, FiVideo } from 'react-icons/fi'
 import { labels } from '../tasks/TaskHeader'
 import SelectDropdown from '@/components/shared/SelectDropdown'

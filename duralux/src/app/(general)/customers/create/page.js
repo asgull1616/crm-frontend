@@ -1,19 +1,25 @@
-import React from 'react'
+'use client'
+import React, { useRef } from 'react'
 import PageHeader from '@/components/shared/pageHeader/PageHeader'
 import CustomersCreateHeader from '@/components/customersCreate/CustomersCreateHeader'
 import CustomerCreateContent from '@/components/customersCreate/CustomerCreateContent'
 
 const page = () => {
+  const submitRef = useRef(null)
+
   return (
     <>
-      <PageHeader>
-        <CustomersCreateHeader />
-      </PageHeader>
-      <div className='main-content'>
-        <div className='row'>
-          <CustomerCreateContent />
-        </div>
+      <PageHeader />
+
+      <div className="main-content">
+        <CustomerCreateContent
+          onSubmit={(fn) => (submitRef.current = fn)}
+        />
+      <CustomersCreateHeader
+        onSubmit={() => submitRef.current?.()}
+      />
       </div>
+
     </>
   )
 }

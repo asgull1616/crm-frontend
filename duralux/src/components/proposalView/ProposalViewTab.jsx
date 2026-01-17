@@ -43,7 +43,7 @@ const ProposalViewTab = () => {
                         </ul>
                     </div>
                     <div className="page-content-right-sidebar-wrapper">
-                        <div className="proposal-action-btn">
+                        {/* <div className="proposal-action-btn">
                             <div className="d-md-none d-lg-flex">
                                 <a href="#" className="action-btn" data-toggle="tooltip" data-title="Views Trackign">
                                     <FiEye size={16} />
@@ -73,7 +73,7 @@ const ProposalViewTab = () => {
                                 triggerIcon={"More"}
                                 isAvatar={false}
                             />
-                        </div>
+                        </div> */}
                     </div>
                 </div>
             </div>

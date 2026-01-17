@@ -1,5 +1,5 @@
 import React from 'react'
-import EmailContent from '@/components/emails/EmailContent'
+import EmailContent from '@/__archive__/emails/EmailContent'
 
 const page = () => {
   return (

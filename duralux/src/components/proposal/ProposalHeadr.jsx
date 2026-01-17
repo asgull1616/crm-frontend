@@ -18,8 +18,6 @@ export const filterAction = [
 ];
 export const fileType = [
     { label: "PDF", icon: <BsFiletypePdf /> },
-    // { label: "CSV", icon: <BsFiletypeCsv /> },
-    // { label: "XML", icon: <BsFiletypeXml /> },
     { label: "Text", icon: <BsFiletypeTsx /> },
     { label: "Excel", icon: <BsFiletypeExe /> },
     { label: "Print", icon: <BsPrinter /> },
@@ -49,7 +47,7 @@ const ProposalHeadr = () => {
                 />
                 <Link href="/proposal/create" className="btn btn-primary">
                     <FiPlus size={16} className='me-2' />
-                    <span>Yeni Teklifler</span>
+                    <span>Teklif Oluştur</span>
                 </Link>
             </div>
         </>

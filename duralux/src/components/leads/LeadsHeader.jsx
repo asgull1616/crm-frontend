@@ -30,21 +30,6 @@ const LeadsHeader = () => {
                 <a href="#" className="btn btn-icon btn-light-brand" data-bs-toggle="collapse" data-bs-target="#collapseOne">
                     <FiBarChart size={16} strokeWidth={1.6} />
                 </a>
-                {/* <Dropdown
-                    dropdownItems={filterAction}
-                    triggerPosition={"0, 12"}
-                    triggerIcon={<FiFilter size={16} strokeWidth={1.6} />}
-                    triggerClass='btn btn-icon btn-light-brand'
-                    isAvatar={false}
-                /> */}
-                {/* <Dropdown
-                    dropdownItems={fileType}
-                    triggerPosition={"0, 12"}
-                    triggerIcon={<FiPaperclip size={16} strokeWidth={1.6} />}
-                    triggerClass='btn btn-icon btn-light-brand'
-                    iconStrokeWidth={0}
-                    isAvatar={false}
-                /> */}
                 <Link href="/leads/create" className="btn btn-primary">
                     <FiPlus size={16} className='me-2' />
                     <span>Kullanıcı Oluştur</span>

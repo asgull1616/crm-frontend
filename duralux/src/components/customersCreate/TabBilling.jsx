@@ -85,7 +85,7 @@ const TabBilling = () => {
                         <span className="d-block mb-2">Teslimat Adresi</span>
                         {/* <span className="fs-12 fw-normal text-muted text-truncate-1-line">A shipping address is the address to which a purchased item or service is to be delivered.</span> */}
                     </h5>
-                    <a href="#" className="btn btn-sm btn-light-brand">Fatura adresini kopyala</a>
+                    {/* <a href="#" className="btn btn-sm btn-light-brand">Fatura adresini kopyala</a> */}
                 </div>
                 <TextArea
                     icon="feather-map-pin"

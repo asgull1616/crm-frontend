@@ -6,7 +6,7 @@ const ProposalViewHeader = () => {
         <div className="d-flex align-items-center gap-2 page-header-right-items-wrapper">
             <a href="#" className="btn btn-light-brand" data-bs-toggle="offcanvas" data-bs-target="#proposalSent">
                 <FiLayers size={16} className='me-2'/>
-                <span>Kaydet & Gönder</span>
+                <span>Kaydet</span>
             </a>
             <a href="#" className="btn btn-primary" data-bs-toggle="offcanvas" data-bs-target="#proposalSent">Teklifi Gönder</a>
         </div>

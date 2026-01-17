@@ -40,12 +40,6 @@ const LatestLeads = ({title}) => {
                                             <td>
                                                 <div className="d-flex align-items-center gap-3">
                                                     {
-                                                        user_img ?
-                                                            <div className="avatar-image">
-                                                                <Image width={38} height={38} sizes='100vw' src={user_img} alt="user-img" className="img-fluid" />
-                                                            </div>
-                                                            :
-                                                            <div className="text-white avatar-text user-avatar-text">{user_name.substring(0, 1)}</div>
                                                     }
                                                     <a href="#">
                                                         <span className="d-block">{user_name}</span>

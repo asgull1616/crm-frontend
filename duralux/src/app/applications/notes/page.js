@@ -1,4 +1,4 @@
-import NotesContent from '@/components/notes/NotesContent'
+import NotesContent from '@/__archive__/notes/NotesContent'
 import React from 'react'
 
 const page = () => {

@@ -7,7 +7,9 @@ import Footer from '@/components/shared/Footer'
 
 
 const page = () => {
+    
     return (
+        
         <>
             <PageHeader>
                 <ProposalHeadr />

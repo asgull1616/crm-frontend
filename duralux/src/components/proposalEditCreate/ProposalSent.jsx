@@ -1,6 +1,6 @@
 'use client'
 import React, { useState } from 'react'
-import EmailTagInput from '../emails/EmailTagInput'
+import EmailTagInput from '../../__archive__/emails/EmailTagInput'
 import useJoditConfig from '@/hooks/useJoditConfig';
 import JoditEditor from 'jodit-react';
 import { confirmDelete } from '@/utils/confirmDelete';

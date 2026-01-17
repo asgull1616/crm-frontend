@@ -10,8 +10,8 @@ const page = () => {
         <LeadsCreateHeader />
       </PageHeader>
 
-      <div className='main-content'>
-        <div className='row'>
+      <div className="main-content">
+        <div className="row">
           <LeadsCreateContent />
         </div>
       </div>

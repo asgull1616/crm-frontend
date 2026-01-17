@@ -1,4 +1,4 @@
-import CalenderContent from '@/components/calender/CalenderContent'
+import CalenderContent from '@/__archive__/calender/CalenderContent'
 import React from 'react'
 
 const page = () => {

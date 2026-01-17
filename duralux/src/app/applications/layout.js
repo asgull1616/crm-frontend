@@ -3,13 +3,13 @@ import { usePathname } from 'next/navigation'
 import ChatProfileInfo from '@/components/chats/ChatProfileInfo'
 import VideoCall from '@/components/chats/VideoCall'
 import VoiceCall from '@/components/chats/VoiceCall'
-import AddsNote from '@/components/notes/AddsNote'
+import AddsNote from '@/__archive__/notes/AddsNote'
 import Header from '@/components/shared/header/Header'
 import NavigationManu from '@/components/shared/navigationMenu/NavigationMenu'
 import StorageDetails from '@/components/storage/StorageDetails'
 import useBootstrapUtils from '@/hooks/useBootstrapUtils'
 import dynamic from 'next/dynamic'
-const ComposeMailPopUp = dynamic(() => import('@/components/emails/ComposeMailPopup'), { ssr: false })
+const ComposeMailPopUp = dynamic(() => import('@/__archive__/emails/ComposeMailPopup'), { ssr: false })
 const TasksDetails = dynamic(() => import('@/components/tasks/TasksDetails'), { ssr: false })
 const AddTask = dynamic(() => import('@/components/tasks/AddTask'), { ssr: false })
 
