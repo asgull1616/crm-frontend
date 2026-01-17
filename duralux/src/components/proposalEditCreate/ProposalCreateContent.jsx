@@ -28,6 +28,7 @@ const previtems = [
 
 const ProposalCreateContent = () => {
     const [customers, setCustomers] = useState([])
+    const [totalAmount, setTotalAmount] = useState('')
 
     useEffect(() => {
   customerService.list().then((res) => {
@@ -61,6 +62,7 @@ const ProposalCreateContent = () => {
       customerId,
       validUntil: startDate.toISOString(),
       status: send ? 'SENT' : status.toUpperCase(),
+      totalAmount: totalAmount ? Number(totalAmount) : null,
     })
 
     router.push('/proposal/list')
@@ -69,6 +71,7 @@ const ProposalCreateContent = () => {
   } finally {
     setLoading(false)
   }
+  
 }
 
 
@@ -132,13 +135,20 @@ const ProposalCreateContent = () => {
 
 
                         {/* 🔹 Miktar (UI only) */}
-                        <div className="mb-4">
-                            <label className="form-label">Miktar</label>
-                            <SelectDropdown
-                                options={propsalDiscountOptions}
-                                defaultSelect="Miktar Seçin"
-                            />
-                        </div>
+                        {/* 🔹 Miktar */}
+            <div className="mb-4">
+                <label className="form-label">Miktar</label>
+                    <input
+                        type="number"
+                        className="form-control no-spinner"
+                        placeholder="Örn: 1500"
+                        step="0.01"
+                        value={totalAmount}
+                        onChange={(e) => setTotalAmount(e.target.value)}
+                    />
+            </div>
+
+
 
                         <div className="row">
 
