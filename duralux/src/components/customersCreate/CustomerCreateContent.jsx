@@ -26,6 +26,7 @@ const CustomerCreateContent = () => {
         description: '',
         status: 'NEW'
     })
+    const [errors, setErrors] = useState({})
 
     const onChange = (field, value) => {
         setForm(prev => ({ ...prev, [field]: value }))
@@ -33,29 +34,41 @@ const CustomerCreateContent = () => {
     
 
     const onSubmit = async () => {
-  console.log('🧪 FORM STATE:', form);
+  const newErrors = {}
 
+  // Full name kontrolü
   if (!form.fullName || form.fullName.trim() === '') {
-    alert('FULL NAME BOŞ – BACKEND 400 ATMASI NORMAL');
-    return;
+    newErrors.fullName = 'İsim soyisim zorunlu'
   }
 
+  // Telefon kontrolü
+  const phoneDigits = form.phone?.replace(/\D/g, '') || ''
+
+  if (!form.phone || phoneDigits.length < 10) {
+    newErrors.phone = 'Telefon numarası eksik veya geçersiz'
+  }
+
+  // ❌ HATA VARSA → DUR
+  if (Object.keys(newErrors).length > 0) {
+    setErrors(prev => ({ ...prev, ...newErrors }))
+    return
+  }
+
+  // 🧼 boş alanları temizle
   const cleanedForm = Object.fromEntries(
     Object.entries(form).filter(
       ([_, value]) => value !== '' && value !== null
     )
-  );
-
-  console.log('🧼 CLEANED FORM:', cleanedForm);
+  )
 
   try {
-    await customerService.create(cleanedForm);
-    router.push('/customers/list');
+    await customerService.create(cleanedForm)
+    router.push('/customers/list')
   } catch (e) {
-    console.error(e);
-    alert('Müşteri oluşturulamadı');
+    console.error(e)
+    alert('Müşteri oluşturulamadı')
   }
-};
+}
 
 
 
@@ -81,7 +94,13 @@ const CustomerCreateContent = () => {
                     </div>
 
                     <div className="tab-content">
-                        <TabProfile form={form} onChange={onChange} />
+                        <TabProfile
+  form={form}
+  onChange={onChange}
+  errors={errors}
+  setErrors={setErrors}
+/>
+
                         <TabPassword />
                         <TabBilling />
                         <div className="tab-pane fade" id="subscriptionTab">
