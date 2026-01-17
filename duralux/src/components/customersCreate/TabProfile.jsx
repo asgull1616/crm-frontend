@@ -12,8 +12,10 @@ import MultiSelectTags from '@/components/shared/MultiSelectTags'
 import { customerCreatePrivacyOptions, customerListStatusOptions, customerListTagsOptions } from '@/utils/options'
 import useLocationData from '@/hooks/useLocationData'
 import useDatePicker from '@/hooks/useDatePicker'
+import { customerService } from '@/lib/services/customer.service'
 
-const   TabProfile = () => {
+
+const TabProfile = ({form, onChange}) => {
     const [selectedOption, setSelectedOption] = useState(null);
     const { startDate, endDate, setStartDate, setEndDate, renderFooter } = useDatePicker();
     const { countries, states, cities, loading, error, fetchStates, fetchCities, } = useLocationData();
@@ -53,75 +55,67 @@ const   TabProfile = () => {
                     </div>
                 </div> */}
                 <Input
-                    icon='feather-user'
-                    label={"İsim Soyisim"}
-                    labelId={"nameInput"}
-                    placeholder={"isim Soyisim"}
-                    name={"name"}
+                    icon="feather-user"
+                    label="İsim Soyisim"
+                    value={form.fullName}
+                    onChange={e => onChange('fullName', e.target.value)}
                 />
+
                 <Input
-                    icon='feather-mail'
-                    label={"Email"}
-                    labelId={"emailInput"}
-                    placeholder={"Email"}
-                    name={"email"}
-                    type={"email"}
+                    icon="feather-mail"
+                    label="Email"
+                    type="email"
+                    value={form.email}
+                    onChange={e => onChange('email', e.target.value)}
                 />
+
                 <Input
-                    icon='feather-link-2'
-                    label={"Kullanıcı Adı"}
-                    labelId={"usernameInput"}
-                    placeholder={"Kullanıcı Adı"}
-                    name={"username"}
-                    centerLink={true}
+                    icon="feather-phone"
+                    label="Telefon"
+                    value={form.phone}
+                    onChange={e => onChange('phone', e.target.value)}
                 />
+
                 <Input
-                    icon='feather-phone'
-                    label={"Telefon"}
-                    labelId={"phoneInput"}
-                    placeholder={"Telefon"}
-                    name={"phone"}
+                    icon="feather-compass"
+                    label="Şirket"
+                    value={form.companyName}
+                    onChange={e => onChange('companyName', e.target.value)}
                 />
+
                 <Input
-                    icon='feather-compass'
-                    label={"Şirket"}
-                    labelId={"companyInput"}
-                    placeholder={"Şirket"}
-                    name={"company"}
-                />
-                <Input
-                    icon='feather-briefcase'
-                    label={"Unvan"}
-                    labelId={"designationInput"}
-                    placeholder={"Unvan"}
-                    name={"designation"}
-                />
+  label="Unvan"
+  value={form.designation}
+  onChange={e => onChange('designation', e.target.value)}
+/>
+
                 <Input
                     icon="feather-link"
-                    label={"Website"}
-                    labelId={"websiteInput"}
-                    placeholder={"Website"}
-                    name={"website"}
+                    label="Website"
+                    value={form.website}
+                    onChange={e => onChange('website', e.target.value)}
                 />
+
                 <Input
                     icon="feather-dollar-sign"
-                    label={"VAT"}
-                    labelId={"vatInput"}
-                    placeholder={"VAT"}
-                    name={"vat"}
+                    label="VAT"
+                    value={form.vatNumber}
+                    onChange={e => onChange('vatNumber', e.target.value)}
                 />
+
                 <TextArea
                     icon="feather-map-pin"
-                    label={"Adres"}
-                    labelId={"addressInput"}
-                    placeholder={"Adres"}
+                    label="Adres"
+                    value={form.address}
+                    onChange={e => onChange('address', e.target.value)}
                 />
+
                 <TextArea
                     icon="feather-type"
-                    label={"Tanım"}
-                    labelId={"descriptionInput"}
-                    placeholder={"Tanım"}
-                    row='5'
+                    label="Tanım"
+                    row="5"
+                    value={form.description}
+                    onChange={e => onChange('description', e.target.value)}
                 />
             </div>
             <hr className="my-0" />

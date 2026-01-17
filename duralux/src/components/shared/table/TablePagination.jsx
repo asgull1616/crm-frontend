@@ -4,7 +4,7 @@ const TablePagination = ({table}) => {
     return (
         <div className="row gy-2">
             <div className="col-sm-12 col-md-5 p-0">
-                <div className="dataTables_info text-lg-start text-center" id="proposalList_info" role="status" aria-live="polite">Showing 1 to 10 of 10 entries</div>
+                <div className="dataTables_info text-lg-start text-center" id="proposalList_info" role="status" aria-live="polite">1–10 arası gösteriliyor</div>
             </div>
             <div className="col-sm-12 col-md-7 p-0">
                 <div className="dataTables_paginate paging_simple_numbers" id="proposalList_paginate">
