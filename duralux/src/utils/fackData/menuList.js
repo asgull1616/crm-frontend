@@ -31,12 +31,7 @@ export const menuList = [
     //             path: "/reports/sales",
     //             subdropdownMenu: false
     //         },
-    //         {
-    //             id: 2,
-    //             name: "Leads Report",
-    //             path: "/reports/leads",
-    //             subdropdownMenu: false
-    //         },
+    //         
     //         {
     //             id: 3,
     //             name: "Project Report",
@@ -188,31 +183,25 @@ export const menuList = [
         },
     },
     {
-        id: 6,
-        name: "Ekipleri Görüntüle",
-        path: "/leads/list",
-        icon: 'feather-alert-circle',
-       dropdownMenu: [
-        //     {
-        //         id: 1,
-        //         name: "Ekipler",
-        //         path: "/leads/list",
-        //         subdropdownMenu: false
-        //     },
-        //     {
-        //         id: 2,
-        //         name: "Ekipleri Görüntüle",
-        //         path: "/leads/view",
-        //         subdropdownMenu: false
-        //     },
-        //     {
-        //         id: 3,
-        //         name: "Ekip Oluştur",
-        //         path: "/leads/create",
-        //         subdropdownMenu: false
-        //     }
-        ]
-    },
+    id: 6,
+    name: "Ekipler",
+    path: "/teams/list",
+    icon: 'feather-users',
+    dropdownMenu: [
+        {
+            id: 1,
+            name: "Ekipleri Görüntüle",
+            path: "/teams/list",
+            subdropdownMenu: false
+        },
+        {
+            id: 2,
+            name: "Ekip Oluştur",
+            path: "/teams/create",
+            subdropdownMenu: false
+        }
+    ]
+},
     {
         id: 7,
         name: "Görevler",
@@ -313,12 +302,7 @@ export const menuList = [
                 path: "/settings/tasks",
                 subdropdownMenu: false
             },
-            {
-                id: 6,
-                name: "Leads",
-                path: "/settings/leads",
-                subdropdownMenu: false
-            },
+            
             {
                 id: 7,
                 name: "Support",

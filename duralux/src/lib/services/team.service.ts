@@ -2,19 +2,61 @@
 import api from '../axios';
 
 export const teamService = {
-    // 👥 Listele
-    list: (params?: any) =>
-        api.get('/teams', { params }),
+  // --------------------------------------------------
+  // TEAMS
+  // --------------------------------------------------
 
-    // ✏️ Kullanıcı güncelle
-    update: (id: string, data: any) =>
-        api.patch(`/teams/${id}`, data),
+  // 👥 Ekipleri listele (pagination destekli)
+  list: (params?: { page?: number; limit?: number }) =>
+    api.get('/teams', { params }),
 
-    // 🎭 Rol güncelle
-    updateRole: (id: string, role: string) =>
-        api.patch(`/teams/${id}/role`, { role }),
+  // 🔍 Tek ekip getir
+  getById: (id: string) =>
+    api.get(`/teams/${id}`),
 
-    // 🗑️ Soft delete
-    delete: (id: string) =>
-        api.delete(`/teams/${id}`),
+  // 🔎 İsimle ekip ara
+  searchByName: (name: string) =>
+    api.get('/teams/search', { params: { name } }),
+
+  // ➕ Ekip oluştur
+  create: (data: { name: string; memberIds?: string[] }) =>
+    api.post('/teams', data),
+
+  // 🗑️ Ekip sil (soft delete)
+  remove: (id: string) =>
+    api.delete(`/teams/${id}`),
+
+  // --------------------------------------------------
+  // TEAM MEMBERS
+  // --------------------------------------------------
+
+  // 👤 Ekip üyelerini getir
+  getMembers: (teamId: string) =>
+    api.get(`/teams/${teamId}/members`),
+
+  // ➕ Ekip üyesi ekle (bulk)
+  addMembers: (teamId: string, memberIds: string[]) =>
+    api.post(`/teams/${teamId}/members`, { memberIds }),
+
+  // ➖ Ekipten üye çıkar (bulk)
+  removeMembers: (teamId: string, memberIds: string[]) =>
+    api.delete(`/teams/${teamId}/members`, {
+      data: { memberIds },
+    }),
+
+  // --------------------------------------------------
+  // USERS (Geçici – backend ile birebir)
+  // --------------------------------------------------
+
+  // 👥 Kullanıcı listele (ekip oluşturma ekranı)
+  listUsers: (params?: { page?: number; limit?: number }) =>
+    api.get('/teams/users', { params }),
+
+  // 🎭 Kullanıcı rol güncelle
+  updateUserRole: (userId: string, role: string) =>
+    api.patch(`/teams/users/${userId}/role`, { role }),
+
+  // 🗑️ Kullanıcı soft delete
+  removeUser: (userId: string) =>
+    api.delete(`/teams/users/${userId}`),
 };
