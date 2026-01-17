@@ -25,7 +25,7 @@ const useDatePicker = () => {
         </div>
     );
 
-    return { startDate, endDate, setStartDate, setEndDate, renderFooter };
+    return { startDate, endDate, setStartDate,setEndDate, renderFooter };
 };
 
 export default useDatePicker

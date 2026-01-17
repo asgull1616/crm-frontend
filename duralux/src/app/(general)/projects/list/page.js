@@ -1,21 +1,18 @@
 import React from 'react'
 import PageHeader from '@/components/shared/pageHeader/PageHeader'
-import ProjectsListHeader from '@/components/projectsList/ProjectsListHeader'
-import ProjectTable from '@/components/projectsList/ProjectTable'
+import TasksListContent from '@/components/tasks/TaskListContent'
 
 const page = () => {
-    return (
-        <>
-            <PageHeader>
-                <ProjectsListHeader />
-            </PageHeader>
-            <div className='main-content'>
-                <div className='row'>
-                    <ProjectTable />
-                </div>
-            </div>
-        </>
-    )
+  return (
+    <>
+      <PageHeader title="Görevler" />
+      <div className="main-content">
+        <div className="row">
+          <TasksListContent />
+        </div>
+      </div>
+    </>
+  )
 }
 
 export default page
