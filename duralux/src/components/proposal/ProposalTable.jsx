@@ -1,5 +1,6 @@
 'use client'
-import React, { useEffect } from 'react'
+
+import React, { useEffect, useState, useRef } from 'react'
 import Table from '@/components/shared/table/Table'
 import {
   FiEye,
@@ -11,41 +12,85 @@ import {
   FiMessageSquare,
   FiFileText,
   FiTrash2,
-    FiMoreHorizontal,
-} from "react-icons/fi";
-import Dropdown from '@/components/shared/Dropdown';
-import { proposalTableData } from '@/utils/fackData/proposalTableData';
-import Link from 'next/link';
+  FiMoreHorizontal,
+} from 'react-icons/fi'
+import Dropdown from '@/components/shared/Dropdown'
+import Link from 'next/link'
+import { proposalService } from '@/lib/services/proposal.service'
 
+/* 🔹 Status mapper */
+const mapStatus = (status) => {
+  switch (status) {
+    case 'DRAFT':
+      return { content: 'Taslak', color: 'bg-warning' }
+    case 'SENT':
+      return { content: 'Gönderildi', color: 'bg-info' }
+    case 'APPROVED':
+      return { content: 'Onaylandı', color: 'bg-success' }
+    case 'REJECTED':
+      return { content: 'Reddedildi', color: 'bg-danger' }
+    default:
+      return { content: status, color: 'bg-secondary' }
+  }
+}
 
+/* 🔹 Dropdown actions (şimdilik UI only) */
 const actions = [
-  { label: "Düzenle", icon: <FiEdit3 /> },
-  { type: "divider" },
-  { label: "Müşteriye Gönder", icon: <FiSend /> },
-  { label: "Tekrar Gönder", icon: <FiRefreshCw /> },
-  { type: "divider" },
-  { label: "Onayla", icon: <FiCheckCircle />, variant: "success" },
-  { label: "Reddet", icon: <FiXCircle />, variant: "danger" },
-  { type: "divider" },
-  { label: "Not Ekle", icon: <FiMessageSquare /> },
-  { label: "PDF İndir", icon: <FiFileText /> },
-  { type: "divider" },
-  { label: "Sil", icon: <FiTrash2 />, variant: "danger" },
-];
-
+  { label: 'Düzenle', icon: <FiEdit3 /> },
+  { type: 'divider' },
+  { label: 'Müşteriye Gönder', icon: <FiSend /> },
+  { label: 'Tekrar Gönder', icon: <FiRefreshCw /> },
+  { type: 'divider' },
+  { label: 'Onayla', icon: <FiCheckCircle />, variant: 'success' },
+  { label: 'Reddet', icon: <FiXCircle />, variant: 'danger' },
+  { type: 'divider' },
+  { label: 'Not Ekle', icon: <FiMessageSquare /> },
+  { label: 'PDF İndir', icon: <FiFileText /> },
+  { type: 'divider' },
+  { label: 'Sil', icon: <FiTrash2 />, variant: 'danger' },
+]
 
 const ProposalTable = () => {
+  const [data, setData] = useState([])
+
+  /* 🔹 Backend’ten liste çek */
+  useEffect(() => {
+    proposalService.list({ page: 1, limit: 10 }).then((res) => {
+      const items = res?.data?.items || []
+
+      const mapped = items.map((p) => ({
+        id: p.id, // 🔑 GERÇEK ID (çok önemli)
+        proposal: p.id.slice(0, 8),
+        client: {
+          name: p.customerName,
+          email: p.customerEmail,
+          img: null,
+        },
+        subject: p.title,
+        amount: p.totalAmount
+          ? `${p.currency} ${p.totalAmount}`
+          : '-',
+        date: new Date(p.createdAt).toLocaleDateString('tr-TR'),
+        status: mapStatus(p.status),
+      }))
+
+      setData(mapped)
+    })
+  }, [])
+
+  /* 🔹 Table columns */
   const columns = [
     {
       accessorKey: 'id',
       header: ({ table }) => {
-        const checkboxRef = React.useRef(null);
+        const checkboxRef = useRef(null)
 
         useEffect(() => {
           if (checkboxRef.current) {
-            checkboxRef.current.indeterminate = table.getIsSomeRowsSelected();
+            checkboxRef.current.indeterminate =
+              table.getIsSomeRowsSelected()
           }
-        }, [table.getIsSomeRowsSelected()]);
+        }, [table.getIsSomeRowsSelected()])
 
         return (
           <input
@@ -55,14 +100,13 @@ const ProposalTable = () => {
             checked={table.getIsAllRowsSelected()}
             onChange={table.getToggleAllRowsSelectedHandler()}
           />
-        );
+        )
       },
       cell: ({ row }) => (
         <input
           type="checkbox"
           className="custom-table-checkbox"
           checked={row.getIsSelected()}
-          disabled={!row.getCanSelect()}
           onChange={row.getToggleSelectedHandler()}
         />
       ),
@@ -71,34 +115,32 @@ const ProposalTable = () => {
       },
     },
 
-
     {
       accessorKey: 'proposal',
       header: () => 'Teklif ID',
-      cell: (info) => <a href='#' className='fw-bold'>{info.getValue()}</a>
+      cell: (info) => (
+        <span className="fw-bold">{info.getValue()}</span>
+      ),
     },
     {
       accessorKey: 'client',
       header: () => 'Müşteri',
       cell: (info) => {
-        const roles = info.getValue();
+        const c = info.getValue()
         return (
-          <a href="#" className="hstack gap-3">
-            {
-              roles?.img ?
-                <div className="avatar-image avatar-md">
-                  <img src={roles?.img} alt="" className="img-fluid" />
-                </div>
-                :
-                <div className="text-white avatar-text user-avatar-text avatar-md">{roles?.name.substring(0, 1)}</div>
-            }
-            <div>
-              <span className="text-truncate-1-line">{roles?.name}</span>
-              <small className="fs-12 fw-normal text-muted">{roles?.email}</small>
+          <div className="hstack gap-3">
+            <div className="text-white avatar-text avatar-md">
+              {c?.name?.substring(0, 1)}
             </div>
-          </a>
+            <div>
+              <span className="text-truncate-1-line">{c?.name}</span>
+              <small className="fs-12 fw-normal text-muted">
+                {c?.email}
+              </small>
+            </div>
+          </div>
         )
-      }
+      },
     },
     {
       accessorKey: 'subject',
@@ -108,8 +150,8 @@ const ProposalTable = () => {
       accessorKey: 'amount',
       header: () => 'Tutar',
       meta: {
-        className: "fw-bold text-dark"
-      }
+        className: 'fw-bold text-dark',
+      },
     },
     {
       accessorKey: 'date',
@@ -118,32 +160,39 @@ const ProposalTable = () => {
     {
       accessorKey: 'status',
       header: () => 'Durum',
-      cell: (info) => <div className={`badge ${info.getValue().color}`}>{info.getValue().content}</div>
+      cell: (info) => (
+        <span className={`badge ${info.getValue().color}`}>
+          {info.getValue().content}
+        </span>
+      ),
     },
     {
       accessorKey: 'actions',
-      header: () => "Eylemler",
-      cell: info => (
+      header: () => 'Eylemler',
+      cell: ({ row }) => (
         <div className="hstack gap-2 justify-content-end">
-          <a href="#" className="avatar-text avatar-md" data-bs-toggle="offcanvas" data-bs-target="#proposalSent">
-            <FiSend />
-          </a>
-          <Link href="/proposal/view" className="avatar-text avatar-md">
+          <Link
+            href={`/proposal/view/${row.original.id}`}
+            className="avatar-text avatar-md"
+          >
             <FiEye />
           </Link>
-          <Dropdown dropdownItems={actions} triggerIcon={<FiMoreHorizontal />} triggerClass='avatar-md' triggerPosition={"0,21"} />
+
+          <Dropdown
+            dropdownItems={actions}
+            triggerIcon={<FiMoreHorizontal />}
+            triggerClass="avatar-md"
+            triggerPosition="0,21"
+          />
         </div>
       ),
       meta: {
-        headerClassName: 'text-end'
-      }
+        headerClassName: 'text-end',
+      },
     },
   ]
-  return (
-    <>
-      <Table data={proposalTableData} columns={columns} />
-    </>
-  )
+
+  return <Table data={data} columns={columns} />
 }
 
 export default ProposalTable

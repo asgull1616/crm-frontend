@@ -9,6 +9,7 @@ import {
 } from '@/utils/options'
 import useLocationData from '@/hooks/useLocationData'
 import useDatePicker from '@/hooks/useDatePicker'
+import { customerService } from '@/lib/services/customer.service'
 
 const TabProfile = ({ form, onChange }) => {
   const [selectedOption, setSelectedOption] = useState(null)

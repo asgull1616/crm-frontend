@@ -8,6 +8,9 @@ import TabBilling from './TabBilling'
 import TabNotificationsContent from '../customersView/TabNotificationsContent'
 import TabConnections from '../customersView/TabConnections'
 import TabBillingContent from '../customersView/TabBillingContent'
+import CustomersCreateHeader from './CustomersCreateHeader'
+import { customerService } from '@/lib/services/customer.service'
+
 
 import { customerService } from '@/lib/services/customer.service'
 

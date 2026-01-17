@@ -6,6 +6,15 @@ import DatePicker from 'react-datepicker'
 
 import Loading from '@/components/shared/Loading'
 import AddProposal from './AddProposal'
+import { proposalService } from '@/lib/services/proposal.service'
+import {
+    propsalRelatedOptions,
+    propsalDiscountOptions,
+    propsalStatusOptions,
+} from '@/utils/options'
+import { useEffect } from 'react'
+import { customerService } from '@/lib/services/customer.service'
+
 
 import useDatePicker from '@/hooks/useDatePicker'
 import { proposalService } from '@/lib/services/proposal.service'

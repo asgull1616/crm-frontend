@@ -1,104 +1,133 @@
-import React from 'react'
-import { FiCheckCircle, FiMoreHorizontal, FiX } from 'react-icons/fi'
-import { profileActivityData } from '@/utils/fackData/profileActivityData'
-import { ActivityListItem } from '../widgetsList/ActivityTwo';
+'use client'
+import React, { useEffect, useState } from 'react'
+import { FiMoreHorizontal } from 'react-icons/fi'
+import Link from 'next/link'
+import { activityService } from '@/lib/services/activity.service'
+import ActivityCreateForm from './ActivityCreateForm'
+import { ActivityListItem } from '../widgetsList/ActivityTwo'
+import ActivityDetailModal from './ActivityDetailModal'
 
-const logData = [
-    { browser: 'Chrome on Window', ip: '192.149.122.128', time: '11:34 PM', action: 'success' },
-    { browser: 'Mozilla on Window', ip: '186.188.154.225', time: 'Nov 20, 2023 10:34 PM', action: 'fail' },
-    { browser: 'Chrome on iMac', ip: '192.149.122.128', time: 'Oct 23, 2023 04:16 PM', action: 'fail' },
-    { browser: 'Mozilla on Window', ip: '186.188.154.225', time: 'Nov 20, 2023 10:34 PM', action: 'fail' },
-    { browser: 'Chrome on Window', ip: '192.149.122.128', time: 'Oct 23, 2023 04:16 PM', action: 'fail' },
-    { browser: 'Chrome on iMac', ip: '192.149.122.128', time: 'Oct 15, 2023 11:41 PM', action: 'fail' },
-    { browser: 'Mozilla on Window', ip: '186.188.154.225', time: 'Oct 13, 2023 05:43 AM', action: 'fail' },
-    { browser: 'Chrome on iMac', ip: '192.149.122.128', time: 'Oct 03, 2023 04:12 AM', action: 'fail' },
+const ACTIVITY_UI = {
+  CALL: { label: 'Telefon görüşmesi', color: 'primary' },
+  EMAIL: { label: 'E-posta', color: 'info' },
+  MEETING: { label: 'Toplantı', color: 'success' },
+  NOTE: { label: 'Not', color: 'secondary' },
 
-];
+  TASK_CREATED: { label: 'Görev oluşturuldu', color: 'warning' },
+  TASK_COMPLETED: { label: 'Görev tamamlandı', color: 'success' },
 
+  CUSTOMER_CREATED: { label: 'Müşteri oluşturuldu', color: 'primary' },
+  CUSTOMER_UPDATED: { label: 'Müşteri güncellendi', color: 'info' },
+}
 
-const TabActivityContent = () => {
+const formatDate = (iso) =>
+  new Date(iso).toLocaleString('tr-TR', {
+    day: '2-digit',
+    month: 'long',
+    year: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit',
+  })
+
+const TabActivityContent = ({ customerId }) => {
+  const [activities, setActivities] = useState([])
+  const [loading, setLoading] = useState(true)
+  const [limit, setLimit] = useState(5)
+  const [selectedActivityId, setSelectedActivityId] = useState(null)
+
+  useEffect(() => {
+    if (customerId) loadActivities()
+  }, [customerId])
+
+  const loadActivities = async () => {
+    try {
+      const res = await activityService.list({ customerId })
+      setActivities(res.data.data || [])
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  if (loading) {
     return (
-        <div className="tab-pane fade" id="activityTab" role="tabpanel">
-            <div className="recent-activity p-4 pb-0">
-                <div className="mb-4 pb-2 d-flex justify-content-between">
-                    <h5 className="fw-bold">İşlemler:</h5>
-                    <a href="#" className="btn btn-sm btn-light-brand">Göster</a>
-                </div>
-                <ul className="list-unstyled activity-feed">
-                    {profileActivityData.map((item, index) => (
-                        <ActivityListItem
-                            key={index}
-                            type={item.type}
-                            leadDate={item.leadDate}
-                            date={item.date}
-                            text={item.text}
-                            linkText={item.linkText}
-                            linkHref={item.linkHref}
-                            badge={item.badge}
-                            badgeColor={item.badgeColor}
-                        />
-                    ))}
-                </ul>
-                <a href="#" className="d-flex align-items-center text-muted">
-                    <FiMoreHorizontal className='fs-12' />
-                    <span className="fs-10 text-uppercase ms-2 text-truncate-1-line">Daha Fazla</span>
-                </a>
-            </div>
-            <hr />
-            <div className="logs-history mb-0">
-                {/* <div className="px-4 mb-4 d-flex justify-content-between">
-                    <h5 className="fw-bold">Logs History</h5>
-                    <a href="#" className="btn btn-sm btn-light-brand">View Alls</a>
-                </div>
-                <div className="table-responsive">
-                    <table className="table">
-                        <thead className="text-dark text-center border-top">
-                            <tr>
-                                <th className="text-start ps-4">Browser</th>
-                                <th>IP</th>
-                                <th>Time</th>
-                                <th>Action</th>
-                            </tr>
-                        </thead>
-                        <tbody className="text-center">
-                            {logData.map((log, index) => (
-                                <LogEntry
-                                    key={index}
-                                    browser={log.browser}
-                                    ip={log.ip}
-                                    time={log.time}
-                                    action={log.action}
-                                />
-                            ))}
-                        </tbody>
-                    </table>
-                </div> */}
-            </div>
-        </div>
+      <div className="tab-pane fade p-4" id="activityTab">
+        <p className="text-muted">Yükleniyor...</p>
+      </div>
     )
+  }
+
+  return (
+    <div className="tab-pane fade" id="activityTab" role="tabpanel">
+
+      {/* 🔹 ACTIVITY CREATE */}
+      <ActivityCreateForm
+        customerId={customerId}
+        onCreated={loadActivities}
+      />
+
+      {/* 🔹 TIMELINE */}
+      <div className="recent-activity p-4 pb-0">
+        <div className="mb-4 d-flex justify-content-between">
+          <h5 className="fw-bold">İşlem Geçmişi</h5>
+        </div>
+
+        {!activities.length && (
+          <p className="text-muted">Bu müşteri için henüz aktivite yok.</p>
+        )}
+
+        <ul className="list-unstyled activity-feed">
+          {activities.slice(0, limit).map((item) => {
+            const ui = ACTIVITY_UI[item.type] || {
+              label: item.type,
+              color: 'secondary',
+            }
+
+            const isSystem =
+              item.type.startsWith('TASK_') ||
+              item.type.startsWith('CUSTOMER_')
+
+            return (
+              <ActivityListItem
+                key={item.id}
+                date={formatDate(item.createdAt)}
+                badge={ui.label}
+                badgeColor={ui.color}
+                isSystem={isSystem}
+                onView={() => setSelectedActivityId(item.id)}
+                text={
+                  item.taskId ? (
+                    <Link href={`/tasks/view/${item.taskId}`}>
+                      {item.title}
+                    </Link>
+                  ) : (
+                    item.title
+                  )
+                }
+              />
+            )
+          })}
+        </ul>
+
+        {activities.length > limit && (
+          <button
+            className="btn btn-link text-muted p-0 mt-2"
+            onClick={() => setLimit((l) => l + 5)}
+          >
+            <FiMoreHorizontal className="me-1" />
+            Daha fazla
+          </button>
+        )}
+      </div>
+
+      {/* 🔹 ACTIVITY DETAIL MODAL */}
+      {selectedActivityId && (
+        <ActivityDetailModal
+          activityId={selectedActivityId}
+          onClose={() => setSelectedActivityId(null)}
+        />
+      )}
+    </div>
+  )
 }
 
 export default TabActivityContent
-
-
-
-
-const LogEntry = ({ browser, ip, time, action }) => {
-    return (
-        <tr>
-            <td className="fw-medium text-dark text-start ps-4">{browser}</td>
-            <td><span className="text-muted">{ip}</span></td>
-            <td>
-                <span className="text-muted">{time}</span>
-            </td>
-            <td>
-                {action === 'success' ? (
-                    <FiCheckCircle className='text-success' />
-                ) : (
-                    <FiX className='text-danger' />
-                )}
-            </td>
-        </tr>
-    );
-};
-
