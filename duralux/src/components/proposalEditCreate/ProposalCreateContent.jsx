@@ -53,26 +53,27 @@ const ProposalCreateContent = () => {
     const [status, setStatus] = useState('DRAFT')
 
     const handleCreateProposal = async (send = false) => {
-  if (!title || !customerId || !startDate) return
+  if (!title || !customerId || !startDate) return;
 
-  setLoading(true)
+  setLoading(true);
   try {
     await proposalService.create({
-      title,
-      customerId,
-      validUntil: startDate.toISOString(),
-      status: send ? 'SENT' : status.toUpperCase(),
-      totalAmount: totalAmount ? Number(totalAmount) : null,
-    })
+  title,
+  customerId,
+  validUntil: startDate.toISOString(),
+  status: send ? 'SENT' : status,
+  ...(totalAmount.trim() !== '' && { totalAmount }),
+});
 
-    router.push('/proposal/list')
+
+    router.push('/proposal/list');
   } catch (e) {
-    console.error('BACKEND ERROR:', e.response?.data)
+    console.error('BACKEND ERROR FULL:', e.response?.data);
+  console.error('VALIDATION MESSAGE:', e.response?.data?.message);
   } finally {
-    setLoading(false)
+    setLoading(false);
   }
-  
-}
+};
 
 
     return (
