@@ -28,32 +28,11 @@ const TabProfile = ({form, onChange}) => {
                 <div className="mb-4 d-flex align-items-center justify-content-between">
                     <h5 className="fw-bold mb-0 me-4">
                         <span className="d-block mb-2">Müşteri Bilgileri:</span>
-                        {/* <span className="fs-12 fw-normal text-muted text-truncate-1-line">Following information is publicly displayed, be careful! </span> */}
+                        
                     </h5>
                     <a href="#" className="btn btn-sm btn-light-brand">Ekleyin</a>
                 </div>
-                {/* <div className="row mb-4 align-items-center">
-                    <div className="col-lg-4">
-                        <label className="fw-semibold">Resim: </label>
-                    </div>
-                    <div className="col-lg-8">
-                        <div className="mb-4 mb-md-0 d-flex gap-4 your-brand">
-                            <label htmlFor='img' className="wd-100 ht-100 position-relative overflow-hidden border border-gray-2 rounded">
-                                <img src="/images/avatar/1.png" className="upload-pic img-fluid rounded h-100 w-100" alt="" />
-                                <div className="position-absolute start-50 top-50 end-0 bottom-0 translate-middle h-100 w-100 hstack align-items-center justify-content-center c-pointer upload-button">
-                                    <i aria-hidden="true" className='camera-icon'><FiCamera /></i>
-                                </div>
-                                <input className="file-upload" type="file" accept="image/*" id='img' hidden />
-                            </label>
-                            <div className="d-flex flex-column gap-1">
-                                <div className="fs-11 text-gray-500 mt-2"># Upload your prifile</div>
-                                <div className="fs-11 text-gray-500"># Avatar size 150x150</div>
-                                <div className="fs-11 text-gray-500"># Max upload size 2mb</div>
-                                <div className="fs-11 text-gray-500"># Allowed file types: png, jpg, jpeg</div>
-                            </div>
-                        </div>
-                    </div>
-                </div> */}
+               
                 <Input
                     icon="feather-user"
                     label="İsim Soyisim"

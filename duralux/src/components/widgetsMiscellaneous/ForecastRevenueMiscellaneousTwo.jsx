@@ -36,9 +36,8 @@ const ForecasRevenuetMiscellaneousTwo = () => {
                         </div>
                         <div>
                             <hr className="border-top-dashed" />
-                            <Card img={"/images/icons/1.png"} description={"Ricky Hunt, Sandra Trepp"} revenue={"85K"} title={"Monthly Subscription"} />
-                            <hr className="border-top-dashed" />
-                            <Card img={"/images/icons/2.png"} description={"Ricky Hunt, Sandra Trepp"} revenue={"96K"} title={"Monthly Contributors"} />
+                            <Card img={""} description={""} revenue={""} title={""} />
+                            
                         </div>
 
                         <CardLoader refreshKey={refreshKey} />

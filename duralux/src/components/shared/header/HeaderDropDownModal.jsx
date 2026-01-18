@@ -72,6 +72,16 @@ const menuData = [
             { name: 'Görev Oluştur', path: '/projects/create' }
         ]
     },
+
+    {
+        name: 'Gelir / Gider',
+        icon: 'feather-dollar-sign',
+        subMenu: [
+            { name: 'Kayıtları Görüntüle', path: '/income-expense' },
+            { name: 'Yeni Kayıt Ekle', path: '/income-expense' }, // şimdilik aynı sayfaya
+        ],
+    },
+
     // {
     //     name: 'widgets',
     //     icon: 'feather-layout',

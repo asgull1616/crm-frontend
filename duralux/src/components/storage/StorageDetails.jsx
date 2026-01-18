@@ -128,10 +128,10 @@ const StorageDetails = () => {
                             </div>
                             <div className="p-4">
                                 <Comment
-                                    avatarSrc="/images/avatar/3.png"
-                                    name="Marianne Audrey"
-                                    date="(Mar 2, 5:26 am)"
-                                    content="Lorem ipsum dolor sit amet, consec tetuer adipi scing elit aenean commodo scing elit aenean commodo"
+                                    avatarSrc=""
+                                    name=""
+                                    date=""
+                                    content=""
                                 />
                                 <Comment
                                     avatarText="N"
@@ -139,12 +139,7 @@ const StorageDetails = () => {
                                     date="(Mar 2, 5:26 am)"
                                     content="Lorem ipsum dolor sit amet, consec tetuer adipi scing elit aenean commodo scing elit aenean commodo"
                                 />
-                                <Comment
-                                    avatarSrc="/images/avatar/4.png"
-                                    name="Holland Scott"
-                                    date="(Mar 2, 2:21 pm)"
-                                    content="Lorem ipsum dolor sit amet, consec tetuer adipi scing elit aenean commodo scing elit aenean commodo"
-                                />
+                              
                                 <textarea
                                     rows={5}
                                     className="form-control"

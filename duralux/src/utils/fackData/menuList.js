@@ -239,6 +239,23 @@ export const menuList = [
             }
         ]
     },
+
+    {
+        id: 8,
+        name: "Gelir / Gider",
+        path: "/income-expense",
+        icon: "feather-dollar-sign",
+        dropdownMenu: [
+       //     {
+        //        id: 1,
+        //        name: "Gelir / Gider Kayıtlarını Görüntüle",
+       //         path: "/income-expense",
+        //        subdropdownMenu: false
+        //   }
+        ]
+    },
+
+
     // {
     //     id: 8,
     //     name: "widgets",
@@ -363,6 +380,9 @@ export const menuList = [
             },
         ]
     },
+
+
+    
     // {
     //     id: 10,
     //     name: "Giriş / Kimlik Doğrulama",
