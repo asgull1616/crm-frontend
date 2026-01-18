@@ -9,12 +9,8 @@ const BlogsTab = () => {
                 <CategoriesSidebar />
                 <div className="col-xxl-10">
                     <div className="row g-4">
-                        <BlogCard thumbnail={"/images/banner/1.jpg"} title={"Lorem ipsum dolor sit"} />
-                        <BlogCard thumbnail={"/images/banner/2.jpg"} title={"Lorem ipsum dolor sit"} />
-                        <BlogCard thumbnail={"/images/banner/3.jpg"} title={"Lorem ipsum dolor sit"} />
-                        <BlogCard thumbnail={"/images/banner/4.jpg"} title={"Lorem ipsum dolor sit"} />
-                        <BlogCard thumbnail={"/images/banner/5.jpg"} title={"Lorem ipsum dolor sit"} />
-                        <BlogCard thumbnail={"/images/banner/6.jpg"} title={"Lorem ipsum dolor sit"} />
+                        <BlogCard thumbnail={""} title={""} />
+                       
 
                         <TabFooter />
                     </div>
