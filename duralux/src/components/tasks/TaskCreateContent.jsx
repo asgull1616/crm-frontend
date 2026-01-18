@@ -118,12 +118,15 @@ const TaskCreateContent = () => {
               <option value="COMPLETED">Tamamlandı</option>
             </select>
           </div>
-
-          <div className="mt-4 text-end">
-            <button className="btn btn-primary" onClick={onSubmit}>
-              Kaydet
-            </button>
-          </div>
+<div className="mt-4 text-end">
+  <button 
+    className="btn text-white" // 'btn-primary' sınıfını sildik, yazı beyaz kalsın diye text-white ekledik
+    style={{ backgroundColor: '#E92B63', borderColor: '#E92B63' }} // İstediğin renk kodunu ekledik
+    onClick={onSubmit}
+  >
+    Kaydet
+  </button>
+</div>
         </div>
       </div>
     </div>

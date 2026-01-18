@@ -132,11 +132,12 @@ const TaskListContent = () => {
         <div className="card-header d-flex justify-content-between align-items-center">
           <h5 className="mb-0">Görevler</h5>
           <button
-            className="btn btn-sm btn-primary"
-            onClick={() => router.push('/projects/create')}
-          >
-            + Yeni Görev
-          </button>
+  className="btn btn-sm text-white" // btn-primary sildik, text-white ekledik
+  style={{ backgroundColor: '#E92B63', borderColor: '#E92B63' }} // Rengini verdik
+  onClick={() => router.push('/projects/create')}
+>
+  + Yeni Görev
+</button>
         </div>
 
         <div className="card-body p-0">
@@ -281,13 +282,14 @@ const TaskListContent = () => {
                 >
                   İptal
                 </button>
-                <button
-                  className="btn btn-primary"
-                  onClick={handleUpdate}
-                  disabled={saving}
-                >
-                  {saving ? 'Kaydediliyor...' : 'Kaydet'}
-                </button>
+               <button
+  className="btn text-white" // btn-primary sildik, text-white ekledik
+  style={{ backgroundColor: '#E92B63', borderColor: '#E92B63' }} // Rengini verdik
+  onClick={handleUpdate}
+  disabled={saving}
+>
+  {saving ? 'Kaydediliyor...' : 'Kaydet'}
+</button>
               </div>
             </div>
           </div>

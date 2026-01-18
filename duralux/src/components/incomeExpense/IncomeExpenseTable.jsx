@@ -13,9 +13,8 @@ const typeText = (type) => (type === 'INCOME' ? 'Gelir' : 'Gider')
 export default function IncomeExpenseTable() {
   const [items, setItems] = useState(initialItems)
 
-  // ✅ Modal + Form state
   const [isModalOpen, setIsModalOpen] = useState(false)
-  const [editId, setEditId] = useState(null) // ✅ null=create, dolu=edit
+  const [editId, setEditId] = useState(null)
 
   const [form, setForm] = useState({
     date: new Date().toISOString().slice(0, 10),
@@ -74,14 +73,12 @@ export default function IncomeExpenseTable() {
       amount: Number(form.amount),
     }
 
-    // ✅ EDIT MODE
     if (editId) {
       setItems((prev) => prev.map((x) => (x.id === editId ? { ...x, ...payload } : x)))
       closeModal()
       return
     }
 
-    // ✅ CREATE MODE
     const newItem = {
       id: typeof crypto !== 'undefined' && crypto.randomUUID ? crypto.randomUUID() : String(Date.now()),
       ...payload,
@@ -98,9 +95,13 @@ export default function IncomeExpenseTable() {
 
   return (
     <div className="col-12">
-      {/* Sağ üst buton (PageHeader altında, içerik alanında) */}
+      {/* Sağ üst buton */}
       <div className="d-flex justify-content-end mb-3">
-        <button className="btn btn-primary btn-sm" onClick={openCreateModal}>
+        <button 
+          className="btn btn-sm text-white" 
+          style={{ backgroundColor: '#E92B63', borderColor: '#E92B63' }}
+          onClick={openCreateModal}
+        >
           + Yeni Kayıt
         </button>
       </div>
@@ -149,7 +150,6 @@ export default function IncomeExpenseTable() {
                 <th className="text-end">Aksiyon</th>
               </tr>
             </thead>
-
             <tbody>
               {items.map((x) => (
                 <tr key={x.id}>
@@ -163,7 +163,8 @@ export default function IncomeExpenseTable() {
                   <td className="text-end">
                     <div className="d-inline-flex gap-2">
                       <button
-                        className="btn btn-sm btn-outline-primary"
+                        className="btn btn-sm"
+                        style={{ color: '#E92B63', border: '1px solid #E92B63' }}
                         onClick={() => openEditModal(x)}
                       >
                         Düzenle
@@ -178,7 +179,6 @@ export default function IncomeExpenseTable() {
                   </td>
                 </tr>
               ))}
-
               {items.length === 0 && (
                 <tr>
                   <td colSpan="6" className="text-center text-muted py-4">
@@ -271,7 +271,11 @@ export default function IncomeExpenseTable() {
               <button className="btn btn-outline-secondary" onClick={closeModal}>
                 İptal
               </button>
-              <button className="btn btn-primary" onClick={handleSave}>
+              <button 
+                className="btn text-white" 
+                style={{ backgroundColor: '#E92B63', borderColor: '#E92B63' }}
+                onClick={handleSave}
+              >
                 {editId ? 'Güncelle' : 'Kaydet'}
               </button>
             </div>

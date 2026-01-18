@@ -17,15 +17,20 @@ const PageHeaderSetting = () => {
                     <FiAlignLeft className='fs-24' />
                 </a>
             </div>
-            <div className="page-header-right ms-auto">
-                <div className="d-flex align-items-center gap-3 page-header-right-items-wrapper">
-                    <a href="#" className="text-danger">İptal</a>
-                    <a href="#" className="btn btn-primary" onClick={handleClick}>
-                        <FiSave size={16} className='me-2' />
-                        <span>Değişiklikleri Kaydet</span>
-                    </a>
-                </div>
-            </div>
+        <div className="page-header-right ms-auto">
+    <div className="d-flex align-items-center gap-3 page-header-right-items-wrapper">
+        <a href="#" className="text-danger">İptal</a>
+        <a 
+            href="#" 
+            className="btn text-white" // 'btn-primary' sınıfını sildik, yazı beyaz kalsın diye text-white ekledik
+            style={{ backgroundColor: '#E92B63', borderColor: '#E92B63' }} // Seçtiğin özel rengi ekledik
+            onClick={handleClick}
+        >
+            <FiSave size={16} className='me-2' />
+            <span>Değişiklikleri Kaydet</span>
+        </a>
+    </div>
+</div>
         </div>
 
     )

@@ -14,10 +14,15 @@ const LeadsCreateHeader = () => {
         <FiLayers size={16} className='me-2'/>
         <span>Kaydet</span>
       </a>
-      <a href="#" className="btn btn-primary " onClick={handleClick}>
-        <FiUserPlus size={16} className='me-2'/>
-        <span>Ekip Üyesi Oluştur</span>
-      </a>  
+<a 
+    href="#" 
+    className="btn text-white" // 'btn-primary' sınıfını sildik, yazı beyaz kalsın diye text-white ekledik
+    style={{ backgroundColor: '#E92B63', borderColor: '#E92B63' }} // Senin özel rengini ekledik
+    onClick={handleClick}
+>
+    <FiUserPlus size={16} className='me-2'/>
+    <span>Ekip Üyesi Oluştur</span>
+</a> 
     </div>
   )
 }

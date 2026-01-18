@@ -47,10 +47,14 @@ const ProposalHeadr = () => {
                     iconStrokeWidth={0}
                     isAvatar={false}
                 />
-                <Link href="/proposal/create" className="btn btn-primary">
-                    <FiPlus size={16} className='me-2' />
-                    <span>Yeni Teklifler</span>
-                </Link>
+              <Link 
+    href="/proposal/create" 
+    className="btn text-white" // 'btn-primary' sınıfını sildik, yazı beyaz kalsın diye text-white ekledik
+    style={{ backgroundColor: '#E92B63', borderColor: '#E92B63' }} // Seçtiğin pembe/kırmızı tonunu ekledik
+>
+    <FiPlus size={16} className='me-2' />
+    <span>Yeni Teklifler</span>
+</Link>
             </div>
         </>
     )
