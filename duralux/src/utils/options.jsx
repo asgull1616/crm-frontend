@@ -14,11 +14,7 @@ const propsalVisibilityOptions = [
     { value: 'customs', label: 'Customs', icon: "feather-settings" },
 ]
 const propasalLeadOptions = [
-    { value: 'web', label: 'Alexandra Della - Website design and development', img: "/images/avatar/1.png" },
-    { value: 'ui', label: 'Curtis Green - User experience (UX) and user interface (UI) design', img: "/images/avatar/1.png" },
-    { value: 'mobile', label: 'Marianne Audrey - Responsive and mobile design', img: "/images/avatar/1.png" },
-    { value: 'ecommerce', label: 'Holland Scott - E-commerce website design and development', img: "/images/avatar/1.png" },
-    { value: 'ecommerce', label: 'Olive Delarosa - Custom graphics and icon design', img: "/images/avatar/1.png" },
+    { value: '', label: '', img: "" },
 ]
 const propsalStatusOptions = [
     { value: 'sent', label: 'Gönderildi', color: "#41b2c4" },
@@ -122,41 +118,11 @@ const taskTypeOptions = [
 
 const taskAssigneeOptions = [
     {
-        img: "/images/avatar/2.png",
-        label: "arcie.tones@gmail.com",
-        value: "arcie.tones@gmail.com",
+        img: "",
+        label: "",
+        value: "",
     },
 
-    {
-        img: "/images/avatar/3.png",
-        label: "jon.tones@gmail.com",
-        value: "jon.tones@gmail.com",
-    },
-    {
-        img: "/images/avatar/4.png",
-        label: "lanie.nveyn@gmail.com",
-        value: "lanie.nveyn@gmail.com",
-    },
-    {
-        img: "/images/avatar/5.png",
-        label: "nneth.une@gmail.com",
-        value: "nneth.une@gmail.com",
-    },
-    {
-        img: "/images/avatar/6.png",
-        label: "erna.serpa@outlook.com",
-        value: "erna.serpa@outlook.com",
-    },
-    {
-        img: "/images/avatar/7.png",
-        label: "mar.audrey@gmail.com",
-        value: "mar.audrey@gmail.com",
-    },
-    {
-        img: "/images/avatar/8.png",
-        label: "nancy.elliot@outlook.com",
-        value: "nancy.elliot@outlook.com",
-    },
 ]
 
 const leadsStatusOptions = [
