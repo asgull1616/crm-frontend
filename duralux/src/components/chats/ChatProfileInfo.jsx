@@ -8,18 +8,7 @@ import { BsPatchCheck, BsPatchPlus, BsPatchQuestion } from 'react-icons/bs'
 import topTost from '@/utils/topTost'
 
 const imagePaths = [
-    "/images/gallery/1.png",
-    "/images/gallery/2.png",
-    "/images/gallery/3.png",
-    "/images/gallery/4.png",
-    "/images/gallery/5.png",
-    "/images/gallery/6.png",
-    "/images/gallery/7.png",
-    "/images/gallery/8.png",
-    "/images/gallery/9.png",
-    "/images/gallery/10.png",
-    "/images/gallery/11.png",
-    "/images/gallery/12.png"
+
 ];
 
 const ChatProfileInfo = () => {
