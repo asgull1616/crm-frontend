@@ -2,7 +2,9 @@
 import React, { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { taskService } from '@/lib/services/task.service'
+import TasksDetails from './TasksDetails' // Bileşeni import ettiğinden emin ol
 
+// Yardımcı fonksiyonlar bileşen dışında kalabilir
 const statusColors = {
   NEW: 'secondary',
   IN_PROGRESS: 'primary',
@@ -26,7 +28,11 @@ const TaskListContent = () => {
   const [tasks, setTasks] = useState([])
   const [loading, setLoading] = useState(true)
 
-  // ✅ Update modal state
+  // ✅ GÖRÜNTÜLEME MODALI STATE'LERİ (Doğru yer burası)
+  const [isViewOpen, setIsViewOpen] = useState(false);
+  const [selectedTask, setSelectedTask] = useState(null);
+
+  // ✅ GÜNCELLEME MODALI STATE'LERİ
   const [showEditModal, setShowEditModal] = useState(false)
   const [editingTask, setEditingTask] = useState(null)
   const [saving, setSaving] = useState(false)
@@ -54,9 +60,14 @@ const TaskListContent = () => {
     fetchTasks()
   }, [])
 
+  // ✅ GÖRÜNTÜLEME FONKSİYONU
+  const openView = (task) => {
+    setSelectedTask(task);
+    setIsViewOpen(true);
+  };
+
   const handleDelete = async (id) => {
     if (!confirm('Görev silinsin mi?')) return
-
     try {
       await taskService.delete(id)
       setTasks(prev => prev.filter(t => t.id !== id))
@@ -66,7 +77,6 @@ const TaskListContent = () => {
     }
   }
 
-  // ✅ Modal aç + formu task verisiyle doldur
   const openEdit = (task) => {
     setEditingTask(task)
     setEditForm({
@@ -78,15 +88,12 @@ const TaskListContent = () => {
     setShowEditModal(true)
   }
 
-  // ✅ PATCH ile güncelle
   const handleUpdate = async () => {
     if (!editingTask?.id) return
-
     if (!editForm.title?.trim()) {
       alert('Başlık boş olamaz')
       return
     }
-
     if (editForm.startDate && editForm.endDate && editForm.endDate < editForm.startDate) {
       alert('Bitiş tarihi başlangıçtan önce olamaz')
       return
@@ -104,11 +111,9 @@ const TaskListContent = () => {
       const res = await taskService.update(editingTask.id, payload)
       const updatedTask = res?.data
 
-      // backend updated task döndürüyorsa direkt state güncelle
       if (updatedTask?.id) {
         setTasks(prev => prev.map(t => (t.id === updatedTask.id ? updatedTask : t)))
       } else {
-        // garanti olsun diye refetch
         await fetchTasks()
       }
 
@@ -163,27 +168,28 @@ const TaskListContent = () => {
               {tasks.map(task => (
                 <tr key={task.id}>
                   <td>{task.title}</td>
-
                   <td>
                     <span className={`badge bg-${statusColors[task.status]}`}>
                       {task.status}
                     </span>
                   </td>
-
                   <td>
-                    {task.startDate
-                      ? new Date(task.startDate).toLocaleDateString()
-                      : '-'}
+                    {task.startDate ? new Date(task.startDate).toLocaleDateString() : '-'}
                   </td>
-
                   <td>
-                    {task.endDate
-                      ? new Date(task.endDate).toLocaleDateString()
-                      : '-'}
+                    {task.endDate ? new Date(task.endDate).toLocaleDateString() : '-'}
                   </td>
 
                   <td className="text-end">
                     <div className="d-inline-flex gap-2">
+                      {/* ✅ VIEW (GÖRÜNTÜLE) BUTONU */}
+                      <button
+                        className="btn btn-sm btn-outline-info"
+                        onClick={() => openView(task)}
+                      >
+                        Görüntüle
+                      </button>
+
                       {/* ✅ UPDATE */}
                       <button
                         className="btn btn-sm btn-outline-primary"
@@ -204,12 +210,19 @@ const TaskListContent = () => {
                 </tr>
               ))}
             </tbody>
-
           </table>
         </div>
       </div>
 
-      {/* ✅ Modal */}
+      {/* ✅ GÖRÜNTÜLEME MODALI (Offcanvas) */}
+      {isViewOpen && (
+        <TasksDetails 
+          task={selectedTask} 
+          onClose={() => setIsViewOpen(false)} 
+        />
+      )}
+
+      {/* ✅ GÜNCELLEME MODALI */}
       {showEditModal && (
         <div
           className="modal fade show"
