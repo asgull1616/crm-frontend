@@ -1,18 +1,13 @@
-import api from '../axios'
+import api from "../axios";
 
 export const activityService = {
-  list: (params?: any) =>
-    api.get('/activities', { params }),
+  list: (params?: any) => api.get("activities", { params }),
 
-  getById: (id: string) =>
-    api.get(`/activities/${id}`),
+  getById: (id: string) => api.get(`activities/${id}`),
 
-  create: (data: any) =>
-    api.post('/activities', data),
+  create: (data: any) => api.post("activities", data),
 
-  update: (id: string, data: any) =>
-    api.patch(`/activities/${id}`, data),
+  update: (id: string, data: any) => api.patch(`activities/${id}`, data),
 
-  delete: (id: string) =>
-    api.delete(`/activities/${id}`),
-}
+  delete: (id: string) => api.delete(`activities/${id}`),
+};
