@@ -94,15 +94,16 @@ const RegisterForm = ({ path }) => {
                     </div>
                 </div>
 
-                <div className="mt-5">
-                    <button
-                        type="submit"
-                        className="btn btn-lg btn-primary w-100"
-                        disabled={loading}
-                    >
-                        {loading ? 'Hesap Oluşturuluyor...' : 'Hesap Oluştur'}
-                    </button>
-                </div>
+               <div className="mt-5">
+    <button
+        type="submit"
+        className="btn btn-lg w-100 text-white" // 'btn-primary' sınıfını sildik çünkü kendi rengimizi vereceğiz
+        style={{ backgroundColor: '#E92B63', borderColor: '#E92B63' }} // Seçtiğin rengi buraya ekledik
+        disabled={loading}
+    >
+        {loading ? 'Hesap Oluşturuluyor...' : 'Hesap Oluştur'}
+    </button>
+</div>
             </form>
 
             <div className="mt-5 text-muted">

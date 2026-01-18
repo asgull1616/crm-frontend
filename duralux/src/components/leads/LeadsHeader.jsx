@@ -45,10 +45,14 @@ const LeadsHeader = () => {
                     iconStrokeWidth={0}
                     isAvatar={false}
                 /> */}
-                <Link href="/leads/create" className="btn btn-primary">
-                    <FiPlus size={16} className='me-2' />
-                    <span>Kullanıcı Oluştur</span>
-                </Link>
+               <Link 
+    href="/leads/create" 
+    className="btn text-white" // 'btn-primary' silindi, yazı beyaz kalsın diye text-white eklendi
+    style={{ backgroundColor: '#E92B63', borderColor: '#E92B63' }} // Senin özel rengin eklendi
+>
+    <FiPlus size={16} className='me-2' />
+    <span>Kullanıcı Oluştur</span>
+</Link>
             </div>
 
             <div id="collapseOne" className="accordion-collapse collapse page-header-collapse">

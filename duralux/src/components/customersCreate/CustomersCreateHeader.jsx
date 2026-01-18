@@ -10,10 +10,15 @@ const CustomersCreateHeader = ({ onSubmit }) => {
                 Taslak Olarak Kaydet
             </button>
 
-            <button className="btn btn-primary" type="button" onClick={onSubmit}>
-                <FiUserPlus size={16} className="me-2" />
-                Müşteri Oluştur
-            </button>
+           <button 
+    className="btn text-white" // 'btn-primary' sınıfını sildik, yazı beyaz kalsın diye text-white ekledik
+    type="button" 
+    style={{ backgroundColor: '#E92B63', borderColor: '#E92B63' }} // Senin özel rengini ekledik
+    onClick={onSubmit}
+>
+    <FiUserPlus size={16} className="me-2" />
+    Müşteri Oluştur
+</button>
         </div>
     )
 }

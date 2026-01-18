@@ -8,11 +8,8 @@ import { FiPause, FiPlay, FiStopCircle } from 'react-icons/fi'
 import Image from 'next/image'
 
 const campaignData = [
-    { brand: 'Facebook', image: '/images/brand/facebook.png', link: 'http://ads.facebook.com/#campaign', target: '50K', reach: '46.44K', progress: 92, status: 'Active', actions: ['Pause', 'Stop'], color: "primary" },
-    { brand: 'Gmail', image: '/images/brand/gmail.png', link: 'http://ads.google.com/#campaign', target: '30K', reach: '22.82K', progress: 82, status: 'Paused', actions: ['Pause', 'Play'], color: "warning" },
-    { brand: 'Twitter', image: '/images/brand/twitter.png', link: 'http://ads.twitter.com/#campaign', target: '40K', reach: '35.2K', progress: 88, status: 'Active', actions: ['Pause', 'Stop'], color: "primary" },
-    { brand: 'Pinterest', image: '/images/brand/pinterest.png', link: 'http://ads.pinterest.com/#campaign', target: '60K', reach: '55.1K', progress: 91, status: 'Active', actions: ['Pause', 'Stop'], color: "success" },
-    { brand: 'Instagram', image: '/images/brand/instagram.png', link: 'http://ads.instagram.com/#campaign', target: '25K', reach: '18.6K', progress: 74, status: 'Paused', actions: ['Pause', 'Play'], color: "primary" },
+    { brand: '', image: '', link: '', target: '', reach: '', progress: 92, status: '', actions: ['', ''], color: "" },
+    
 ];
 
 const Campaign = ({ title }) => {
