@@ -2,7 +2,7 @@ export const projectsData = {
 
     trackerProjects: [
         {
-            title: "Digital marketing for react project",
+            title: "Web sitesi tasarımı",
             progress: 86,
             working_time: "08:30 - 09:30",
             logged_time: "00/h : 52/m : 34/s",
@@ -56,7 +56,7 @@ export const projectsData = {
     runningProjects: [
         {
             id: 1,
-            project_logo: "/images/brand/app-store.png",
+            project_logo: "",
             project_name: "Apps Development",
             project_category: "Applications",
             progress: 54,
@@ -67,17 +67,17 @@ export const projectsData = {
                 {
                     id: 1,
                     user_name: "Janette Dalton",
-                    user_img: "/images/avatar/2.png"
+                    user_img: ""
                 },
                 {
                     id: 2,
                     user_name: "Mikal Bon",
-                    user_img: "/images/avatar/3.png"
+                    user_img: ""
                 },
                 {
                     id: 3,
                     user_name: "Socrates Itumay",
-                    user_img: "/images/avatar/4.png"
+                    user_img: ""
                 },
                 {
                     id: 4,
