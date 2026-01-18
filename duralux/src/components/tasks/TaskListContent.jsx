@@ -10,10 +10,33 @@ const statusColors = {
   COMPLETED: 'success',
 }
 
+const statusOptions = ['NEW', 'IN_PROGRESS', 'ON_HOLD', 'COMPLETED']
+
+const toInputDate = (val) => {
+  if (!val) return ''
+  const d = new Date(val)
+  const yyyy = d.getFullYear()
+  const mm = String(d.getMonth() + 1).padStart(2, '0')
+  const dd = String(d.getDate()).padStart(2, '0')
+  return `${yyyy}-${mm}-${dd}`
+}
+
 const TaskListContent = () => {
   const router = useRouter()
   const [tasks, setTasks] = useState([])
   const [loading, setLoading] = useState(true)
+
+  // ✅ Update modal state
+  const [showEditModal, setShowEditModal] = useState(false)
+  const [editingTask, setEditingTask] = useState(null)
+  const [saving, setSaving] = useState(false)
+
+  const [editForm, setEditForm] = useState({
+    title: '',
+    status: 'NEW',
+    startDate: '',
+    endDate: '',
+  })
 
   const fetchTasks = async () => {
     try {
@@ -40,6 +63,62 @@ const TaskListContent = () => {
     } catch (e) {
       console.error(e)
       alert('Silme işlemi başarısız')
+    }
+  }
+
+  // ✅ Modal aç + formu task verisiyle doldur
+  const openEdit = (task) => {
+    setEditingTask(task)
+    setEditForm({
+      title: task.title ?? '',
+      status: task.status ?? 'NEW',
+      startDate: toInputDate(task.startDate),
+      endDate: toInputDate(task.endDate),
+    })
+    setShowEditModal(true)
+  }
+
+  // ✅ PATCH ile güncelle
+  const handleUpdate = async () => {
+    if (!editingTask?.id) return
+
+    if (!editForm.title?.trim()) {
+      alert('Başlık boş olamaz')
+      return
+    }
+
+    if (editForm.startDate && editForm.endDate && editForm.endDate < editForm.startDate) {
+      alert('Bitiş tarihi başlangıçtan önce olamaz')
+      return
+    }
+
+    setSaving(true)
+    try {
+      const payload = {
+        title: editForm.title,
+        status: editForm.status,
+        startDate: editForm.startDate || null,
+        endDate: editForm.endDate || null,
+      }
+
+      const res = await taskService.update(editingTask.id, payload)
+      const updatedTask = res?.data
+
+      // backend updated task döndürüyorsa direkt state güncelle
+      if (updatedTask?.id) {
+        setTasks(prev => prev.map(t => (t.id === updatedTask.id ? updatedTask : t)))
+      } else {
+        // garanti olsun diye refetch
+        await fetchTasks()
+      }
+
+      setShowEditModal(false)
+      setEditingTask(null)
+    } catch (e) {
+      console.error(e)
+      alert('Güncelleme işlemi başarısız')
+    } finally {
+      setSaving(false)
     }
   }
 
@@ -104,12 +183,23 @@ const TaskListContent = () => {
                   </td>
 
                   <td className="text-end">
-                    <button
-                      className="btn btn-sm btn-danger"
-                      onClick={() => handleDelete(task.id)}
-                    >
-                      Sil
-                    </button>
+                    <div className="d-inline-flex gap-2">
+                      {/* ✅ UPDATE */}
+                      <button
+                        className="btn btn-sm btn-outline-primary"
+                        onClick={() => openEdit(task)}
+                      >
+                        Güncelle
+                      </button>
+
+                      {/* ✅ DELETE */}
+                      <button
+                        className="btn btn-sm btn-danger"
+                        onClick={() => handleDelete(task.id)}
+                      >
+                        Sil
+                      </button>
+                    </div>
                   </td>
                 </tr>
               ))}
@@ -118,6 +208,91 @@ const TaskListContent = () => {
           </table>
         </div>
       </div>
+
+      {/* ✅ Modal */}
+      {showEditModal && (
+        <div
+          className="modal fade show"
+          style={{ display: 'block', background: 'rgba(0,0,0,.5)' }}
+          onClick={() => !saving && setShowEditModal(false)}
+        >
+          <div className="modal-dialog" onClick={(e) => e.stopPropagation()}>
+            <div className="modal-content">
+              <div className="modal-header">
+                <h5 className="modal-title">Görev Güncelle</h5>
+                <button
+                  type="button"
+                  className="btn-close"
+                  onClick={() => !saving && setShowEditModal(false)}
+                />
+              </div>
+
+              <div className="modal-body">
+                <div className="mb-3">
+                  <label className="form-label">Başlık</label>
+                  <input
+                    className="form-control"
+                    value={editForm.title}
+                    onChange={(e) => setEditForm(s => ({ ...s, title: e.target.value }))}
+                  />
+                </div>
+
+                <div className="mb-3">
+                  <label className="form-label">Durum</label>
+                  <select
+                    className="form-select"
+                    value={editForm.status}
+                    onChange={(e) => setEditForm(s => ({ ...s, status: e.target.value }))}
+                  >
+                    {statusOptions.map(s => (
+                      <option key={s} value={s}>{s}</option>
+                    ))}
+                  </select>
+                </div>
+
+                <div className="row">
+                  <div className="col-6 mb-3">
+                    <label className="form-label">Başlangıç</label>
+                    <input
+                      type="date"
+                      className="form-control"
+                      value={editForm.startDate}
+                      onChange={(e) => setEditForm(s => ({ ...s, startDate: e.target.value }))}
+                    />
+                  </div>
+
+                  <div className="col-6 mb-3">
+                    <label className="form-label">Bitiş</label>
+                    <input
+                      type="date"
+                      className="form-control"
+                      value={editForm.endDate}
+                      onChange={(e) => setEditForm(s => ({ ...s, endDate: e.target.value }))}
+                    />
+                  </div>
+                </div>
+              </div>
+
+              <div className="modal-footer">
+                <button
+                  className="btn btn-secondary"
+                  onClick={() => !saving && setShowEditModal(false)}
+                  disabled={saving}
+                >
+                  İptal
+                </button>
+                <button
+                  className="btn btn-primary"
+                  onClick={handleUpdate}
+                  disabled={saving}
+                >
+                  {saving ? 'Kaydediliyor...' : 'Kaydet'}
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   )
 }
