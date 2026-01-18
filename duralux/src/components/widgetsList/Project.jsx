@@ -21,7 +21,7 @@ const Project = ({ cardYSpaceClass, borderShow, title }) => {
 
                 <div className="card-body custom-card-action project-status">
                     <div className="mb-3">
-                        {data.map(({ id, progress, project_category, project_logo, project_name, progress_color }, index) => (
+                        {data?.map(({ id, progress, project_category, project_logo, project_name, progress_color }, index) => (
                             <Fragment key={id}>
                                 {borderShow ? <hr className="border-dashed my-3" /> : ""}
                                 <div className={`d-flex ${index === data.length - 1 ? "mb-0" : cardYSpaceClass}`}>

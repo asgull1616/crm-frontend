@@ -8,7 +8,7 @@ import useCardTitleActions from '@/hooks/useCardTitleActions';
 
 const goalData = [
     { value: 40, revenue: "$550/$1250", title: "Marketing Goal", color: "#ea4d4d" },
-    { value: 65, revenue: "$550/$1250", title: "Teams Goal", color: "#3454d1" },
+    { value: 65, revenue: "$550/$1250", title: "Teams Goal", color: "#E92B63" },
     { value: 50, revenue: "$850/$950", title: "Leads Goal", color: "#ffa21d" },
     { value: 75, revenue: "$5,655/$12,500", title: "Revenue Goal", color: "#17c666" }
 ];

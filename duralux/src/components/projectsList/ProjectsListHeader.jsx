@@ -1,7 +1,7 @@
 import React from 'react'
 import { FiBarChart, FiFilter, FiPaperclip, FiPlus } from 'react-icons/fi'
 import Dropdown from '@/components/shared/Dropdown'
-import { fileType } from '../teams/TeamsHeader'
+import { fileType } from '../leads/LeadsHeader'
 import ProjectsStatistics from '../widgetsStatistics/ProjectsStatistics'
 import Link from 'next/link'
 

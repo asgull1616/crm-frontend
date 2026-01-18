@@ -8,7 +8,7 @@ const ReactApexChart = dynamic(() => import('react-apexcharts'), { ssr: false })
 const financialData = [
     { title: 'Earnings', amount: '(+) $55,236 USD', percentage: '69%', chartColor: "#25b865", color: "success" },
     { title: 'Expenses', amount: '(-) $16,845 USD', percentage: '47%', chartColor: "#d13b4c", color: "danger" },
-    { title: 'Revenue', amount: '(+) $96,753 USD', percentage: '74%', chartColor: "#3454D1", color: "primary" }
+    { title: 'Revenue', amount: '(+) $96,753 USD', percentage: '74%', chartColor: "#E92B63", color: "primary" }
 ];
 
 const EstimateMiscellaneous = () => {

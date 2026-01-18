@@ -12,11 +12,8 @@ const actionOptions = [
     { label: "Delete User" },
 ]
 const customerData = [
-    { name: 'Alexandra Della', email: 'alex.della@email.com', avatar: '/images/avatar/1.png', flag: '/images/flags/1x1/us.svg', country: 'United States', cardNumber: '****6231', date: '21 Sep, 2023' },
-    { name: 'Valentine Maton', email: 'valentine.maton@email.com', avatar: '/images/avatar/2.png', flag: '/images/flags/1x1/gb.svg', country: 'United Kingdom', cardNumber: '****8563', date: '25 Sep, 2023' },
-    { name: 'Kenneth Hune', email: 'kenneth.hune@email.com', avatar: '/images/avatar/3.png', flag: '/images/flags/1x1/fr.svg', country: 'France', cardNumber: '****4524', date: '16 Sep, 2023' },
-    { name: 'Malanie Hanvey', email: 'malanie.hanvey@email.com', avatar: '/images/avatar/4.png', flag: '/images/flags/1x1/de.svg', country: 'Germany', cardNumber: '****3486', date: '20 Sep, 2023' },
-    { name: 'Archie Cantones', email: 'archie.cantones@email.com', avatar: '/images/avatar/5.png', flag: '/images/flags/1x1/bd.svg', country: 'Bangladesh', cardNumber: '****7896', date: '20 Sep, 2023' },
+    { name: '', email: '', avatar: '', flag: '', country: '', cardNumber: '', date: '' },
+   
 ];
 
 const Customers = ({ title }) => {

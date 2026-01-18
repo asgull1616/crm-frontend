@@ -20,10 +20,10 @@ const ProjectsStatistics = () => {
                             </a>
                             <div className="pt-4">
                                 <div className="d-flex align-items-center justify-content-between">
-                                    <a href="#" className="fs-12 fw-medium text-muted">
+                                    {/* <a href="#" className="fs-12 fw-medium text-muted">
                                         <span>{description}</span>
                                         <i className="feather-link-2 fs-10 ms-1" />
-                                    </a>
+                                    </a> */}
                                     <div>
                                         <span className="fs-12 text-muted">{completedCount}</span>
                                         <span className="fs-11 text-muted">({percentage}%)</span>

@@ -33,7 +33,7 @@ const EstimateBarChartTwo = () => {
                         </div>
                         <div className="col-xl-4">
                             <div className="row">
-                                <Card title="Earnings" amount="$55,236 USD" chartColor="#3454d1" color="primary" />
+                                <Card title="Earnings" amount="$55,236 USD" chartColor="#E92B63" color="primary" />
                                 <Card title="Expenses" amount="$16,845 USD" chartColor="#ffa21d" color="warning" />
                             </div>
                         </div>

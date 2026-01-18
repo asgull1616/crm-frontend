@@ -12,7 +12,7 @@ const deviceStatsData = [
     { deviceType: 'Desktop', icon: 'feather-monitor', deviceCount: '64K', chartColor: "#FF9F43" },
     { deviceType: 'Mobile', icon: 'feather-smartphone', deviceCount: '45K', chartColor: "#475e77" },
     { deviceType: 'Tablet', icon: 'feather-tablet', deviceCount: '25K', chartColor: "#DC3545" },
-    { deviceType: 'Others', icon: 'feather-compass', deviceCount: '15K', chartColor: "#3454D1" },
+    { deviceType: 'Others', icon: 'feather-compass', deviceCount: '15K', chartColor: "#E92B63" },
 ];
 
 const DeviceUseChart = () => {

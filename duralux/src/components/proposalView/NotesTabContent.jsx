@@ -26,29 +26,14 @@ const NotesTabContent = () => {
                     </div>
                 </div>
                 <UserCard
-                    avatarSrc="/images/avatar/1.png"
-                    userName="Alexandra Della"
-                    dateTime="2023-02-13 14:20:35"
-                    description="Lorem ipsum dolor sit, amet consectetur adipisicing elit. Nemo, quasi nostrum iure nesciunt dolores in, dolorem sequi quidem accusantium voluptates officia nihil."
+                    avatarSrc=""
+                    userName=""
+                    dateTime=""
+                    description=""
                 />
-                <UserCard
-                    avatarSrc="/images/avatar/2.png"
-                    userName="Anderson Thomas"
-                    dateTime="2023-02-13 14:20:35"
-                    description="See resolved goodness felicity shy civility domestic had but Drawings offended yet answered Jennings perceive."
-                />
-                <UserCard
-                    avatarSrc="/images/avatar/3.png"
-                    userName="Marianne Audrey"
-                    dateTime="2023-02-13 14:20:35"
-                    description="See resolved goodness felicity shy civility domestic had but Drawings offended yet answered Jennings perceive."
-                />
-                <UserCard
-                    avatarSrc="/images/avatar/4.png"
-                    userName="Marianne Audrey"
-                    dateTime="2023-02-13 14:20:35"
-                    description="Lorem ipsum dolor sit, amet consectetur adipisicing elit. Nemo, quasi nostrum iure nesciunt dolores in, dolorem sequi quidem accusantium voluptates officia nihil, ipsa ex voluptatem ratione mollitia alias perferendis omnis?"
-                />
+           
+                
+                
             </div>
         </div>
     )
