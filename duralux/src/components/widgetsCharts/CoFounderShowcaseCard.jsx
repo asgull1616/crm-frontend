@@ -73,7 +73,9 @@ const CoFounderShowcaseCard = () => {
                 ></div>
               </div>
 
-              <h3 className="fw-bold mb-1 text-dark fs-4">Mirza M. Pektaş</h3>
+              <h3 className="fw-bold mb-1 text-dark fs-4">
+                Mirza Muhittin Pektaş
+              </h3>
               <p
                 className="text-muted small mb-3 text-uppercase fw-semibold tracking-wide"
                 style={{ fontSize: "0.70rem", letterSpacing: "0.5px" }}
@@ -87,7 +89,7 @@ const CoFounderShowcaseCard = () => {
                 className="opacity-50 text-primary"
                 style={{ fontFamily: "cursive", fontSize: "1.1rem" }}
               >
-                Mirza Pektaş
+                Muhittin Pektaş
               </div>
             </div>
 
