@@ -167,21 +167,13 @@ const ProposalCreateContent = () => {
       <AddProposal previtems={previtems} />
 
       {/* 🔘 AKSİYON BUTONLARI */}
-      <div className="mt-4 d-flex gap-2">
+    <div className="mt-4 d-flex gap-2 justify-content-end">
         <button
-          className="btn btn-outline-secondary"
-          onClick={() => handleCreateProposal(false)}
-          disabled={loading}
-        >
-          KAYDET
-        </button>
-
-        <button
-          className="btn btn-primary"
+          className="btn btn-primary btn-lg px-5"
           onClick={() => handleCreateProposal(true)}
           disabled={loading}
         >
-          KAYDET & GÖNDER
+          KAYDET 
         </button>
       </div>
     </>

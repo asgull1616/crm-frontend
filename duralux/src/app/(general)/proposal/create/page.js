@@ -8,7 +8,6 @@ const page = () => {
     return (
         <>
             <PageHeader>
-                <ProposalEditHeader />
             </PageHeader>
             <div className='main-content'>
                 <div className='row'>

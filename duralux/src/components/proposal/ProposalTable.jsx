@@ -127,9 +127,9 @@ const ProposalTable = () => {
         const client = info.getValue();
         return (
           <div className="hstack gap-3">
-            <div className="avatar-text avatar-md text-white">
+            {/* <div className="avatar-text avatar-md text-white">
               {client?.name?.substring(0, 1)}
-            </div>
+            </div> */}
             <div>
               <span className="text-truncate-1-line">{client?.name}</span>
               <small className="fs-12 fw-normal text-muted">

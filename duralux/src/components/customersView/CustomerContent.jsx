@@ -36,7 +36,6 @@ const CustomerContent = () => {
         <>
             <div className="col-xxl-4 col-xl-6">
                 <Profile customer={customer} />
-                <CustomerSocalMedia customer={customer} />
             </div>
 
             <div className="col-xxl-8 col-xl-6">

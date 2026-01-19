@@ -176,61 +176,6 @@ const ProposalTabContent = () => {
                         </div>
                     </div>
                 </div>
-                {/* <div className="col-lg-12">
-                    <div className="card stretch stretch-full">
-                        <div className="card-header">
-                            <h5 className="card-title">Servisler</h5>
-                            <a href="#" className="btn btn-md btn-light-brand">
-                                <FiPlus className='me-2' />
-                                <span>Servis Ekle</span>
-                            </a>
-                        </div>
-                        <div className="card-body">
-                            <div className="row">
-                                {
-                                    servicesData.map(({ icon, id, description, title }) => (
-                                        <ServiceCard
-                                            key={id}
-                                            icon={icon}
-                                            title={title}
-                                            description={description}
-                                            link="#"
-                                        />
-                                    ))
-                                }
-                            </div>
-                        </div>
-                    </div>
-                </div> */}
-                {/* <div className="col-lg-12">
-                    <div className="card stretch stretch-full">
-                        <div className="card-header">
-                            <h5 className="card-title">FAQ's</h5>
-                            <a href="#" className="btn btn-md btn-light-brand">
-                                <FiPlus className='me-2' />
-                                <span>Add New FAQ</span>
-                            </a>
-                        </div>
-                        <div className="card-body">
-                            <div
-                                className="accordion proposal-faq-accordion"
-                                id="accordionFaqGroup"
-                            >
-                                {
-                                    accordionData.map(({ ans, id, qustion }) => (
-                                        <AccordionItem
-                                            key={id}
-                                            id={id}
-                                            header={qustion}
-                                            content={ans}
-                                        />
-                                    ))
-                                }
-
-                            </div>
-                        </div>
-                    </div>
-                </div> */}
             </div>
         </div>
 
