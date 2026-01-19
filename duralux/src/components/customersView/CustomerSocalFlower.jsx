@@ -2,7 +2,6 @@ import React from 'react'
 import { customerProfileOption } from './CustomerSocalMedia'
 import Dropdown from '@/components/shared/Dropdown'
 import { FiUserPlus } from 'react-icons/fi'
-import { teamMembersList } from '@/utils/fackData/teamMembersList'
 
 const CustomerSocalFlower = () => {
     return (

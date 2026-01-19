@@ -8,49 +8,49 @@ import MultiSelectTags from '@/components/shared/MultiSelectTags'
 import { taskAssigneeOptions } from '@/utils/options'
 
 const checkListOptions = [
-    { label: "New", icon: <FiAtSign /> },
-    { label: "Event", icon: <FiCalendar /> },
-    { label: "Snoozed", icon: <FiBell /> },
-    { label: "Deleted", icon: <FiTrash2 /> },
-    { type: "divider" },
-    { label: "Settings", icon: <FiSettings />, },
-    { label: "Tips & Tricks", icon: <FiLifeBuoy />, },
+  { label: "New", icon: <FiAtSign /> },
+  { label: "Event", icon: <FiCalendar /> },
+  { label: "Snoozed", icon: <FiBell /> },
+  { label: "Deleted", icon: <FiTrash2 /> },
+  { type: "divider" },
+  { label: "Settings", icon: <FiSettings />, },
+  { label: "Tips & Tricks", icon: <FiLifeBuoy />, },
 ]
 
 const tags = [
-    { value: 'team', label: 'Team', color: '#E92B63' },
-    { value: 'primary', label: 'Primary', color: '#41b2c4' },
-    { value: 'updates', label: 'Updates', color: '#17c666' },
-    { value: 'personal', label: 'Personal', color: '#ffa21d' },
-    { value: 'promotions', label: 'Promotions', color: '#ea4d4d' },
-    { value: 'custom', label: 'Custom', color: '#6610f2' },
-    { value: 'important', label: 'Important', color: '#17c666' },
-    { value: 'tomorrow', label: 'Tomorrow', color: '#283c50' },
-    { value: 'review', label: 'Review', color: '#3dc7be' },
+  { value: 'team', label: 'Team', color: '#E92B63' },
+  { value: 'primary', label: 'Primary', color: '#41b2c4' },
+  { value: 'updates', label: 'Updates', color: '#17c666' },
+  { value: 'personal', label: 'Personal', color: '#ffa21d' },
+  { value: 'promotions', label: 'Promotions', color: '#ea4d4d' },
+  { value: 'custom', label: 'Custom', color: '#6610f2' },
+  { value: 'important', label: 'Important', color: '#17c666' },
+  { value: 'tomorrow', label: 'Tomorrow', color: '#283c50' },
+  { value: 'review', label: 'Review', color: '#3dc7be' },
 ]
 
 const status = [
-    { label: "Taslak", color: "bg-primary" },
-    { label: "Onaylandı", color: "bg-secondary" },
-    { label: "Reddedildi", color: "bg-success" },
-    { label: "Gönderildi", color: "bg-danger" },
-    // { label: "Upcoming", color: "bg-warning" },
+  { label: "Taslak", color: "bg-primary" },
+  { label: "Onaylandı", color: "bg-secondary" },
+  { label: "Reddedildi", color: "bg-success" },
+  { label: "Gönderildi", color: "bg-danger" },
+  // { label: "Upcoming", color: "bg-warning" },
 ];
 const priority = [
-    { label: "Düşük", color: "bg-primary" },
-    { label: "Orta", color: "bg-secondary" },
-    { label: "Yüksek", color: "bg-success" },
-    // { label: "High", color: "bg-warning" },
-    // { label: "Urgent", color: "bg-danger" },
+  { label: "Düşük", color: "bg-primary" },
+  { label: "Orta", color: "bg-secondary" },
+  { label: "Yüksek", color: "bg-success" },
+  // { label: "High", color: "bg-warning" },
+  // { label: "Urgent", color: "bg-danger" },
 ];
 
 const TasksTabContent = () => {
-    return (
-        <div className="tab-pane fade" id="tasksTab">
-            <div className="row">
-                <div className="col-lg-12">
-                    <div className="card stretch stretch-full">
-                        {/* <div className="card-body task-header d-lg-flex align-items-center justify-content-between">
+  return (
+    <div className="tab-pane fade" id="tasksTab">
+      <div className="row">
+        <div className="col-lg-12">
+          <div className="card stretch stretch-full">
+            {/* <div className="card-body task-header d-lg-flex align-items-center justify-content-between">
                             <div className="mb-4 mb-lg-0">
                                 <h4 className="mb-3 fw-bold text-truncate-1-line">Codyol CRM</h4>
                                 <span className="badge bg-soft-primary text-primary me-2">In Prograss</span>
@@ -72,127 +72,57 @@ const TasksTabContent = () => {
                                 </a>
                             </div>
                         </div> */}
-                    </div>
-                </div>
-                <div className="col-xxl-8 col-xl-6">
-                    <div className="card stretch stretch-full">
-                        <div className="card-header">
-                            <h5 className="card-title">Tanım</h5>
-                            <a href="#" className="avatar-text avatar-md" data-toggle="tooltip" title="Update Description">
-                                <FiEdit strokeWidth={1.6} />
-                            </a>
-                        </div>
-                        <div className="card-body">
-                            <p>sadasdsd</p>
-                            <ul className="list-unstyled text-muted mb-0">
-                                <li className="d-flex align-items-start mb-3">
-                                    <span className="avatar-text avatar-sm bg-soft-success text-success me-3">
-                                        <FiCheck className='fs-10' />
-                                    </span>
-                                    <span>dsddds </span>
-                                </li>
-                                <li className="d-flex align-items-start mb-3">
-                                    <span className="avatar-text avatar-sm bg-soft-success text-success me-3">
-                                        <FiCheck className='fs-10' />
-                                    </span>
-                                    <span>ddd.</span>
-                                </li>
-                                <li className="d-flex align-items-start mb-3">
-                                    <span className="avatar-text avatar-sm bg-soft-success text-success me-3">
-                                        <FiCheck className='fs-10' />
-                                    </span>
-                                    <span>Vddssddcmaz.</span>
-                                </li>
-                                <li className="d-flex align-items-start mb-3">
-                                    <span className="avatar-text avatar-sm bg-soft-success text-success me-3">
-                                        <FiCheck className='fs-10' />
-                                    </span>
-                                    <span>vdsvsdvd. </span>
-                                </li>
-                                <li className="d-flex align-items-start mb-3">
-                                    <span className="avatar-text avatar-sm bg-soft-success text-success me-3">
-                                        <FiCheck className='fs-10' />
-                                    </span>
-                                    <span>dvsdvdsv </span>
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
-                    {/* <div className="card stretch stretch-full">
-                        <div className="card-header">
-                            <h5 className="card-title">Checklist</h5>
-                            <Dropdown triggerClass='avatar-md' triggerPosition={"25, 25"} tooltipTitle={"Options"} dropdownItems={checkListOptions} />
-                        </div>
-                        <div className="card-body task-checklist">
-                            <CheckList />
-                        </div>
-                    </div> */}
-                    {/* <div className="card stretch stretch-full">
-                        <div className="card-header">
-                            <h5 className="card-title">Topics</h5>
-                            <a href="#" className="btn btn-md btn-light-brand">
-                                <FiPlus size={16} className='me-2' />
-                                <span>Add New Topic</span>
-                            </a>
-                        </div>
-                        <div className="card-body">
-                            <div className="row">
-                                <div className="col-xxl-6">
-                                    <Card
-                                        title="How to upload data to the system?"
-                                        link="#"
-                                    />
-                                    <Card
-                                        title="How to draw a land plot on a map?"
-                                        link="#"
-                                    />
-                                    <Card
-                                        title="How to to view expire services?"
-                                        link="#"
-                                    />
-                                    <Card
-                                        title="How to integrate new web applications?"
-                                        link="#"
-                                    />
-                                    <Card
-                                        title="How do I set the geometry of an object?"
-                                        link="#"
-                                    />
-                                </div>
-                                <div className="col-xxl-6">
-                                    <Card
-                                        title="How to upload data to the system?"
-                                        link="#"
-                                    />
-                                    <Card
-                                        title="How to draw a land plot on a map?"
-                                        link="#"
-                                    />
-                                    <Card
-                                        title="How to to view expire services?"
-                                        link="#"
-                                    />
-                                    <Card
-                                        title="How to integrate new web applications?"
-                                        link="#"
-                                    />
-                                    <Card
-                                        title="How do I set the geometry of an object?"
-                                        link="#"
-                                    />
-                                </div>
-                            </div>
-                        </div>
-                    </div> */}
-                </div>
-                {/* <div className="col-xxl-4 col-xl-6">
-                    <div className="card stretch stretch-full">
-                        <div className="card-body task-info">
-                            <div className="mb-4">
-                                <h5 className="card-title mb-1">Görev Bilgisi</h5>
-                                {/* <span className="fs-12 fw-normal text-muted d-block">Created at 2023-02-12 08:47:47</span> */}
-                            </div>
-                            {/* <div className="task-info-list">
+          </div>
+        </div>
+        <div className="col-xxl-8 col-xl-6">
+          <div className="card stretch stretch-full">
+            <div className="card-header">
+              <h5 className="card-title">Tanım</h5>
+              <a href="#" className="avatar-text avatar-md" data-toggle="tooltip" title="Update Description">
+                <FiEdit strokeWidth={1.6} />
+              </a>
+            </div>
+            <div className="card-body">
+              <p>sadasdsd</p>
+              <ul className="list-unstyled text-muted mb-0">
+                <li className="d-flex align-items-start mb-3">
+                  <span className="avatar-text avatar-sm bg-soft-success text-success me-3">
+                    <FiCheck className='fs-10' />
+                  </span>
+                  <span>dsddds </span>
+                </li>
+                <li className="d-flex align-items-start mb-3">
+                  <span className="avatar-text avatar-sm bg-soft-success text-success me-3">
+                    <FiCheck className='fs-10' />
+                  </span>
+                  <span>ddd.</span>
+                </li>
+                <li className="d-flex align-items-start mb-3">
+                  <span className="avatar-text avatar-sm bg-soft-success text-success me-3">
+                    <FiCheck className='fs-10' />
+                  </span>
+                  <span>Vddssddcmaz.</span>
+                </li>
+                <li className="d-flex align-items-start mb-3">
+                  <span className="avatar-text avatar-sm bg-soft-success text-success me-3">
+                    <FiCheck className='fs-10' />
+                  </span>
+                  <span>vdsvsdvd. </span>
+                </li>
+                <li className="d-flex align-items-start mb-3">
+                  <span className="avatar-text avatar-sm bg-soft-success text-success me-3">
+                    <FiCheck className='fs-10' />
+                  </span>
+                  <span>dvsdvdsv </span>
+                </li>
+              </ul>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+      {/* <div className="task-info-list">
                                 <div className="row align-items-center mb-3 task-list-row">
                                     <div className="col-6">
                                         <FiStar size={16} strokeWidth={1.7} className='me-2' />
@@ -253,7 +183,7 @@ const TasksTabContent = () => {
                                         </div>
                                     </div>
                                 </div> */}
-                                {/* <div className="row align-items-center mb-3 task-list-row">
+      {/* <div className="row align-items-center mb-3 task-list-row">
                                     <div className="col-6">
                                         <FiClock size={16} strokeWidth={1.7} className='me-2' />
                                         <span className="fw-semibold">Hourly Rate:</span>
@@ -267,7 +197,7 @@ const TasksTabContent = () => {
                                         </div>
                                     </div>
                                 </div> */}
-                                {/* <div className="row align-items-center mb-3 task-list-row">
+      {/* <div className="row align-items-center mb-3 task-list-row">
                                     <div className="col-6">
                                         <FiClipboard size={16} strokeWidth={1.7} className='me-2' />
                                         <span className="fw-semibold">Fatura:</span>
@@ -295,7 +225,7 @@ const TasksTabContent = () => {
                                         </div>
                                     </div>
                                 </div>  */}
-                                {/* <div className="row align-items-center mb-3 task-list-row">
+      {/* <div className="row align-items-center mb-3 task-list-row">
                                     <div className="col-6">
                                         <FiPower size={16} strokeWidth={1.7} className='me-2' />
                                         <span className="fw-semibold">Login:</span>
@@ -309,7 +239,7 @@ const TasksTabContent = () => {
                                         </div>
                                     </div>
                                 </div> */}
-                                {/* <div className="row align-items-center">
+      {/* <div className="row align-items-center">
                                     <div className="col-6">
                                         <FiBell size={16} strokeWidth={1.7} className='me-2' />
                                         <span className="fw-semibold">Remainders:</span>
@@ -318,10 +248,10 @@ const TasksTabContent = () => {
                                         <a href="#" className="text-primary">Create Remain</a>
                                     </div>
                                 </div> */}
-                            {/* </div>
+      {/* </div>
                         </div>
                     </div> */}
-                    {/* <div className="card stretch stretch-full">
+      {/* <div className="card stretch stretch-full">
                         <div className="card-body task-tags">
                             <div className="mb-4">
                                 <h5 className="card-title mb-1">Tags</h5>
@@ -330,7 +260,7 @@ const TasksTabContent = () => {
                             <MultiSelectTags options={tags} defaultSelect={[tags[0], tags[3], tags[8], tags[6]]} />
                         </div>
                     </div> */}
-                    {/* <div className="card stretch stretch-full">
+      {/* <div className="card stretch stretch-full">
                         <div className="card-body task-assignees">
                             <div className="mb-4">
                                 <h5 className="card-title mb-1">Assignees</h5>
@@ -348,29 +278,29 @@ const TasksTabContent = () => {
                             <MultiSelectImg options={taskAssigneeOptions} defaultSelect={[taskAssigneeOptions[1], taskAssigneeOptions[3], taskAssigneeOptions[4]]} />
                         </div>
                     </div> */}
-                </div>
-            // </div>
-        // </div>
-    )
+    </div>
+    // </div>
+    // </div>
+  )
 }
 
 export default TasksTabContent
 
 const Card = ({ icon: Icon, title, link }) => {
-    return (
-        <div className="card border border-gray-2 rounded-2 my-2 overflow-hidden">
-            <div className="d-flex align-items-center justify-content-between">
-                <div className="d-flex align-items-center">
-                    <div className="wd-50 ht-50 bg-gray-100 me-3 d-flex align-items-center justify-content-center">
-                        {/* <Icon /> */}
-                        <FiFileText />
-                    </div>
-                    <a href={link}>{title}</a>
-                </div>
-                <a href={link} className="avatar-text avatar-sm me-3">
-                    <FiArrowRight />
-                </a>
-            </div>
+  return (
+    <div className="card border border-gray-2 rounded-2 my-2 overflow-hidden">
+      <div className="d-flex align-items-center justify-content-between">
+        <div className="d-flex align-items-center">
+          <div className="wd-50 ht-50 bg-gray-100 me-3 d-flex align-items-center justify-content-center">
+            {/* <Icon /> */}
+            <FiFileText />
+          </div>
+          <a href={link}>{title}</a>
         </div>
-    );
+        <a href={link} className="avatar-text avatar-sm me-3">
+          <FiArrowRight />
+        </a>
+      </div>
+    </div>
+  );
 };

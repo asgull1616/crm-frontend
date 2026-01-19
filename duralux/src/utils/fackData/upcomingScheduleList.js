@@ -11,24 +11,10 @@ export const upcomingScheduleList = [
         team_members: [
             {
                 id: 1,
-                user_name: "Janette Dalton",
-                user_img: "/images/avatar/2.png"
+                user_name: "",
+                user_img: ""
             },
-            {
-                id: 2,
-                user_name: "Mikal Bon",
-                user_img: "/images/avatar/3.png"
-            },
-            {
-                id: 3,
-                user_name: "Socrates Itumay",
-                user_img: "/images/avatar/4.png"
-            },
-            {
-                id: 4,
-                user_name: "Jakson Jak",
-                user_img: "/images/avatar/6.png"
-            },
+           
         ]
     },
     {
@@ -43,24 +29,10 @@ export const upcomingScheduleList = [
         team_members: [
             {
                 id: 1,
-                user_name: "Janette Dalton",
-                user_img: "/images/avatar/2.png"
+                user_name: "",
+                user_img: ""
             },
-            {
-                id: 2,
-                user_name: "Mikal Bon",
-                user_img: "/images/avatar/3.png"
-            },
-            {
-                id: 3,
-                user_name: "Marianne Audrey",
-                user_img: "/images/avatar/5.png"
-            },
-            {
-                id: 4,
-                user_name: "Jakson Jak",
-                user_img: "/images/avatar/6.png"
-            },
+           
         ]
     },
     {
@@ -75,24 +47,10 @@ export const upcomingScheduleList = [
         team_members: [
             {
                 id: 1,
-                user_name: "Janette Dalton",
-                user_img: "/images/avatar/2.png"
+                user_name: "",
+                user_img: ""
             },
-            {
-                id: 2,
-                user_name: "Mikal Bon",
-                user_img: "/images/avatar/3.png"
-            },
-            {
-                id: 3,
-                user_name: "Socrates Itumay",
-                user_img: "/images/avatar/4.png"
-            },
-            {
-                id: 4,
-                user_name: "Marianne Audrey",
-                user_img: "/images/avatar/5.png"
-            },
+           
         ]
     },
     {
@@ -107,24 +65,10 @@ export const upcomingScheduleList = [
         team_members: [
             {
                 id: 1,
-                user_name: "Janette Dalton",
-                user_img: "/images/avatar/2.png"
+                user_name: "",
+                user_img: ""
             },
-            {
-                id: 2,
-                user_name: "Socrates Itumay",
-                user_img: "/images/avatar/4.png"
-            },
-            {
-                id: 3,
-                user_name: "Marianne Audrey",
-                user_img: "/images/avatar/5.png"
-            },
-            {
-                id: 4,
-                user_name: "Jakson Jak",
-                user_img: "/images/avatar/6.png"
-            },
+          
         ]
     },
 ]

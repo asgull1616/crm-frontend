@@ -7,12 +7,8 @@ import SelectDropdown from '@/components/shared/SelectDropdown'
 import HeaderSearchForm from '@/components/shared/pageHeader/HeaderSearchForm'
 
 const projectOptions = [
-    { value: "iCloud", label: "iCloud", img: '/images/storage-icons/icloud.png' },
-    { value: "box", label: "Box", img: '/images/storage-icons/box.png' },
-    { value: "dropbox", label: "Dropbox", img: '/images/storage-icons/dropbox.png ' },
-    { value: "onedrive", label: "Onedrive", img: '/images/storage-icons/onedrive.png' },
-    { value: "g-drive", label: "G-Drive", img: '/images/storage-icons/google-drive.png' },
-    { value: "local", label: "Local", img: '/images/storage-icons/local-storage.png' },
+    { value: "", label: "", img: '' },
+    
 ]
 
 const fileType = [

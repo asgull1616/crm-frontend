@@ -1,21 +1,21 @@
 import React from 'react'
 import PageHeader from '@/components/shared/pageHeader/PageHeader'
-import CustomersCreateHeader from '@/components/customersCreate/CustomersCreateHeader'
 import CustomerCreateContent from '@/components/customersCreate/CustomerCreateContent'
+import CustomersCreateHeader from '@/components/customersCreate/CustomersCreateHeader'
 
-const page = () => {
+const Page = () => {
   return (
     <>
       <PageHeader>
-        <CustomersCreateHeader />
       </PageHeader>
-      <div className='main-content'>
-        <div className='row'>
+      <div className="main-content">
+        <div className="row">
           <CustomerCreateContent />
         </div>
+        
       </div>
     </>
   )
 }
 
-export default page
+export default Page

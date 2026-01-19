@@ -17,7 +17,7 @@ const FeaturesTab = () => {
                 </div>
                 <div className="col-xxl-3 offset-xxl-1 col-xl-4">
                     <div className="nxl-mega-menu-image">
-                        <img src="/images/banner/1.jpg" alt="" className="img-fluid" />
+                        <img src="" alt="" className="img-fluid" />
                     </div>
                     <div className="mt-4">
                         <a href="mailto:wrapcoders@gmail.com" className="fs-13 fw-bold">View all features on Duralux &rarr;</a>

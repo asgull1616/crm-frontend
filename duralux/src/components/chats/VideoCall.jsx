@@ -17,7 +17,7 @@ const VideoCall = () => {
                                     <source src="/images/general/video_bg_1.mp4" type="video/mp4" />
                                 </video>
                                 <div className="m-4 border border-5 rounded-3" style={{ zIndex: "1" }}>
-                                    <img src="/images/avatar/10.png" className="img-fluid" alt="Image" />
+                                    <img src="" className="img-fluid" alt="Image" />
                                 </div>
                             </div>
                             <div className="p-4 gap-2 d-flex align-items-center justify-content-center calling-receiver-action">

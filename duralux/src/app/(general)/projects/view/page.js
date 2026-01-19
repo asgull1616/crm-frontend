@@ -3,7 +3,7 @@ import PageHeader from '@/components/shared/pageHeader/PageHeader'
 import ProjectViewHeader from '@/components/projectsView/ProjectViewHeader'
 import ProjectViewTabItems from '@/components/projectsView/ProjectViewTabItems'
 import TabProjectOverview from '@/components/projectsView/TabProjectOverview'
-import LeadsEmptyCard from '@/components/leadsViewCreate/LeadsEmptyCard'
+import LeadsEmptyCard from '@/components/teamsViewCreate/TeamsEmptyCard'
 
 const page = () => {
   return (
