@@ -42,7 +42,7 @@
 button,
 .btn {
 	i {
-		font-size: 16px;
+		font-size: 20px;
 	}
 
 	&[class*="btn-light-"] {
@@ -54,7 +54,7 @@ button,
 	}
 
 	&.btn-shadow {
-		box-shadow: 0 6px 7px -1px rgba(80, 86, 175, 0.3);
+		box-shadow: 0 6px 7px -1px #E93B63;
 	}
 
 	&.btn-sm {

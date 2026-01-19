@@ -25,14 +25,6 @@ const TabBilling = () => {
                     labelId={"addressInput"}
                     placeholder={"Adres"}
                 />
-                {/* <Input
-                    icon='feather-tag'
-                    label={"Zip Kodu"}
-                    labelId={"zipCodeInput"}
-                    placeholder={"Zip Kodu"}
-                    name={"zipCode"}
-                    type="number"
-                /> */}
 
                 <div className="row mb-4 align-items-center">
                     <div className="col-lg-4">
@@ -51,19 +43,6 @@ const TabBilling = () => {
                         />
                     </div>
                 </div>
-                {/* <div className="row mb-4 align-items-center">
-                    <div className="col-lg-4">
-                        <label className="fw-semibold">Eyalet </label>
-                    </div>
-                    <div className="col-lg-8">
-                        <SelectDropdown
-                            options={states}
-                            selectedOption={selectedOption}
-                            defaultSelect={"new-york"}
-                            onSelectOption={(option) => setSelectedOption(option)}
-                        />
-                    </div>
-                </div> */}
                 <div className="row mb-4 align-items-center">
                     <div className="col-lg-4">
                         <label className="fw-semibold">Şehir: </label>
@@ -93,15 +72,6 @@ const TabBilling = () => {
                     labelId={"addressInput"}
                     placeholder={"Adres"}
                 />
-                {/* <Input
-                    icon='feather-tag'
-                    label={"Zip Code"}
-                    labelId={"zipCodeInput"}
-                    placeholder={"Zip Code"}
-                    name={"zipCode"}
-                    type="number"
-                /> */}
-
                 <div className="row mb-4 align-items-center">
                     <div className="col-lg-4">
                         <label className="fw-semibold">Ülke: </label>
@@ -119,19 +89,6 @@ const TabBilling = () => {
                         />
                     </div>
                 </div>
-                {/* <div className="row mb-4 align-items-center">
-                    <div className="col-lg-4">
-                        <label className="fw-semibold">State: </label>
-                    </div>
-                    <div className="col-lg-8">
-                        <SelectDropdown
-                            options={states}
-                            selectedOption={selectedOption}
-                            defaultSelect={"new-york"}
-                            onSelectOption={(option) => setSelectedOption(option)}
-                        />
-                    </div>
-                </div> */}
                 <div className="row mb-4 align-items-center">
                     <div className="col-lg-4">
                         <label className="fw-semibold">Şehir: </label>
