@@ -215,19 +215,13 @@ export const menuList = [
       {
         id: 1,
         name: "Görevler",
-        path: "/projects/list",
+        path: "/tasks/list",
         subdropdownMenu: false,
       },
-      //{
-      //   id: 2,
-      // name: "Görevleri Görüntüle",
-      // path: "/projects/view",
-      // subdropdownMenu: false
-      //},
       {
         id: 3,
         name: "Görev Yarat",
-        path: "/projects/create",
+        path: "/tasks/create",
         subdropdownMenu: false,
       },
     ],
@@ -236,15 +230,21 @@ export const menuList = [
   {
     id: 8,
     name: "Gelir / Gider",
-    path: "/income-expense",
+    path: "#",
     icon: "feather-dollar-sign",
     dropdownMenu: [
-      //     {
-      //        id: 1,
-      //        name: "Gelir / Gider Kayıtlarını Görüntüle",
-      //         path: "/income-expense",
-      //        subdropdownMenu: false
-      //   }
+      {
+        id: 1,
+        name: "Gelir/Gider Görüntüle",
+        path: "/income-expense/list",
+        subdropdownMenu: false,
+      },
+      {
+        id: 2,
+        name: "Gelir/Gider Oluştur",
+        path: "/income-expense/create",
+        subdropdownMenu: false,
+      },
     ],
   },
 

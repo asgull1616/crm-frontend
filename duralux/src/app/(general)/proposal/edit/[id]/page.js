@@ -6,6 +6,7 @@ import dynamic from "next/dynamic";
 import ProposalEditContent from "@/components/proposalEditCreate/ProposalEditContent";
 import ProposalEditHeader from "@/components/proposalEditCreate/ProposalEditHeader";
 import PageHeader from "@/components/shared/pageHeader/PageHeader";
+import { redirect } from "next/navigation";
 
 const ProposalSent = dynamic(
   () => import("@/components/proposalEditCreate/ProposalSent"),
