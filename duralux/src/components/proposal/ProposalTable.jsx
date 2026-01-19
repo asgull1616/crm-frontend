@@ -81,41 +81,6 @@ const ProposalTable = () => {
   /* 🔹 Table columns */
   const columns = [
     {
-      accessorKey: "id",
-      header: ({ table }) => {
-        const checkboxRef = useRef(null);
-
-        const isSomeSelected = table.getIsSomeRowsSelected();
-
-        useEffect(() => {
-          if (checkboxRef.current) {
-            checkboxRef.current.indeterminate = isSomeSelected;
-          }
-        }, [isSomeSelected]);
-
-        return (
-          <input
-            type="checkbox"
-            ref={checkboxRef}
-            className="custom-table-checkbox"
-            checked={table.getIsAllRowsSelected()}
-            onChange={table.getToggleAllRowsSelectedHandler()}
-          />
-        );
-      },
-      cell: ({ row }) => (
-        <input
-          type="checkbox"
-          className="custom-table-checkbox"
-          checked={row.getIsSelected()}
-          onChange={row.getToggleSelectedHandler()}
-        />
-      ),
-      meta: {
-        headerClassName: "width-30",
-      },
-    },
-    {
       accessorKey: "proposal",
       header: () => "Teklif ID",
       cell: (info) => <span className="fw-bold">{info.getValue()}</span>,
@@ -127,9 +92,6 @@ const ProposalTable = () => {
         const client = info.getValue();
         return (
           <div className="hstack gap-3">
-            {/* <div className="avatar-text avatar-md text-white">
-              {client?.name?.substring(0, 1)}
-            </div> */}
             <div>
               <span className="text-truncate-1-line">{client?.name}</span>
               <small className="fs-12 fw-normal text-muted">

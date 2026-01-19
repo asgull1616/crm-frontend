@@ -4,7 +4,7 @@ import { BsPatchCheckFill } from 'react-icons/bs'
 import { FiEdit, FiMail, FiMapPin, FiPhone, FiTrash2 } from 'react-icons/fi'
 const Profile = () => {
     return (
- 
+  
         <div className="card stretch stretch-full">
             <div className="card-body">
                 <div className="d-flex gap-2 text-center pt-4">
