@@ -3,11 +3,13 @@ import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { taskService } from "@/lib/services/task.service";
 import { customerService } from "@/lib/services/customer.service";
+import { userService } from "@/lib/services/user.service";
 
 const initialForm = {
   title: "",
   description: "",
   customerId: "",
+  assignedUserId: "", // ✅ YENİ: Görev atanacak kullanıcı
   startDate: "",
   endDate: "",
   status: "NEW",
@@ -17,6 +19,7 @@ const TaskCreateContent = () => {
   const router = useRouter();
 
   const [customers, setCustomers] = useState([]);
+  const [users, setUsers] = useState([]); // ✅ YENİ
   const [form, setForm] = useState(initialForm);
   const [saving, setSaving] = useState(false);
 
@@ -29,6 +32,15 @@ const TaskCreateContent = () => {
       .catch(() => {
         alert("Müşteriler yüklenemedi");
       });
+
+    userService
+      .list({ page: 1, limit: 100 })
+      .then((res) => {
+        setUsers(res?.data?.data ?? []);
+      })
+      .catch(() => {
+        alert("Kullanıcılar yüklenemedi");
+      });
   }, []);
 
   const onChange = (field, value) => {
@@ -38,6 +50,12 @@ const TaskCreateContent = () => {
   const validate = () => {
     if (!form.title.trim()) {
       alert("Başlık zorunludur");
+      return false;
+    }
+
+    // ✅ Atanacak kullanıcı zorunlu
+    if (!form.assignedUserId) {
+      alert("Görevi atayacağınız kullanıcıyı seçiniz");
       return false;
     }
 
@@ -93,6 +111,23 @@ const TaskCreateContent = () => {
               value={form.description}
               onChange={(e) => onChange("description", e.target.value)}
             />
+          </div>
+
+          {/* ✅ YENİ: Atanacak kullanıcı seçimi */}
+          <div className="mb-3">
+            <label className="form-label">Görev Atanacak Kişi *</label>
+            <select
+              className="form-select"
+              value={form.assignedUserId}
+              onChange={(e) => onChange("assignedUserId", e.target.value)}
+            >
+              <option value="">Seçiniz</option>
+              {users.map((u) => (
+                <option key={u.id} value={u.id}>
+                  {u.username} ({u.email})
+                </option>
+              ))}
+            </select>
           </div>
 
           <div className="mb-3">

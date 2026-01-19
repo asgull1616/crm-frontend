@@ -4,17 +4,10 @@ import { useRouter } from "next/navigation";
 import { taskService } from "@/lib/services/task.service";
 import { customerService } from "@/lib/services/customer.service";
 
-const normalizeList = (res) => {
-  const root = res?.data;
-  if (Array.isArray(root)) return root;
-  if (Array.isArray(root?.data)) return root.data;
-  if (Array.isArray(root?.data?.data)) return root.data.data;
-  return [];
-};
-
 const toInputDate = (val) => {
   if (!val) return "";
   const d = new Date(val);
+  if (Number.isNaN(d.getTime())) return "";
   const yyyy = d.getFullYear();
   const mm = String(d.getMonth() + 1).padStart(2, "0");
   const dd = String(d.getDate()).padStart(2, "0");
@@ -78,6 +71,7 @@ export default function TaskEditContent({ taskId }) {
       try {
         const res = await taskService.findOne(taskId);
         const t = res?.data?.data ?? res?.data ?? null;
+
         if (!mounted) return;
 
         setTask(t);
@@ -90,7 +84,7 @@ export default function TaskEditContent({ taskId }) {
           status: t?.status ?? "NEW",
         });
       } catch (e) {
-        console.error(e);
+        console.error("TASK FINDONE ERROR:", e?.response?.data ?? e);
         if (mounted) setTask(null);
       } finally {
         if (mounted) setLoading(false);
@@ -98,6 +92,7 @@ export default function TaskEditContent({ taskId }) {
     };
 
     if (taskId) loadTask();
+
     return () => {
       mounted = false;
     };
@@ -108,17 +103,23 @@ export default function TaskEditContent({ taskId }) {
     let mounted = true;
 
     const loadCustomers = async () => {
+      setCustomersLoading(true);
       try {
         const res = await customerService.list({ page: 1, limit: 50 });
         const data = res?.data?.data ?? res?.data ?? [];
+        if (!mounted) return;
         setCustomers(Array.isArray(data) ? data : []);
       } catch (e) {
         console.error("CUSTOMER LIST ERROR:", e?.response?.data ?? e);
         alert("Müşteriler yüklenemedi");
+        if (mounted) setCustomers([]);
+      } finally {
+        if (mounted) setCustomersLoading(false);
       }
     };
 
     loadCustomers();
+
     return () => {
       mounted = false;
     };
@@ -129,17 +130,16 @@ export default function TaskEditContent({ taskId }) {
 
     setSaving(true);
     try {
-      // boş stringleri göndermeyelim
+      // boş stringleri göndermeyelim (API tarafında disconnect logic'i var)
       const payload = Object.fromEntries(
         Object.entries(form).filter(([_, v]) => v !== ""),
       );
 
       await taskService.update(taskId, payload);
 
-      // kaydedince task detayına dön
       router.push(`/tasks/view/${taskId}`);
     } catch (e) {
-      console.error(e);
+      console.error("TASK UPDATE ERROR:", e?.response?.data ?? e);
       alert("Görev güncellenemedi");
     } finally {
       setSaving(false);
@@ -167,6 +167,7 @@ export default function TaskEditContent({ taskId }) {
           <button
             className="btn btn-sm btn-outline-secondary"
             onClick={() => router.push(`/tasks/view/${taskId}`)}
+            disabled={saving}
           >
             Detaya Dön
           </button>
@@ -179,6 +180,7 @@ export default function TaskEditContent({ taskId }) {
               className="form-control"
               value={form.title}
               onChange={(e) => onChange("title", e.target.value)}
+              disabled={saving}
             />
           </div>
 
@@ -189,6 +191,7 @@ export default function TaskEditContent({ taskId }) {
               rows={4}
               value={form.description}
               onChange={(e) => onChange("description", e.target.value)}
+              disabled={saving}
             />
           </div>
 
@@ -198,7 +201,7 @@ export default function TaskEditContent({ taskId }) {
               className="form-select"
               value={form.customerId}
               onChange={(e) => onChange("customerId", e.target.value)}
-              disabled={customersLoading}
+              disabled={customersLoading || saving}
             >
               <option value="">
                 {customersLoading ? "Yükleniyor..." : "Seçiniz"}
@@ -210,7 +213,6 @@ export default function TaskEditContent({ taskId }) {
               ))}
             </select>
 
-            {/* mevcut bağlı müşteri bilgisini küçük gösterelim */}
             {task.customer?.fullName && !customersLoading ? (
               <div className="form-text">
                 Mevcut: <b>{task.customer.fullName}</b>
@@ -226,6 +228,7 @@ export default function TaskEditContent({ taskId }) {
                 className="form-control"
                 value={form.startDate}
                 onChange={(e) => onChange("startDate", e.target.value)}
+                disabled={saving}
               />
             </div>
 
@@ -236,6 +239,7 @@ export default function TaskEditContent({ taskId }) {
                 className="form-control"
                 value={form.endDate}
                 onChange={(e) => onChange("endDate", e.target.value)}
+                disabled={saving}
               />
             </div>
           </div>
@@ -246,6 +250,7 @@ export default function TaskEditContent({ taskId }) {
               className="form-select"
               value={form.status}
               onChange={(e) => onChange("status", e.target.value)}
+              disabled={saving}
             >
               {statusOptions.map((s) => (
                 <option key={s.value} value={s.value}>

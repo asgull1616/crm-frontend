@@ -1,7 +1,8 @@
 "use client";
-import React, { useEffect, useState, useCallback } from "react";
+import React, { useEffect, useState, useCallback, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import { taskService } from "@/lib/services/task.service";
+import { userService } from "@/lib/services/user.service";
 
 const statusColors = {
   NEW: "secondary",
@@ -17,14 +18,34 @@ export default function TaskListContent() {
   const router = useRouter();
 
   const [tasks, setTasks] = useState([]);
+  const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  const fetchTasks = useCallback(async () => {
+  const userMap = useMemo(() => {
+    const m = new Map();
+    users.forEach((u) => m.set(u.id, u));
+    return m;
+  }, [users]);
+
+  const getUserLabel = (id) => {
+    if (!id) return "-";
+    const u = userMap.get(id);
+    return u ? `${u.username} (${u.email})` : id; // bulunamazsa id göster
+  };
+
+  const fetchAll = useCallback(async () => {
     setLoading(true);
     try {
-      const res = await taskService.list({ page: 1, limit: 10 });
-      const { data } = res?.data ?? {};
-      setTasks(Array.isArray(data) ? data : []);
+      const [taskRes, userRes] = await Promise.all([
+        taskService.list({ page: 1, limit: 10 }),
+        userService.list({ page: 1, limit: 100 }), // ✅ Max 100
+      ]);
+
+      const taskData = taskRes?.data?.data ?? [];
+      const userData = userRes?.data?.data ?? [];
+
+      setTasks(Array.isArray(taskData) ? taskData : []);
+      setUsers(Array.isArray(userData) ? userData : []);
     } catch (err) {
       console.error(err);
       alert("Görevler yüklenemedi");
@@ -34,14 +55,13 @@ export default function TaskListContent() {
   }, []);
 
   useEffect(() => {
-    fetchTasks();
-  }, [fetchTasks]);
+    fetchAll();
+  }, [fetchAll]);
 
   const openView = (task) => {
     router.push(`/tasks/view/${task.id}`);
   };
 
-  // ✅ EDIT -> ROUTE
   const openEdit = (task) => {
     router.push(`/tasks/edit/${task.id}`);
   };
@@ -78,6 +98,8 @@ export default function TaskListContent() {
               <tr>
                 <th>Başlık</th>
                 <th>Durum</th>
+                <th>Atanan</th>
+                <th>Oluşturan</th>
                 <th>Başlangıç</th>
                 <th>Bitiş</th>
                 <th className="text-end">Aksiyon</th>
@@ -87,7 +109,7 @@ export default function TaskListContent() {
             <tbody>
               {tasks.length === 0 ? (
                 <tr>
-                  <td colSpan={5} className="text-center text-muted">
+                  <td colSpan={7} className="text-center text-muted">
                     Henüz görev yok
                   </td>
                 </tr>
@@ -95,15 +117,18 @@ export default function TaskListContent() {
                 tasks.map((task) => (
                   <tr key={task.id}>
                     <td>{task.title}</td>
+
                     <td>
                       <span
-                        className={`badge bg-${
-                          statusColors[task.status] ?? "secondary"
-                        }`}
+                        className={`badge bg-${statusColors[task.status] ?? "secondary"}`}
                       >
                         {task.status}
                       </span>
                     </td>
+
+                    <td>{getUserLabel(task.assignedUserId)}</td>
+                    <td>{getUserLabel(task.createdByUserId)}</td>
+
                     <td>{formatDate(task.startDate)}</td>
                     <td>{formatDate(task.endDate)}</td>
 

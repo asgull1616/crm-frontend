@@ -3,6 +3,7 @@ import React, { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { FiCheckCircle } from "react-icons/fi";
 import { taskService } from "@/lib/services/task.service";
+import { userService } from "@/lib/services/user.service"; // ✅ YENİ
 
 const statusLabel = {
   NEW: "Yeni",
@@ -20,6 +21,21 @@ export default function TabTaskOverview({ taskId }) {
   const [loading, setLoading] = useState(true);
   const [task, setTask] = useState(null);
 
+  const [users, setUsers] = useState([]); // ✅ YENİ
+
+  const userMap = useMemo(() => {
+    const m = new Map();
+    users.forEach((u) => m.set(u.id, u));
+    return m;
+  }, [users]);
+
+  const assignedUserLabel = useMemo(() => {
+    const id = task?.assignedUserId;
+    if (!id) return "-";
+    const u = userMap.get(id);
+    return u ? `${u.username} (${u.email})` : id;
+  }, [task?.assignedUserId, userMap]);
+
   const resolvedStatus = useMemo(() => {
     const s = task?.status;
     return statusLabel[s] ?? s ?? "-";
@@ -31,20 +47,29 @@ export default function TabTaskOverview({ taskId }) {
     const load = async () => {
       setLoading(true);
       try {
-        const res = await taskService.findOne(taskId);
-        const t = res?.data?.data ?? res?.data ?? null;
+        const [taskRes, userRes] = await Promise.all([
+          taskService.findOne(taskId),
+          userService.list({ page: 1, limit: 100 }), // ✅ Max 100
+        ]);
+
+        const t = taskRes?.data?.data ?? taskRes?.data ?? null;
+        const u = userRes?.data?.data ?? [];
+
         if (!mounted) return;
         setTask(t);
+        setUsers(Array.isArray(u) ? u : []);
       } catch (e) {
         console.error(e);
-        if (mounted) setTask(null);
+        if (mounted) {
+          setTask(null);
+          setUsers([]);
+        }
       } finally {
         if (mounted) setLoading(false);
       }
     };
 
     if (taskId) load();
-
     return () => {
       mounted = false;
     };
@@ -116,6 +141,12 @@ export default function TabTaskOverview({ taskId }) {
                   <p className="mb-0">{resolvedStatus}</p>
                 </div>
 
+                {/* ✅ YENİ: Atanan kişi */}
+                <div className="col-md-6 mb-4">
+                  <label className="form-label">Atanan Kişi</label>
+                  <p className="mb-0">{assignedUserLabel}</p>
+                </div>
+
                 <div className="col-md-6 mb-4">
                   <label className="form-label">Başlangıç Tarihi</label>
                   <p className="mb-0">{formatDate(task.startDate)}</p>
@@ -132,7 +163,7 @@ export default function TabTaskOverview({ taskId }) {
                 </div>
               </div>
 
-              {/* CUSTOMER CARD (senin pattern) */}
+              {/* CUSTOMER CARD */}
               <div className="card mb-0 mt-3">
                 <div className="card-header fw-semibold d-flex justify-content-between align-items-center">
                   <span>Müşteri</span>
