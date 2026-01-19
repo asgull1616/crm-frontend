@@ -1,15 +1,20 @@
-'use client';
+"use client";
 
-import React, { useEffect, useState } from 'react';
-import Input from '@/components/shared/Input';
-import TextArea from '@/components/shared/TextArea';
-import Loading from '@/components/shared/Loading';
-import { teamService } from '@/lib/services/team.service';
-import { useRouter } from 'next/navigation';
+import React, { useEffect, useState } from "react";
+import Input from "@/components/shared/Input";
+import TextArea from "@/components/shared/TextArea";
+import Loading from "@/components/shared/Loading";
+import { teamService } from "@/lib/services/team.service";
+import { useRouter } from "next/navigation";
 
 const TeamsCreateContent = () => {
-  const [name, setName] = useState('');
-  const [description, setDescription] = useState('');
+  console.log(
+    "🟡 TeamsCreateContent render token:",
+    localStorage.getItem("accessToken"),
+  );
+
+  const [name, setName] = useState("");
+  const [description, setDescription] = useState("");
   const [users, setUsers] = useState([]);
   const [selectedUserIds, setSelectedUserIds] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -26,7 +31,7 @@ const TeamsCreateContent = () => {
     setSelectedUserIds((prev) =>
       prev.includes(userId)
         ? prev.filter((id) => id !== userId)
-        : [...prev, userId]
+        : [...prev, userId],
     );
   };
 
@@ -37,10 +42,10 @@ const TeamsCreateContent = () => {
         memberIds: selectedUserIds,
       });
 
-      router.push('/teams/list');
+      router.push("/teams/list");
     } catch (err) {
       console.error(err);
-      alert('Ekip oluşturulamadı');
+      alert("Ekip oluşturulamadı");
     }
   };
 
@@ -50,7 +55,6 @@ const TeamsCreateContent = () => {
     <div className="col-lg-12">
       <div className="card stretch stretch-full">
         <div className="card-body">
-
           <h5 className="fw-bold mb-4">Ekip Bilgileri</h5>
 
           <Input
@@ -92,7 +96,6 @@ const TeamsCreateContent = () => {
           >
             Ekip Oluştur
           </button>
-
         </div>
       </div>
     </div>

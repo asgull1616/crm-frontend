@@ -57,7 +57,7 @@ const ProposalCreateContent = () => {
         customerId,
         validUntil: startDate.toISOString(),
         status: send ? "SENT" : status.toUpperCase(),
-        totalAmount: totalAmount ? Number(totalAmount) : null,
+        totalAmount: totalAmount ? totalAmount : undefined,
       });
 
       router.push("/proposal/list");
@@ -88,22 +88,6 @@ const ProposalCreateContent = () => {
                 onChange={(e) => setTitle(e.target.value)}
               />
             </div>
-
-            {
-              /* 🔹 Müşteri */
-              <div className="mb-4">
-                <label className="form-label">
-                  Müşteri <span className="text-danger">*</span>
-                </label>
-                <SelectDropdown
-                  options={propsalRelatedOptions}
-                  defaultSelect="Müşteri Seçin"
-                  onSelectOption={(option) => {
-                    setCustomerId(option?.value ?? null);
-                  }}
-                />
-              </div>
-            }
 
             <div className="mb-4">
               <label className="form-label">
