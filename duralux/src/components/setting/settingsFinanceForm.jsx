@@ -22,7 +22,7 @@ const thousandSeparator = [
 
 const taxOptions = [
   { value: "no-tax", label: "No Tax", color: "#283c50" },
-  { value: "5-percent", label: "5% + $2", color: "#3454d1" },
+  { value: "5-percent", label: "5% + $2", color: "#E92B63" },
   { value: "10-percent", label: "10% + $2", color: "#17c666" },
   { value: "15-percent", label: "15% + $2", color: "#6610f2" },
   { value: "20-percent", label: "20% + $2", color: "#ffa21d" },

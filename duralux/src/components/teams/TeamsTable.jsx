@@ -79,7 +79,7 @@ const TeamsTable = () => {
     },
   ];
 
-  if (!loading && data.length === 0) {
+  if (!loading && data && data.length === 0) {
     return (
       <div className="text-center py-5 text-muted">
         Henüz ekip oluşturulmadı.

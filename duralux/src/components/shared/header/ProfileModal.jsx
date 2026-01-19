@@ -11,12 +11,12 @@ const ProfileModal = () => {
     return (
         <div className="dropdown nxl-h-item">
             <a href="#" data-bs-toggle="dropdown" role="button" data-bs-auto-close="outside">
-                <Image width={40} height={40} src="/images/avatar/1.png" alt="user-image" className="img-fluid user-avtar me-0" />
+                <Image width={40} height={40} src="" alt="user-image" className="img-fluid user-avtar me-0" />
             </a>
             <div className="dropdown-menu dropdown-menu-end nxl-h-dropdown nxl-user-dropdown">
                 <div className="dropdown-header">
                     <div className="d-flex align-items-center">
-                        <Image width={40} height={40} src="/images/avatar/1.png" alt="user-image" className="img-fluid user-avtar" />
+                        <Image width={40} height={40} src="" alt="user-image" className="img-fluid user-avtar" />
                         <div>
                             <h6 className="text-dark mb-0">Alexandra Della </h6>
                             <span className="fs-12 fw-medium text-muted">alex.della@outlook.com</span>

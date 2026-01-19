@@ -1,9 +1,9 @@
 const list = [
     {
         id: 1,
-        user_img: "/images/avatar/2.png",
-        user_name: "Archie Cantones",
-        user_email: "arcie.tones@gmail.com",
+        user_img: "",
+        user_name: "Muhammed Sosun",
+        user_email: "muhammedsosun@gmail.com",
         user_status: "Tamamlandı",
         proposal: "Gönderildi",
         date: "11/06/2023 10:53",
@@ -19,8 +19,8 @@ const list = [
     {
         id: 2,
         user_img: "",
-        user_name: "Holmes Cherryman",
-        user_email: "golms.chan@gmail.com",
+        user_name: "Şerif Ergin",
+        user_email: "serifergin@gmail.com",
         user_status: "Devam Ediyor",
         proposal: "Yeni",
         date: "11/06/2023 10:53",
@@ -34,9 +34,9 @@ const list = [
     },
     {
         id: 3,
-        user_img: "/images/avatar/4.png",
-        user_name: "Malanie Hanvey",
-        user_email: "lanie.nveyn@gmail.com",
+        user_img: "",
+        user_name: "Ahmet Burak Kır",
+        user_email: "ahmetburakkır@gmail.com",
         user_status: "Tamamlandı",
         proposal: "Gönderildi",
         date: "11/06/2023 10:53",
@@ -51,8 +51,8 @@ const list = [
     {
         id: 4,
         user_img: "",
-        user_name: "Kenneth Hune",
-        user_email: "nneth.une@gmail.com",
+        user_name: "Eren Gündoğdu",
+        user_email: "erengündogdu@gmail.com",
         user_status: "Reddedildi",
         proposal: "Cevaplandı",
         date: "11/06/2023 10:53",
@@ -66,9 +66,9 @@ const list = [
     },
     {
         id: 5,
-        user_img: "/images/avatar/6.png",
-        user_name: "Valentine Maton",
-        user_email: "alenine.aton@gmail.com",
+        user_img: "",
+        user_name: "Zeynep Daş",
+        user_email: "zeynepdas@gmail.com",
         user_status: "Tamamlandı",
         proposal: "Gönderildi",
         date: "11/06/2023 10:53",
@@ -82,8 +82,8 @@ const list = [
     },
     {
         id: 6,
-        user_img: "/images/avatar/3.png",
-        user_name: "Bryan Waters",
+        user_img: "",
+        user_name: "Sümeyye Bire",
         user_email: "nneth.une@gmail.com",
         user_status: "Reddedildi",
         proposal: "Cevaplandı",
@@ -98,8 +98,8 @@ const list = [
     },
     {
         id: 7,
-        user_img: "/images/avatar/5.png",
-        user_name: "Valentine Maton",
+        user_img: "",
+        user_name: "Sude Filikçi",
         user_email: "alenine.aton@gmail.com",
         user_status: "Tamamlandı",
         proposal: "Gönderildi",
@@ -114,8 +114,8 @@ const list = [
     },
     {
         id: 8,
-        user_img: "/images/avatar/10.png",
-        user_name: "Kenneth Hune",
+        user_img: "",
+        user_name: "Ayşegül Altıntaş",
         user_email: "nneth.une@gmail.com",
         user_status: "Reddedildi",
         proposal: "Cevaplandı",
@@ -130,8 +130,8 @@ const list = [
     },
     {
         id: 9,
-        user_img: "/images/avatar/11.png",
-        user_name: "Ursula Sanders",
+        user_img: "",
+        user_name: "Esmanur Erden",
         user_email: "alenine.aton@gmail.com",
         user_status: "Tamamlandı",
         proposal: "Gönderildi",
@@ -147,7 +147,7 @@ const list = [
     {
         id: 10,
         user_img: "",
-        user_name: "Timothy Boyd",
+        user_name: "Aleynagül Kazdal",
         user_email: "alenine.aton@gmail.com",
         user_status: "Tamamlandı",
         proposal: "Gönderildi",
@@ -160,22 +160,7 @@ const list = [
         is_message_read: true,
         color:"success"
     },
-    {
-        id: 11,
-        user_img: "/images/avatar/11.png",
-        user_name: "Edward Andrade",
-        user_email: "alenine.aton@gmail.com",
-        user_status: "Tamamlandı",
-        proposal: "Gönderildi",
-        date: "11/06/2023 10:53",
-        is_active: {
-            position: "active",
-            color: "#17c666"
-        },
-        active_time: "20 min ago",
-        is_message_read: true,
-        color:"success"
-    },
+    
 ]
 
 export const userList = (startItem = 0, endItem = list.length) => {

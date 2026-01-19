@@ -7,9 +7,7 @@ const page = () => {
     <main className="auth-cover-wrapper">
       <div className="auth-cover-content-inner">
         <div className="auth-cover-content-wrapper">
-          <div className="auth-img">
-            <Image width={600} height={600} sizes='100vw' src="/images/auth/auth-cover-404-bg.svg" alt="img" className="img-fluid" />
-          </div>
+          
         </div>
       </div>
       <div className="auth-cover-sidebar-inner">

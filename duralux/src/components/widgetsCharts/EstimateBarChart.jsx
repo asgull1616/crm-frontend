@@ -6,7 +6,7 @@ import dynamic from 'next/dynamic'
 const ReactApexChart = dynamic(() => import('react-apexcharts'), { ssr: false })
 
 const chartData = [
-    { color: 'primary', icon: 'feather-airplay', title: 'Income Status', amount: '$56.45K', chartColor: "#3454D1" },
+    { color: 'primary', icon: 'feather-airplay', title: 'Income Status', amount: '$56.45K', chartColor: "#E92B63" },
     { color: 'danger', icon: 'feather-shopping-cart', title: 'Expenses Status', amount: '$22.75K', chartColor: "#D13B4C" },
     { color: 'success', icon: 'feather-bluetooth', title: 'Total Orders', amount: '$29.73K', chartColor: "#25B865" },
     { color: 'warning', icon: 'feather-briefcase', title: 'Revenue Status', amount: '$99.67K', chartColor: "#E49E3D" },

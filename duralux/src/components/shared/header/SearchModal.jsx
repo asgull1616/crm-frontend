@@ -31,34 +31,11 @@ const recnetSearch = [
 const userSearch = [
     {
         id: 1,
-        name: "Alexandra Della",
-        email: "alex.della@outlook.com",
-        src: "/images/avatar/1.png",
+        name: "",
+        email: "",
+        src: "",
     },
-    {
-        id: 2,
-        name: "Green Cute",
-        email: "green.cute@outlook.com",
-        src: "/images/avatar/2.png",
-    },
-    {
-        id: 3,
-        name: "Malanie Hanvey",
-        email: "malanie.anvey@outlook.com",
-        src: "/images/avatar/3.png",
-    },
-    {
-        id: 4,
-        name: "Kenneth Hune",
-        email: "kenth.hune@outlook.com",
-        src: "/images/avatar/4.png",
-    },
-    {
-        id: 5,
-        name: "Archie Cantones",
-        email: "archie.cones@outlook.com",
-        src: "/images/avatar/5.png",
-    },
+ 
 
 ]
 const filesList = [
