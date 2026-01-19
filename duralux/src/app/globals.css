@@ -1,26 +1,122 @@
-/* Override dark theme inversion on large logo to preserve original colors */
-@media (prefers-color-scheme: dark) {
-  /* Ensure no inversion is applied to any large logo */
-  .logo-lg,
-  .nxl-navigation .m-header .logo-lg,
-  .nxl-header .logo-lg,
-  .b-brand .logo-lg {
-    filter: none !important;
-  }
+/* ================================================= */
+/* FOUNDER / COFOUNDER SHOWCASE – FINAL FIX         */
+/* ================================================= */
+
+/* Kart metin rengi – light mode */
+.founder-card,
+.cofounder-card {
+  color: #0f172a;
 }
-/* Explicit dark header theme override (class-based) */
-html.app-header-dark .nxl-navigation .m-header .logo-lg {
+
+/* Dark mode’da kart beyaz kalıyor → yazılar koyu kalmalı */
+html.app-skin-dark .founder-card,
+html.app-skin-dark .cofounder-card {
+  background-color: #ffffff !important;
+  color: #0f172a !important;
+}
+
+/* Kart içindeki tüm temel metinler */
+html.app-skin-dark .founder-card p,
+html.app-skin-dark .founder-card span,
+html.app-skin-dark .founder-card h1,
+html.app-skin-dark .founder-card h2,
+html.app-skin-dark .founder-card h3,
+html.app-skin-dark .founder-card h4,
+html.app-skin-dark .founder-card h5,
+html.app-skin-dark .founder-card h6,
+html.app-skin-dark .cofounder-card p,
+html.app-skin-dark .cofounder-card span,
+html.app-skin-dark .cofounder-card h1,
+html.app-skin-dark .cofounder-card h2,
+html.app-skin-dark .cofounder-card h3,
+html.app-skin-dark .cofounder-card h4,
+html.app-skin-dark .cofounder-card h5,
+html.app-skin-dark .cofounder-card h6 {
+  color: #0f172a !important;
+}
+
+/* Secondary / muted metinler */
+.founder-card .text-secondary,
+.cofounder-card .text-secondary {
+  color: #475569 !important;
+}
+
+/* Badge’ler */
+.founder-card .badge,
+.cofounder-card .badge {
+  background-color: #f1f5f9 !important;
+  color: #0f172a !important;
+  border-color: #e2e8f0 !important;
+}
+
+/* Quote icon (tırnak svg) */
+.founder-card svg,
+.cofounder-card svg {
+  opacity: 0.15;
+}
+
+/* ================================================= */
+/* INLINE CODYOL LINK – FINAL                       */
+/* ================================================= */
+
+.founder-card .codyol-inline-link {
+  font: inherit !important;
+  font-style: inherit !important;
+  font-size: inherit !important;
+  line-height: inherit !important;
+
+  font-weight: 600;
+  color: #2563eb !important; /* light mode */
+  text-decoration: none;
+}
+
+.founder-card .codyol-inline-link:hover {
+  text-decoration: underline;
+}
+
+/* Dark mode link görünürlüğü */
+html.app-skin-dark .founder-card .codyol-inline-link {
+  color: #60a5fa !important; /* blue-400 */
+}
+/* =============================================== */
+/* DARK MODE – FOUNDER / COFOUNDER FINAL OVERRIDE */
+/* =============================================== */
+
+html.app-skin-dark .founder-card,
+html.app-skin-dark .cofounder-card {
+  opacity: 1 !important;
   filter: none !important;
 }
 
-/* Optional: if a generic html.dark class is used elsewhere */
-html.dark .nxl-navigation .m-header .logo-lg {
+/* Card içindeki TÜM elementlerde opacity reset */
+html.app-skin-dark .founder-card *,
+html.app-skin-dark .cofounder-card * {
+  opacity: 1 !important;
   filter: none !important;
 }
 
-/* Actual app dark-skin class used by theme toggle */
-html.app-skin-dark .nxl-navigation .m-header .logo-lg {
+/* CODYOL inline link – özel güçlendirme */
+html.app-skin-dark .founder-card .codyol-inline-link {
+  color: #60a5fa !important; /* net mavi */
+  font-weight: 700 !important;
+  opacity: 1 !important;
   filter: none !important;
 }
+/* ================================================= */
+/* FORCE VISIBLE TEXT – THEME OVERRIDE (FINAL)      */
+/* ================================================= */
 
- 
+.force-visible {
+  position: relative;
+  z-index: 9999 !important;
+  opacity: 1 !important;
+  filter: none !important;
+  mix-blend-mode: normal !important;
+  text-shadow: 0 0 0 currentColor; /* overlay kırıcı */
+}
+
+/* Dark mode özel */
+html.app-skin-dark .force-visible {
+  color: #60a5fa !important;
+  font-weight: 700 !important;
+}
