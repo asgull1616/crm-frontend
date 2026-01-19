@@ -236,15 +236,21 @@ export const menuList = [
   {
     id: 8,
     name: "Gelir / Gider",
-    path: "/income-expense",
+    path: "#",
     icon: "feather-dollar-sign",
     dropdownMenu: [
-      //     {
-      //        id: 1,
-      //        name: "Gelir / Gider Kayıtlarını Görüntüle",
-      //         path: "/income-expense",
-      //        subdropdownMenu: false
-      //   }
+      {
+        id: 1,
+        name: "Gelir/Gider Görüntüle",
+        path: "/income-expense/list",
+        subdropdownMenu: false,
+      },
+      {
+        id: 2,
+        name: "Gelir/Gider Oluştur",
+        path: "/income-expense/create",
+        subdropdownMenu: false,
+      },
     ],
   },
 
