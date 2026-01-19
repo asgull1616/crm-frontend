@@ -215,19 +215,13 @@ export const menuList = [
       {
         id: 1,
         name: "Görevler",
-        path: "/projects/list",
+        path: "/tasks/list",
         subdropdownMenu: false,
       },
-      //{
-      //   id: 2,
-      // name: "Görevleri Görüntüle",
-      // path: "/projects/view",
-      // subdropdownMenu: false
-      //},
       {
         id: 3,
         name: "Görev Yarat",
-        path: "/projects/create",
+        path: "/tasks/create",
         subdropdownMenu: false,
       },
     ],
