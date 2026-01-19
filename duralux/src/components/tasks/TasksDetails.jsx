@@ -1,227 +1,118 @@
 'use client'
-import React, {useState } from 'react'
-import { FiAlertOctagon, FiAlertTriangle, FiArchive, FiArrowLeft, FiBell, FiBellOff, FiBookmark, FiCalendar, FiEye, FiEyeOff, FiInfo, FiLink2, FiPlus, FiSlash, FiSliders, FiStar, FiTrash2 } from 'react-icons/fi'
-import Dropdown from '@/components/shared/Dropdown'
-import JoditEditor from 'jodit-react';
-import TaskDateRange from './TaskDateRange';
-import TaskStatus from './TaskStatus';
-import Comments from '../Comments';
-import MultiSelectTags from '@/components/shared/MultiSelectTags';
-import MultiSelectImg from '@/components/shared/MultiSelectImg';
-import { taskAssigneeOptions, taskLabelsOptions, taskPriorityOptions, taskStatusOptions, taskTypeOptions } from '@/utils/options';
-import topTost from '@/utils/topTost';
-import CheckList from '../CheckList';
-import useJoditConfig from '@/hooks/useJoditConfig';
+import React from 'react'
 
-const detailsMoreOptions = [
-    { label: "Make Unread", icon: <FiEyeOff /> },
-    { label: "Filter Messages", icon: <FiSliders /> },
-    { label: "Make as Archive", icon: <FiArchive /> },
-    { type: "divider" },
-    { label: "Attach files", icon: <FiLink2 /> },
-    { label: "Set Due Date", icon: <FiCalendar />, },
-    { label: "Follow Task", icon: <FiEye />, },
-    { label: "Apply Labels", icon: <FiBookmark />, },
-    { type: "divider" },
-    { label: "Report Spam", icon: <FiAlertTriangle /> },
-    { label: "Report phishing", icon: <FiAlertOctagon /> },
-    { type: "divider" },
-    { label: "Mute Conversion", icon: <FiBellOff /> },
-    { label: "Block Conversion", icon: <FiSlash /> },
-    { label: "Delete Conversion", icon: <FiTrash2 /> },
-];
+const TasksDetails = ({ task, onClose }) => {
+  if (!task) return null
 
+  const formatDate = (dateString) => {
+    if (!dateString) return '-'
+    return new Date(dateString).toLocaleDateString('tr-TR')
+  }
 
-const TasksDetails = () => {
-    const config = useJoditConfig()
-    const [value, setValue] = useState('');
+  const statusMap = {
+    NEW: 'Yeni',
+    IN_PROGRESS: 'Devam Ediyor',
+    ON_HOLD: 'Beklemede',
+    COMPLETED: 'Tamamlandı',
+  }
 
-    const handleClick = () => {
-        topTost()
-    };
-    return (
-        <div
-            className="offcanvas offcanvas-end w-50"
-            tabIndex={-1}
-            id="tasksDetailsOffcanvas"
-        >
-            <div
-                className="offcanvas-header border-bottom"
-                style={{ paddingTop: 20, paddingBottom: 20 }}
-            >
-                <div className="d-flex align-items-center">
-                    <div
-                        className="avatar-text avatar-md items-details-close-trigger"
-                        data-bs-dismiss="offcanvas"
-                        data-bs-toggle="tooltip"
-                        data-bs-trigger="hover"
-                        title="Details Close"
-                    >
-                        <FiArrowLeft />
-                    </div>
-                    <span className="vr text-muted mx-4" />
-                    <a href="#">
-                        <h2 className="fs-14 fw-bold text-truncate-1-line">
-                            Video conference with Canada Team
-                        </h2>
-                        <span className="fs-12 fw-normal text-muted text-truncate-1-line">
-                            09:00am - 11:00am, Rangpur, Bangladesh.
-                        </span>
-                    </a>
+  return (
+    <div
+      className="modal fade show"
+      style={{ display: 'block', background: 'rgba(0,0,0,.5)', zIndex: 1060 }}
+      onClick={onClose}
+    >
+      <div
+        className="modal-dialog modal-dialog-centered modal-lg"
+        onClick={(e) => e.stopPropagation()}
+      >
+        <div className="modal-content border-0 shadow-lg">
+          {/* HEADER */}
+          <div className="modal-header bg-light">
+            <h5 className="modal-title fw-bold text-dark">Görev Detayları</h5>
+            <button type="button" className="btn-close" onClick={onClose}></button>
+          </div>
+
+          {/* BODY – SADECE ÜST KISIM */}
+          <div className="modal-body p-4">
+            <div className="row g-4">
+              {/* Başlık */}
+              <div className="col-12">
+                <label className="text-muted fs-12 text-uppercase fw-bold mb-1">
+                  Başlık
+                </label>
+                <div className="fs-16 fw-semibold p-2 bg-light rounded border">
+                  {task.title || 'Belirtilmedi'}
                 </div>
-                <div className="d-none d-md-flex gap-1 align-items-center justify-content-center">
-                    <a
-                        href="#"
-                        className="d-none d-lg-flex align-items-center fs-9 fw-bold text-uppercase text-dark py-2 px-3 border border-gray-2 rounded"
-                    >
-                        <FiLink2 size={16} strokeWidth={1.7} className='me-2' />
-                        <span className="text-nowrap">Copy Link</span>
-                    </a>
-                    <a href="#" className="d-flex">
-                        <div
-                            className="avatar-text avatar-md"
-                            data-bs-toggle="tooltip"
-                            data-bs-trigger="hover"
-                            title="Add Contractors"
-                        >
-                            <FiPlus strokeWidth={1.6} />
-                        </div>
-                    </a>
-                    <a href="#" className="d-flex" onClick={handleClick}>
-                        <div
-                            className="avatar-text avatar-md"
-                            data-bs-toggle="tooltip"
-                            data-bs-trigger="hover"
-                            title="Remainder Notify"
-                        >
-                            <FiBell strokeWidth={1.6} />
-                        </div>
-                    </a>
-                    <a href="#" className="d-flex" onClick={handleClick}>
-                        <div
-                            className="avatar-text avatar-md"
-                            data-bs-toggle="tooltip"
-                            data-bs-trigger="hover"
-                            title="Add to Favorite"
-                        >
-                            <FiStar strokeWidth={1.6} />
-                        </div>
-                    </a>
-                    <a href="#" className="d-flex" onClick={handleClick}>
-                        <div
-                            className="avatar-text avatar-md"
-                            data-bs-toggle="tooltip"
-                            data-bs-trigger="hover"
-                            title="Add to Calendar"
-                        >
-                            <FiCalendar strokeWidth={1.6} />
-                        </div>
-                    </a>
-                    <Dropdown
-                        triggerClass='avatar-md'
-                        tooltipTitle="More Options"
-                        dropdownItems={detailsMoreOptions}
-                        triggerPosition={"0,25"}
-                    />
+              </div>
 
+              {/* Açıklama */}
+              <div className="col-12">
+                <label className="text-muted fs-12 text-uppercase fw-bold mb-1">
+                  Açıklama
+                </label>
+                <div
+                  className="p-3 bg-light rounded border text-secondary"
+                  style={{ minHeight: 100 }}
+                >
+                  {task.description || 'Açıklama girilmemiş.'}
                 </div>
+              </div>
+
+              {/* Müşteri */}
+              <div className="col-md-6">
+                <label className="text-muted fs-12 text-uppercase fw-bold mb-1">
+                  Müşteri
+                </label>
+                <div className="p-2 bg-light rounded border">
+                  {task.customer?.name || task.customerName || 'Seçilmedi'}
+                </div>
+              </div>
+
+              {/* Durum */}
+              <div className="col-md-6">
+                <label className="text-muted fs-12 text-uppercase fw-bold mb-1">
+                  Durum
+                </label>
+                <div>
+                  <span className="badge bg-primary p-2 px-3">
+                    {statusMap[task.status] || task.status}
+                  </span>
+                </div>
+              </div>
+
+              {/* Başlangıç */}
+              <div className="col-md-6">
+                <label className="text-muted fs-12 text-uppercase fw-bold mb-1">
+                  Başlangıç Tarihi
+                </label>
+                <div className="p-2 bg-light rounded border">
+                  {formatDate(task.startDate)}
+                </div>
+              </div>
+
+              {/* Bitiş */}
+              <div className="col-md-6">
+                <label className="text-muted fs-12 text-uppercase fw-bold mb-1">
+                  Bitiş Tarihi
+                </label>
+                <div className="p-2 bg-light rounded border">
+                  {formatDate(task.endDate)}
+                </div>
+              </div>
             </div>
-            <div className="offcanvas-body">
-                <div className="row">
-                    <div className="col-sm-6">
-                        <TaskStatus label={"Status:"} options={taskStatusOptions} defaultSelect="inprogress" />
-                    </div>
-                    <div className="col-sm-6">
-                        <TaskStatus options={taskPriorityOptions} label={"Priority:"} defaultSelect="high" />
-                    </div>
-                    <div className="col-sm-6">
-                        <TaskStatus options={taskLabelsOptions} label={"Labels:"} defaultSelect="promotions" />
-                    </div>
-                    <div className="col-sm-6">
-                        <TaskStatus options={taskTypeOptions} label={"Types:"} defaultSelect="new" />
-                    </div>
+          </div>
 
-                    <div className="col-sm-6">
-                        <div className="form-group mb-4">
-                            <label className="form-label">Tags:</label>
-                            <MultiSelectTags options={taskLabelsOptions} defaultSelect={[taskLabelsOptions[2]]} />
-                        </div>
-                    </div>
-                    <div className="col-sm-6">
-                        <div className="form-group mb-4">
-                            <label className="form-label">Assignee:</label>
-                            <MultiSelectImg options={taskAssigneeOptions} defaultSelect={[taskAssigneeOptions[1]]} />
-                        </div>
-                    </div>
-                    <TaskDateRange />
-                </div>
-                <hr className="my-5" />
-                <div className="checklist">
-                    <div className="d-flex justify-content-between mb-4">
-                        <div>
-                            <h2 className="fs-16 fw-bold mb-1">Checklist</h2>
-                            <span className="fs-12 text-muted">Issues found checklist</span>
-                        </div>
-                        <a href="#" className="avatar-text avatar-md">
-                            <FiInfo />
-                        </a>
-                    </div>
-                    <CheckList />
-                </div>
-                <hr className="my-5" />
-                {/*! BEGIN: Notes !*/}
-                <div className="notes">
-                    <div className="d-flex justify-content-between mb-4">
-                        <div>
-                            <h2 className="fs-16 fw-bold mb-1">Notes</h2>
-                            <span className="fs-12 text-muted">Task note list</span>
-                        </div>
-                        <a href="#" className="avatar-text avatar-md">
-                            <FiInfo />
-                        </a>
-                    </div>
-                    <div className="editor task-editor ht-250 ">
-                        <JoditEditor
-                            value={value}
-                            config={config}
-                            onChange={(htmlString) => setValue(htmlString)}
-                        />
-                    </div>
-                </div>
-                {/*! END: Notes !*/}
-                <hr className="my-5" />
-                <div className="comments">
-                    <div className="d-flex justify-content-between mb-4">
-                        <div>
-                            <h2 className="fs-16 fw-700 mb-1">Comments</h2>
-                            <small className="text-muted">Responses for this tasks</small>
-                        </div>
-                        <a href="#" className="avatar-text avatar-md">
-                            <FiInfo />
-                        </a>
-                    </div>
-                    <Comments />
-                    <div className="pt-4">
-                        <label className="mb-1">Add Comment</label>
-                        <textarea
-                            rows={5}
-                            className="form-control"
-                            placeholder="Your comment...."
-                            defaultValue={""}
-                        />
-                        <a
-                            href="#"
-                            className="btn btn-primary d-inline-block mt-4"
-                        >
-                            Add Comment
-                        </a>
-                    </div>
-                </div>
-            </div>
+          {/* FOOTER */}
+          <div className="modal-footer bg-light border-0">
+            <button className="btn btn-secondary px-4" onClick={onClose}>
+              Kapat
+            </button>
+          </div>
         </div>
-
-    )
+      </div>
+    </div>
+  )
 }
 
 export default TasksDetails
-
