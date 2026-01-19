@@ -28,12 +28,20 @@ export const fileType = [
 const ProposalHeadr = () => {
     return (
         <>
-            <div className="d-flex align-items-center gap-2 page-header-right-items-wrapper">
-                <Link href="/proposal/create" className="btn btn-primary">
-                    <FiPlus size={16} className='me-2' />
-                    <span>Yeni Teklifler</span>
-                </Link>
-            </div>
+           <div className="d-flex align-items-center gap-2 page-header-right-items-wrapper">
+  <Link
+    href="/proposal/create"
+    className="btn text-white"
+    style={{
+      backgroundColor: '#E92B63',
+      borderColor: '#E92B63'
+    }}
+  >
+    <FiPlus size={16} className="me-2" />
+    <span>Yeni Teklifler</span>
+  </Link>
+</div>
+
         </>
     )
 }

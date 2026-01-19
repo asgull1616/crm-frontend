@@ -14,12 +14,20 @@ const TablePagination = ({table}) => {
                             disabled={!table.getCanPreviousPage()}
                         >
                             <a href="#" className="page-link">Geri</a></li>
-                        <li className="paginate_button page-item active">
-                            <a href="#" aria-controls="proposalList" data-dt-idx="0" tabIndex="0" className="page-link">
-                                {table.getState().pagination.pageIndex + 1}
-                                {/* {table.getPageCount().toLocaleString()} */}
-                            </a>
-                        </li>
+                       <li className="paginate_button page-item active">
+  <a
+    href="#"
+    className="page-link"
+    style={{
+      backgroundColor: "#E92B63",
+      borderColor: "#E92B63",
+      color: "#fff",
+    }}
+  >
+    {table.getState().pagination.pageIndex + 1}
+  </a>
+</li>
+
                         <li className={`paginate_button page-item next ${!table.getCanNextPage() ? "disabled" : ""}`}
                             onClick={() => table.nextPage()}
                             disabled={!table.getCanNextPage()}

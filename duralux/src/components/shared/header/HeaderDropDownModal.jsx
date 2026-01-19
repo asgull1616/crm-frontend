@@ -42,12 +42,14 @@ const HeaderDropDownModal = () => {
     <div className="dropdown nxl-h-item nxl-lavel-menu">
       <Link
         href="#"
-        className="avatar-text avatar-md bg-primary text-white"
+        className="avatar-text avatar-md text-white"
+        style={{ backgroundColor: '#E92B63' }}
         data-bs-toggle="dropdown"
         data-bs-auto-close="outside"
       >
         <FiPlus size={12} />
       </Link>
+
       <div className="dropdown-menu nxl-h-dropdown">
         {menuData.map((menu, index) => (
           <Fragment key={index}>

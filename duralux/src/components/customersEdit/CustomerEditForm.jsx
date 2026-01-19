@@ -114,10 +114,18 @@ const CustomerEditForm = ({ customerId }) => {
           </div>
 
           <div className="col-12 text-end mt-3">
-            <button className="btn btn-primary" onClick={submit}>
-              Kaydet
-            </button>
-          </div>
+  <button
+    className="btn text-white"
+    style={{
+      backgroundColor: "#E92B63",
+      borderColor: "#E92B63",
+    }}
+    onClick={submit}
+  >
+    Kaydet
+  </button>
+</div>
+
         </div>
       </div>
     </div>

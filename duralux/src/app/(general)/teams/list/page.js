@@ -17,7 +17,7 @@ const page = () => {
         </div>
       </div>
 
-      <Footer />
+      {/* <Footer /> */}
     </>
   );
 };

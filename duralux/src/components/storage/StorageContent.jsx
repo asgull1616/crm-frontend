@@ -138,7 +138,7 @@ const StorageContent = () => {
                             <ProjectFilteTable />
                         </div>
                     </div>
-                    <Footer />
+                    {/* <Footer /> */}
                 </PerfectScrollbar>
             </div>
         </>

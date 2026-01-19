@@ -25,7 +25,7 @@ const page = () => {
           <LeadsStatus title={"Contact Leads"} progressFullHeight={true} />
         </div>
       </div>
-      <Footer />
+      {/* <Footer /> */}
     </>
   )
 }

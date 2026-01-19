@@ -269,13 +269,20 @@ export default function TaskEditContent({ taskId }) {
               İptal
             </button>
 
-            <button
-              className="btn btn-primary"
-              onClick={onSubmit}
-              disabled={!canSave}
-            >
-              {saving ? "Kaydediliyor..." : "Kaydet"}
-            </button>
+           <button
+  className="btn text-white"
+  onClick={onSubmit}
+  disabled={!canSave}
+  style={{
+    backgroundColor: "#E92B63",
+    borderColor: "#E92B63",
+    opacity: !canSave ? 0.6 : 1,
+    cursor: !canSave ? "not-allowed" : "pointer",
+  }}
+>
+  {saving ? "Kaydediliyor..." : "Kaydet"}
+</button>
+
           </div>
         </div>
       </div>

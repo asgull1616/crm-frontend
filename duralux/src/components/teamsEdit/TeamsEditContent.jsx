@@ -151,13 +151,20 @@ const TeamsEditContent = ({ teamId }) => {
               </div>
             ))}
 
-            <button
-              className="btn btn-primary mt-3"
-              disabled={selectedUserIds.length === 0}
-              onClick={handleAddMembers}
-            >
-              Üye Ekle
-            </button>
+           <button
+  className="btn mt-3 text-white"
+  disabled={selectedUserIds.length === 0}
+  onClick={handleAddMembers}
+  style={{
+    backgroundColor: "#E92B63",
+    borderColor: "#E92B63",
+    opacity: selectedUserIds.length === 0 ? 0.6 : 1,
+    cursor: selectedUserIds.length === 0 ? "not-allowed" : "pointer",
+  }}
+>
+  Üye Ekle
+</button>
+
 
           </div>
         </div>

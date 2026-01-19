@@ -226,13 +226,19 @@ export default function ProposalEditContent({ id, onReady }) {
 
             {/* Sayfa içi butonlar dursun, header ile aynı işi yapar */}
             <div className="d-flex gap-2">
-              <button
-                className="btn btn-primary"
-                onClick={() => handleSave(false)}
-                disabled={saving}
-              >
-                {saving ? "Kaydediliyor..." : "Kaydet"}
-              </button>
+            <button
+  className="btn text-white"
+  onClick={() => handleSave(false)}
+  disabled={saving}
+  style={{
+    backgroundColor: "#E92B63",
+    borderColor: "#E92B63",
+    opacity: saving ? 0.7 : 1,
+  }}
+>
+  {saving ? "Kaydediliyor..." : "Kaydet"}
+</button>
+
               <button
                 className="btn btn-light-brand"
                 onClick={() => handleSave(true)}

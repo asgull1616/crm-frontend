@@ -11,10 +11,18 @@ const CustomersViewHeader = () => {
     return (
         <div className="d-flex align-items-center gap-2 page-header-right-items-wrapper">
          
-            <Link href="/customers/create" className="btn btn-primary">
-                <FiPlus size={16} className='me-2' />
-                <span>Müşteri Oluştur</span>
-            </Link>
+            <Link
+  href="/customers/create"
+  className="btn text-white"
+  style={{
+    backgroundColor: "#E92B63",
+    borderColor: "#E92B63",
+  }}
+>
+  <FiPlus size={16} className="me-2" />
+  <span>Müşteri Oluştur</span>
+</Link>
+
         </div>
     )
 }

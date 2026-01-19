@@ -77,12 +77,19 @@ const ActivityCreateForm = ({ customerId, onCreated }) => {
 
           <div className="col-12 text-end">
             <button
-              className="btn btn-sm btn-primary"
-              disabled={loading}
-              onClick={submit}
-            >
-              {loading ? 'Ekleniyor...' : 'Aktivite Ekle'}
-            </button>
+  className="btn btn-sm text-white"
+  disabled={loading}
+  onClick={submit}
+  style={{
+    backgroundColor: "#E92B63",
+    borderColor: "#E92B63",
+    opacity: loading ? 0.6 : 1,
+    cursor: loading ? "not-allowed" : "pointer",
+  }}
+>
+  {loading ? "Ekleniyor..." : "Aktivite Ekle"}
+</button>
+
           </div>
         </div>
       </div>

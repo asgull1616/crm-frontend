@@ -89,13 +89,21 @@ const TeamsCreateContent = () => {
             ))}
           </div>
 
-          <button
-            className="btn btn-primary"
-            onClick={handleSubmit}
-            disabled={!name || selectedUserIds.length === 0}
-          >
-            Ekip Oluştur
-          </button>
+         <button
+  className="btn text-white"
+  onClick={handleSubmit}
+  disabled={!name || selectedUserIds.length === 0}
+  style={{
+    backgroundColor: "#E92B63",
+    borderColor: "#E92B63",
+    opacity: !name || selectedUserIds.length === 0 ? 0.6 : 1,
+    cursor:
+      !name || selectedUserIds.length === 0 ? "not-allowed" : "pointer",
+  }}
+>
+  Ekip Oluştur
+</button>
+
         </div>
       </div>
     </div>

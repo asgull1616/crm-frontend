@@ -11,7 +11,7 @@ const page = () => {
   return (
     <>
       <PageHeader>
-        <ProposalEditHeader />
+        {/* <ProposalEditHeader /> */}
       </PageHeader>
       <div className="main-content">
         <div className="row">

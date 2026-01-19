@@ -6,7 +6,7 @@ import { FiLayers, FiSave } from "react-icons/fi";
 export default function ProposalEditHeader({ onSave, onSaveAndSend, loading }) {
   return (
     <div className="d-flex align-items-center gap-2 page-header-right-items-wrapper">
-      <button
+      {/* <button
         className="btn btn-light-brand"
         type="button"
         onClick={onSaveAndSend}
@@ -24,7 +24,7 @@ export default function ProposalEditHeader({ onSave, onSaveAndSend, loading }) {
       >
         <FiSave size={16} className="me-2" />
         <span>{loading ? "İşleniyor..." : "Kaydet"}</span>
-      </button>
+      </button> */}
     </div>
   );
 }

@@ -40,7 +40,7 @@ const page = () => {
                     <EstimateMiscellaneous />
                 </div>
             </div>
-            <Footer />
+            {/* <Footer /> */}
         </>
     )
 }

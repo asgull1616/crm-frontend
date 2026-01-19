@@ -183,13 +183,19 @@ const TaskCreateContent = () => {
           </div>
 
           <div className="mt-4 text-end">
-            <button
-              className="btn btn-primary"
-              onClick={onSubmit}
-              disabled={saving}
-            >
-              {saving ? "Kaydediliyor..." : "Kaydet"}
-            </button>
+          <button
+  className="btn text-white"
+  style={{
+    backgroundColor: "#E92B63",
+    borderColor: "#E92B63",
+    opacity: saving ? 0.7 : 1,
+  }}
+  onClick={onSubmit}
+  disabled={saving}
+>
+  {saving ? "Kaydediliyor..." : "Kaydet"}
+</button>
+
           </div>
         </div>
       </div>

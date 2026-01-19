@@ -23,7 +23,7 @@ const page = () => {
                     <ProjectTracker />
                 </div>
             </div>
-            <Footer />
+            {/* <Footer /> */}
         </>
     )
 }
