@@ -8,21 +8,6 @@ const ProposalSent = dynamic(
   { ssr: false },
 );
 const page = () => {
-<<<<<<< HEAD
-    return (
-        <>
-            <PageHeader>
-            </PageHeader>
-            <div className='main-content'>
-                <div className='row'>
-                    <ProposalCreateContent />
-                </div>
-            </div>
-            <ProposalSent />
-        </>
-    )
-}
-=======
   return (
     <>
       <PageHeader>
@@ -37,6 +22,5 @@ const page = () => {
     </>
   );
 };
->>>>>>> origin/main
 
 export default page;
