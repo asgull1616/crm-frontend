@@ -1,33 +1,18 @@
 'use client'
 import React, { useState, useEffect } from 'react'
 import { usePathname } from 'next/navigation'
-import { FiEdit, FiHash, FiCalendar, FiDollarSign, FiType } from 'react-icons/fi'
+import { FiSave, FiType, FiDollarSign, FiFileText } from 'react-icons/fi'
 import JoditEditor from 'jodit-react'
 import useJoditConfig from '@/hooks/useJoditConfig'
 import { proposalService } from '@/lib/services/proposal.service'
-
-/* 🔹 Tablo ile Birebir Aynı Durum Eşleştirici */
-const mapStatus = (status) => {
-    switch (status) {
-        case 'DRAFT':
-            return { content: 'Taslak', color: 'bg-warning' }
-        case 'SENT':
-            // Tablodaki "Gönderildi" yazısı ve yeşil/mavi arası renk (bg-info genelde bu tonu verir)
-            return { content: 'Gönderildi', color: 'bg-info' } 
-        case 'APPROVED':
-            return { content: 'Onaylandı', color: 'bg-success' }
-        case 'REJECTED':
-            return { content: 'Reddedildi', color: 'bg-danger' }
-        default:
-            return { content: status, color: 'bg-secondary' }
-    }
-}
+import Loading from '@/components/shared/Loading'
 
 const ProposalTabContent = () => {
     const pathname = usePathname()
     const [value, setValue] = useState('')
     const [proposal, setProposal] = useState(null)
     const [loading, setLoading] = useState(true)
+    const [saving, setSaving] = useState(false)
     const config = useJoditConfig()
 
     const getProposalIdFromPath = () => {
@@ -37,16 +22,12 @@ const ProposalTabContent = () => {
 
     const fetchProposal = async () => {
         const proposalId = getProposalIdFromPath()
-        if (!proposalId || proposalId === 'view') {
-            setLoading(false)
-            return
-        }
-
         try {
             setLoading(true)
             const res = await proposalService.getById(proposalId)
             if (res?.data) {
                 setProposal(res.data)
+                // Ahmetburak yazan veya mevcut içerik buraya yüklenecek
                 setValue(res.data.content || "")
             }
         } catch (error) {
@@ -56,87 +37,85 @@ const ProposalTabContent = () => {
         }
     }
 
+    const handleUpdateContent = async () => {
+        const proposalId = getProposalIdFromPath()
+        try {
+            setSaving(true)
+            // Editördeki yeni değeri servise gönderiyoruz
+            await proposalService.update(proposalId, { content: value })
+            alert("Tanım başarıyla güncellendi.")
+            fetchProposal()
+        } catch (error) {
+            alert("Güncelleme sırasında hata oluştu.")
+        } finally {
+            setSaving(false)
+        }
+    }
+
     useEffect(() => {
         if (pathname) fetchProposal()
     }, [pathname])
 
-    if (loading) return <div className="p-5 text-center"><div className="spinner-border text-primary"></div></div>
-    if (!proposal) return <div className="alert alert-warning m-4">Veri bulunamadı.</div>
-
-    // 🔹 Mevcut durumu tabloda kullandığın mantıkla eşleştiriyoruz
-    const statusInfo = mapStatus(proposal.status)
+    if (loading) return <Loading />
+    if (!proposal) return <div className="p-4">Teklif verisi yüklenemedi.</div>
 
     return (
-        <div className="tab-pane fade active show" id="proposalTab">
+        <div className="container-fluid p-0">
             <div className="row">
-                <div className="col-lg-12">
-                    <div className="card stretch stretch-full">
+                {/* ÜST ÖZET KART */}
+                <div className="col-lg-12 mb-4">
+                    <div className="card stretch stretch-full shadow-sm">
                         <div className="card-body">
                             <div className="row g-4 align-items-center">
-                                
-                                {/* Teklif Başlığı */}
                                 <div className="col-md-4 border-end-md">
                                     <div className="d-flex align-items-center gap-3">
-                                        <div className="avatar-text bg-soft-primary text-primary rounded">
-                                            <FiType size={20} />
-                                        </div>
+                                        <div className="avatar-text bg-soft-primary text-primary rounded"><FiType size={20} /></div>
                                         <div>
                                             <span className="fs-11 text-muted d-block text-uppercase fw-extrabold">Teklif Başlığı</span>
-                                            <span className="fs-14 fw-bold text-dark d-block text-truncate">{proposal.title}</span>
+                                            <span className="fs-14 fw-bold text-dark">{proposal.title}</span>
                                         </div>
                                     </div>
                                 </div>
-
-                                {/* Tutar */}
-                                <div className="col-md-3 border-end-md">
+                                <div className="col-md-4">
                                     <div className="d-flex align-items-center gap-3">
-                                        <div className="avatar-text bg-soft-success text-success rounded">
-                                            <FiDollarSign size={20} />
-                                        </div>
+                                        <div className="avatar-text bg-soft-success text-success rounded"><FiDollarSign size={20} /></div>
                                         <div>
                                             <span className="fs-11 text-muted d-block text-uppercase fw-extrabold">Tutar</span>
-                                            <span className="fs-14 fw-bold text-dark">
-                                                {proposal.totalAmount} {proposal.currency}
-                                            </span>
+                                            <span className="fs-14 fw-bold text-dark">{proposal.totalAmount} {proposal.currency || 'TRY'}</span>
                                         </div>
                                     </div>
-                                </div>
-
-                                {/* Tarih */}
-                                <div className="col-md-3 border-end-md">
-                                    <div className="d-flex align-items-center gap-3">
-                                        <div className="avatar-text bg-soft-warning text-warning rounded">
-                                            <FiCalendar size={20} />
-                                        </div>
-                                        <div>
-                                            <span className="fs-11 text-muted d-block text-uppercase fw-extrabold">Oluşturulma</span>
-                                            <span className="fs-14 fw-bold text-dark">
-                                                {new Date(proposal.createdAt).toLocaleDateString('tr-TR')}
-                                            </span>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                {/* 🔹 Tablodakiyle Aynı Durum Badge'i */}
-                                <div className="col-md-2 text-md-end">
-                                    <span className="fs-11 text-muted d-block text-uppercase fw-extrabold mb-1">Durum</span>
-                                    <span className={`badge ${statusInfo.color} text-white`}>
-                                        {statusInfo.content}
-                                    </span>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
 
+                {/* ANA DÜZENLEME ALANI */}
                 <div className="col-lg-12">
-                    <div className="card stretch stretch-full">
-                        <div className="card-header d-flex justify-content-between align-items-center">
-                            <h5 className="card-title mb-0">Teklif Detayı</h5>
-                            <button className="btn btn-sm btn-light-brand">Kaydet</button>
+                    <div className="card stretch stretch-full shadow-sm">
+                        <div className="card-header d-flex justify-content-between align-items-center bg-white border-bottom py-3">
+                            <div className="d-flex align-items-center gap-2">
+                                <FiFileText className="text-primary" />
+                                <h5 className="card-title mb-0 fw-bold">Teklif Tanımını Düzenle</h5>
+                            </div>
+                            
+                            <button 
+                                type="button" 
+                                className="btn btn-primary d-flex align-items-center gap-2"
+                                onClick={handleUpdateContent}
+                                disabled={saving}
+                            >
+                                <FiSave size={16} /> 
+                                {saving ? 'Güncelleniyor...' : 'GÜNCELLE'}
+                            </button>
                         </div>
                         <div className="card-body p-0">
-                            <JoditEditor value={value} config={config} onBlur={c => setValue(c)} />
+                            {/* Artık bekleme veya sekme değiştirme yok, editör direkt aktif */}
+                            <JoditEditor 
+                                value={value} 
+                                config={config} 
+                                onBlur={c => setValue(c)} 
+                            />
                         </div>
                     </div>
                 </div>

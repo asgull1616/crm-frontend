@@ -1,248 +1,179 @@
 'use client'
-import React, { useEffect, useState } from 'react'
-import DatePicker from "react-datepicker";
-import SelectDropdown from '@/components/shared/SelectDropdown'
-import MultiSelectImg from '@/components/shared/MultiSelectImg'
-import MultiSelectTags from '@/components/shared/MultiSelectTags'
+
+import React, { useState, useEffect } from 'react'
+import { useRouter } from 'next/navigation'
+import DatePicker from 'react-datepicker'
+import useDatePicker from '@/hooks/useDatePicker'
 import Loading from '@/components/shared/Loading'
-import AddProposal from './AddProposal'
-import { currencyOptionsData } from '@/utils/fackData/currencyOptionsData'
-import useDatePicker from '@/hooks/useDatePicker';
-import { addDays } from 'date-fns';
-import { timezonesData } from '@/utils/fackData/timeZonesData';
-import { propasalLeadOptions, propsalDiscountOptions, propsalRelatedOptions, propsalStatusOptions, propsalVisibilityOptions, taskAssigneeOptions, taskLabelsOptions } from '@/utils/options';
-import useLocationData from '@/hooks/useLocationData';
+import SelectDropdown from '@/components/shared/SelectDropdown'
+import { proposalService } from '@/lib/services/proposal.service'
+import { customerService } from '@/lib/services/customer.service'
+import { propsalStatusOptions } from '@/utils/options'
 
-const previtems = [
-    {
-        id: 1,
-        product: "Website design and development",
-        qty: 1,
-        price: 250
-    },
-    {
-        id: 2,
-        product: "Search engine optimization (SEO) optimization",
-        qty: 2,
-        price: 300
-    },
-]
-
-const ProposalEditContent = () => {
-    const [selectedOption, setSelectedOption] = useState(null); 
-    const { startDate, endDate, setStartDate, setEndDate, renderFooter } = useDatePicker();
-    const { countries, states, cities, loading, error, fetchStates, fetchCities,} = useLocationData();
-
+const ProposalEditContent = ({ proposalId }) => {
+    const router = useRouter()
+    const [loading, setLoading] = useState(true)
+    const [customers, setCustomers] = useState([]) 
+    
+    const [title, setTitle] = useState('')
+    const [customerId, setCustomerId] = useState('')
+    const [totalAmount, setTotalAmount] = useState('')
+    const [content, setContent] = useState('') // 🔹 State eklendi
+    const [status, setStatus] = useState('DRAFT')
+    const { startDate, setStartDate, renderFooter } = useDatePicker()
 
     useEffect(() => {
-        setStartDate(new Date())
-        setEndDate(addDays(new Date(), 2))
-    }, []);
+        const loadInitialData = async () => {
+            try {
+                setLoading(true)
+                const custRes = await customerService.list()
+                const custList = custRes?.data?.items || custRes?.data?.data || custRes?.data || []
+                setCustomers(Array.isArray(custList) ? custList : [])
 
+                if (proposalId) {
+                    const propRes = await proposalService.getById(proposalId)
+                    const data = propRes?.data
+                    if (data) {
+                        console.log("📥 [Yüklenen Teklif Verisi]:", data);
+                        setTitle(data.title || '')
+                        setCustomerId(data.customerId || '')
+                        setTotalAmount(data.totalAmount !== null ? data.totalAmount.toString() : '')
+                        setContent(data.content || '') // 🔹 Veritabanındaki notu yüklüyoruz
+                        setStatus(data.status || 'DRAFT')
+                        if (data.validUntil) {
+                            setStartDate(new Date(data.validUntil))
+                        }
+                    }
+                }
+            } catch (error) {
+                console.error("❌ Veri yükleme hatası:", error)
+            } finally {
+                setLoading(false)
+            }
+        }
+        loadInitialData()
+    }, [proposalId, setStartDate])
+
+    const handleUpdateProposal = async () => {
+        if (!title || !customerId || !startDate) {
+            alert("Lütfen zorunlu alanları doldurun.");
+            return;
+        }
+
+        console.log("🔘 [Güncelleme Butonuna Basıldı]");
+        setLoading(true);
+        try {
+            const payload = {
+                title: title.trim(),
+                customerId: customerId, 
+                validUntil: startDate.toISOString(),
+                status: (status || 'DRAFT').toUpperCase(),
+                totalAmount: totalAmount ? parseFloat(totalAmount) : null,
+                content: content.trim() // 🔹 Güncellenmiş notu gönderiyoruz
+            };
+
+            console.log("📤 [Gönderilen Güncelleme Payload]:", payload);
+            await proposalService.update(proposalId, payload);
+            router.push('/proposal/list'); 
+        } catch (e) {
+            console.error("❌ [Güncelleme Hatası]:", e.response?.data);
+            alert("Hata: " + (e.response?.data?.message || "Güncellenemedi"));
+        } finally {
+            setLoading(false);
+        }
+    }; 
+
+    if (loading) return <Loading />
 
     return (
-        <>
-            {loading ? <Loading /> : ""}
+        <div className="row justify-content-center py-4 text-start">
+            <div className="col-xl-6 col-lg-8 col-md-10">
+                <div className="card stretch stretch-full shadow-sm">
+                    <div className="card-body p-4 text-start">
 
-            <div className="col-xl-6">
-                <div className="card stretch stretch-full">
-                    <div className="card-body">
                         <div className="mb-4">
-                            <label className="form-label">Subject <span className="text-danger">*</span></label>
-                            <input type="text" className="form-control" placeholder="Subject" defaultValue="Website design and development proposal" />
-                        </div>
-                        <div className="mb-4">
-                            <label className="form-label">Related <span className="text-danger">*</span></label>
-                            <SelectDropdown
-                                options={propsalRelatedOptions}
-                                selectedOption={selectedOption}
-                                defaultSelect="lead"
-                                onSelectOption={(option) => setSelectedOption(option)}
+                            <label className="form-label fw-semibold">Teklif Başlığı <span className="text-danger">*</span></label>
+                            <input 
+                                type="text" 
+                                className="form-control" 
+                                value={title} 
+                                onChange={(e) => setTitle(e.target.value)} 
                             />
                         </div>
+
+                        <div className="mb-4 text-start">
+                            <label className="form-label fw-semibold">Müşteri <span className="text-danger">*</span></label>
+                            <select 
+                                className="form-control" 
+                                value={customerId} 
+                                onChange={(e) => setCustomerId(e.target.value)}
+                            >
+                                <option value="">Müşteri Seçiniz</option>
+                                {customers.map((c) => (
+                                    <option key={c.id} value={c.id}>{c.fullName}</option>
+                                ))}
+                            </select>
+                        </div>
+
                         <div className="mb-4">
-                            <label className="form-label">Lead <span className="text-danger">*</span></label>
-                            <SelectDropdown
-                                options={propasalLeadOptions}
-                                selectedOption={selectedOption}
-                                defaultSelect="ui"
-                                onSelectOption={(option) => setSelectedOption(option)}
+                            <label className="form-label fw-semibold">Miktar</label>
+                            <input 
+                                type="number" 
+                                className="form-control no-spinner" 
+                                value={totalAmount} 
+                                onChange={(e) => setTotalAmount(e.target.value)} 
                             />
                         </div>
+
+                        {/* 🔹 Tanım / Not Giriş Alanı */}
                         <div className="mb-4">
-                            <label className="form-label">Discount </label>
-                            <SelectDropdown
-                                options={propsalDiscountOptions}
-                                selectedOption={selectedOption}
-                                defaultSelect="no-discount"
-                                onSelectOption={(option) => setSelectedOption(option)}
-                            />
+                            <label className="form-label fw-semibold">Teklif Tanımı / Not</label>
+                            <textarea 
+                                className="form-control" 
+                                rows="4" 
+                                value={content}
+                                onChange={(e) => setContent(e.target.value)}
+                            ></textarea>
                         </div>
-                        <div className="mb-4">
-                            <label className="form-label">Visibility:</label>
-                            <SelectDropdown
-                                options={propsalVisibilityOptions}
-                                selectedOption={selectedOption}
-                                defaultSelect="private"
-                                onSelectOption={(option) => setSelectedOption(option)}
-                            />
-                        </div>
-                        <div className="row">
+
+                        <div className="row text-start">
                             <div className="col-lg-6 mb-4">
-                                <label className="form-label">Start <span className="text-danger">*</span></label>
-                                <div className='input-group date '>
-                                    <DatePicker
-                                        placeholderText='Pick start date'
-                                        selected={startDate}
-                                        showPopperArrow={false}
-                                        onChange={(date) => setStartDate(date)}
-                                        className='form-control'
-                                        popperPlacement="bottom-start"
+                                <label className="form-label fw-semibold">Geçerlilik Tarihi <span className="text-danger">*</span></label>
+                                <div className="input-group date">
+                                    <DatePicker 
+                                        selected={startDate} 
+                                        onChange={(date) => setStartDate(date)} 
+                                        className="form-control" 
                                         calendarContainer={({ children }) => (
-                                            <div className='bg-white react-datepicker'>
-                                                {children}
-                                                {renderFooter("start")}
+                                            <div className="bg-white react-datepicker">
+                                                {children}{renderFooter('start')}
                                             </div>
-                                        )}
+                                        )} 
                                     />
                                 </div>
                             </div>
+
                             <div className="col-lg-6 mb-4">
-                                <label className="form-label">Due <span className="text-danger">*</span></label>
-                                <div className='input-group date '>
-                                    <DatePicker
-                                        placeholderText='Pick due date'
-                                        selected={endDate}
-                                        showPopperArrow={false}
-                                        onChange={(date) => setEndDate(date)}
-                                        className='form-control'
-                                        popperPlacement="bottom-start"
-                                        calendarContainer={({ children }) => (
-                                            <div className='bg-white react-datepicker'>
-                                                {children}
-                                                {renderFooter("end")}
-                                            </div>
-                                        )}
-                                    />
-                                </div>
-                            </div>
-                        </div>
-                        <div className="mb-4">
-                            <label className="form-label">Tags:</label>
-                            <MultiSelectTags options={taskLabelsOptions} defaultSelect={[taskLabelsOptions[2], taskLabelsOptions[3], taskLabelsOptions[4]]} />
-                        </div>
-                        <div className="mb-0">
-                            <label className="form-label">Assignee:</label>
-                            <MultiSelectImg options={taskAssigneeOptions} defaultSelect={[taskAssigneeOptions[0]]} />
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div className="col-xl-6">
-                <div className="card stretch stretch-full">
-                    <div className="card-body">
-                        <div className="mb-4">
-                            <label className="form-label">To <span className="text-danger">*</span></label>
-                            <MultiSelectImg options={taskAssigneeOptions} defaultSelect={[taskAssigneeOptions[0]]} />
-                        </div>
-                        <div>
-                            <label className="form-label">Address <span className="text-danger">*</span></label>
-                            <div className="row">
-                                <div className="col-lg-6 mb-4">
-                                    <input type="text" className="form-control mb-2" placeholder="Address Line 1" defaultValue="P.O. Box 18728" />
-                                </div>
-                                <div className="col-lg-6 mb-4">
-                                    <input type="text" className="form-control" placeholder="Address Line 2" defaultValue="DeLorean New York" />
-                                </div>
-                            </div>
-                        </div>
-                        <div className="row">
-                            <div className="col-lg-6 mb-4">
-                                <label className="form-label">Email <span className="text-danger">*</span></label>
-                                <input type="text" className="form-control" placeholder="Emial" defaultValue="green.cutte@outlook.com" />
-                            </div>
-                            <div className="col-lg-6 mb-4">
-                                <label className="form-label">Phone <span className="text-danger">*</span></label>
-                                <input type="text" className="form-control" placeholder="Phone" defaultValue="+1 (375) 9632 458" />
-                            </div>
-                        </div>
-                        <div className="row">
-                            <div className="col-lg-6 mb-4">
-                                <label className="form-label">Country <span className="text-danger">*</span></label>
-                                <SelectDropdown
-                                    options={countries}
-                                    selectedOption={selectedOption}
-                                    defaultSelect="usa"
+                                <label className="form-label fw-semibold">Durum</label>
+                                <SelectDropdown 
+                                    options={propsalStatusOptions} 
+                                    defaultSelect={status} 
                                     onSelectOption={(option) => {
-                                        fetchStates(option.label);
-                                        fetchCities(option.label);
-                                        setSelectedOption(option)
-                                    }}
-                                />
-                            </div>
-                            <div className="col-lg-6 mb-4">
-                                <label className="form-label">State</label>
-                                <SelectDropdown
-                                    options={states}
-                                    selectedOption={selectedOption}
-                                    defaultSelect={"new-york"}
-                                    onSelectOption={(option) => setSelectedOption(option)}
+                                        setStatus(option?.value?.toUpperCase() ?? 'DRAFT')
+                                    }} 
                                 />
                             </div>
                         </div>
-                        <div className="row">
-                            <div className="col-lg-6 mb-4">
-                                <label className="form-label">City </label>
-                                <SelectDropdown
-                                    options={cities}
-                                    selectedOption={selectedOption}
-                                    defaultSelect="new-york"
-                                    onSelectOption={(option) => setSelectedOption(option)}
-                                />
-                            </div>
-                            <div className="col-lg-6 mb-4">
-                                <label className="form-label">Timezone </label>
-                                <SelectDropdown
-                                    options={timezonesData}
-                                    selectedOption={selectedOption}
-                                    defaultSelect="Western Europe Time"
-                                    onSelectOption={(option) => setSelectedOption(option)}
-                                />
-                            </div>
+
+                        <div className="mt-4 d-flex justify-content-end gap-2 border-top pt-4">
+                            <button type="button" className="btn btn-outline-secondary px-4" onClick={() => router.push('/proposal/list')}>İPTAL</button>
+                            <button type="button" className="btn btn-primary px-4" onClick={handleUpdateProposal}>DEĞİŞİKLİKLERİ KAYDET</button>
                         </div>
-                        <hr className="my-5" />
-                        <div className="row">
-                            <div className="col-lg-6 mb-4">
-                                <label className="form-label">Currency</label>
-                                <SelectDropdown
-                                    options={currencyOptionsData}
-                                    selectedOption={selectedOption}
-                                    defaultSelect="usd"
-                                    onSelectOption={(option) => setSelectedOption(option)}
-                                />
-                            </div>
-                            <div className="col-lg-6 mb-4">
-                                <label className="form-label">Status </label>
-                                <SelectDropdown
-                                    options={propsalStatusOptions}
-                                    selectedOption={selectedOption}
-                                    defaultSelect="open"
-                                    onSelectOption={(option) => setSelectedOption(option)}
-                                />
-                            </div>
-                        </div>
-                        <hr className="my-5" />
-                        <div className="row mb-4">
-                            <div className="form-check form-switch form-switch-sm ps-5">
-                                <input className="form-check-input c-pointer" type="checkbox" id="commentSwitch" defaultChecked />
-                                <label className="form-check-label fw-500 text-dark c-pointer" htmlFor="commentSwitch">Allow Comments</label>
-                            </div>
-                        </div>
+
                     </div>
                 </div>
             </div>
-            <AddProposal previtems={previtems} />
-        </>
+        </div>
     )
 }
 

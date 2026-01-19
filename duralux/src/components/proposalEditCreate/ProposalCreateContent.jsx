@@ -1,93 +1,66 @@
 'use client'
 
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import SelectDropdown from '@/components/shared/SelectDropdown'
 import DatePicker from 'react-datepicker'
 import useDatePicker from '@/hooks/useDatePicker'
 import Loading from '@/components/shared/Loading'
-import AddProposal from './AddProposal'
 import { proposalService } from '@/lib/services/proposal.service'
-import {
-    propsalRelatedOptions,
-    propsalDiscountOptions,
-    propsalStatusOptions,
-} from '@/utils/options'
-import { useEffect } from 'react'
 import { customerService } from '@/lib/services/customer.service'
-
-
-const previtems = [
-    {
-        id: 1,
-        product: '',
-        qty: 0,
-        price: 0,
-    },
-]
+import { propsalStatusOptions } from '@/utils/options'
 
 const ProposalCreateContent = () => {
     const [customers, setCustomers] = useState([])
     const [totalAmount, setTotalAmount] = useState('')
-
-    useEffect(() => {
-  customerService.list().then((res) => {
-    const list =
-      res?.data?.items ||
-      res?.data?.data ||
-      res?.data ||
-      []
-
-    setCustomers(list)
-  })
-}, [])
-
+    const [title, setTitle] = useState('')
+    const [customerId, setCustomerId] = useState(null)
+    const [content, setContent] = useState('') // 🔹 Mevcut yapıya uygun state
+    const [status, setStatus] = useState('DRAFT')
+    const [loading, setLoading] = useState(false)
     const router = useRouter()
     const { startDate, setStartDate, renderFooter } = useDatePicker()
 
-    const [loading, setLoading] = useState(false)
-
-    // ✅ BACKEND'E GİDEN TEK ALANLAR
-    const [title, setTitle] = useState('')
-    const [customerId, setCustomerId] = useState(null)
-    const [status, setStatus] = useState('DRAFT')
+    useEffect(() => {
+        customerService.list().then((res) => {
+            const list = res?.data?.items || res?.data?.data || res?.data || []
+            setCustomers(list)
+        })
+    }, [])
 
     const handleCreateProposal = async (send = false) => {
-  if (!title || !customerId || !startDate) return
-
-  setLoading(true)
-  try {
-    await proposalService.create({
-      title,
-      customerId,
-      validUntil: startDate.toISOString(),
-      status: send ? 'SENT' : status.toUpperCase(),
-      totalAmount: totalAmount ? Number(totalAmount) : null,
-    })
-
-    router.push('/proposal/list')
-  } catch (e) {
-    console.error('BACKEND ERROR:', e.response?.data)
-  } finally {
-    setLoading(false)
-  }
-  
-}
-
+        if (!title || !customerId || !startDate) return
+        setLoading(true)
+        try {
+            const payload = {
+                title,
+                customerId,
+                validUntil: startDate.toISOString(),
+                status: send ? 'SENT' : status.toUpperCase(),
+                totalAmount: totalAmount ? totalAmount.toString() : null,
+                content: content.trim() // 🔹 Backend'e gönderilen alan
+            };
+            
+            console.log("📤 [Create Proposal Payload]:", payload);
+            await proposalService.create(payload);
+            router.push('/proposal/list');
+        } catch (e) {
+            console.error('BACKEND ERROR:', e.response?.data);
+        } finally {
+            setLoading(false)
+        }
+    }
 
     return (
-        <>
-            {loading && <Loading />}
+        <div className="row justify-content-center py-4 text-start">
+            <div className="col-xl-6 col-lg-8 col-md-10"> 
+                {loading && <Loading />}
 
-            <div className="col-xl-6">
-                <div className="card stretch stretch-full">
-                    <div className="card-body">
+                <div className="card stretch stretch-full shadow-sm">
+                    <div className="card-body p-4">
 
-                        {/* 🔹 Teklif Başlığı */}
                         <div className="mb-4">
-                            <label className="form-label">
-                                Teklif Başlığı <span className="text-danger">*</span>
-                            </label>
+                            <label className="form-label fw-semibold">Teklif Başlığı <span className="text-danger">*</span></label>
                             <input
                                 type="text"
                                 className="form-control"
@@ -97,87 +70,62 @@ const ProposalCreateContent = () => {
                             />
                         </div>
 
-                        {/* 🔹 Müşteri */
                         <div className="mb-4">
-                            <label className="form-label">
-                                Müşteri <span className="text-danger">*</span>
-                            </label>
-                            <SelectDropdown
-                                options={propsalRelatedOptions}
-                                defaultSelect="Müşteri Seçin"
-                                onSelectOption={(option) => {
-                                    setCustomerId(option?.value ?? null)
-                                }}
+                            <label className="form-label fw-semibold">Müşteri <span className="text-danger">*</span></label>
+                            <select
+                                className="form-control"
+                                value={customerId || ''}
+                                onChange={(e) => setCustomerId(e.target.value)}
+                            >
+                                <option value="">Seçiniz</option>
+                                {customers.map((c) => (
+                                    <option key={c.id} value={c.id}>{c.fullName}</option>
+                                ))}
+                            </select>
+                        </div>
+
+                        <div className="mb-4">
+                            <label className="form-label fw-semibold">Miktar</label>
+                            <input
+                                type="number"
+                                className="form-control no-spinner"
+                                placeholder="Örn: 1500"
+                                value={totalAmount}
+                                onChange={(e) => setTotalAmount(e.target.value)}
                             />
                         </div>
-                        }
 
+                        {/* 🔹 Tanım / Not Giriş Alanı */}
                         <div className="mb-4">
-  <label className="form-label">
-    Müşteri <span className="text-danger">*</span>
-  </label>
-
-  <select
-    className="form-control"
-    value={customerId || ''}
-    onChange={(e) => setCustomerId(e.target.value)}
-  >
-    <option value="">Seçiniz</option>
-
-    {customers.map((c) => (
-      <option key={c.id} value={c.id}>
-        {c.fullName}
-      </option>
-    ))}
-  </select>
-</div>
-
-
-
-                        {/* 🔹 Miktar (UI only) */}
-                        {/* 🔹 Miktar */}
-            <div className="mb-4">
-                <label className="form-label">Miktar</label>
-                    <input
-                        type="number"
-                        className="form-control no-spinner"
-                        placeholder="Örn: 1500"
-                        step="0.01"
-                        value={totalAmount}
-                        onChange={(e) => setTotalAmount(e.target.value)}
-                    />
-            </div>
-
-
+                            <label className="form-label fw-semibold">Teklif Tanımı / Not</label>
+                            <textarea 
+                                className="form-control" 
+                                rows="4" 
+                                placeholder="Teklif detaylarını buraya yazabilirsiniz..."
+                                value={content}
+                                onChange={(e) => setContent(e.target.value)}
+                            ></textarea>
+                        </div>
 
                         <div className="row">
-
-                            {/* 🔹 Geçerlilik Tarihi */}
                             <div className="col-lg-6 mb-4">
-                                <label className="form-label">
-                                    Geçerlilik Tarihi <span className="text-danger">*</span>
-                                </label>
+                                <label className="form-label fw-semibold">Geçerlilik Tarihi <span className="text-danger">*</span></label>
                                 <div className="input-group date">
                                     <DatePicker
-                                        placeholderText="Geçerlilik Tarihi Seçin"
                                         selected={startDate}
-                                        showPopperArrow={false}
                                         onChange={(date) => setStartDate(date)}
                                         className="form-control"
-                                        popperPlacement="bottom-start"
                                         calendarContainer={({ children }) => (
                                             <div className="bg-white react-datepicker">
-                                                {children}
-                                                {renderFooter('start')}
+                                                {children}{renderFooter('start')}
                                             </div>
                                         )}
                                     />
                                 </div>
                             </div>
 
-                            {/* 🔹 Durum */}
                             <div className="col-lg-6 mb-4">
-                                <label className="form-label">Durum</label>
+                                <label className="form-label fw-semibold">Durum</label>
                                 <SelectDropdown
                                     options={propsalStatusOptions}
                                     defaultSelect="Durum Seçin"
@@ -186,34 +134,17 @@ const ProposalCreateContent = () => {
                                     }}
                                 />
                             </div>
-
                         </div>
+
+                        <div className="mt-4 d-flex gap-2 justify-content-end">
+                            <button type="button" className="btn btn-outline-secondary px-4" onClick={() => handleCreateProposal(false)} disabled={loading}>KAYDET</button>
+                            <button type="button" className="btn btn-primary px-4" onClick={() => handleCreateProposal(true)} disabled={loading}>KAYDET & GÖNDER</button>
+                        </div>
+
                     </div>
                 </div>
             </div>
-
-            {/* 🔽 Teklif Kalemleri (UI ONLY – BACKEND'E GİTMİYOR) */}
-            <AddProposal previtems={previtems} />
-
-            {/* 🔘 AKSİYON BUTONLARI */}
-            <div className="mt-4 d-flex gap-2">
-                <button
-                    className="btn btn-outline-secondary"
-                    onClick={() => handleCreateProposal(false)}
-                    disabled={loading}
-                >
-                    KAYDET
-                </button>
-
-                <button
-                    className="btn btn-primary"
-                    onClick={() => handleCreateProposal(true)}
-                    disabled={loading}
-                >
-                    KAYDET & GÖNDER
-                </button>
-            </div>
-        </>
+        </div>
     )
 }
 

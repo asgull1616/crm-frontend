@@ -75,7 +75,7 @@ const TasksTabContent = () => {
                     </div>
                 </div>
                 <div className="col-xxl-8 col-xl-6">
-                    <div className="card stretch stretch-full">
+                    {/*<div className="card stretch stretch-full">
                         <div className="card-header">
                             <h5 className="card-title">Tanım</h5>
                             <a href="#" className="avatar-text avatar-md" data-toggle="tooltip" title="Update Description">
@@ -117,7 +117,7 @@ const TasksTabContent = () => {
                                 </li>
                             </ul>
                         </div>
-                    </div>
+                    </div> */}
                     {/* <div className="card stretch stretch-full">
                         <div className="card-header">
                             <h5 className="card-title">Checklist</h5>
