@@ -1,168 +1,167 @@
 const list = [
-    {
-        id: 1,
-        user_img: "",
-        user_name: "Muhammed Sosun",
-        user_email: "muhammedsosun@gmail.com",
-        user_status: "Tamamlandı",
-        proposal: "Gönderildi",
-        date: "11/06/2023 10:53",
-        is_active: {
-            position: "active",
-            color: "#17c666"
-        },
-        active_time: "2 min ago",
-        is_message_read: false,
-        color:"success"
+  {
+    id: 1,
+    user_img: "",
+    user_name: "Muhammed Sosun",
+    user_email: "muhammedsosun@gmail.com",
+    user_status: "Tamamlandı",
+    proposal: "Gönderildi",
+    date: "11/06/2023 10:53",
+    is_active: {
+      position: "active",
+      color: "#17c666",
     },
+    active_time: "2 min ago",
+    is_message_read: false,
+    color: "success",
+  },
 
-    {
-        id: 2,
-        user_img: "",
-        user_name: "Şerif Ergin",
-        user_email: "serifergin@gmail.com",
-        user_status: "Devam Ediyor",
-        proposal: "Yeni",
-        date: "11/06/2023 10:53",
-        is_active: {
-            position: "inactive",
-            color: "#ea4d4d"
-        },
-        active_time: "5 min ago",
-        is_message_read: false,
-        color:"primary"
+  {
+    id: 2,
+    user_img: "",
+    user_name: "Şerif Ergin",
+    user_email: "serifergin@gmail.com",
+    user_status: "Devam Ediyor",
+    proposal: "Yeni",
+    date: "11/06/2023 10:53",
+    is_active: {
+      position: "inactive",
+      color: "#ea4d4d",
     },
-    {
-        id: 3,
-        user_img: "",
-        user_name: "Ahmet Burak Kır",
-        user_email: "ahmetburakkır@gmail.com",
-        user_status: "Tamamlandı",
-        proposal: "Gönderildi",
-        date: "11/06/2023 10:53",
-        is_active: {
-            position: "active",
-            color: "#17c666"
-        },
-        active_time: "7 min ago",
-        is_message_read: true,
-        color:"success"
+    active_time: "5 min ago",
+    is_message_read: false,
+    color: "primary",
+  },
+  {
+    id: 3,
+    user_img: "",
+    user_name: "Ahmet Burak Kır",
+    user_email: "ahmetburakkır@gmail.com",
+    user_status: "Tamamlandı",
+    proposal: "Gönderildi",
+    date: "11/06/2023 10:53",
+    is_active: {
+      position: "active",
+      color: "#17c666",
     },
-    {
-        id: 4,
-        user_img: "",
-        user_name: "Eren Gündoğdu",
-        user_email: "erengündogdu@gmail.com",
-        user_status: "Reddedildi",
-        proposal: "Cevaplandı",
-        date: "11/06/2023 10:53",
-        is_active: {
-            position: "active",
-            color: "#17c666"
-        },
-        active_time: "9 min ago",
-        is_message_read: true,
-        color:"warning"
+    active_time: "7 min ago",
+    is_message_read: true,
+    color: "success",
+  },
+  {
+    id: 4,
+    user_img: "",
+    user_name: "Eren Gündoğdu",
+    user_email: "erengündogdu@gmail.com",
+    user_status: "Reddedildi",
+    proposal: "Cevaplandı",
+    date: "11/06/2023 10:53",
+    is_active: {
+      position: "active",
+      color: "#17c666",
     },
-    {
-        id: 5,
-        user_img: "",
-        user_name: "Zeynep Daş",
-        user_email: "zeynepdas@gmail.com",
-        user_status: "Tamamlandı",
-        proposal: "Gönderildi",
-        date: "11/06/2023 10:53",
-        is_active: {
-            position: "block",
-            color: "#91a1b6"
-        },
-        active_time: "10 min ago",
-        is_message_read: true,
-        color:"success"
+    active_time: "9 min ago",
+    is_message_read: true,
+    color: "warning",
+  },
+  {
+    id: 5,
+    user_img: "",
+    user_name: "Zeynep Daş",
+    user_email: "zeynepdas@gmail.com",
+    user_status: "Tamamlandı",
+    proposal: "Gönderildi",
+    date: "11/06/2023 10:53",
+    is_active: {
+      position: "block",
+      color: "#91a1b6",
     },
-    {
-        id: 6,
-        user_img: "",
-        user_name: "Sümeyye Bire",
-        user_email: "nneth.une@gmail.com",
-        user_status: "Reddedildi",
-        proposal: "Cevaplandı",
-        date: "11/06/2023 10:53",
-        is_active: {
-            position: "active",
-            color: "#17c666"
-        },
-        active_time: "9 min ago",
-        is_message_read: true,
-        color:"warning"
+    active_time: "10 min ago",
+    is_message_read: true,
+    color: "success",
+  },
+  {
+    id: 6,
+    user_img: "",
+    user_name: "Sümeyye Bire",
+    user_email: "nneth.une@gmail.com",
+    user_status: "Reddedildi",
+    proposal: "Cevaplandı",
+    date: "11/06/2023 10:53",
+    is_active: {
+      position: "active",
+      color: "#17c666",
     },
-    {
-        id: 7,
-        user_img: "",
-        user_name: "Sude Filikçi",
-        user_email: "alenine.aton@gmail.com",
-        user_status: "Tamamlandı",
-        proposal: "Gönderildi",
-        date: "11/06/2023 10:53",
-        is_active: {
-            position: "active",
-            color: "#17c666"
-        },
-        active_time: "10 min ago",
-        is_message_read: true,
-        color:"success"
+    active_time: "9 min ago",
+    is_message_read: true,
+    color: "warning",
+  },
+  {
+    id: 7,
+    user_img: "",
+    user_name: "Sude Filikçi",
+    user_email: "alenine.aton@gmail.com",
+    user_status: "Tamamlandı",
+    proposal: "Gönderildi",
+    date: "11/06/2023 10:53",
+    is_active: {
+      position: "active",
+      color: "#17c666",
     },
-    {
-        id: 8,
-        user_img: "",
-        user_name: "Ayşegül Altıntaş",
-        user_email: "nneth.une@gmail.com",
-        user_status: "Reddedildi",
-        proposal: "Cevaplandı",
-        date: "11/06/2023 10:53",
-        is_active: {
-            position: "active",
-            color: "#17c666"
-        },
-        active_time: "9 min ago",
-        is_message_read: true,
-        color:"warning"
+    active_time: "10 min ago",
+    is_message_read: true,
+    color: "success",
+  },
+  {
+    id: 8,
+    user_img: "",
+    user_name: "Ayşegül Altıntaş",
+    user_email: "nneth.une@gmail.com",
+    user_status: "Reddedildi",
+    proposal: "Cevaplandı",
+    date: "11/06/2023 10:53",
+    is_active: {
+      position: "active",
+      color: "#17c666",
     },
-    {
-        id: 9,
-        user_img: "",
-        user_name: "Esmanur Erden",
-        user_email: "alenine.aton@gmail.com",
-        user_status: "Tamamlandı",
-        proposal: "Gönderildi",
-        date: "11/06/2023 10:53",
-        is_active: {
-            position: "active",
-            color: "#17c666"
-        },
-        active_time: "17 min ago",
-        is_message_read: true,
-        color:"success"
+    active_time: "9 min ago",
+    is_message_read: true,
+    color: "warning",
+  },
+  {
+    id: 9,
+    user_img: "",
+    user_name: "Esmanur Erden",
+    user_email: "alenine.aton@gmail.com",
+    user_status: "Tamamlandı",
+    proposal: "Gönderildi",
+    date: "11/06/2023 10:53",
+    is_active: {
+      position: "active",
+      color: "#17c666",
     },
-    {
-        id: 10,
-        user_img: "",
-        user_name: "Aleynagül Kazdal",
-        user_email: "alenine.aton@gmail.com",
-        user_status: "Tamamlandı",
-        proposal: "Gönderildi",
-        date: "11/06/2023 18:53",
-        is_active: {
-            position: "active",
-            color: "#17c666"
-        },
-        active_time: "16 min ago",
-        is_message_read: true,
-        color:"success"
+    active_time: "17 min ago",
+    is_message_read: true,
+    color: "success",
+  },
+  {
+    id: 10,
+    user_img: "",
+    user_name: "Aleynagül Kazdal",
+    user_email: "alenine.aton@gmail.com",
+    user_status: "Tamamlandı",
+    proposal: "Gönderildi",
+    date: "11/06/2023 18:53",
+    is_active: {
+      position: "active",
+      color: "#17c666",
     },
-    
-]
+    active_time: "16 min ago",
+    is_message_read: true,
+    color: "success",
+  },
+];
 
 export const userList = (startItem = 0, endItem = list.length) => {
-    return list.slice(startItem, endItem)
-}
+  return list.slice(startItem, endItem);
+};

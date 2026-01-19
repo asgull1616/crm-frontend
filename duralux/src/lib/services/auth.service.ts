@@ -5,6 +5,7 @@ export const authService = {
     api.post("auth/authenticate", data),
   register: (data: { username: string; email: string; password: string }) =>
     api.post("auth/register", data),
+  me: () => api.get("auth/me"),
 
   logout: () => api.post("auth/logout"),
 };
