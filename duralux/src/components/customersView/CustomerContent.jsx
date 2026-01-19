@@ -34,11 +34,7 @@ const CustomerContent = () => {
 
     return (
         <>
-            <div className="col-xxl-4 col-xl-6">
-                <Profile customer={customer} />
-            </div>
-
-            <div className="col-xxl-8 col-xl-6">
+            <div className="col-12">
                 <div className="card border-top-0">
                     <div className="card-header p-0">
                         <ul className="nav nav-tabs flex-wrap w-100 text-center customers-nav-tabs">
@@ -58,7 +54,6 @@ const CustomerContent = () => {
                     <div className="tab-content">
                         <TabOverviewContent customer={customer} />
                         <TabActivityContent customerId={customer.id} />
-                        {/* diğer tab’lar sonra */}
                     </div>
                 </div>
             </div>

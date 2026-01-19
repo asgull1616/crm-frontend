@@ -18,10 +18,6 @@ const PageHeaderDate = () => {
           <DateRange toggleDateRange={toggleDateRange} setToggleDateRange={setToggleDateRange} />
         </div>
         <div className="filter-dropdown">
-          <Link href={"#"} className="btn btn-md btn-light-brand" data-bs-toggle="dropdown" data-bs-offset="0, 10" data-bs-auto-close="outside">
-            <i className="me-2"><FiFilter /></i>
-            <span>Filter</span>
-          </Link>
           <div className="dropdown-menu dropdown-menu-end">
             {filterItems.map((name, index) =>
               <div key={index} className="dropdown-item">

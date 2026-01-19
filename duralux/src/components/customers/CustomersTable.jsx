@@ -132,9 +132,6 @@ const tableData = (Array.isArray(customers) ? customers : []).map(c => ({
         const c = info.getValue()
         return (
           <div className="hstack gap-3">
-            <div className="text-white avatar-text avatar-md">
-              {c.name.substring(0, 1)}
-            </div>
             <span>{c.name}</span>
           </div>
         )

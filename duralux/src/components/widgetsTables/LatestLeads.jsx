@@ -30,7 +30,6 @@ const LatestLeads = ({title}) => {
                                     <th>Teklif</th>
                                     <th>Tarih</th>
                                     <th>Durum</th>
-                                    <th className="text-end">İşlemler</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -59,9 +58,6 @@ const LatestLeads = ({title}) => {
                                             <td>{date}</td>
                                             <td>
                                                 <span className={`badge bg-soft-${color} text-${color}`}>{user_status}</span>
-                                            </td>
-                                            <td className="text-end">
-                                                <Link href="#"><FiMoreVertical size={16} /></Link>
                                             </td>
                                         </tr>
                                     )
