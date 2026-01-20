@@ -3,7 +3,7 @@ import { FiAlertTriangle } from 'react-icons/fi'
 import { projectsData } from '@/utils/fackData/projectsData'
 import ImageGroup from '@/components/shared/ImageGroup'
 import HorizontalProgress from '@/components/shared/HorizontalProgress';
-
+import TeamsCreateHeader from '@/components/teamsViewCreate/TeamsCreateHeader'; 
 
 const TabOverviewContent = ({ customer }) => {
     return (

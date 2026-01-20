@@ -93,38 +93,38 @@ const tableData = (Array.isArray(customers) ? customers : []).map(c => ({
 
 
   const columns = [
-    {
-      accessorKey: 'id',
-      header: ({ table }) => {
-        const checkboxRef = React.useRef(null)
+    // {
+    //   accessorKey: 'id',
+    //   header: ({ table }) => {
+    //     const checkboxRef = React.useRef(null)
 
-        useEffect(() => {
-          if (checkboxRef.current) {
-            checkboxRef.current.indeterminate = table.getIsSomeRowsSelected()
-          }
-        }, [table.getIsSomeRowsSelected()])
+    //     useEffect(() => {
+    //       if (checkboxRef.current) {
+    //         checkboxRef.current.indeterminate = table.getIsSomeRowsSelected()
+    //       }
+    //     }, [table.getIsSomeRowsSelected()])
 
-        return (
-          <input
-            type="checkbox"
-            className="custom-table-checkbox"
-            ref={checkboxRef}
-            checked={table.getIsAllRowsSelected()}
-            onChange={table.getToggleAllRowsSelectedHandler()}
-          />
-        )
-      },
-      cell: ({ row }) => (
-        <input
-          type="checkbox"
-          className="custom-table-checkbox"
-          checked={row.getIsSelected()}
-          disabled={!row.getCanSelect()}
-          onChange={row.getToggleSelectedHandler()}
-        />
-      ),
-      meta: { headerClassName: 'width-30' },
-    },
+    //     return (
+    //       <input
+    //         type="checkbox"
+    //         className="custom-table-checkbox"
+    //         ref={checkboxRef}
+    //         checked={table.getIsAllRowsSelected()}
+    //         onChange={table.getToggleAllRowsSelectedHandler()}
+    //       />
+    //     )
+    //   },
+    //   cell: ({ row }) => (
+    //     <input
+    //       type="checkbox"
+    //       className="custom-table-checkbox"
+    //       checked={row.getIsSelected()}
+    //       disabled={!row.getCanSelect()}
+    //       onChange={row.getToggleSelectedHandler()}
+    //     />
+    //   ),
+    //   meta: { headerClassName: 'width-30' },
+    // },
     {
       accessorKey: 'customer',
       header: () => 'Müşteri',
@@ -132,9 +132,6 @@ const tableData = (Array.isArray(customers) ? customers : []).map(c => ({
         const c = info.getValue()
         return (
           <div className="hstack gap-3">
-            <div className="text-white avatar-text avatar-md">
-              {c.name.substring(0, 1)}
-            </div>
             <span>{c.name}</span>
           </div>
         )

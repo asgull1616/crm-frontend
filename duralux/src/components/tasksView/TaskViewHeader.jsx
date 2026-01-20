@@ -113,21 +113,33 @@ const TaskViewHeader = ({ taskId }) => {
         </div>
       </div>
 
-      <Link href="/tasks/create" className="btn btn-primary">
-        <FiPlus size={16} className="me-2" />
-        <span>Görev Oluştur</span>
-      </Link>
+   <Link
+  href="/tasks/create"
+  className="btn text-white"
+  style={{
+    backgroundColor: "#E92B63",
+    borderColor: "#E92B63",
+  }}
+>
+  <FiPlus size={16} className="me-2" />
+  <span>Görev Oluştur</span>
+</Link>
 
       <div className="filter-dropdown">
-        <a
-          href="#"
-          className="btn btn-primary"
-          data-bs-toggle="dropdown"
-          data-bs-offset="0,11"
-        >
-          <FiShare2 size={16} className="me-2" />
-          <span>Görevi Paylaş</span>
-        </a>
+       <a
+  href="#"
+  className="btn text-white"
+  data-bs-toggle="dropdown"
+  data-bs-offset="0,11"
+  style={{
+    backgroundColor: "#E92B63",
+    borderColor: "#E92B63",
+  }}
+>
+  <FiShare2 size={16} className="me-2" />
+  <span>Görevi Paylaş</span>
+</a>
+
 
         <ul className="dropdown-menu dropdown-menu-start">
           {socialLinkOptions.map(({ icon, label, shareCount, type }, index) => {

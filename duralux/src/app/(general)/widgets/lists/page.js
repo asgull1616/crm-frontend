@@ -58,7 +58,7 @@ const page = () => {
                     <ProjectLeads />
                 </div>
             </div>
-            <Footer />
+            {/* <Footer /> */}
         </>
     )
 }

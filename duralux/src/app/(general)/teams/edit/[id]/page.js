@@ -8,7 +8,7 @@ const page = ({ params }) => {
   return (
     <>
       <PageHeader>
-        <h4 className="mb-0">Ekip Güncelle</h4>
+      
       </PageHeader>
 
       <div className="main-content">

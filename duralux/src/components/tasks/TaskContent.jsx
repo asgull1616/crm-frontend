@@ -56,7 +56,7 @@ const TaskContent = () => {
                         ))}
 
                     </div>
-                    <Footer />
+                    {/* <Footer /> */}
                 </PerfectScrollbar>
             </div>
         </>

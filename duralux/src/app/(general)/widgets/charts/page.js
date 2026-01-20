@@ -58,7 +58,7 @@ const page = () => {
           <PerformanceCandlestickChart />
         </div>
       </div>
-      <Footer />
+      {/* <Footer /> */}
     </>
   );
 };

@@ -15,7 +15,7 @@ const page = () => {
                     <PaymentTable />
                 </div>
             </div>
-            <Footer />
+            {/* <Footer /> */}
         </>
     )
 }

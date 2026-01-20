@@ -17,7 +17,7 @@ const page = () => {
           <ProposalTable />
         </div>
       </div>
-      <Footer />
+      {/* <Footer /> */}
     </>
   );
 };

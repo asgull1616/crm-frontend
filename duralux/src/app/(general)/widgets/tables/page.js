@@ -51,7 +51,7 @@ const page = () => {
           <Orders title={"Recent Orders"} />
         </div>
       </div>
-      <Footer />
+      {/* <Footer /> */}
     </>
   )
 }

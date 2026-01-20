@@ -83,7 +83,17 @@ const AddProposal = ({previtems}) => {
                             </div>
                             <div className="d-flex justify-content-end gap-2 mt-3">
                                 <button className="btn btn-md bg-soft-danger text-danger" onClick={removeItem}>Sil</button>
-                                <button className="btn btn-md btn-primary" onClick={addItem}>Teklifi Ekle</button>
+                              <button
+  className="btn btn-md text-white"
+  onClick={addItem}
+  style={{
+    backgroundColor: "#E92B63",
+    borderColor: "#E92B63",
+  }}
+>
+  Teklifi Ekle
+</button>
+
                             </div>
                         </div>
                         <div className="col-lg-4">

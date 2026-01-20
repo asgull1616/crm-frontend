@@ -33,7 +33,7 @@ const page = () => {
                     <Schedule />
                 </div>
             </div >
-            <Footer />
+            {/* <Footer /> */}
         </>
     )
 }

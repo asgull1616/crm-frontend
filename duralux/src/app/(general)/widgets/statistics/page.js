@@ -63,7 +63,7 @@ const page = () => {
                     <SocilMediaStatistics />
                 </div>
             </div>
-            <Footer />
+            {/* <Footer /> */}
         </>
     )
 }

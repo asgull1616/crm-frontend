@@ -30,7 +30,7 @@ const page = () => {
                     <SocialMediaStatisticsChart />
                 </div>
             </div>
-            <Footer />
+            {/* <Footer /> */}
         </>
     )
 }

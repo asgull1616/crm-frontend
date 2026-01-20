@@ -26,7 +26,7 @@ const FounderShowcaseCard = () => {
           style={{
             position: "absolute",
             top: "-20px",
-            right: "-20px",
+            right: "-20px", 
             width: "150px",
             height: "150px",
             background: "rgba(0,0,0,0.03)",
