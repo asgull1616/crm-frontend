@@ -16,7 +16,9 @@ const CoFounderShowcaseCard = () => {
           isExpanded ? "card-expand" : ""
         }`}
         style={{
-          background: "linear-gradient(145deg, #ffffff 0%, #f8f9fa 100%)",
+          // ✅ Dark/Light uyumlu gradient
+          background:
+            "linear-gradient(145deg, var(--bs-body-bg) 0%, var(--bs-tertiary-bg) 100%)",
           position: "relative",
           overflow: "hidden",
         }}
@@ -57,14 +59,19 @@ const CoFounderShowcaseCard = () => {
                 <div className="position-absolute bottom-0 end-0 bg-primary border border-white rounded-circle p-2" />
               </div>
 
-              <h3 className="fw-bold mb-1 fs-4">Mirza Muhittin Pektaş</h3>
+              {/* ✅ Dark/Light uyumlu isim */}
+              <h3 className="fw-bold mb-1 fs-4 text-body-emphasis">
+                Mirza Muhittin Pektaş
+              </h3>
 
-              <p className="small mb-3 text-uppercase fw-semibold text-secondary">
+              {/* ✅ Dark/Light uyumlu ünvan */}
+              <p className="small mb-3 text-uppercase fw-semibold text-body-secondary">
                 Kurucu Ortak <br /> Yönetim Kurulu Üyesi
               </p>
 
+              {/* ✅ İmza da kaybolmasın */}
               <div
-                className="opacity-50"
+                className="opacity-50 text-body-secondary"
                 style={{ fontFamily: "cursive", fontSize: "1.1rem" }}
               >
                 Muhittin Pektaş
@@ -87,9 +94,7 @@ const CoFounderShowcaseCard = () => {
 
                 <p className="fs-5 fst-italic lh-lg mb-0 ps-3">
                   Başarı tesadüf değildir;{" "}
-                  <strong className="text-success">
-                    sürdürülebilir büyüme
-                  </strong>{" "}
+                  <strong className="text-success">sürdürülebilir büyüme</strong>{" "}
                   ve doğru operasyonel süreçlerin sonucudur. Hedefimiz, CODYOL
                   standartlarını global pazara taşımaktır.
                 </p>
@@ -102,13 +107,17 @@ const CoFounderShowcaseCard = () => {
                   "Global İş Geliştirme",
                   "Yatırımcı İlişkileri",
                 ].map((item, i) => (
-                  <span key={i} className="badge rounded-pill border px-3 py-1">
+                  <span
+                    key={i}
+                    className="badge rounded-pill border px-3 py-1 text-body"
+                  >
                     {item}
                   </span>
                 ))}
               </div>
 
-              <div className="pt-3 border-top text-secondary small d-flex align-items-center gap-2">
+              {/* ✅ Alt satır da dark mode’da görünür */}
+              <div className="pt-3 border-top text-body-secondary small d-flex align-items-center gap-2">
                 <svg
                   width="14"
                   height="14"

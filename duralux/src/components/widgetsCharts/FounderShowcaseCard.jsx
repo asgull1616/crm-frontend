@@ -12,11 +12,10 @@ const FounderShowcaseCard = () => {
   return (
     <div className="col-xxl-6 col-xl-6">
       <div
-        className={`card founder-card stretch stretch-full border-0 shadow-sm ${
+        className={`card founder-card stretch stretch-full border-0 shadow-sm bg-body-tertiary ${
           isExpanded ? "card-expand" : ""
         }`}
         style={{
-          background: "linear-gradient(145deg, #ffffff 0%, #f8f9fa 100%)",
           position: "relative",
           overflow: "hidden",
         }}
@@ -26,7 +25,7 @@ const FounderShowcaseCard = () => {
           style={{
             position: "absolute",
             top: "-20px",
-            right: "-20px", 
+            right: "-20px",
             width: "150px",
             height: "150px",
             background: "rgba(0,0,0,0.03)",
@@ -57,14 +56,17 @@ const FounderShowcaseCard = () => {
                 <div className="position-absolute bottom-0 end-0 bg-success border border-white rounded-circle p-2" />
               </div>
 
-              <h3 className="fw-bold mb-1 fs-4">Ömer Kaya</h3>
+              {/* ✅ Dark/Light uyumlu isim */}
+              <h3 className="fw-bold mb-1 fs-4 text-body-emphasis">Ömer Kaya</h3>
 
-              <p className="small mb-3 text-uppercase fw-semibold text-secondary">
+              {/* ✅ Dark/Light uyumlu ünvan */}
+              <p className="small mb-3 text-uppercase fw-semibold text-body-secondary">
                 Kurucu & CEO
               </p>
 
+              {/* ✅ İmza da kaybolmasın */}
               <div
-                className="opacity-50"
+                className="opacity-50 text-body-secondary"
                 style={{ fontFamily: "cursive", fontSize: "1.2rem" }}
               >
                 Ömer Kaya
@@ -105,7 +107,7 @@ const FounderShowcaseCard = () => {
               </div>
 
               <div className="mb-4">
-                <p className="text-uppercase fw-bold fs-11 mb-2 text-secondary">
+                <p className="text-uppercase fw-bold fs-11 mb-2 text-body-secondary">
                   Uzmanlık Alanları
                 </p>
                 <div className="d-flex flex-wrap gap-2">
@@ -118,7 +120,7 @@ const FounderShowcaseCard = () => {
                   ].map((item, i) => (
                     <span
                       key={i}
-                      className="badge rounded-pill border px-3 py-2"
+                      className="badge rounded-pill border px-3 py-2 text-body"
                     >
                       {item}
                     </span>
@@ -128,8 +130,10 @@ const FounderShowcaseCard = () => {
 
               <div className="d-flex align-items-center justify-content-between pt-3 border-top mt-4">
                 <div>
-                  <span className="fw-bold d-block">CODYOL Vizyonu</span>
-                  <span className="small text-secondary">
+                  <span className="fw-bold d-block text-body-emphasis">
+                    CODYOL Vizyonu
+                  </span>
+                  <span className="small text-body-secondary">
                     Dijitali kodlayan, markaları büyüten ekip
                   </span>
                 </div>
