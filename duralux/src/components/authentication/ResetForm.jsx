@@ -12,7 +12,18 @@ const ResetForm = ({ path }) => {
                     <input className="form-control" placeholder="Kullanıcı adı veya E-mail" required />
                 </div>
                 <div className="mt-5">
-                    <button type="submit" className="btn btn-lg btn-primary w-100">Şimdi Sıfırla</button>
+                    <button
+                        type="submit"
+                        className="btn btn-lg w-100"
+                        style={{
+                            backgroundColor: "#E93B62",
+                            borderColor: "#E93B62",
+                            color: "#fff"
+                        }}
+                    >
+                        Şimdi Sıfırla
+                    </button>
+
                 </div>
             </form>
             <div className="mt-5 text-muted">

@@ -95,22 +95,32 @@ const RegisterForm = ({ path }) => {
                 </div>
 
                 <div className="mt-5">
-                    <button
-                        type="submit"
-                        className="btn btn-lg btn-primary w-100"
-                        disabled={loading}
-                    >
-                        {loading ? 'Hesap Oluşturuluyor...' : 'Hesap Oluştur'}
-                    </button>
+                  <button
+  type="submit"
+  className="btn btn-lg w-100"
+  style={{
+    backgroundColor: "#E93B62",
+    borderColor: "#E93B62",
+    color: "#fff"
+  }}
+  disabled={loading}
+>
+  {loading ? 'Hesap Oluşturuluyor...' : 'Hesap Oluştur'}
+</button>
+
                 </div>
             </form>
 
             <div className="mt-5 text-muted">
                 <span>Zaten hesabın varsa </span>
-                <Link href={path} className="fw-bold">
-                    {' '}
+                <Link
+                    href={path}
+                    className="fw-bold"
+                    style={{ color: "#E93B62" }}
+                >
                     Giriş Yap
                 </Link>
+
             </div>
         </>
     )

@@ -23,10 +23,6 @@ export default function IncomeExpenseCreated() {
   if (!visible) return null;
 
   return (
-    <div className="position-fixed top-0 end-0 p-4" style={{ zIndex: 2000 }}>
-      <div className="alert alert-success shadow d-flex align-items-center gap-2">
-        <span className="fw-semibold">✔ Kayıt başarıyla oluşturuldu</span>
-      </div>
-    </div>
+  0
   );
 }
