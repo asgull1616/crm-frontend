@@ -12,18 +12,34 @@ const PAYMENT_METHODS = [
   { value: "OTHER", label: "Diğer" },
 ];
 
+// -------------------------------
+// HELPERS
+// -------------------------------
+const normalizeAmount = (value) =>
+  value
+    .trim()
+    .replace(/\s/g, "")
+    .replace(/\.(?=\d{3})/g, "")
+    .replace(",", ".");
+
+const optional = (v) => v?.trim() || undefined;
+
+// -------------------------------
+// COMPONENT
+// -------------------------------
 export default function IncomeExpenseCreateContent() {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
 
   const [proposals, setProposals] = useState([]);
   const [selectedProposal, setSelectedProposal] = useState(null);
+  const [errors, setErrors] = useState({});
 
   const [form, setForm] = useState({
     type: "INCOME",
     amount: "",
     currency: "TRY",
-    date: new Date().toISOString().slice(0, 10),
+    date: new Date().toISOString().slice(0, 10), // yyyy-mm-dd
     description: "",
     category: "",
     paymentMethod: "BANK_TRANSFER",
@@ -31,85 +47,92 @@ export default function IncomeExpenseCreateContent() {
     proposalId: "",
   });
 
-  // --------------------------------------------------
-  // FETCH PROPOSALS (for select)
-  // --------------------------------------------------
+  // -------------------------------
+  // FETCH PROPOSALS
+  // -------------------------------
   useEffect(() => {
     proposalService.list({ page: 1, limit: 100 }).then((res) => {
-      const items = res?.data?.items || [];
-      setProposals(items);
+      setProposals(res?.data?.items || []);
     });
   }, []);
 
   const onChange = (key) => (e) =>
     setForm((p) => ({ ...p, [key]: e.target.value }));
 
-  // Proposal change
   const onProposalChange = (e) => {
     const id = e.target.value;
     setForm((p) => ({ ...p, proposalId: id }));
-    const p = proposals.find((x) => x.id === id);
-    setSelectedProposal(p || null);
+    setSelectedProposal(proposals.find((x) => x.id === id) || null);
   };
 
-  // --------------------------------------------------
+  // -------------------------------
   // VALIDATION
-  // --------------------------------------------------
+  // -------------------------------
   const validate = () => {
-    if (!form.type) return "Tür zorunlu";
-    if (!form.amount.trim()) return "Tutar zorunlu";
+    const e = {};
 
-    const normalized = form.amount.trim().replace(",", ".");
-    if (!/^\d+(\.\d{1,2})?$/.test(normalized))
-      return "Tutar sayı olmalı (örn: 12500.00)";
+    if (!form.amount.trim()) {
+      e.amount = "Tutar zorunludur";
+    } else {
+      const normalized = normalizeAmount(form.amount);
+      if (!/^\d+(\.\d{1,2})?$/.test(normalized)) {
+        e.amount = "Geçerli bir tutar giriniz (örn: 12500.00)";
+      }
+    }
 
-    if (!form.category.trim()) return "Kategori zorunlu";
-    if (!form.description.trim()) return "Açıklama zorunlu";
+    if (!form.category.trim()) e.category = "Kategori zorunludur";
+    if (!form.description.trim()) e.description = "Açıklama zorunludur";
+    if (!form.paymentMethod) e.paymentMethod = "Ödeme yöntemi zorunludur";
+    if (!form.date) e.date = "Tarih zorunludur";
 
-    return null;
+    return e;
   };
 
-  // --------------------------------------------------
+  // -------------------------------
   // SUBMIT
-  // --------------------------------------------------
+  // -------------------------------
   const handleSubmit = async () => {
-    const err = validate();
-    if (err) return alert(err);
+    const e = validate();
+    if (Object.keys(e).length) {
+      setErrors(e);
+      return;
+    }
 
+    setErrors({});
     setLoading(true);
+
     try {
       const payload = {
         type: form.type,
-        amount: form.amount.trim().replace(",", "."),
+        amount: normalizeAmount(form.amount), // STRING
         currency: form.currency,
-        date: new Date(form.date).toISOString(),
+        date: `${form.date}T00:00:00.000Z`, // IsDateString uyumlu
         description: form.description.trim(),
         category: form.category.trim(),
         paymentMethod: form.paymentMethod,
-        referenceNo: form.referenceNo?.trim() || undefined,
-        proposalId: form.proposalId || undefined,
+        referenceNo: optional(form.referenceNo),
+        proposalId: optional(form.proposalId),
       };
 
       await transactionService.create(payload);
-
       router.push("/income-expense/list");
-    } catch (e) {
-      console.error(e);
-      alert(e?.response?.data?.message || "Kayıt oluşturulamadı");
+    } catch (err) {
+      const msg = err?.response?.data?.message;
+      alert(
+        Array.isArray(msg) ? msg.join("\n") : msg || "Kayıt oluşturulamadı",
+      );
     } finally {
       setLoading(false);
     }
   };
 
-  // --------------------------------------------------
+  // -------------------------------
   // UI
-  // --------------------------------------------------
+  // -------------------------------
   return (
     <div className="col-12">
       <div className="card">
-        <div className="card-header fw-semibold">
-          Yeni Gelir / Gider (Checkout)
-        </div>
+        <div className="card-header fw-semibold">Yeni Gelir / Gider</div>
 
         <div className="card-body">
           <div className="row g-3">
@@ -137,6 +160,9 @@ export default function IncomeExpenseCreateContent() {
                 onChange={onChange("date")}
                 disabled={loading}
               />
+              {errors.date && (
+                <small className="text-danger">{errors.date}</small>
+              )}
             </div>
 
             {/* AMOUNT */}
@@ -149,6 +175,9 @@ export default function IncomeExpenseCreateContent() {
                 onChange={onChange("amount")}
                 disabled={loading}
               />
+              {errors.amount && (
+                <small className="text-danger">{errors.amount}</small>
+              )}
             </div>
 
             {/* CATEGORY */}
@@ -156,11 +185,13 @@ export default function IncomeExpenseCreateContent() {
               <label className="form-label">Kategori</label>
               <input
                 className="form-control"
-                placeholder="Satış / Kira"
                 value={form.category}
                 onChange={onChange("category")}
                 disabled={loading}
               />
+              {errors.category && (
+                <small className="text-danger">{errors.category}</small>
+              )}
             </div>
 
             {/* PAYMENT METHOD */}
@@ -178,11 +209,14 @@ export default function IncomeExpenseCreateContent() {
                   </option>
                 ))}
               </select>
+              {errors.paymentMethod && (
+                <small className="text-danger">{errors.paymentMethod}</small>
+              )}
             </div>
 
-            {/* PROPOSAL SELECT */}
+            {/* PROPOSAL */}
             <div className="col-12">
-              <label className="form-label">Teklif (Proposal)</label>
+              <label className="form-label">Teklif</label>
               <select
                 className="form-select"
                 value={form.proposalId}
@@ -196,12 +230,9 @@ export default function IncomeExpenseCreateContent() {
                   </option>
                 ))}
               </select>
-              <small className="text-muted">
-                Proposal seçilirse müşteri otomatik bağlanır.
-              </small>
             </div>
 
-            {/* AUTO CUSTOMER INFO */}
+            {/* AUTO CUSTOMER */}
             {selectedProposal?.customer && (
               <div className="col-12">
                 <label className="form-label">Müşteri</label>
@@ -218,11 +249,13 @@ export default function IncomeExpenseCreateContent() {
               <label className="form-label">Açıklama</label>
               <input
                 className="form-control"
-                placeholder="Web sitesi ödeme"
                 value={form.description}
                 onChange={onChange("description")}
                 disabled={loading}
               />
+              {errors.description && (
+                <small className="text-danger">{errors.description}</small>
+              )}
             </div>
 
             {/* REFERENCE */}
@@ -230,7 +263,6 @@ export default function IncomeExpenseCreateContent() {
               <label className="form-label">Referans No</label>
               <input
                 className="form-control"
-                placeholder="DEKONT-123"
                 value={form.referenceNo}
                 onChange={onChange("referenceNo")}
                 disabled={loading}

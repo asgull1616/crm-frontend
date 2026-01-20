@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import SelectDropdown from "@/components/shared/SelectDropdown";
 import DatePicker from "react-datepicker";
@@ -8,12 +8,7 @@ import useDatePicker from "@/hooks/useDatePicker";
 import Loading from "@/components/shared/Loading";
 import AddProposal from "./AddProposal";
 import { proposalService } from "@/lib/services/proposal.service";
-import {
-  propsalRelatedOptions,
-  propsalDiscountOptions,
-  propsalStatusOptions,
-} from "@/utils/options";
-import { useEffect } from "react";
+import { propsalStatusOptions } from "@/utils/options";
 import { customerService } from "@/lib/services/customer.service";
 
 const previtems = [
@@ -26,38 +21,70 @@ const previtems = [
 ];
 
 const ProposalCreateContent = () => {
+  const router = useRouter();
+  const { startDate, setStartDate, renderFooter } = useDatePicker();
+
   const [customers, setCustomers] = useState([]);
+  const [loading, setLoading] = useState(false);
+
+  // ✅ Backend’e giden alanlar
+  const [title, setTitle] = useState("");
+  const [customerId, setCustomerId] = useState(null);
+  const [status, setStatus] = useState("DRAFT");
   const [totalAmount, setTotalAmount] = useState("");
 
+  // ✅ UI validation
+  const [errors, setErrors] = useState({});
+
+  // -----------------------
+  // FETCH CUSTOMERS
+  // -----------------------
   useEffect(() => {
     customerService.list().then((res) => {
       const list = res?.data?.items || res?.data?.data || res?.data || [];
-
       setCustomers(list);
     });
   }, []);
 
-  const router = useRouter();
-  const { startDate, setStartDate, renderFooter } = useDatePicker();
+  // -----------------------
+  // VALIDATION
+  // -----------------------
+  const validateForm = () => {
+    const e = {};
 
-  const [loading, setLoading] = useState(false);
+    if (!title.trim()) e.title = "Teklif başlığı zorunludur.";
+    if (!customerId) e.customerId = "Müşteri seçilmelidir.";
+    if (!startDate) e.validUntil = "Geçerlilik tarihi zorunludur.";
+    if (!status) e.status = "Durum seçilmelidir.";
 
-  // ✅ BACKEND'E GİDEN TEK ALANLAR
-  const [title, setTitle] = useState("");
-  const [customerId, setCustomerId] = useState(null);
-  const [status, setStatus] = useState("DRAFT");
+    if (!totalAmount || Number(totalAmount) <= 0) {
+      e.totalAmount = "Teklif tutarı zorunludur.";
+    }
 
+    setErrors(e);
+    return Object.keys(e).length === 0;
+  };
+
+  // -----------------------
+  // SUBMIT
+  // -----------------------
   const handleCreateProposal = async (send = false) => {
-    if (!title || !customerId || !startDate) return;
+    if (!validateForm()) return;
 
     setLoading(true);
     try {
+      // 🔒 Decimal string (Prisma safe)
+      const normalizedAmount = totalAmount.toString().trim().replace(",", ".");
+
+      // 🔒 Date (timezone safe)
+      const isoDate = `${startDate.toISOString().slice(0, 10)}T00:00:00.000Z`;
+
       await proposalService.create({
-        title,
+        title: title.trim(),
         customerId,
-        validUntil: startDate.toISOString(),
-        status: send ? "SENT" : status.toUpperCase(),
-        totalAmount: totalAmount ? totalAmount : undefined,
+        validUntil: isoDate,
+        status: send ? "SENT" : status,
+        totalAmount: normalizedAmount,
       });
 
       router.push("/proposal/list");
@@ -75,105 +102,146 @@ const ProposalCreateContent = () => {
       <div className="col-xl-6">
         <div className="card stretch stretch-full">
           <div className="card-body">
-            {/* 🔹 Teklif Başlığı */}
+            {/* TITLE */}
             <div className="mb-4">
               <label className="form-label">
                 Teklif Başlığı <span className="text-danger">*</span>
               </label>
               <input
-                type="text"
-                className="form-control"
-                placeholder="Konu"
+                className={`form-control ${errors.title ? "is-invalid" : ""}`}
                 value={title}
-                onChange={(e) => setTitle(e.target.value)}
+                onChange={(e) => {
+                  setTitle(e.target.value);
+                  setErrors({ ...errors, title: null });
+                }}
               />
+              {errors.title && (
+                <div className="text-danger mt-1">{errors.title}</div>
+              )}
             </div>
 
+            {/* CUSTOMER */}
             <div className="mb-4">
               <label className="form-label">
                 Müşteri <span className="text-danger">*</span>
               </label>
-
               <select
-                className="form-control"
+                className={`form-control ${errors.customerId ? "is-invalid" : ""}`}
                 value={customerId || ""}
-                onChange={(e) => setCustomerId(e.target.value)}
+                onChange={(e) => {
+                  setCustomerId(e.target.value);
+                  setErrors({ ...errors, customerId: null });
+                }}
               >
                 <option value="">Seçiniz</option>
-
                 {customers.map((c) => (
                   <option key={c.id} value={c.id}>
                     {c.fullName}
                   </option>
                 ))}
               </select>
+              {errors.customerId && (
+                <div className="text-danger mt-1">{errors.customerId}</div>
+              )}
             </div>
 
-            {/* 🔹 Miktar (UI only) */}
-            {/* 🔹 Miktar */}
+            {/* AMOUNT */}
             <div className="mb-4">
-              <label className="form-label">Miktar</label>
+              <label className="form-label">
+                Miktar <span className="text-danger">*</span>
+              </label>
               <input
                 type="number"
-                className="form-control no-spinner"
-                placeholder="Örn: 1500"
                 step="0.01"
+                min="0"
+                className={`form-control no-spinner ${
+                  errors.totalAmount ? "is-invalid" : ""
+                }`}
                 value={totalAmount}
-                onChange={(e) => setTotalAmount(e.target.value)}
+                onChange={(e) => {
+                  setTotalAmount(e.target.value);
+                  setErrors({ ...errors, totalAmount: null });
+                }}
               />
+              {errors.totalAmount && (
+                <div className="text-danger mt-1">{errors.totalAmount}</div>
+              )}
             </div>
 
             <div className="row">
-              {/* 🔹 Geçerlilik Tarihi */}
+              {/* DATE */}
               <div className="col-lg-6 mb-4">
                 <label className="form-label">
                   Geçerlilik Tarihi <span className="text-danger">*</span>
                 </label>
-                <div className="input-group date">
-                  <DatePicker
-                    placeholderText="Geçerlilik Tarihi Seçin"
-                    selected={startDate}
-                    showPopperArrow={false}
-                    onChange={(date) => setStartDate(date)}
-                    className="form-control"
-                    popperPlacement="bottom-start"
-                    calendarContainer={({ children }) => (
-                      <div className="bg-white react-datepicker">
-                        {children}
-                        {renderFooter("start")}
-                      </div>
-                    )}
-                  />
-                </div>
+                <DatePicker
+                  selected={startDate}
+                  onChange={(d) => {
+                    setStartDate(d);
+                    setErrors({ ...errors, validUntil: null });
+                  }}
+                  className={`form-control ${
+                    errors.validUntil ? "is-invalid" : ""
+                  }`}
+                  calendarContainer={({ children }) => (
+                    <div className="bg-white react-datepicker">
+                      {children}
+                      {renderFooter("start")}
+                    </div>
+                  )}
+                />
+                {errors.validUntil && (
+                  <div className="text-danger mt-1">{errors.validUntil}</div>
+                )}
               </div>
 
-              {/* 🔹 Durum */}
+              {/* STATUS */}
               <div className="col-lg-6 mb-4">
-                <label className="form-label">Durum</label>
-                <SelectDropdown
-                  options={propsalStatusOptions}
-                  defaultSelect="Durum Seçin"
-                  onSelectOption={(option) => {
-                    setStatus(option?.value?.toUpperCase() ?? "DRAFT");
-                  }}
-                />
+                <label className="form-label">
+                  Durum <span className="text-danger">*</span>
+                </label>
+                <div
+                  className={`form-control p-0 ${
+                    errors.status ? "is-invalid" : ""
+                  }`}
+                >
+                  <SelectDropdown
+                    options={propsalStatusOptions}
+                    defaultSelect="Durum Seçin"
+                    onSelectOption={(opt) => {
+                      setStatus(opt?.value?.toUpperCase());
+                      setErrors({ ...errors, status: null });
+                    }}
+                  />
+                </div>
+                {errors.status && (
+                  <div className="text-danger mt-1">{errors.status}</div>
+                )}
               </div>
             </div>
           </div>
         </div>
       </div>
 
-      {/* 🔽 Teklif Kalemleri (UI ONLY – BACKEND'E GİTMİYOR) */}
+      {/* UI ONLY */}
       <AddProposal previtems={previtems} />
 
-      {/* 🔘 AKSİYON BUTONLARI */}
-    <div className="mt-4 d-flex gap-2 justify-content-end">
+      {/* ACTIONS */}
+      <div className="mt-4 d-flex gap-2">
         <button
-          className="btn btn-primary btn-lg px-5"
+          className="btn btn-outline-secondary"
+          onClick={() => handleCreateProposal(false)}
+          disabled={loading}
+        >
+          KAYDET
+        </button>
+
+        <button
+          className="btn btn-primary"
           onClick={() => handleCreateProposal(true)}
           disabled={loading}
         >
-          KAYDET 
+          KAYDET & GÖNDER
         </button>
       </div>
     </>
