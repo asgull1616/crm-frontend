@@ -83,9 +83,9 @@ const leadsGroupsOptions = [
 ]
 
 const taskStatusOptions = [
-    { value: 'inprogress', label: 'Inprogress', color: '#3454d1' },
+    { value: 'inprogress', label: 'Devam Ediyor', color: '#3454d1' },
     { value: 'pending', label: 'Pending', color: '#64748b' },
-    { value: 'completed', label: 'Completed', color: '#17c666' },
+    { value: 'completed', label: 'Tamamlandı', color: '#17c666' },
     { value: 'rejected', label: 'Rejected', color: '#ea4d4d' },
     { value: 'upcoming', label: 'Upcoming', color: '#ffa21d' },
     { value: 'auto', label: 'Auto', color: '#283c50' },

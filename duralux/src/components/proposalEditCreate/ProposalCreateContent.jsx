@@ -168,13 +168,19 @@ const ProposalCreateContent = () => {
 
       {/* 🔘 AKSİYON BUTONLARI */}
     <div className="mt-4 d-flex gap-2 justify-content-end">
-        <button
-          className="btn btn-primary btn-lg px-5"
-          onClick={() => handleCreateProposal(true)}
-          disabled={loading}
-        >
-          KAYDET 
-        </button>
+    <button
+  onClick={() => handleCreateProposal(true)}
+  disabled={loading}
+  style={{
+    backgroundColor: "#E93B62",
+    borderColor: "#E93B62",
+    color: "#fff"
+  }}
+  className="btn btn-lg px-5"
+>
+  {loading ? "Kaydediliyor..." : "KAYDET"}
+</button>
+
       </div>
     </>
   );
