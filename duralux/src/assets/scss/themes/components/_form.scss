@@ -141,8 +141,8 @@ input[type="radio"] {
 	}
 	.custom-control-input:checked ~ .custom-control-label::before {
 		color: $white;
-		border-color: $primary;
-		background-color: $primary;
+		border-color: #e93b62;
+		background-color: #e93b62;
 	}
 }
 .custom-control-label:before,

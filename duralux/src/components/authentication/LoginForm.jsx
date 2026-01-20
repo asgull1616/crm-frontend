@@ -95,27 +95,38 @@ const LoginForm = ({ registerPath, resetPath }) => {
             </div>
           </div>
           <div>
-            <Link href={resetPath} className="fs-11 text-primary">
+            <Link
+              href={resetPath}
+              className="fs-11"
+              style={{ color: "#E93B62" }}
+            >
               Şifremi Unuttum
             </Link>
+
           </div>
         </div>
 
         <div className="mt-5">
           <button
             type="submit"
-            className="btn btn-lg btn-primary w-100"
+            className="btn btn-lg w-100"
+            style={{
+              backgroundColor: "#E93B62",
+              borderColor: "#E93B62",
+              color: "#fff"
+            }}
             disabled={loading}
           >
             {loading ? "Giriş Yapılıyor..." : "Giriş Yap"}
           </button>
+
         </div>
       </form>
 
       <div className="mt-5 text-muted">
-        <span> Hesabın Yoksa</span>
+        <span> Hesabın Yoksa </span>
         <Link href={registerPath} className="fw-bold">
-          {" "}
+          {"  "}
           Kayıt Ol{" "}
         </Link>
       </div>

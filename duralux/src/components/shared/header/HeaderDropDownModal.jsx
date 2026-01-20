@@ -42,7 +42,7 @@ const HeaderDropDownModal = () => {
     <div className="dropdown nxl-h-item nxl-lavel-menu">
       <Link
         href="#"
-        className="avatar-text avatar-md text-white"
+        className="avatar-text avatar-md text-white "
         style={{ backgroundColor: '#E92B63' }}
         data-bs-toggle="dropdown"
         data-bs-auto-close="outside"
