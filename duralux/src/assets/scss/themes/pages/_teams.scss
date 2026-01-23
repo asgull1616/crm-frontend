@@ -1,0 +1,29 @@
+/* =========================
+   Teams Page Styles
+========================= */
+
+.team-avatar-circle {
+  width: 37px;
+  height: 37px;
+  border-radius: 50%;
+  background-color: #E93B62;
+  color: #fff;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  font-weight: 700;
+  font-size: 14px;
+  line-height: 1;
+
+  flex-shrink: 0;
+}
+
+.table .btn-sm {
+  width: 32px;
+  height: 32px;
+  padding: 0;
+}
+
+
