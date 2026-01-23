@@ -1,0 +1,114 @@
+.employee-card {
+    background-color: #ffffff;
+    border-radius: 14px;
+    padding: 20px;
+    border: 1px solid #e6e8ec;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
+    transition: all .25s ease;
+    height: 100%;
+}
+
+.employee-card:hover {
+    box-shadow: 0 10px 24px rgba(0, 0, 0, 0.1);
+    transform: translateY(-3px);
+}
+
+.employee-avatar-wrapper {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 12px;
+    position: relative;
+}
+
+.employee-image {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    object-fit: cover;
+    background-color: #f3f4f6;
+    border: 3px solid #fff;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, .08);
+}
+
+/* STATUS DOT */
+.employee-status {
+    position: absolute;
+    bottom: 6px;
+    right: calc(50% - 48px);
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    border: 2px solid #fff;
+
+    &.active {
+        background: #22c55e;
+    }
+
+    &.izinli {
+        background: #facc15;
+    }
+
+    &.pasif {
+        background: #ef4444;
+    }
+}
+
+/* NAME & ROLE */
+.employee-name {
+    font-size: 30px;
+    font-weight: 600;
+    color: #111827;
+    text-align: center;
+    margin-bottom: 2px;
+}
+
+.employee-role {
+    font-size: 16px;
+    color: #6b7280;
+    text-align: center;
+    margin-bottom: 12px;
+}
+
+/* TEAMS */
+.employee-teams {
+    margin-top: 15px;
+    padding-top: 15px;
+    border-top: 1px dashed #e5e7eb;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    justify-content: center;
+}
+
+.employee-team-item {
+    font-size: 12px;
+    padding: 6px 12px;
+    background-color: #f1f5f9;
+    border-radius: 999px;
+    color: #374151;
+}
+
+.employee-profile-btn {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    background: transparent;
+    border: none;
+    color: #9ca3af;
+    cursor: pointer;
+    transition: color .2s ease;
+}
+
+.employee-profile-btn:hover {
+    color: #111827;
+    background: #f1f5f9;
+    border-radius: 50%;
+
+}
+
+
+.employees-page {
+    background-color: #f4f5f7;
+    min-height: 100vh;
+    padding: 24px;
+}

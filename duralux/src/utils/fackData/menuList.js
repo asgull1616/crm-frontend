@@ -59,7 +59,7 @@ export const menuList = [
  {
   id: 6,
   name: "Ekipler",
-  path: "/teams",
+  path: "#",
   icon: "feather-users",
   dropdownMenu: [
     {
