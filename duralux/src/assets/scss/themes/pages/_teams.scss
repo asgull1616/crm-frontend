@@ -26,4 +26,18 @@
   padding: 0;
 }
 
+//ekiplerdeki izinler kısmındaki çizgi
+.section-divider {
+  height: 2px;
+  width: 100%;
+  background: linear-gradient(
+    to right,
+    #e5e7eb,
+    #f1f5f9,
+    #e5e7eb
+  );
+  border-radius: 2px;
+  margin-bottom: 24px;
+}
+
 

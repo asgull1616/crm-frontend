@@ -1,8 +1,8 @@
 'use client';
 import PageHeader from '@/components/shared/pageHeader/PageHeader';
 
-import EmployeeCard from '@/components/teams/EmployeeCard';
-import EmployeeHeader from '@/components/teams/EmployeeHeader';
+import EmployeeCard from '@/components/teams/employee/EmployeeCard';
+import EmployeeHeader from '@/components/teams/employee/EmployeeHeader';
 
 const TeamsEmployeesPage = () => {
     const employees = [
