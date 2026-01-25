@@ -57,6 +57,14 @@ const LeavesCalendar = () => {
 
     const daysInMonth = new Date(year, month + 1, 0).getDate();
 
+    const [showPicker, setShowPicker] = useState(false);
+    const [tempMonth, setTempMonth] = useState(currentDate.getMonth());
+    const [tempYear, setTempYear] = useState(currentDate.getFullYear());
+
+    const baseYear = new Date().getFullYear();
+    const yearOptions = Array.from({ length: 11 }, (_, i) => baseYear - 5 + i);
+
+
     const prevMonth = () =>
         setCurrentDate(new Date(year, month - 1));
 
@@ -66,18 +74,90 @@ const LeavesCalendar = () => {
     return (
         <div className="card">
             {/* HEADER */}
-            <div className="card-header d-flex justify-content-between align-items-center">
-                <button className="btn btn-light btn-sm" onClick={prevMonth}>
-                    ←
+            <div className="card-header d-flex justify-content-between align-items-center position-relative">
+                <button
+                    className="btn btn-light btn-sm"
+                    onClick={prevMonth}
+                    disabled={showPicker}
+                >
+                 ←
                 </button>
 
-                <h5 className="mb-0 fw-bold">
+                <h5
+                    className="mb-0 fw-bold d-flex align-items-center gap-1"
+                    style={{ cursor: 'pointer' }}
+                    onClick={() => {
+                        setTempMonth(month);
+                        setTempYear(year);
+                        setShowPicker(!showPicker);
+                    }}
+                >
                     {monthNames[month]} {year}
+                    <span style={{ fontSize: 18 }}>↓</span>
                 </h5>
 
-                <button className="btn btn-light btn-sm" onClick={nextMonth}>
+                <button
+                    className="btn btn-light btn-sm"
+                    onClick={nextMonth}
+                    disabled={showPicker}
+                >
                     →
-                </button>
+                </button>{showPicker && (
+                    <div
+                        className="position-absolute bg-white shadow rounded p-3"
+                        style={{
+                            top: '60px',
+                            left: '50%',
+                            transform: 'translateX(-50%)',
+                            zIndex: 20,
+                            width: 240,
+                        }}
+                    >
+                        {/* AY */}
+                        <div className="mb-2">
+                            <label className="form-label small text-muted">Ay</label>
+                            <select
+                                className="form-select"
+                                value={tempMonth}
+                                onChange={(e) => setTempMonth(Number(e.target.value))}
+                            >
+                                {monthNames.map((m, i) => (
+                                    <option key={i} value={i}>{m}</option>
+                                ))}
+                            </select>
+                        </div>
+
+                        {/* YIL */}
+                        <div className="mb-3">
+                            <label className="form-label small text-muted">Yıl</label>
+                            <select
+                                className="form-select"
+                                value={tempYear}
+                                onChange={(e) => setTempYear(Number(e.target.value))}
+                            >
+                                {yearOptions.map((y) => (
+                                    <option key={y} value={y}>
+                                        {y}
+                                    </option>
+                                ))}
+                            </select>
+                        </div>
+
+
+                        {/* UYGULA */}
+                        <button
+                            className="btn btn-primary btn-sm w-100"
+                            onClick={() => {
+                                setCurrentDate(new Date(tempYear, tempMonth));
+                                setShowPicker(false);
+                            }}
+                        >
+                            Uygula 
+                        </button>
+                    </div>
+                )}
+
+
             </div>
 
             {/* BODY */}
@@ -103,7 +183,7 @@ const LeavesCalendar = () => {
                         const day = i + 1;
 
                         const dateObj = new Date(year, month, day);
-                        const isSunday = dateObj.getDay() === 0; 
+                        const isSunday = dateObj.getDay() === 0;
 
                         const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
 
