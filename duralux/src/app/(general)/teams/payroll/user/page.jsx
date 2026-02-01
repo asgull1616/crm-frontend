@@ -5,9 +5,9 @@ import UserSalaryCard from '@/components/teams/payroll/UserSalaryCard'
 import SalarySummaryTable from '@/components/teams/payroll/SalarySummaryTable'
 
 const payrollMock = [
-    { id: '1', month: 2, year: 2026, netPayable: 33000, status: 'PENDING' },
-    { id: '2', month: 1, year: 2026, netPayable: 31500, status: 'PAID' },
-    { id: '3', month: 12, year: 2025, netPayable: 30000, status: 'PAID' },
+    { id: '1', month: 2, year: 2026, netPayable: 200000, status: 'PENDING' },
+    { id: '2', month: 1, year: 2026, netPayable: 150000, status: 'PAID' },
+    { id: '3', month: 12, year: 2025, netPayable: 150000, status: 'PAID' },
 ]
 
 export default function PaymentHistoryPage() {

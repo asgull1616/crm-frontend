@@ -82,24 +82,18 @@ export const menuList = [
     },
     {
       id: 4,
-      name: "Puantaj & Mesai",
-      path: "/teams/attendance",
-      subdropdownMenu: false,
-    },
-    {
-      id: 5,
       name: "İzinler",
       path: "/teams/leaves",
       subdropdownMenu: false,
     },
     {
-      id: 6,
+      id: 5,
       name: "Maaş & Ödemeler",
       path: "/teams/payroll",
       subdropdownMenu: false,
     },
     {
-      id: 7,
+      id: 6,
       name: "Ekip Oluştur",
       path: "/teams/create",
       subdropdownMenu: false,

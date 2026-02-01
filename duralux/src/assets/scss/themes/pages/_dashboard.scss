@@ -107,4 +107,38 @@
 
 		}
 	}
+}.card {
+  box-sizing: border-box;
+}
+
+
+
+.teams-stat-card {
+  transition: 
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+
+  box-shadow: 0 6px 16px rgba(0,0,0,0.12);
+
+  &:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 28px rgba(0,0,0,0.18);
+
+    .stat-icon {
+      transform: scale(1.08);
+    }
+  }
+
+  .stat-icon {
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.25);
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    transition: transform 0.2s ease;
+  }
 }
