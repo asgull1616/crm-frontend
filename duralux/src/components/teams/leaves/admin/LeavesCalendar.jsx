@@ -1,39 +1,6 @@
 'use client';
 
-import { useState } from 'react';
-
-const leaves = [
-    {
-        name: 'Ayşegül',
-        start: '2026-02-10',
-        end: '2026-02-14',
-        color: 'bg-danger',
-    },
-    {
-        name: 'Aley',
-        start: '2026-02-10',
-        end: '2026-02-14',
-        color: 'bg-danger',
-    },
-    {
-        name: 'Sude',
-        start: '2026-02-10',
-        end: '2026-02-14',
-        color: 'bg-warning',
-    },
-    {
-        name: 'Sude',
-        start: '2026-02-22',
-        end: '2026-02-22',
-        color: 'bg-warning',
-    },
-    {
-        name: 'Ahmet',
-        start: '2026-03-03',
-        end: '2026-03-04',
-        color: 'bg-primary',
-    },
-];
+import { useState, useEffect } from 'react';
 
 const monthNames = [
     'Ocak', 'Şubat', 'Mart', 'Nisan', 'Mayıs', 'Haziran',
@@ -42,11 +9,26 @@ const monthNames = [
 
 const weekDays = ['Pzt', 'Sal', 'Çar', 'Per', 'Cum', 'Cts', 'Paz'];
 
-const LeavesCalendar = () => {
-    const today = new Date();
-    const todayStr = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
+const LeavesCalendar = ({ leaves = [] }) => {
+    console.log('📅 CALENDAR LEAVES GELEN DATA:', leaves);
+    const [currentDate, setCurrentDate] = useState(new Date(2026, 1)); // default Şubat 2026
 
-    const [currentDate, setCurrentDate] = useState(new Date(2026, 1)); // Şubat 2026
+    /* 🔥 ONAYLANAN İZNİN AYINA OTOMATİK GEÇ */
+useEffect(() => {
+    if (leaves.length > 0 && leaves[0].start) {
+        const firstLeaveDate = new Date(leaves[0].start);
+
+        if (!isNaN(firstLeaveDate.getTime())) {
+            setCurrentDate(
+                new Date(
+                    firstLeaveDate.getFullYear(),
+                    firstLeaveDate.getMonth()
+                )
+            );
+        }
+    }
+}, [leaves]);
+
 
     const year = currentDate.getFullYear();
     const month = currentDate.getMonth();
@@ -54,22 +36,17 @@ const LeavesCalendar = () => {
     const firstDayOfMonth = new Date(year, month, 1).getDay();
     const startOffset = (firstDayOfMonth + 6) % 7;
 
-
     const daysInMonth = new Date(year, month + 1, 0).getDate();
 
     const [showPicker, setShowPicker] = useState(false);
-    const [tempMonth, setTempMonth] = useState(currentDate.getMonth());
-    const [tempYear, setTempYear] = useState(currentDate.getFullYear());
+    const [tempMonth, setTempMonth] = useState(month);
+    const [tempYear, setTempYear] = useState(year);
 
     const baseYear = new Date().getFullYear();
     const yearOptions = Array.from({ length: 11 }, (_, i) => baseYear - 5 + i);
 
-
-    const prevMonth = () =>
-        setCurrentDate(new Date(year, month - 1));
-
-    const nextMonth = () =>
-        setCurrentDate(new Date(year, month + 1));
+    const prevMonth = () => setCurrentDate(new Date(year, month - 1));
+    const nextMonth = () => setCurrentDate(new Date(year, month + 1));
 
     return (
         <div className="card">
@@ -80,7 +57,7 @@ const LeavesCalendar = () => {
                     onClick={prevMonth}
                     disabled={showPicker}
                 >
-                 ←
+                    ←
                 </button>
 
                 <h5
@@ -102,7 +79,9 @@ const LeavesCalendar = () => {
                     disabled={showPicker}
                 >
                     →
-                </button>{showPicker && (
+                </button>
+
+                {showPicker && (
                     <div
                         className="position-absolute bg-white shadow rounded p-3"
                         style={{
@@ -136,15 +115,11 @@ const LeavesCalendar = () => {
                                 onChange={(e) => setTempYear(Number(e.target.value))}
                             >
                                 {yearOptions.map((y) => (
-                                    <option key={y} value={y}>
-                                        {y}
-                                    </option>
+                                    <option key={y} value={y}>{y}</option>
                                 ))}
                             </select>
                         </div>
 
-
-                        {/* UYGULA */}
                         <button
                             className="btn btn-primary btn-sm w-100"
                             onClick={() => {
@@ -152,12 +127,10 @@ const LeavesCalendar = () => {
                                 setShowPicker(false);
                             }}
                         >
-                            Uygula 
+                            Uygula
                         </button>
                     </div>
                 )}
-
-
             </div>
 
             {/* BODY */}
@@ -173,7 +146,7 @@ const LeavesCalendar = () => {
 
                 {/* GÜNLER */}
                 <div className="leave-calendar-grid">
-                    {/* BOŞ HÜCRELER (AYIN 1'İNDEN ÖNCE) */}
+                    {/* BOŞ HÜCRELER */}
                     {Array.from({ length: startOffset }).map((_, i) => (
                         <div key={`empty-${i}`} className="calendar-cell empty" />
                     ))}
@@ -181,15 +154,34 @@ const LeavesCalendar = () => {
                     {/* AYIN GÜNLERİ */}
                     {Array.from({ length: daysInMonth }).map((_, i) => {
                         const day = i + 1;
-
                         const dateObj = new Date(year, month, day);
                         const isSunday = dateObj.getDay() === 0;
 
-                        const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+                        const cellDate = new Date(year, month, day);
+const dayLeaves = leaves.filter(l => {
+    if (!l.start || !l.end) return false;
 
-                        const dayLeaves = leaves.filter(
-                            l => dateStr >= l.start && dateStr <= l.end
-                        );
+    const start = new Date(l.start);
+    const end = new Date(l.end);
+    const current = new Date(year, month, day);
+
+    // Geçersiz tarih koruması
+    if (
+        isNaN(start.getTime()) ||
+        isNaN(end.getTime())
+    ) return false;
+
+    // Saatleri sıfırla (GÜN BAZLI karşılaştırma)
+    start.setHours(0, 0, 0, 0);
+    end.setHours(0, 0, 0, 0);
+    current.setHours(0, 0, 0, 0);
+
+    return current >= start && current <= end;
+});
+
+
+
+
 
                         return (
                             <div
@@ -201,17 +193,18 @@ const LeavesCalendar = () => {
                                 {dayLeaves.map((leave, idx) => (
                                     <div
                                         key={idx}
-                                        className={`calendar-leave ${leave.color}`}
+                                        className={`calendar-leave with-name ${leave.color || 'default-leave'}`}
+
+                                        title={leave.employee}
                                     >
-                                        {leave.name}
+                                        {leave.employee}
                                     </div>
                                 ))}
                             </div>
                         );
+
                     })}
-
                 </div>
-
             </div>
         </div>
     );

@@ -62,12 +62,12 @@ export const menuList = [
   path: "#",
   icon: "feather-users",
   dropdownMenu: [
-    {
-      id: 1,
-      name: "Genel Bakış",
-      path: "/teams",
-      subdropdownMenu: false,
-    },
+    // {
+    //   id: 1,
+    //   name: "Genel Bakış",
+    //   path: "/teams",
+    //   subdropdownMenu: false,
+    // },
     {
       id: 2,
       name: "Ekip Listesi",
@@ -92,12 +92,12 @@ export const menuList = [
       path: "/teams/payroll",
       subdropdownMenu: false,
     },
-    {
-      id: 6,
-      name: "Ekip Oluştur",
-      path: "/teams/create",
-      subdropdownMenu: false,
-    },
+    // {
+    //   id: 6,
+    //   name: "Ekip Oluştur",
+    //   path: "/teams/create",
+    //   subdropdownMenu: false,
+    // },
   ],
 },
 

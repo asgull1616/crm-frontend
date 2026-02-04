@@ -6,7 +6,7 @@ export const teamService = {
   // TEAMS
   // --------------------------------------------------
 
-  // 👥 Ekipleri listele (pagination destekli)
+  // 👥 Ekipleri listele (pagination destekli)    
   list: (params?: { page?: number; limit?: number }) =>
     api.get("teams", { params }),
 

@@ -147,7 +147,7 @@ const TeamsEditContent = ({ teamId }) => {
                 ))}
               </div>
             )}
-
+<div className="d-flex justify-content-end mt-3">
             <button
               className="btn mt-3 text-white"
               disabled={selectedUserIds.length === 0}
@@ -164,7 +164,7 @@ const TeamsEditContent = ({ teamId }) => {
             >
               Üye Ekle
             </button>
-
+</div>  
           </div>
         </div>
       </div>

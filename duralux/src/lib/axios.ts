@@ -1,7 +1,10 @@
 import axios from "axios";
+console.log('🧪 GERÇEK AXIOS INTERCEPTOR ÇALIŞTI');
 
 const api = axios.create({
   baseURL: process.env.NEXT_PUBLIC_API_URL + "/api",
+  // baseURL: process.env.NEXT_PUBLIC_API_URL + "/api",
+
   headers: { "Content-Type": "application/json" },
 });
 

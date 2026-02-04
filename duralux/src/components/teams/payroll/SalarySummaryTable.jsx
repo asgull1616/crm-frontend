@@ -19,7 +19,7 @@ const monthNames = [
 
 export default function SalarySummaryTable({ data = [], mode = 'user' }) {
   return (
-    <div className="table-responsive">
+    <div className="table-responsive ">
       <table className="table table-hover align-middle">
         <thead className="table-light">
           <tr>

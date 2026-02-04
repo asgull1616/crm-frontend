@@ -3,10 +3,21 @@
 import React, { useEffect, useState } from 'react';
 import Table from '@/components/shared/table/Table';
 import Dropdown from '@/components/shared/Dropdown';
-import { FiMoreHorizontal, FiEye, FiTrash2, FiEdit, FiUserPlus, FiBarChart2 } from 'react-icons/fi';
+import {
+  FiMoreHorizontal,
+  FiEye,
+  FiTrash2,
+  FiEdit,
+  FiUserPlus,
+} from 'react-icons/fi';
 import { teamService } from '@/lib/services/team.service';
+import { authService } from '@/lib/services/auth.service';
 import { useRouter } from 'next/navigation';
-const AvatarStack = ({ members, max = 3 }) => {
+
+/* ---------------------------------------
+   Avatar Stack
+--------------------------------------- */
+const AvatarStack = ({ members = [], max = 3 }) => {
   const visible = members.slice(0, max);
   const extra = members.length - visible.length;
 
@@ -18,7 +29,6 @@ const AvatarStack = ({ members, max = 3 }) => {
             key={m.id}
             src={m.avatarUrl}
             className="avatar"
-            data-bs-toggle="tooltip"
             title={m.name || m.email}
           />
         ) : (
@@ -35,11 +45,24 @@ const AvatarStack = ({ members, max = 3 }) => {
   );
 };
 
+/* ---------------------------------------
+   Teams Table
+--------------------------------------- */
 const TeamsTable = () => {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [isAdmin, setIsAdmin] = useState(false);
+
   const router = useRouter();
 
+  /* --------- USER ROLE --------- */
+  useEffect(() => {
+    authService.me().then((res) => {
+      setIsAdmin(res.data.role === 'ADMIN');
+    });
+  }, []);
+
+  /* --------- TEAMS LIST --------- */
   useEffect(() => {
     teamService
       .list()
@@ -47,7 +70,10 @@ const TeamsTable = () => {
       .finally(() => setLoading(false));
   }, []);
 
+  /* --------- DELETE (ADMIN ONLY) --------- */
   const handleDelete = async (teamId) => {
+    if (!isAdmin) return;
+
     const ok = window.confirm('Bu ekibi silmek istiyor musunuz?');
     if (!ok) return;
 
@@ -55,6 +81,7 @@ const TeamsTable = () => {
     setData((prev) => prev.filter((t) => t.id !== teamId));
   };
 
+  /* --------- TABLE COLUMNS --------- */
   const columns = [
     {
       accessorKey: 'name',
@@ -64,24 +91,17 @@ const TeamsTable = () => {
           <div className="team-avatar-circle">
             {row.original.name.slice(0, 2).toUpperCase()}
           </div>
-          <div>
-            <div className="fw-semibold">{row.original.name}</div>
-          </div>
-
+          <div className="fw-semibold">{row.original.name}</div>
         </div>
       ),
     },
-    
-
-{
-  accessorKey: 'members',
-  header: () => 'Üyeler',
-  cell: ({ row }) => (
-    <AvatarStack members={row.original.members} />
-  ),
-},
-
-
+    {
+      accessorKey: 'members',
+      header: () => 'Üyeler',
+      cell: ({ row }) => (
+        <AvatarStack members={row.original.members} />
+      ),
+    },
     {
       accessorKey: 'createdAt',
       header: () => 'Oluşturulma Tarihi',
@@ -94,49 +114,56 @@ const TeamsTable = () => {
       meta: { headerClassName: 'text-end' },
       cell: ({ row }) => (
         <div className="d-flex justify-content-end align-items-center gap-1">
-
+          {/* HERKES */}
           <button
             className="btn btn-sm btn-action"
-
             title="Detay Göster"
-            onClick={() => router.push(`/teams/view/${row.original.id}`)}
+            onClick={() =>
+              router.push(`/teams/view/${row.original.id}`)
+            }
           >
             <FiEye size={20} />
           </button>
-          <button
-            className="btn btn-sm btn-action"
-            title="Üye Ekle"
-            onClick={() => router.push(`/teams/edit/${row.original.id}`)}
-          >
-            <FiUserPlus size={20} />
-          </button>
 
+          {/* SADECE ADMIN */}
+          {isAdmin && (
+            <>
+              <button
+                className="btn btn-sm btn-action"
+                title="Üye Ekle"
+                onClick={() =>
+                  router.push(`/teams/edit/${row.original.id}`)
+                }
+              >
+                <FiUserPlus size={20} />
+              </button>
 
-          <Dropdown
-            triggerIcon={<FiMoreHorizontal size={24} />}
-            triggerClassName="btn btn-sm btn-action"
-            dropdownItems={[
-              {
-                label: 'Güncelle',
-                icon: <FiEdit size={20} />,
-                onClick: () => router.push(`/teams/edit/${row.original.id}`),
-              },
-              {
-                label: 'Sil',
-                icon: <FiTrash2 size={20} />,
-                onClick: () => handleDelete(row.original.id),
-              },
-            ]}
-          />
-
-
+              <Dropdown
+                triggerIcon={<FiMoreHorizontal size={24} />}
+                triggerClassName="btn btn-sm btn-action"
+                dropdownItems={[
+                  {
+                    label: 'Güncelle',
+                    icon: <FiEdit size={20} />,
+                    onClick: () =>
+                      router.push(`/teams/edit/${row.original.id}`),
+                  },
+                  {
+                    label: 'Sil',
+                    icon: <FiTrash2 size={20} />,
+                    onClick: () =>
+                      handleDelete(row.original.id),
+                  },
+                ]}
+              />
+            </>
+          )}
         </div>
       ),
     },
-
   ];
 
-  if (!loading && data && data.length === 0) {
+  if (!loading && data.length === 0) {
     return (
       <div className="text-center py-5 text-muted">
         Henüz ekip oluşturulmadı.

@@ -30,7 +30,7 @@ export default function PaymentHistoryPage() {
                     <UserSalaryCard salary={currentMonthSalary} />
                     {historySalaries.length > 0 && (
                         <div className="card user-payroll-history">
-                            <div className="card-header user-section-title">
+                            <div className="card-header user-section-title ">
                                 Ödeme Geçmişim
                             </div>
 

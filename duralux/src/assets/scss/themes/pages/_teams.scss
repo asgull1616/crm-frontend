@@ -334,3 +334,49 @@
   background: #E93B62;
   color: white;
 }
+
+
+
+//TEAM CREATE İÇİN KUTU AYARLARI
+
+.team-field {
+  display: grid;
+  grid-template-columns: 70px 1fr; 
+  align-items: start;
+  column-gap: 14px;
+}
+
+.team-field-label {
+  margin: 10px 0 0;
+  font-weight: 500;
+  font-size: 14px;
+  color: #000000;
+  white-space: nowrap;
+}
+
+.team-field-control {
+  position: relative;
+}
+
+.team-field-control::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 18px;
+  background: rgba(233, 59, 98, 0.22);
+  border: 1px solid rgba(233, 59, 98, 0.35);
+  border-right: 0;
+  border-radius: 8px 0 0 8px;
+  pointer-events: none;
+}
+
+.team-textarea {
+  min-height: 44px;   
+  resize: vertical;   /* isterse kullanıcı büyütebilsin */
+}
+
+
+
+
