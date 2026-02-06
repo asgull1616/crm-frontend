@@ -40,16 +40,44 @@ const EmployeeCard = ({ employee }) => {
 
             <div className="employee-role">{role}</div>
 
-            <div className="employee-teams">
-                {teams.map(team => (
-                    <span key={team.id} className="employee-team-item">
-                        {team.name}
+            {/* <div className="employee-teams mt-2">
+                {employee.teams.map((team) => (
+                    <span
+                        key={team}
+                        className="badge badge-soft-danger me-1"
+                    >
+                        {team}
                     </span>
                 ))}
-            </div>
+            </div> */}
+  <div className="employee-teams mt-2">
+  {employee.teams.map((team) => (
+    <span
+      key={team}
+      className="employee-team-item"
+    >
+      {team}
+    </span>
+  ))}
+</div>
+
+
+
 
         </div>
     );
 };
 
 export default EmployeeCard;
+
+
+{/* <div className="employee-teams mt-2">
+  {employee.teams.map((team) => (
+    <span
+      key={team}
+      className="badge rounded-pill bg-light text-dark border"
+    >
+      {team}
+    </span>
+  ))}
+</div> */}
