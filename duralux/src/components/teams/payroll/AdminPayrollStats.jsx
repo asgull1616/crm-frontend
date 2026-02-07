@@ -1,26 +1,53 @@
 export default function AdminPayrollStats({ data }) {
-    const total = data.reduce((a, b) => a + b.netPayable, 0)
-    const paid = data.filter(i => i.status === 'PAID').length
-    const pending = data.filter(i => i.status === 'PENDING').length
+  const totalAmount = data.reduce(
+    (sum, item) => sum + (item.netPayable ?? item.netSalary ?? 0),
+    0
+  )
 
-    return (
-        <div className="row g-3">
-            <StatCard title="Toplam Bordro" value="64.500 ₺" color="pink" />
-            <StatCard title="Ödenen" value="1" color="green" />
-            <StatCard title="Bekleyen" value="1" color="orange" />
-            <StatCard title="Çalışan" value="2" color="blue" />
+  const paidCount = data.filter(i => i.status === 'PAID').length
+  const pendingCount = data.filter(i => i.status === 'PENDING').length
 
-        </div>
-    )
+  const employeeCount = new Set(
+    data.map(i => i.user?.id).filter(Boolean)
+  ).size
+
+  return (
+    <div className="row g-3">
+      <StatCard
+        title="Toplam Bordro"
+        value={`${totalAmount.toLocaleString()} ₺`}
+        color="pink"
+      />
+
+      <StatCard
+        title="Ödenen"
+        value={paidCount}
+        color="green"
+      />
+
+      <StatCard
+        title="Bekleyen"
+        value={pendingCount}
+        color="orange"
+      />
+
+      <StatCard
+        title="Çalışan"
+        value={employeeCount}
+        color="blue"
+      />
+    </div>
+  )
 }
 
 function StatCard({ title, value, color }) {
-    return (
-        <div className="col-md-3">
-            <div className={`admin-stat-card ${color}`}>
-                <div className="stat-title">{title}</div>
-                <div className="stat-value">{value}</div>
-            </div>
-        </div>
-    )
+  return (
+    <div className="col-md-3">
+      <div className={`admin-stat-card ${color}`}>
+        <div className="stat-title">{title}</div>
+        <div className="stat-value">{value}</div>
+      </div>
+    </div>
+  )
 }
+

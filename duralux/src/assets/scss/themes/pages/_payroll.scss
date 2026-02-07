@@ -119,3 +119,42 @@
   margin-top: 8px;
 }
 
+
+//Bordo formu için
+ .modal-backdrop-custom {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.45);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+}
+
+.modal-card {
+    background: #fff;
+    border-radius: 14px;
+    width: 520px;
+    max-width: 90%;
+    box-shadow: 0 20px 40px rgba(0,0,0,.2);
+}
+
+.modal-header,
+.modal-footer {
+    padding: 16px 20px;
+    border-bottom: 1px solid #eee;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.modal-footer {
+    border-top: 1px solid #eee;
+    border-bottom: none;
+}
+
+.modal-body {
+    padding: 20px;
+}
+
+
