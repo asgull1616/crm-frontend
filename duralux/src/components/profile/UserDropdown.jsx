@@ -138,7 +138,7 @@ const UserDropdown = () => {
               Profilim
             </Link>
 
-            <Link href="/logout" 
+            <Link href="/authentication/login/minimal" 
                style={{...styles.menuLink, ...styles.signOutLink}}
                onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#fef2f2'}
                onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}

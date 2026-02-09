@@ -85,11 +85,14 @@
 }
 
 .employee-team-item {
-  background: linear-gradient(135deg, #fde2ea, #fff);
-  border: 1px solid rgba(231, 38, 80, 0.25);
+  // background: linear-gradient(135deg, #fde2ea, #fff);
+  // border: 1px solid rgba(231, 38, 80, 0.25);
   padding: 6px 12px;
   border-radius: 999px;
   font-size: 13px;
+  background: rgba(233,59,98,.08);
+  color: #E93B62;
+
 }
 
 .employee-profile-btn {
