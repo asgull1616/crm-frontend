@@ -6,34 +6,34 @@ import { salesPipelineChartOption } from '@/utils/chartsLogic/salesPipelineChart
 import { salesPipelineData } from '@/utils/fackData/salesPipelineData'
 import CardLoader from '@/components/shared/CardLoader'
 import useCardTitleActions from '@/hooks/useCardTitleActions'
+
 const ReactApexChart = dynamic(() => import('react-apexcharts'), { ssr: false })
 
 const SalesPipelineChart = ({ isFooterShow }) => {
     const [activeTab, setActiveTab] = useState("Leads")
     const { refreshKey, isRemoved, isExpanded, handleRefresh, handleExpand, handleDelete } = useCardTitleActions();
 
-    if (isRemoved) {
-        return null;
-    }
+    if (isRemoved) return null;
+
     return (
-        <div className="col-xxl-8">
-            <div className={`card stretch stretch-full ${isExpanded ? "card-expand" : ""} ${refreshKey ? "card-loading" : ""}`}>
+        <div className="col-xxl-7"> {/* Yanına Trend Chart gelebilmesi için alanı biraz daralttık */}
+            <div className={`card stretch stretch-full border-0 shadow-sm ${isExpanded ? "card-expand" : ""} ${refreshKey ? "card-loading" : ""}`}>
                 <CardHeader title={"Sales Pipeline"} refresh={handleRefresh} remove={handleDelete} expanded={handleExpand} />
                 <div className="card-body custom-card-action">
-                    <ul className="nav mb-4 gap-4 sales-pipeline-tabs" role="tablist">
+                    {/* Tab yapısını daha temiz ve modern hale getirdik */}
+                    <ul className="nav mb-4 gap-3 sales-pipeline-tabs border-0" role="tablist">
                         {
                             salesPipelineData.map(({ deals, name, revenue }) => {
                                 return (
                                     <li key={name} className="nav-item" role="presentation">
                                         <a href="#"
-                                            onClick={() => setActiveTab(name)}
-                                            className={`nav-link text-start ${name === activeTab ? "active" : ""}`}
-                                            data-bs-toggle="tab"
-                                            data-bs-target={`#${name}`}
+                                            onClick={(e) => { e.preventDefault(); setActiveTab(name); }}
+                                            className={`nav-link text-start rounded-3 border-0 ${name === activeTab ? "bg-soft-primary" : "bg-light"}`}
                                             role="tab"
+                                            style={{ minWidth: '120px', transition: 'all 0.3s' }}
                                         >
-                                            <span className="fw-semibold text-dark d-block">{name}</span>
-                                            <span className="amount fs-18 fw-bold my-1 d-block">${revenue}</span>
+                                            <span className="text-muted fs-11 text-uppercase fw-semibold d-block">{name}</span>
+                                            <span className="amount fs-18 fw-bold my-1 d-block text-dark">${revenue}</span>
                                             <span className="deals fs-12 text-muted d-block">{deals} Deals</span>
                                         </a>
                                     </li>
@@ -52,20 +52,20 @@ const SalesPipelineChart = ({ isFooterShow }) => {
                 </div>
                 {
                     isFooterShow &&
-                    <div className="card-footer d-md-flex flex-wrap p-4 pt-5 border-top border-gray-5">
-                        <div className="flex-fill mb-4 mb-md-0 pb-2 pb-md-0">
-                            <p className="fs-11 fw-semibold text-uppercase text-primary mb-2">Current</p>
-                            <h2 className="fs-20 fw-bold mb-0">$65,658 USD</h2>
+                    <div className="card-footer d-flex align-items-center justify-content-between p-4 bg-transparent border-top border-gray-5">
+                        <div className="text-center flex-fill">
+                            <p className="fs-11 fw-bold text-uppercase text-muted mb-1">Current</p>
+                            <h2 className="fs-18 fw-bold mb-0 text-primary">$65,658</h2>
                         </div>
-                        <div className="vr mx-4 text-gray-600 d-none d-md-flex"></div>
-                        <div className="flex-fill mb-4 mb-md-0 pb-2 pb-md-0">
-                            <p className="fs-11 fw-semibold text-uppercase text-danger mb-2">Overdue</p>
-                            <h2 className="fs-20 fw-bold mb-0">$34,54 USD</h2>
+                        <div className="vr mx-3 text-gray-300"></div>
+                        <div className="text-center flex-fill">
+                            <p className="fs-11 fw-bold text-uppercase text-muted mb-1">Overdue</p>
+                            <h2 className="fs-18 fw-bold mb-0 text-danger">$3,454</h2>
                         </div>
-                        <div className="vr mx-4 text-gray-600 d-none d-md-flex"></div>
-                        <div className="flex-fill">
-                            <p className="fs-11 fw-semibold text-uppercase text-success mb-2">Additional</p>
-                            <h2 className="fs-20 fw-bold mb-0">$20,478 USD</h2>
+                        <div className="vr mx-3 text-gray-300"></div>
+                        <div className="text-center flex-fill">
+                            <p className="fs-11 fw-bold text-uppercase text-muted mb-1">Additional</p>
+                            <h2 className="fs-18 fw-bold mb-0 text-success">$20,478</h2>
                         </div>
                     </div>
                 }
@@ -78,23 +78,21 @@ export default SalesPipelineChart
 
 const TabCard = ({ name, activeTab, data, chartColors }) => {
     const series = { name, data }
-
     const copyData = [...data]
     copyData.sort((a, b) => b - a);
     const maxValue = copyData[0];
 
+    // Önemli: salesPipelineChartOption fonksiyonunun içinde 
+    // plotOptions: { bar: { borderRadius: 6 } } olduğundan emin ol kanka.
     const chartOption = salesPipelineChartOption(series, chartColors, maxValue)
+    
     return (
-        <div
-            className={`tab-pane fade show ${name === activeTab ? "active" : ""}`}
-            id={name}
-            role="tabpanel"
-        >
+        <div className={`tab-pane fade show ${name === activeTab ? "active" : ""}`} id={name} role="tabpanel">
             <ReactApexChart
                 type='bar'
                 options={chartOption}
                 series={chartOption?.series}
-                height={352}
+                height={320}
             />
         </div>
     )
