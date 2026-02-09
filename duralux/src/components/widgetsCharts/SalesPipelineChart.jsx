@@ -10,7 +10,7 @@ import useCardTitleActions from '@/hooks/useCardTitleActions'
 const ReactApexChart = dynamic(() => import('react-apexcharts'), { ssr: false })
 
 const SalesPipelineChart = ({ isFooterShow }) => {
-    const [activeTab, setActiveTab] = useState("Leads")
+    const [activeTab, setActiveTab] = useState("Müşteriler")
     const { refreshKey, isRemoved, isExpanded, handleRefresh, handleExpand, handleDelete } = useCardTitleActions();
 
     if (isRemoved) return null;
@@ -18,7 +18,7 @@ const SalesPipelineChart = ({ isFooterShow }) => {
     return (
         <div className="col-xxl-7"> {/* Yanına Trend Chart gelebilmesi için alanı biraz daralttık */}
             <div className={`card stretch stretch-full border-0 shadow-sm ${isExpanded ? "card-expand" : ""} ${refreshKey ? "card-loading" : ""}`}>
-                <CardHeader title={"Sales Pipeline"} refresh={handleRefresh} remove={handleDelete} expanded={handleExpand} />
+                <CardHeader title={"Satış Endeksi"} refresh={handleRefresh} remove={handleDelete} expanded={handleExpand} />
                 <div className="card-body custom-card-action">
                     {/* Tab yapısını daha temiz ve modern hale getirdik */}
                     <ul className="nav mb-4 gap-3 sales-pipeline-tabs border-0" role="tablist">
@@ -34,7 +34,7 @@ const SalesPipelineChart = ({ isFooterShow }) => {
                                         >
                                             <span className="text-muted fs-11 text-uppercase fw-semibold d-block">{name}</span>
                                             <span className="amount fs-18 fw-bold my-1 d-block text-dark">${revenue}</span>
-                                            <span className="deals fs-12 text-muted d-block">{deals} Deals</span>
+                                            <span className="deals fs-12 text-muted d-block">{deals} Anlaşmalar</span>
                                         </a>
                                     </li>
                                 )
@@ -54,17 +54,17 @@ const SalesPipelineChart = ({ isFooterShow }) => {
                     isFooterShow &&
                     <div className="card-footer d-flex align-items-center justify-content-between p-4 bg-transparent border-top border-gray-5">
                         <div className="text-center flex-fill">
-                            <p className="fs-11 fw-bold text-uppercase text-muted mb-1">Current</p>
+                            <p className="fs-11 fw-bold text-uppercase text-muted mb-1">Mevcut</p>
                             <h2 className="fs-18 fw-bold mb-0 text-primary">$65,658</h2>
                         </div>
                         <div className="vr mx-3 text-gray-300"></div>
                         <div className="text-center flex-fill">
-                            <p className="fs-11 fw-bold text-uppercase text-muted mb-1">Overdue</p>
+                            <p className="fs-11 fw-bold text-uppercase text-muted mb-1">Gecikmiş</p>
                             <h2 className="fs-18 fw-bold mb-0 text-danger">$3,454</h2>
                         </div>
                         <div className="vr mx-3 text-gray-300"></div>
                         <div className="text-center flex-fill">
-                            <p className="fs-11 fw-bold text-uppercase text-muted mb-1">Additional</p>
+                            <p className="fs-11 fw-bold text-uppercase text-muted mb-1">Ekstra</p>
                             <h2 className="fs-18 fw-bold mb-0 text-success">$20,478</h2>
                         </div>
                     </div>
