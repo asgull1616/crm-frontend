@@ -1,41 +1,76 @@
+'use client'
 import React from 'react'
-import getIcon from '@/utils/getIcon';
-
-const customerData = [
-    { icon: 'feather-users', title: 'Total Customers', count: '26,595', percentage: '36.85%', arrowIcon: 'feather-arrow-up', color: 'primary', trend: "up" },
-    { icon: 'feather-user-check', title: 'Active Customers', count: '2,245', percentage: '24.56%', arrowIcon: 'feather-arrow-down', color: 'success', trend: "down" },
-    { icon: 'feather-user-plus', title: 'Active Customers', count: '1,254', percentage: '33.29%', arrowIcon: 'feather-arrow-up', color: 'teal', trend: "up" },
-    { icon: 'feather-user-minus', title: 'Inactive Customers', count: '4,586', percentage: '42.47%', arrowIcon: 'feather-arrow-down', color: 'danger', trend: "down" }
-];
+import { FiUsers, FiUserCheck, FiUserPlus, FiTrendingUp } from 'react-icons/fi'
 
 const CustomersStatistics = () => {
+    // #9FB8A0 (Adaçayı Yeşili) ve #E92B63 (Canlı Pembe) Odaklı Tasarım
+    const getStyles = (color) => {
+        const styles = {
+            // Ana Vurgu: Canlı Pembe
+            primary: { bg: 'rgba(233, 43, 99, 0.1)', icon: '#E92B63', trend: '#E92B63' }, 
+            // Başarı ve Stabilite: Adaçayı Yeşili
+            success: { bg: 'rgba(159, 184, 160, 0.15)', icon: '#9FB8A0', trend: '#9FB8A0' }, 
+            // İletişim: Soft Gri-Yeşil
+            info:    { bg: 'rgba(59, 130, 246, 0.1)', icon: '#3B82F6' , trend: '#3B82F6' },
+            // Kayıp/Uyarı: Soft Pembe
+            warning: { bg: 'rgba(233, 43, 99, 0.05)', icon: '#b54d6a', trend: '#b54d6a' }
+        };
+        return styles[color] || styles.primary;
+    };
+
+    const stats = [
+        { label: 'Toplam Müşteri', value: '26,595', icon: <FiUsers />, color: 'primary', trend: '%38.85' },
+        { label: 'Aktif Müşteriler', value: '2,245', icon: <FiUserCheck />, color: 'success', trend: '%24.58' },
+        { label: 'İletişim Kuruldu', value: '1,254', icon: <FiUserPlus />, color: 'info', trend: '%33.29' },
+        { label: 'Kaybedildi', value: '4,586', icon: <FiTrendingUp />, color: 'warning', trend: '%42.47' },
+    ];
+
     return (
         <>
-            {customerData.map(({ arrowIcon, color, count, icon, percentage, title, trend }, index) => (
-                <div key={index} className="col-xxl-3 col-md-6 customer-header-card">
-                    <div className="card stretch stretch-full">
-                        <div className="card-body">
-                            <div className="d-flex align-items-center justify-content-between">
-                                <div className="d-flex align-items-center gap-3">
-                                    <div className={`avatar-text avatar-xl rounded text-white bg-${color}`}>
-                                        {React.cloneElement(getIcon(icon), { size: 17 })}
+            {stats.map((stat, index) => {
+                const style = getStyles(stat.color);
+                return (
+                    <div className="col-xxl-3 col-md-6 mb-4" key={index}>
+                        <div className="card border-0 shadow-sm h-100 bg-white" 
+                             style={{ 
+                                 borderRadius: '24px',
+                                 transition: 'transform 0.3s ease' 
+                             }}>
+                            <div className="card-body p-4">
+                                <div className="d-flex align-items-center justify-content-between">
+                                    <div>
+                                        <h2 className="fw-bold mb-1" style={{ color: '#1e293b', letterSpacing: '-1px' }}>
+                                            {stat.value}
+                                        </h2>
+                                        <p className="text-muted small fw-medium text-uppercase mb-0" style={{ fontSize: '11px' }}>
+                                            {stat.label}
+                                        </p>
                                     </div>
-                                    <a href="#" className="fw-bold d-block">
-                                        <span className="text-truncate-1-line">{title}</span>
-                                        <span className="fs-24 fw-bolder d-block">{count}</span>
-                                    </a>
+                                    <div className="rounded-circle d-flex align-items-center justify-content-center" 
+                                         style={{ 
+                                             width: '56px', 
+                                             height: '56px', 
+                                             backgroundColor: style.bg, 
+                                             color: style.icon, 
+                                             fontSize: '24px',
+                                             boxShadow: `0 4px 10px ${style.bg}`
+                                         }}>
+                                        {stat.icon}
+                                    </div>
                                 </div>
-                                <div className={`badge ${trend === "up" ? "bg-soft-success text-success" : "bg-soft-danger text-danger"}`}>
-                                    {React.cloneElement(getIcon(arrowIcon), { size: 10, className: "me-1" })}
-                                    <span>{percentage}</span>
+                                <div className="mt-3 pt-3 border-top border-light">
+                                    <span className="small fw-bold" style={{ color: style.trend }}>
+                                        <FiTrendingUp className="me-1" /> {stat.trend}
+                                    </span>
+                                    <span className="text-muted small ms-2">geçen aydan beri</span>
                                 </div>
                             </div>
                         </div>
                     </div>
-                </div>
-            ))}
+                );
+            })}
         </>
     )
 }
 
-export default CustomersStatistics
+export default CustomersStatistics;
