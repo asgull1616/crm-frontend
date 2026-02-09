@@ -1,209 +1,182 @@
 'use client'
-import React, { memo, useEffect, useState } from 'react'
-import Table from '@/components/shared/table/Table'
-import { FiEye, FiTrash2, FiEdit3 } from 'react-icons/fi'
+import React, { useEffect, useState } from 'react'
+import { FiUsers, FiTrash2, FiEdit3, FiMail, FiPhone, FiChevronLeft, FiChevronRight } from 'react-icons/fi'
 import Link from 'next/link'
-import SelectDropdown from '@/components/shared/SelectDropdown'
 import { customerService } from '@/lib/services/customer.service'
 
-
-
-
-// const actions = [
-    // { label: "Düzenle", icon: <FiEdit3 /> },
-    // { label: "Print", icon: <FiPrinter /> },
-    // { label: "Remind", icon: <FiClock /> },
-    // { type: "divider" },
-    // { label: "Archive", icon: <FiArchive /> },
-    // { label: "Report Spam", icon: <FiAlertOctagon />, },
-    // { type: "divider" },
-    // { label: "Sil", icon: <FiTrash2 />, },
-// ];
-
-const TableCell = memo(({ options, defaultSelect }) => {
-  const [selectedOption, setSelectedOption] = useState(null)
-
-  return (
-    <SelectDropdown
-      options={options}
-      defaultSelect={defaultSelect}
-      selectedOption={selectedOption}
-      onSelectOption={setSelectedOption}
-    />
-  )
-})
 const CustomersTable = () => {
-  const [customers, setCustomers] = useState([])
-  const [loading, setLoading] = useState(true)
+    const [customers, setCustomers] = useState([])
+    const [loading, setLoading] = useState(true)
+    
+    // --- SAYFALAMA STATE'LERİ ---
+    const [currentPage, setCurrentPage] = useState(1)
+    const itemsPerPage = 8 // Her sayfada gösterilecek kart sayısı
 
-  /* 🔹 Backend’den liste çek */
-  useEffect(() => {
-    loadCustomers()
-  }, [])
+    useEffect(() => { loadCustomers() }, [])
 
-  const loadCustomers = async () => {
-  try {
-    const res = await customerService.list()
+    const loadCustomers = async () => {
+        try {
+            const res = await customerService.list()
+            const payload = res.data;
+            const items = Array.isArray(payload) ? payload : (payload?.items || payload?.data || []);
+            setCustomers(items)
+        } catch (error) {
+            console.error("Yükleme Hatası:", error)
+            setCustomers([])
+        } finally {
+            setLoading(false)
+        }
+    }
 
-    // 👇 Backend'in dönme şekline göre burası değişebilir
-    const payload = res.data
-    const items =
-      Array.isArray(payload) ? payload :
-      Array.isArray(payload?.items) ? payload.items :
-      Array.isArray(payload?.data) ? payload.data :
-      Array.isArray(payload?.customers) ? payload.customers :
-      []
+    const handleDelete = async (id) => {
+        if (window.confirm('Bu müşteriyi silmek istediğinize emin misiniz?')) {
+            try {
+                await customerService.delete(id);
+                setCustomers(prev => prev.filter(c => c.id !== id));
+            } catch (error) {
+                console.error("Silme hatası:", error);
+            }
+        }
+    }
 
-    console.log('📦 customers payload:', payload)
-    console.log('✅ customers items array:', items)
+    // --- SAYFALAMA MANTIĞI ---
+    const indexOfLastItem = currentPage * itemsPerPage;
+    const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+    const currentItems = customers.slice(indexOfFirstItem, indexOfLastItem);
+    const totalPages = Math.ceil(customers.length / itemsPerPage);
 
-    setCustomers(items)
-  } finally {
-    setLoading(false)
-  }
+    const paginate = (pageNumber) => {
+        setCurrentPage(pageNumber);
+        window.scrollTo({ top: 0, behavior: 'smooth' }); // Sayfa değişince yukarı kaydır
+    };
+
+    const getInitials = (name) => {
+        if (!name) return "??"
+        return name.split(' ').map(n => n[0]).join('').toUpperCase().substring(0, 2)
+    }
+
+    if (loading) return (
+        <div className="d-flex justify-content-center align-items-center p-5">
+            <div className="spinner-grow" style={{ color: '#E92B63' }} role="status"></div>
+        </div>
+    )
+
+    return (
+        <div className="p-4 bg-transparent">
+            {/* 1. Müşteri Kartları Listesi */}
+            <div className="row g-4">
+                {currentItems.length > 0 ? (
+                    currentItems.map((c) => (
+                        <div key={c.id || Math.random()} className="col-xxl-3 col-lg-4 col-md-6">
+                            <div className="card border-0 shadow-sm h-100 customer-card-hover" 
+                                 style={{ 
+                                     borderRadius: '24px',
+                                     borderLeft: `5px solid ${c.status === 'NEW' ? '#9FB8A0' : '#E92B63'}` 
+                                 }}>
+                                <div className="card-body p-4">
+                                    <div className="d-flex align-items-center justify-content-between mb-4">
+                                        <div className="avatar-text rounded-circle fw-bold d-flex align-items-center justify-content-center shadow-sm" 
+                                             style={{ width: '50px', height: '50px', backgroundColor: 'rgba(233, 43, 99, 0.1)', color: '#E92B63' }}>
+                                            {getInitials(c.fullName)}
+                                        </div>
+                                        
+                                        {/* Sadece NEW yazısı yeşil (Adaçayı Yeşili) */}
+                                        <span className="badge rounded-pill px-3 py-2 fw-bold" 
+                                              style={{ 
+                                                  backgroundColor: 'rgba(159, 184, 160, 0.15)', 
+                                                  color: '#9FB8A0', 
+                                                  fontSize: '10px' 
+                                              }}>
+                                            {c.status === 'NEW' ? 'YENİ' : 'AKTİF'}
+                                        </span>
+                                    </div>
+
+                                    <h5 className="fw-bold text-dark mb-1 text-truncate">{c.fullName || 'İsimsiz Müşteri'}</h5>
+                                    <p className="text-muted small mb-4">Müşteri No: #{c.id?.toString().substring(0, 5) || '---'}</p>
+
+                                    <div className="vstack gap-2 mb-4">
+                                        <div className="d-flex align-items-center gap-3 text-muted small">
+                                            <div className="rounded-circle d-flex align-items-center justify-content-center" style={{ width: '28px', height: '28px', backgroundColor: 'rgba(233, 43, 99, 0.05)' }}>
+                                                <FiMail size={14} color="#E92B63" />
+                                            </div>
+                                            <span className="text-truncate">{c.email || 'Email yok'}</span>
+                                        </div>
+                                        <div className="d-flex align-items-center gap-3 text-muted small">
+                                            <div className="rounded-circle d-flex align-items-center justify-content-center" style={{ width: '28px', height: '28px', backgroundColor: 'rgba(233, 43, 99, 0.05)' }}>
+                                                <FiPhone size={14} color="#E92B63" />
+                                            </div>
+                                            <span>{c.phone || 'Telefon yok'}</span>
+                                        </div>
+                                    </div>
+
+                                    <div className="pt-3 border-top d-flex gap-2">
+                                        <Link href={`/customers/view/${c.id}`} 
+                                              className="btn flex-grow-1 rounded-3 fw-bold small py-2 text-white shadow-sm"
+                                              style={{ backgroundColor: '#9FB8A0', border: 'none' }}>
+                                            DETAYLARI GÖR
+                                        </Link>
+                                        <Link href={`/customers/edit/${c.id}`} className="btn btn-light rounded-3 shadow-sm border px-3 d-flex align-items-center">
+                                            <FiEdit3 size={16} />
+                                        </Link>
+                                        <button onClick={() => handleDelete(c.id)} className="btn btn-soft-danger rounded-3 shadow-sm px-3 d-flex align-items-center">
+                                            <FiTrash2 size={16} />
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    ))
+                ) : (
+                    <div className="col-12 text-center p-5 bg-white rounded-4 shadow-sm">
+                        <div className="mb-3">
+                            <FiUsers size={48} color="#E92B63" style={{ opacity: 0.3 }} />
+                        </div>
+                        <h5 className="fw-bold text-dark">Müşteri Bulunamadı</h5>
+                    </div>
+                )}
+            </div>
+
+            {/* 2. SAYFALAMA KONTROLLERİ */}
+            {customers.length > itemsPerPage && (
+                <div className="d-flex align-items-center justify-content-between bg-white p-3 rounded-4 shadow-sm mt-5">
+                    <div className="text-muted small">
+                        Toplam <strong>{customers.length}</strong> kayıttan <strong>{indexOfFirstItem + 1}-{Math.min(indexOfLastItem, customers.length)}</strong> arası gösteriliyor
+                    </div>
+                    
+                    <nav>
+                        <ul className="pagination mb-0 gap-2">
+                            <li className={`page-item ${currentPage === 1 ? 'disabled' : ''}`}>
+                                <button className="page-link rounded-3 border-0 shadow-sm" onClick={() => paginate(currentPage - 1)}>
+                                    <FiChevronLeft />
+                                </button>
+                            </li>
+                            
+                            {[...Array(totalPages)].map((_, i) => (
+                                <li key={i} className={`page-item ${currentPage === i + 1 ? 'active' : ''}`}>
+                                    <button 
+                                        className="page-link rounded-3 border-0 shadow-sm px-3"
+                                        onClick={() => paginate(i + 1)}
+                                        style={{ 
+                                            backgroundColor: currentPage === i + 1 ? '#9FB8A0' : '#f1f5f9',
+                                            color: currentPage === i + 1 ? 'white' : '#64748b'
+                                        }}
+                                    >
+                                        {i + 1}
+                                    </button>
+                                </li>
+                            ))}
+
+                            <li className={`page-item ${currentPage === totalPages ? 'disabled' : ''}`}>
+                                <button className="page-link rounded-3 border-0 shadow-sm" onClick={() => paginate(currentPage + 1)}>
+                                    <FiChevronRight />
+                                </button>
+                            </li>
+                        </ul>
+                    </nav>
+                </div>
+            )}
+        </div>
+    )
 }
 
-  /* 🔹 Silme */
-  const handleDelete = async (id) => {
-    if (!confirm('Bu müşteri silinsin mi?')) return
-    await customerService.delete(id)
-    setCustomers(prev => prev.filter(c => c.id !== id))
-  }
-
-  /* 🔹 Backend → Table adapter */
-const tableData = (Array.isArray(customers) ? customers : []).map(c => ({
-  id: c.id,
-  customer: { name: c.fullName, img: null },
-  email: c.email,
-  phone: c.phone,
-  date: c.createdAt ? new Date(c.createdAt).toLocaleString() : '',
-  status: {
-    status: [
-      { label: 'Yeni', value: 'NEW' },
-  { label: 'İletişim Kuruldu', value: 'CONTACTED' },
-  { label: 'Teklif Gönderildi', value: 'OFFER_SENT' },
-  { label: 'Onay Bekliyor', value: 'WAITING_APPROVAL' },
-  { label: 'Onaylandı', value: 'APPROVED' },
-  { label: 'Kazanıldı', value: 'WON' },
-  { label: 'Kaybedildi', value: 'LOST' },
-    ],
-    defaultSelect: c.status,
-  },
-}))
-
-
-  const columns = [
-    // {
-    //   accessorKey: 'id',
-    //   header: ({ table }) => {
-    //     const checkboxRef = React.useRef(null)
-
-    //     useEffect(() => {
-    //       if (checkboxRef.current) {
-    //         checkboxRef.current.indeterminate = table.getIsSomeRowsSelected()
-    //       }
-    //     }, [table.getIsSomeRowsSelected()])
-
-    //     return (
-    //       <input
-    //         type="checkbox"
-    //         className="custom-table-checkbox"
-    //         ref={checkboxRef}
-    //         checked={table.getIsAllRowsSelected()}
-    //         onChange={table.getToggleAllRowsSelectedHandler()}
-    //       />
-    //     )
-    //   },
-    //   cell: ({ row }) => (
-    //     <input
-    //       type="checkbox"
-    //       className="custom-table-checkbox"
-    //       checked={row.getIsSelected()}
-    //       disabled={!row.getCanSelect()}
-    //       onChange={row.getToggleSelectedHandler()}
-    //     />
-    //   ),
-    //   meta: { headerClassName: 'width-30' },
-    // },
-    {
-      accessorKey: 'customer',
-      header: () => 'Müşteri',
-      cell: (info) => {
-        const c = info.getValue()
-        return (
-          <div className="hstack gap-3">
-            <span>{c.name}</span>
-          </div>
-        )
-      },
-    },
-    {
-      accessorKey: 'email',
-      header: () => 'Email',
-    },
-    {
-      accessorKey: 'phone',
-      header: () => 'Telefon',
-    },
-    {
-      accessorKey: 'date',
-      header: () => 'Tarih',
-    },
-    {
-      accessorKey: 'status',
-      header: () => 'Durum',
-      cell: (info) => (
-        <TableCell
-          options={info.getValue().status}
-          defaultSelect={info.getValue().defaultSelect}
-        />
-      ),
-    },
-    {
-      accessorKey: 'actions',
-      header: () => 'Actions',
-      cell: (info) => (
-  <div className="hstack gap-2 justify-content-end">
-    {/* ✏️ Güncelle */}
-    <Link
-      href={`/customers/edit/${info.row.original.id}`}
-      className="avatar-text avatar-md"
-      title="Güncelle"
-    >
-      <FiEdit3 />
-    </Link>
-
-    {/* 👁️ Detay */}
-    <Link
-      href={`/customers/view/${info.row.original.id}`}
-      className="avatar-text avatar-md"
-      title="Detayları Gör"
-    >
-      <FiEye />
-    </Link>
-
-    {/* 🗑️ Sil */}
-    <button
-      className="avatar-text avatar-md"
-      title="Sil"
-      onClick={() => handleDelete(info.row.original.id)}
-    >
-      <FiTrash2 />
-    </button>
-  </div>
-),
-
-      meta: { headerClassName: 'text-end' },
-    },
-  ]
-
-  if (loading) return <div>Yükleniyor…</div>
-
-  return (
-    <div>
-      <Table data={tableData} columns={columns} />
-    </div>
-  )
-}
-
-export default CustomersTable
+export default CustomersTable;

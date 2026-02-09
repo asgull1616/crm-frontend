@@ -1,122 +1,135 @@
 /* ================================================= */
-/* FOUNDER / COFOUNDER SHOWCASE – FINAL FIX         */
+/* SOFT & PREMIUM CRM TEMA AYARLARI                  */
 /* ================================================= */
 
-/* Kart metin rengi – light mode */
-.founder-card,
-.cofounder-card {
-  color: #0f172a;
+/* 1. Genel Arka Plan: Daha ferah bulut beyazı */
+.main-content {
+    background: #f8fafc !important; 
+    padding: 2.5rem !important;
+    padding-top: 30px !important;
+    min-height: 100vh;
 }
 
-/* Dark mode’da kart beyaz kalıyor → yazılar koyu kalmalı */
+/* 2. Yazı Renkleri: Saf siyah yerine yumuşak antrasit */
+h2, h5, .text-dark, .fw-bold {
+    color: #334155 !important;
+}
+
+.text-muted {
+    color: #94a3b8 !important;
+}
+
+/* 3. Form ve Arama Alanları */
+.form-control:focus {
+    box-shadow: 0 0 0 0.25rem rgba(233, 43, 99, 0.1) !important;
+    border: 1px solid rgba(233, 43, 99, 0.2) !important;
+}
+
+.bg-light {
+    background-color: #f1f5f9 !important; /* Daha yumuşak gri */
+}
+
+/* 4. Müşteri Kartları: Yumuşak geçiş ve pastel vurgu */
+.customer-card-hover {
+    background: #ffffff !important;
+    border-radius: 24px !important; /* Daha yuvarlak hatlar */
+    border-left: 4px solid rgba(233, 43, 99, 0.1) !important; /* Başlangıçta çok hafif şerit */
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 4px 20px rgba(100, 116, 139, 0.06) !important;
+}
+
+.customer-card-hover:hover {
+    transform: translateY(-6px) !important;
+    box-shadow: 0 20px 40px rgba(233, 43, 99, 0.08) !important;
+    border-left: 4px solid #E92B63 !important; /* Hover olunca renk belirginleşir */
+}
+
+/* 5. Butonlar: Ana Pembe (#E92B63) Uyumu */
+.btn-primary {
+    background-color: #E92B63 !important;
+    border-color: #E92B63 !important;
+    border-radius: 12px;
+}
+
+.btn-primary:hover {
+    background-color: #d11a52 !important;
+    box-shadow: 0 8px 15px rgba(233, 43, 99, 0.2) !important;
+}
+
+/* Silme ve İncele gibi "Soft" butonlar */
+.btn-soft-danger, .btn-soft-primary {
+    color: #E92B63 !important;
+    background-color: rgba(233, 43, 99, 0.08) !important;
+    border: none !important;
+}
+
+.btn-soft-danger:hover {
+    background-color: #E92B63 !important;
+    color: #ffffff !important;
+}
+
+/* 6. Founder/Cofounder Kartları Koruma */
 html.app-skin-dark .founder-card,
 html.app-skin-dark .cofounder-card {
-  background-color: #ffffff !important;
-  color: #0f172a !important;
+    background-color: #ffffff !important;
+    color: #0f172a !important;
 }
 
-/* Kart içindeki tüm temel metinler */
-html.app-skin-dark .founder-card p,
-html.app-skin-dark .founder-card span,
-html.app-skin-dark .founder-card h1,
-html.app-skin-dark .founder-card h2,
-html.app-skin-dark .founder-card h3,
-html.app-skin-dark .founder-card h4,
-html.app-skin-dark .founder-card h5,
-html.app-skin-dark .founder-card h6,
-html.app-skin-dark .cofounder-card p,
-html.app-skin-dark .cofounder-card span,
-html.app-skin-dark .cofounder-card h1,
-html.app-skin-dark .cofounder-card h2,
-html.app-skin-dark .cofounder-card h3,
-html.app-skin-dark .cofounder-card h4,
-html.app-skin-dark .cofounder-card h5,
-html.app-skin-dark .cofounder-card h6 {
-  color: #0f172a !important;
+/* İncele ve Detay butonlarını pembe yap */
+.btn-primary, .btn-soft-primary {
+    background-color: #E92B63 !important;
+    border-color: #E92B63 !important;
+    color: #ffffff !important;
 }
 
-/* Secondary / muted metinler */
-.founder-card .text-secondary,
-.cofounder-card .text-secondary {
-  color: #475569 !important;
+/* Kartların solundaki şeridi pembe yap */
+.customer-card-hover {
+    border-left: 4px solid rgba(233, 43, 99, 0.2) !important;
 }
 
-/* Badge’ler */
-.founder-card .badge,
-.cofounder-card .badge {
-  background-color: #f1f5f9 !important;
-  color: #0f172a !important;
-  border-color: #e2e8f0 !important;
+.customer-card-hover:hover {
+    border-left: 4px solid #E92B63 !important;
+    box-shadow: 0 15px 30px rgba(233, 43, 99, 0.1) !important;
 }
 
-/* Quote icon (tırnak svg) */
-.founder-card svg,
-.cofounder-card svg {
-  opacity: 0.15;
+/* Badge (Yeni/Aktif) yazılarını pembe yap */
+.badge.bg-soft-success, .badge.bg-soft-info {
+    background-color: rgba(233, 43, 99, 0.08) !important;
+    color: #E92B63 !important;
 }
 
-/* ================================================= */
-/* INLINE CODYOL LINK – FINAL                       */
-/* ================================================= */
-
-.founder-card .codyol-inline-link {
-  font: inherit !important;
-  font-style: inherit !important;
-  font-size: inherit !important;
-  line-height: inherit !important;
-
-  font-weight: 600;
-  color: #2563eb !important; /* light mode */
-  text-decoration: none;
+/* Görseldeki Soft Tasarım Ayarları */
+.custom-input-group {
+    background: #ffffff !important;
+    transition: all 0.3s ease;
 }
 
-.founder-card .codyol-inline-link:hover {
-  text-decoration: underline;
+.custom-input-group:focus-within {
+    box-shadow: 0 10px 20px rgba(0,0,0,0.05) !important;
+    transform: translateY(-2px);
 }
 
-/* Dark mode link görünürlüğü */
-html.app-skin-dark .founder-card .codyol-inline-link {
-  color: #60a5fa !important; /* blue-400 */
-}
-/* =============================================== */
-/* DARK MODE – FOUNDER / COFOUNDER FINAL OVERRIDE */
-/* =============================================== */
-
-html.app-skin-dark .founder-card,
-html.app-skin-dark .cofounder-card {
-  opacity: 1 !important;
-  filter: none !important;
+.card {
+    transition: transform 0.3s ease;
 }
 
-/* Card içindeki TÜM elementlerde opacity reset */
-html.app-skin-dark .founder-card *,
-html.app-skin-dark .cofounder-card * {
-  opacity: 1 !important;
-  filter: none !important;
+.card:hover {
+    transform: translateY(-5px);
 }
 
-/* CODYOL inline link – özel güçlendirme */
-html.app-skin-dark .founder-card .codyol-inline-link {
-  color: #60a5fa !important; /* net mavi */
-  font-weight: 700 !important;
-  opacity: 1 !important;
-  filter: none !important;
-}
-/* ================================================= */
-/* FORCE VISIBLE TEXT – THEME OVERRIDE (FINAL)      */
-/* ================================================= */
-
-.force-visible {
-  position: relative;
-  z-index: 9999 !important;
-  opacity: 1 !important;
-  filter: none !important;
-  mix-blend-mode: normal !important;
-  text-shadow: 0 0 0 currentColor; /* overlay kırıcı */
+/* İkon Arka Planı (Siyah Yuvarlak/Kare) */
+.input-group-text {
+    min-width: 50px;
+    justify-content: center;
+    border-radius: 0 !important;
 }
 
-/* Dark mode özel */
-html.app-skin-dark .force-visible {
-  color: #60a5fa !important;
-  font-weight: 700 !important;
+/* Sayfa Arka Planı */
+body {
+    background-color: #f4f7f6;
+}
+
+.input-group:focus-within {
+    border-color: #E92B63 !important;
+    box-shadow: 0 0 0 4px rgba(233, 43, 99, 0.05);
 }
