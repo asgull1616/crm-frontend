@@ -91,32 +91,32 @@ const TeamsEditContent = ({ teamId }) => {
 
             <h6 className="fw-bold mb-3">Mevcut Üyeler</h6>
 
-<div className="members-grid">
-  {membersData.map((m) => (
-    <div key={m.id} className="member-card member-card-existing">
-      
-      {/* Sil butonu */}
-      <button
-        className="member-delete-btn"
-        onClick={() => handleRemoveMember(m.id)}
-        title="Üyeyi çıkar"
-      >
-        <FiTrash2 size={14} />
-      </button>
+            <div className="members-grid">
+              {membersData.map((m) => (
+                <div key={m.id} className="member-card member-card-existing">
 
-      {/* Avatar */}
-      <div className="member-avatar">
-        {m.username?.[0]?.toUpperCase()}
-      </div>
+                  {/* Sil butonu */}
+                  <button
+                    className="member-delete-btn"
+                    onClick={() => handleRemoveMember(m.id)}
+                    title="Üyeyi çıkar"
+                  >
+                    <FiTrash2 size={14} />
+                  </button>
 
-      {/* Info */}
-      <div className="member-name">{m.username}</div>
-      <div className="member-email">{m.email}</div>
+                  {/* Avatar */}
+                  <div className="member-avatar">
+                    {m.username?.[0]?.toUpperCase()}
+                  </div>
 
-      <span className="member-role">{m.role}</span>
-    </div>
-  ))}
-</div>
+                  {/* Info */}
+                  <div className="member-name">{m.username}</div>
+                  <div className="member-email">{m.email}</div>
+
+                  <span className="member-role">{m.role}</span>
+                </div>
+              ))}
+            </div>
 
 
 
@@ -140,31 +140,32 @@ const TeamsEditContent = ({ teamId }) => {
                     </div>
 
                     <div>
-                      <div className="fw-semibold">{user.username}</div>
-                      <div className="text-muted small">{user.email}</div>
+                      <div className="fw-semibold">{user.fullName}</div>
+                      <div className="text-muted small">{user.role}</div>
+
                     </div>
                   </div>
                 ))}
               </div>
             )}
-<div className="d-flex justify-content-end mt-3">
-            <button
-              className="btn mt-3 text-white"
-              disabled={selectedUserIds.length === 0}
-              onClick={handleAddMembers}
-              style={{
-                backgroundColor: '#E92B63',
-                borderColor: '#E92B63',
-                opacity: selectedUserIds.length === 0 ? 0.6 : 1,
-                cursor:
-                  selectedUserIds.length === 0
-                    ? 'not-allowed'
-                    : 'pointer',
-              }}
-            >
-              Üye Ekle
-            </button>
-</div>  
+            <div className="d-flex justify-content-end mt-3">
+              <button
+                className="btn mt-3 text-white"
+                disabled={selectedUserIds.length === 0}
+                onClick={handleAddMembers}
+                style={{
+                  backgroundColor: '#E92B63',
+                  borderColor: '#E92B63',
+                  opacity: selectedUserIds.length === 0 ? 0.6 : 1,
+                  cursor:
+                    selectedUserIds.length === 0
+                      ? 'not-allowed'
+                      : 'pointer',
+                }}
+              >
+                Üye Ekle
+              </button>
+            </div>
           </div>
         </div>
       </div>
