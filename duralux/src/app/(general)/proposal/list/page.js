@@ -4,6 +4,7 @@ import ProposalHeadr from "@/components/proposal/ProposalHeader";
 import PageHeader from "@/components/shared/pageHeader/PageHeader";
 import ProposalHeaderContent from "@/components/proposal/ProposalHeaderContent";
 import Footer from "@/components/shared/Footer";
+import Showcase from "@/components/widgetsCharts/PaymentRecordChartTwo";
 
 const page = () => {
   return (
@@ -14,6 +15,7 @@ const page = () => {
       <ProposalHeaderContent />
       <div className="main-content">
         <div className="row">
+          <Showcase />
           <ProposalTable />
         </div>
       </div>
