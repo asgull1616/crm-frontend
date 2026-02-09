@@ -24,6 +24,7 @@
     "feather-icons": "^4.29.2",
     "feather-icons-react": "^0.7.0",
     "jodit-react": "^4.1.2",
+    "jsvectormap": "^1.7.0",
     "next": "14.2.17",
     "perfect-scrollbar": "^1.5.5",
     "react": "^18",
