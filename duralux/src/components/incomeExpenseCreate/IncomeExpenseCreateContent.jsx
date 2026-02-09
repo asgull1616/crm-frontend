@@ -4,6 +4,7 @@ import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { transactionService } from "@/lib/services/transaction.service";
 import { proposalService } from "@/lib/services/proposal.service";
+import { FiDollarSign, FiCalendar, FiTag, FiFileText, FiHash, FiCreditCard } from "react-icons/fi";
 
 const PAYMENT_METHODS = [
   { value: "BANK_TRANSFER", label: "Banka Havalesi" },
@@ -12,11 +13,9 @@ const PAYMENT_METHODS = [
   { value: "OTHER", label: "Diğer" },
 ];
 
-// -------------------------------
-// HELPERS
-// -------------------------------
 const normalizeAmount = (value) =>
   value
+    .toString()
     .trim()
     .replace(/\s/g, "")
     .replace(/\.(?=\d{3})/g, "")
@@ -24,13 +23,9 @@ const normalizeAmount = (value) =>
 
 const optional = (v) => v?.trim() || undefined;
 
-// -------------------------------
-// COMPONENT
-// -------------------------------
 export default function IncomeExpenseCreateContent() {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
-
   const [proposals, setProposals] = useState([]);
   const [selectedProposal, setSelectedProposal] = useState(null);
   const [errors, setErrors] = useState({});
@@ -39,7 +34,7 @@ export default function IncomeExpenseCreateContent() {
     type: "INCOME",
     amount: "",
     currency: "TRY",
-    date: new Date().toISOString().slice(0, 10), // yyyy-mm-dd
+    date: new Date().toISOString().slice(0, 10),
     description: "",
     category: "",
     paymentMethod: "BANK_TRANSFER",
@@ -47,9 +42,6 @@ export default function IncomeExpenseCreateContent() {
     proposalId: "",
   });
 
-  // -------------------------------
-  // FETCH PROPOSALS
-  // -------------------------------
   useEffect(() => {
     proposalService.list({ page: 1, limit: 100 }).then((res) => {
       setProposals(res?.data?.items || []);
@@ -59,18 +51,16 @@ export default function IncomeExpenseCreateContent() {
   const onChange = (key) => (e) =>
     setForm((p) => ({ ...p, [key]: e.target.value }));
 
+  const setType = (type) => setForm((p) => ({ ...p, type }));
+
   const onProposalChange = (e) => {
     const id = e.target.value;
     setForm((p) => ({ ...p, proposalId: id }));
     setSelectedProposal(proposals.find((x) => x.id === id) || null);
   };
 
-  // -------------------------------
-  // VALIDATION
-  // -------------------------------
   const validate = () => {
     const e = {};
-
     if (!form.amount.trim()) {
       e.amount = "Tutar zorunludur";
     } else {
@@ -79,18 +69,12 @@ export default function IncomeExpenseCreateContent() {
         e.amount = "Geçerli bir tutar giriniz (örn: 12500.00)";
       }
     }
-
     if (!form.category.trim()) e.category = "Kategori zorunludur";
     if (!form.description.trim()) e.description = "Açıklama zorunludur";
-    if (!form.paymentMethod) e.paymentMethod = "Ödeme yöntemi zorunludur";
     if (!form.date) e.date = "Tarih zorunludur";
-
     return e;
   };
 
-  // -------------------------------
-  // SUBMIT
-  // -------------------------------
   const handleSubmit = async () => {
     const e = validate();
     if (Object.keys(e).length) {
@@ -104,9 +88,9 @@ export default function IncomeExpenseCreateContent() {
     try {
       const payload = {
         type: form.type,
-        amount: normalizeAmount(form.amount), // STRING
+        amount: normalizeAmount(form.amount),
         currency: form.currency,
-        date: `${form.date}T00:00:00.000Z`, // IsDateString uyumlu
+        date: `${form.date}T00:00:00.000Z`,
         description: form.description.trim(),
         category: form.category.trim(),
         paymentMethod: form.paymentMethod,
@@ -118,175 +102,193 @@ export default function IncomeExpenseCreateContent() {
       router.push("/income-expense/list");
     } catch (err) {
       const msg = err?.response?.data?.message;
-      alert(
-        Array.isArray(msg) ? msg.join("\n") : msg || "Kayıt oluşturulamadı",
-      );
+      alert(Array.isArray(msg) ? msg.join("\n") : msg || "Kayıt oluşturulamadı");
     } finally {
       setLoading(false);
     }
   };
 
-  // -------------------------------
-  // UI
-  // -------------------------------
   return (
-    <div className="col-12">
-      <div className="card">
-        <div className="card-header fw-semibold">Yeni Gelir / Gider</div>
+    <div className="container-fluid py-4">
+      <div className="card border-0 shadow-sm" style={{ borderRadius: "16px", overflow: "hidden" }}>
+        <div className="card-header bg-white py-3 border-bottom">
+          <h5 className="mb-0 fw-bold text-dark">Yeni Finansal İşlem Kaydı</h5>
+        </div>
 
-        <div className="card-body">
-          <div className="row g-3">
-            {/* TYPE */}
-            <div className="col-md-4">
-              <label className="form-label">Tür</label>
-              <select
-                className="form-select"
-                value={form.type}
-                onChange={onChange("type")}
-                disabled={loading}
-              >
-                <option value="INCOME">Gelir</option>
-                <option value="EXPENSE">Gider</option>
-              </select>
+        <div className="card-body p-4">
+          <div className="row g-4">
+            {/* TÜR SEÇİMİ - ÖZEL BUTONLAR */}
+            <div className="col-12 mb-2">
+              <label className="form-label fw-bold small text-muted text-uppercase mb-3">İşlem Türü</label>
+              <div className="d-flex gap-3">
+                <button
+                  type="button"
+                  onClick={() => setType("INCOME")}
+                  className={`btn flex-fill py-3 fw-bold transition-all ${
+                    form.type === "INCOME" 
+                    ? "btn-success shadow-sm" 
+                    : "btn-outline-success border-2"
+                  }`}
+                  style={{ borderRadius: "12px" }}
+                >
+                  GELİR
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setType("EXPENSE")}
+                  className={`btn flex-fill py-3 fw-bold transition-all ${
+                    form.type === "EXPENSE" 
+                    ? "btn-danger shadow-sm" 
+                    : "btn-outline-danger border-2"
+                  }`}
+                  style={{ borderRadius: "12px" }}
+                >
+                  GİDER
+                </button>
+              </div>
             </div>
 
-            {/* DATE */}
-            <div className="col-md-4">
-              <label className="form-label">Tarih</label>
-              <input
-                type="date"
-                className="form-control"
-                value={form.date}
-                onChange={onChange("date")}
-                disabled={loading}
-              />
-              {errors.date && (
-                <small className="text-danger">{errors.date}</small>
-              )}
-            </div>
-
-            {/* AMOUNT */}
-            <div className="col-md-4">
-              <label className="form-label">Tutar</label>
-              <input
-                className="form-control"
-                placeholder="12500.00"
-                value={form.amount}
-                onChange={onChange("amount")}
-                disabled={loading}
-              />
-              {errors.amount && (
-                <small className="text-danger">{errors.amount}</small>
-              )}
-            </div>
-
-            {/* CATEGORY */}
+            {/* TUTAR VE TARİH */}
             <div className="col-md-6">
-              <label className="form-label">Kategori</label>
-              <input
-                className="form-control"
-                value={form.category}
-                onChange={onChange("category")}
-                disabled={loading}
-              />
-              {errors.category && (
-                <small className="text-danger">{errors.category}</small>
-              )}
-            </div>
-
-            {/* PAYMENT METHOD */}
-            <div className="col-md-6">
-              <label className="form-label">Ödeme Yöntemi</label>
-              <select
-                className="form-select"
-                value={form.paymentMethod}
-                onChange={onChange("paymentMethod")}
-                disabled={loading}
-              >
-                {PAYMENT_METHODS.map((x) => (
-                  <option key={x.value} value={x.value}>
-                    {x.label}
-                  </option>
-                ))}
-              </select>
-              {errors.paymentMethod && (
-                <small className="text-danger">{errors.paymentMethod}</small>
-              )}
-            </div>
-
-            {/* PROPOSAL */}
-            <div className="col-12">
-              <label className="form-label">Teklif</label>
-              <select
-                className="form-select"
-                value={form.proposalId}
-                onChange={onProposalChange}
-                disabled={loading}
-              >
-                <option value="">Seçiniz</option>
-                {proposals.map((p) => (
-                  <option key={p.id} value={p.id}>
-                    {p.title}
-                  </option>
-                ))}
-              </select>
-            </div>
-
-            {/* AUTO CUSTOMER */}
-            {selectedProposal?.customer && (
-              <div className="col-12">
-                <label className="form-label">Müşteri</label>
+              <label className="form-label fw-bold small text-muted text-uppercase">Tutar</label>
+              <div className="input-group">
+                <span className="input-group-text bg-light border-end-0 text-muted"><FiDollarSign /></span>
                 <input
-                  className="form-control"
-                  value={selectedProposal.customer.fullName}
-                  disabled
+                  className={`form-control form-control-lg bg-light border-start-0 ${errors.amount ? "is-invalid" : ""}`}
+                  placeholder="0.00"
+                  value={form.amount}
+                  onChange={onChange("amount")}
+                  disabled={loading}
                 />
+              </div>
+              {errors.amount && <div className="text-danger small mt-1">{errors.amount}</div>}
+            </div>
+
+            <div className="col-md-6">
+              <label className="form-label fw-bold small text-muted text-uppercase">İşlem Tarihi</label>
+              <div className="input-group">
+                <span className="input-group-text bg-light border-end-0 text-muted"><FiCalendar /></span>
+                <input
+                  type="date"
+                  className={`form-control form-control-lg bg-light border-start-0 ${errors.date ? "is-invalid" : ""}`}
+                  value={form.date}
+                  onChange={onChange("date")}
+                  disabled={loading}
+                />
+              </div>
+            </div>
+
+            {/* KATEGORİ VE ÖDEME YÖNTEMİ */}
+            <div className="col-md-6">
+              <label className="form-label fw-bold small text-muted text-uppercase">Kategori</label>
+              <div className="input-group">
+                <span className="input-group-text bg-light border-end-0 text-muted"><FiTag /></span>
+                <input
+                  className={`form-control bg-light border-start-0 ${errors.category ? "is-invalid" : ""}`}
+                  placeholder="Örn: Satış, Maaş, Kira..."
+                  value={form.category}
+                  onChange={onChange("category")}
+                  disabled={loading}
+                />
+              </div>
+            </div>
+
+            <div className="col-md-6">
+              <label className="form-label fw-bold small text-muted text-uppercase">Ödeme Yöntemi</label>
+              <div className="input-group">
+                <span className="input-group-text bg-light border-end-0 text-muted"><FiCreditCard /></span>
+                <select
+                  className="form-select bg-light border-start-0"
+                  value={form.paymentMethod}
+                  onChange={onChange("paymentMethod")}
+                  disabled={loading}
+                >
+                  {PAYMENT_METHODS.map((x) => (
+                    <option key={x.value} value={x.value}>{x.label}</option>
+                  ))}
+                </select>
+              </div>
+            </div>
+
+            {/* TEKLİF VE MÜŞTERİ */}
+            <div className="col-md-6">
+              <label className="form-label fw-bold small text-muted text-uppercase">İlgili Teklif</label>
+              <select className="form-select bg-light" value={form.proposalId} onChange={onProposalChange} disabled={loading}>
+                <option value="">Teklif Seçiniz (Opsiyonel)</option>
+                {proposals.map((p) => (
+                  <option key={p.id} value={p.id}>{p.title}</option>
+                ))}
+              </select>
+            </div>
+
+            <div className="col-md-6">
+              <label className="form-label fw-bold small text-muted text-uppercase">Referans No</label>
+              <div className="input-group">
+                <span className="input-group-text bg-light border-end-0 text-muted"><FiHash /></span>
+                <input
+                  className="form-control bg-light border-start-0"
+                  placeholder="İşlem veya Fatura No"
+                  value={form.referenceNo}
+                  onChange={onChange("referenceNo")}
+                  disabled={loading}
+                />
+              </div>
+            </div>
+
+            {selectedProposal?.customer && (
+              <div className="col-12 animate__animated animate__fadeIn">
+                <div className="p-3 rounded-3 border bg-light d-flex align-items-center justify-content-between">
+                  <div>
+                    <span className="small text-muted d-block text-uppercase fw-bold">Bağlı Müşteri</span>
+                    <span className="fw-bold text-primary">{selectedProposal.customer.fullName}</span>
+                  </div>
+                </div>
               </div>
             )}
 
-            {/* DESCRIPTION */}
+            {/* AÇIKLAMA */}
             <div className="col-12">
-              <label className="form-label">Açıklama</label>
-              <input
-                className="form-control"
-                value={form.description}
-                onChange={onChange("description")}
-                disabled={loading}
-              />
-              {errors.description && (
-                <small className="text-danger">{errors.description}</small>
-              )}
-            </div>
-
-            {/* REFERENCE */}
-            <div className="col-md-6">
-              <label className="form-label">Referans No</label>
-              <input
-                className="form-control"
-                value={form.referenceNo}
-                onChange={onChange("referenceNo")}
-                disabled={loading}
-              />
+              <label className="form-label fw-bold small text-muted text-uppercase">Açıklama</label>
+              <div className="input-group">
+                <span className="input-group-text bg-light border-end-0 text-muted"><FiFileText /></span>
+                <textarea
+                  className={`form-control bg-light border-start-0 ${errors.description ? "is-invalid" : ""}`}
+                  rows="3"
+                  placeholder="İşlem ile ilgili notlarınız..."
+                  value={form.description}
+                  onChange={onChange("description")}
+                  disabled={loading}
+                ></textarea>
+              </div>
             </div>
           </div>
         </div>
 
-        <div className="card-footer d-flex justify-content-end gap-2">
+        <div className="card-footer bg-white py-3 d-flex justify-content-end gap-3 border-top">
           <button
-            className="btn btn-outline-secondary"
+            type="button"
+            className="btn btn-light px-4 fw-bold text-muted"
             onClick={() => router.push("/income-expense/list")}
             disabled={loading}
+            style={{ borderRadius: "10px" }}
           >
-            İptal
+            Vazgeç
           </button>
-
           <button
-            className="btn text-white"
-            style={{ backgroundColor: "#E92B63" }}
+            type="button"
+            className="btn px-5 fw-bold text-white shadow-sm"
+            style={{ backgroundColor: "#E92B63", borderRadius: "10px" }}
             onClick={handleSubmit}
             disabled={loading}
           >
-            {loading ? "Kaydediliyor..." : "Kaydet"}
+            {loading ? (
+              <>
+                <span className="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                Kaydediliyor...
+              </>
+            ) : (
+              "KAYDET"
+            )}
           </button>
         </div>
       </div>
