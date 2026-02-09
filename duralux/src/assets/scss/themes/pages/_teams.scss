@@ -1,0 +1,382 @@
+/* =========================
+   Teams Page Styles
+========================= */
+
+.team-avatar-circle {
+  width: 37px;
+  height: 37px;
+  border-radius: 50%;
+  background-color: #E93B62;
+  color: #fff;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  font-weight: 700;
+  font-size: 14px;
+  line-height: 1;
+
+  flex-shrink: 0;
+}
+
+.table .btn-sm {
+  width: 32px;
+  height: 32px;
+  padding: 0;
+}
+
+//ekiplerdeki izinler kısmındaki çizgi
+.section-divider {
+  height: 2px;
+  width: 100%;
+  background: linear-gradient(
+    to right,
+    #e5e7eb,
+    #f1f5f9,
+    #e5e7eb
+  );
+  border-radius: 2px;
+  margin-bottom: 24px;
+}
+
+
+//ÜYELER İÇİN AVATARLAR
+
+.avatar-stack {
+  display: flex;
+  align-items: center;
+}
+
+.avatar {
+  width: 28px;
+  height: 28px;
+  border-radius: 999px;
+  border: 2px solid #fff;
+  margin-left: -10px;
+  object-fit: cover;
+  box-shadow: 0 2px 6px rgba(0,0,0,.12);
+  background: #f3f4f6;
+}
+
+.avatar:first-child {
+  margin-left: 0;
+}
+
+.avatar-initial {
+  display: grid;
+  place-items: center;
+  font-size: 12px;
+  font-weight: 700;
+  color: #E93B62;
+  background: rgba(233, 59, 98, .15);
+}
+
+.avatar-extra {
+  display: grid;
+  place-items: center;
+  font-size: 11px;
+  font-weight: 600;
+  color: #E93B62;
+  background: rgba(233, 59, 98, .10);
+}
+.avatar-stack .avatar {
+  transition: all 0.2s ease;
+  cursor: pointer;
+}
+
+/* Hover edilen avatar büyüsün */
+.avatar-stack .avatar:hover {
+  transform: scale(1.25);
+  z-index: 10;
+  box-shadow: 0 6px 16px rgba(233, 59, 98, 0.35);
+}
+
+/* Hover olunca yanındakiler hafif geri kalsın */
+.avatar-stack:hover .avatar {
+  opacity: 0.6;
+}
+
+.avatar-stack:hover .avatar:hover {
+  opacity: 1;
+}
+
+
+
+
+
+
+
+.members-section {
+  margin-top: 24px;
+}
+
+.members-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 20px;
+}
+
+.member-card {
+  background: white;
+  border-radius: 16px;
+  padding: 24px 16px;
+  text-align: center;
+  box-shadow: 0 8px 30px rgba(0,0,0,.06);
+  transition: all .25s ease;
+}
+
+.member-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 14px 40px rgba(233,59,98,.18);
+}
+
+.member-avatar {
+  width: 72px;
+  height: 72px;
+  border-radius: 999px;
+  margin: 0 auto 12px;
+  display: grid;
+  place-items: center;
+  font-size: 28px;
+  font-weight: 700;
+  color: white;
+  background: linear-gradient(135deg, #E92B63, #ff7aa2);
+}
+
+.member-name {
+  font-weight: 600;
+  font-size: 15px;
+}
+
+.member-email {
+  font-size: 13px;
+  color: #888;
+  margin-bottom: 10px;
+}
+
+.member-role {
+  display: inline-block;
+  padding: 4px 12px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #E93B62;
+  background: rgba(233,59,98,.15);
+}
+
+.team-summary {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 32px 16px;
+  border-radius: 20px;
+  background: linear-gradient(
+    180deg,
+    rgba(233, 59, 98, 0.06),
+    rgba(255, 255, 255, 1)
+  );
+}
+
+.team-avatar-lg {
+  width: 88px;
+  height: 88px;
+  border-radius: 999px;
+  display: grid;
+  place-items: center;
+  background: linear-gradient(135deg, #E92B63, #ff7aa2);
+  color: white;
+  font-weight: 800;
+  font-size: 28px;
+}
+
+.team-summary h3 {
+  font-size: 24px;
+}
+
+.team-summary p {
+  font-size: 14px;
+}
+
+.team-summary-stats {
+  display: flex;
+  gap: 32px;
+  margin-top: 16px;
+}
+
+.team-summary-stats strong {
+  display: block;
+  font-size: 22px;
+}
+
+.team-summary-stats span {
+  font-size: 13px;
+  color: #888;
+}
+
+
+
+
+
+//Ekip üye düzenleme
+
+
+.member-manage-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.member-manage-card {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 14px 16px;
+  border-radius: 14px;
+  background: #fff;
+  box-shadow: 0 4px 16px rgba(0,0,0,.05);
+}
+
+.member-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.member-avatar-sm {
+  width: 40px;
+  height: 40px;
+  border-radius: 999px;
+  display: grid;
+  place-items: center;
+  background: rgba(233,59,98,.15);
+  color: #E93B62;
+  font-weight: 700;
+}
+
+.member-right {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.member-role {
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 600;
+  background: rgba(233,59,98,.12);
+  color: #E93B62;
+}
+
+.add-member-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 12px;
+}
+
+.add-member-card {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px;
+  border-radius: 14px;
+  background: #fff;
+  border: 1px solid #eee;
+  cursor: pointer;
+  transition: all .2s ease;
+}
+
+.add-member-card:hover {
+  border-color: #E93B62;
+}
+
+.add-member-card.selected {
+  border-color: #E93B62;
+  background: rgba(233,59,98,.08);
+}
+
+
+
+.member-card {
+  position: relative;
+}
+
+/* Sağ üstte sil */
+.member-delete-btn {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+
+  border: 1px solid rgba(233,59,98,.4);
+  background: white;
+  color: #E93B62;
+
+  display: grid;
+  place-items: center;
+
+  opacity: 0;
+  transform: scale(0.9);
+  transition: all .2s ease;
+}
+
+/* Hover olunca gelsin */
+.member-card:hover .member-delete-btn {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.member-delete-btn:hover {
+  background: #E93B62;
+  color: white;
+}
+
+
+
+//TEAM CREATE İÇİN KUTU AYARLARI
+
+.team-field {
+  display: grid;
+  grid-template-columns: 70px 1fr; 
+  align-items: start;
+  column-gap: 14px;
+}
+
+.team-field-label {
+  margin: 10px 0 0;
+  font-weight: 500;
+  font-size: 14px;
+  color: #000000;
+  white-space: nowrap;
+}
+
+.team-field-control {
+  position: relative;
+}
+
+.team-field-control::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 18px;
+  background: rgba(233, 59, 98, 0.22);
+  border: 1px solid rgba(233, 59, 98, 0.35);
+  border-right: 0;
+  border-radius: 8px 0 0 8px;
+  pointer-events: none;
+}
+
+.team-textarea {
+  min-height: 44px;   
+  resize: vertical;   /* isterse kullanıcı büyütebilsin */
+}
+
+
+
+

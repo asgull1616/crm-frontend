@@ -5,11 +5,6 @@ import Dropdown from '@/components/shared/Dropdown'
 import topTost from '@/utils/topTost'
 import Link from 'next/link'
 
-// const options = [
-//     { icon: <FiUserX />, label: "Make as Lost" },
-//     { icon: <FiDelete />, label: "Make as Junk" },
-//     { icon: <FiTrash2 />, label: "Delete as Lead" },
-// ]
 const LeadsViewHeader = () => {
     const handleClick = () => {
         topTost()
@@ -17,23 +12,7 @@ const LeadsViewHeader = () => {
 
     return (
         <div className="d-flex align-items-center gap-2 page-header-right-items-wrapper">
-            {/* <a href="#" className="btn btn-icon btn-light-brand">
-                <FiPrinter size={16} strokeWidth={1.6} />
-            </a> */}
-            <Link href="/leads/create" className="btn btn-icon btn-light-brand">
-                <FiEdit size={16} strokeWidth={1.6} />
-            </Link>
-            {/* <Dropdown
-                dropdownItems={options}
-                dropdownAutoClose={"outside"}
-                triggerPosition={"0, 10"}
-                triggerClass='btn btn-icon btn-light-brand'
-                triggerIcon={<FiMoreHorizontal size={16} />}
-            /> */}
-            {/* <a href="#" className="btn btn-primary" onClick={handleClick}>
-                <FiPlus size={16} className='me-2' />
-                <span>Kullanıcı Oluştur</span>
-            </a> */}
+           
         </div>
     )
 }
