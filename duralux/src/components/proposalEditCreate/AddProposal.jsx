@@ -1,47 +1,57 @@
-import React, { useState } from 'react'
+"use client";
 
+import React, { useState, useEffect } from 'react';
 
-const AddProposal = ({previtems}) => {
-    const [items, setItems] = useState(previtems);
+const AddProposal = ({ previtems, onItemsChange }) => {
+    // HATA ÇÖZÜMÜ: previtems undefined ise boş bir dizi ile başlat
+    const [items, setItems] = useState(previtems || []);
+
+    // Kalemlerde her değişiklik olduğunda üst bileşene haber ver
+    useEffect(() => {
+        if (onItemsChange) {
+            onItemsChange(items);
+        }
+    }, [items, onItemsChange]);
 
     const addItem = () => {
         const newItem = {
-            id: items.length + 1,
+            id: Date.now(), // Daha benzersiz bir ID için Date.now()
             product: '',
             qty: 1,
-            price: 0
+            price: 0,
+            tax: 20, // Varsayılan KDV %20
+            total: 0
         };
         setItems([...items, newItem]);
     };
 
-    const removeItem =()=>{
-        items.pop()
-      
-        setItems(items)
-    }
-
+    const removeItem = (id) => {
+        // Belirli bir ID'ye göre silme işlemi (pop yerine filter kullanımı daha güvenlidir)
+        setItems(items.filter(item => item.id !== id));
+    };
 
     const handleInputChange = (id, field, value) => {
         const updatedItems = items.map(item => {
             if (item.id === id) {
-                const updatedItem = { ...item, [field]: value };
-                if (field === 'qty' || field === 'price') {
-                    updatedItem.total = updatedItem.qty * updatedItem.price;
-                }
-                return updatedItem;
+                return { ...item, [field]: value };
             }
             return item;
         });
         setItems(updatedItems);
     };
 
-    const subTotal = items.reduce((accumulator, currentValue) => {
-        return accumulator + (currentValue.price * currentValue.qty);
-    }, 0);
+    // HATA ÇÖZÜMÜ: items?.reduce kullanarak dizinin varlığından emin oluyoruz
+    const subTotal = items?.reduce((accumulator, currentValue) => {
+        return accumulator + (Number(currentValue.price || 0) * Number(currentValue.qty || 0));
+    }, 0) || 0;
 
-    const vat = (subTotal * 0.1).toFixed(2)
-    const vatNumber = Number(vat);
-    const total = Number(subTotal + vatNumber).toFixed(2)
+    // Satır bazlı KDV hesaplandığı için toplam KDV'yi de reduce ile alıyoruz
+    const totalTaxAmount = items?.reduce((accumulator, currentValue) => {
+        const itemSub = Number(currentValue.price || 0) * Number(currentValue.qty || 0);
+        return accumulator + (itemSub * (Number(currentValue.tax || 0) / 100));
+    }, 0) || 0;
+
+    const grandTotal = subTotal + totalTaxAmount;
 
     return (
         <div className="col-12">
@@ -49,91 +59,120 @@ const AddProposal = ({previtems}) => {
                 <div className="card-body">
                     <div className="row">
                         <div className="col-lg-8">
-                            <div className="mb-4">
-                                <h5 className="fw-bold">Teklif Kalemleri:</h5>
-                                <span className="fs-12 text-muted">Teklifte sunulan ürün ve/veya hizmetlerin listelendiği bölüm</span>
+                            <div className="mb-4 d-flex justify-content-between align-items-center">
+                                <div>
+                                    <h5 className="fw-bold">Teklif Kalemleri:</h5>
+                                    <span className="fs-12 text-muted">Teklifte sunulan ürün ve hizmetlerin listesi</span>
+                                </div>
+                                <button
+                                    className="btn btn-md text-white shadow-sm"
+                                    onClick={addItem}
+                                    style={{ backgroundColor: "#E92B63", borderColor: "#E92B63" }}
+                                >
+                                    + Yeni Kalem Ekle
+                                </button>
                             </div>
                             <div className="table-responsive">
-                                <table className="table table-bordered overflow-hidden" id="tab_logic">
+                                <table className="table table-bordered overflow-hidden">
                                     <thead>
-                                        <tr className="single-item">
-                                            <th className="text-center">Açıklama</th>
-                                            <th className="text-center wd-450">Hizmet / Ürün</th>
-                                            <th className="text-center wd-150">Adet</th>
+                                        <tr className="bg-light">
+                                            <th className="text-center wd-50">#</th>
+                                            <th className="text-center">Hizmet / Ürün</th>
+                                            <th className="text-center wd-100">Adet</th>
                                             <th className="text-center wd-150">Birim Fiyat</th>
+                                            <th className="text-center wd-100">KDV (%)</th>
                                             <th className="text-center wd-150">Ara Toplam</th>
+                                            <th className="text-center wd-50">İşlem</th>
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        {
-                                            items.map(({ id, price, product, qty, total }, index) => {
-                                                return (
-                                                    <tr key={index}>
-                                                        <td>{id}</td>
-                                                        <td><input type="text" name="product" placeholder="Hizmet / Ürün" className="form-control" defaultValue={product} /></td>
-                                                        <td><input type="number" name="qty" placeholder="Qty" className="form-control qty" step="1" min="1" defaultValue={qty} onChange={(e) => handleInputChange(id, 'qty', parseInt(e.target.value))} /></td>
-                                                        <td><input type="number" name="price" placeholder="Unit Price" className="form-control price" step="1.00" min="1" defaultValue={price} onChange={(e) => handleInputChange(id, 'price', parseFloat(e.target.value))} /></td>
-                                                        <td><input type="number" name="total" placeholder="0.00" className="form-control total" readOnly value={qty * price} /></td>
-                                                    </tr>
-                                                )
-                                            })
-                                        }
+                                        {items.length > 0 ? (
+                                            items.map((item, index) => (
+                                                <tr key={item.id}>
+                                                    <td className="text-center align-middle">{index + 1}</td>
+                                                    <td>
+                                                        <input 
+                                                            type="text" 
+                                                            className="form-control" 
+                                                            placeholder="Hizmet / Ürün Adı" 
+                                                            value={item.product} 
+                                                            onChange={(e) => handleInputChange(item.id, 'product', e.target.value)} 
+                                                        />
+                                                    </td>
+                                                    <td>
+                                                        <input 
+                                                            type="number" 
+                                                            className="form-control text-center" 
+                                                            value={item.qty} 
+                                                            min="1" 
+                                                            onChange={(e) => handleInputChange(item.id, 'qty', parseInt(e.target.value) || 0)} 
+                                                        />
+                                                    </td>
+                                                    <td>
+                                                        <input 
+                                                            type="number" 
+                                                            className="form-control text-end" 
+                                                            value={item.price} 
+                                                            onChange={(e) => handleInputChange(item.id, 'price', parseFloat(e.target.value) || 0)} 
+                                                        />
+                                                    </td>
+                                                    <td>
+                                                        <select 
+                                                            className="form-control" 
+                                                            value={item.tax} 
+                                                            onChange={(e) => handleInputChange(item.id, 'tax', parseInt(e.target.value))}
+                                                        >
+                                                            <option value="0">%0</option>
+                                                            <option value="1">%1</option>
+                                                            <option value="10">%10</option>
+                                                            <option value="20">%20</option>
+                                                        </select>
+                                                    </td>
+                                                    <td className="text-end align-middle fw-bold">
+                                                        ₺{(item.qty * item.price).toLocaleString('tr-TR', { minimumFractionDigits: 2 })}
+                                                    </td>
+                                                    <td className="text-center">
+                                                        <button className="btn btn-sm btn-soft-danger" onClick={() => removeItem(item.id)}>
+                                                            <i className="feather-trash-2"></i>
+                                                        </button>
+                                                    </td>
+                                                </tr>
+                                            ))
+                                        ) : (
+                                            <tr>
+                                                <td colSpan="7" className="text-center text-muted py-4">Henüz bir kalem eklenmedi.</td>
+                                            </tr>
+                                        )}
                                     </tbody>
                                 </table>
-                            </div>
-                            <div className="d-flex justify-content-end gap-2 mt-3">
-                                <button className="btn btn-md bg-soft-danger text-danger" onClick={removeItem}>Sil</button>
-                              <button
-  className="btn btn-md text-white"
-  onClick={addItem}
-  style={{
-    backgroundColor: "#E92B63",
-    borderColor: "#E92B63",
-  }}
->
-  Teklifi Ekle
-</button>
-
                             </div>
                         </div>
+
                         <div className="col-lg-4">
-                            <div className="mb-4">
-                                <h5 className="fw-bold">Toplam Tutar:</h5>
-                                <span className="fs-12 text-muted">Toplam teklif tutarı</span>
-                            </div>
-                            <div className="table-responsive">
-                                <table className="table table-bordered" id="tab_logic_total">
-                                    <tbody>
-                                        <tr className="single-item">
-                                            <th className="fs-10 text-dark text-uppercase">Ara Toplam</th>
-                                            <td className="w-25"><input type="number" name="sub_total" placeholder="0.00" className="form-control border-0 bg-transparent p-0" id="sub_total" readOnly value={subTotal} /></td>
-                                        </tr>
-                                        <tr className="single-item">
-                                            <th className="fs-10 text-dark text-uppercase">İndirim</th>
-                                            <td className="w-25">
-                                                <div className="input-group mb-2 mb-sm-0">
-                                                    <input type="number" className="form-control border-0 bg-transparent p-0" id="tax" placeholder="0" defaultValue="10" />
-                                                    <div className="input-group-addon">%</div>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                        <tr className="single-item">
-                                            <th className="fs-10 text-dark text-uppercase">Vergi Miktarı</th>
-                                            <td className="w-25"><input type="number" name="tax_amount" id="tax_amount" placeholder="0.00" className="form-control border-0 bg-transparent p-0" readOnly value={vat} /></td>
-                                        </tr>
-                                        <tr className="single-item">
-                                            <th className="fs-10 text-dark text-uppercase bg-gray-100">Toplam Tutar</th>
-                                            <td className="bg-gray-100 w-25"><input type="number" name="total_amount" id="total_amount" placeholder="0.00" className="form-control border-0 bg-transparent p-0 fw-700 text-dark" readOnly value={total} /></td>
-                                        </tr>
-                                    </tbody>
-                                </table>
+                            <div className="card border shadow-none bg-gray-50">
+                                <div className="card-body">
+                                    <h5 className="fw-bold mb-3">Özet Tutar</h5>
+                                    <div className="d-flex justify-content-between mb-2">
+                                        <span className="text-muted">Ara Toplam:</span>
+                                        <span className="fw-bold">₺{subTotal.toLocaleString('tr-TR', { minimumFractionDigits: 2 })}</span>
+                                    </div>
+                                    <div className="d-flex justify-content-between mb-2">
+                                        <span className="text-muted">Toplam KDV:</span>
+                                        <span className="fw-bold text-danger">₺{totalTaxAmount.toLocaleString('tr-TR', { minimumFractionDigits: 2 })}</span>
+                                    </div>
+                                    <hr />
+                                    <div className="d-flex justify-content-between">
+                                        <span className="h6 fw-bold">Genel Toplam:</span>
+                                        <span className="h5 fw-bold text-primary">₺{grandTotal.toLocaleString('tr-TR', { minimumFractionDigits: 2 })}</span>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-    )
+    );
 }
 
-export default AddProposal
+export default AddProposal;

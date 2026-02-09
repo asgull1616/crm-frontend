@@ -14,7 +14,7 @@
         }
 
         &-text {
-            fill: #283c50;
+            fill: #e2e2e2;
             color: #283c50;
             font-size: 13px;
             font-weight: 600;
@@ -144,5 +144,69 @@ div#checklist {
 		height: 200px !important;
 		border: 1px solid $border-color !important;
 		border-top: none !important;
+	}
+}
+
+
+
+/*
+<--!----------------------------------------------------------------!-->
+<--! Proposal View (Corporate) !-->
+<--!----------------------------------------------------------------!-->
+*/
+
+.proposal-view-page {
+	.card {
+		border: 1px solid $border-color;
+		border-radius: 14px;
+		box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+	}
+
+	h4 {
+		font-weight: 600;
+		letter-spacing: -0.3px;
+		color: $gray-900;
+	}
+
+	.badge {
+		padding: 6px 14px;
+		font-size: $font-12;
+		font-weight: 500;
+		border-radius: 999px;
+	}
+
+	/* Üst özet alan */
+	.summary-row {
+		background-color: lighten($gray-100, 1);
+		border-radius: 12px;
+		padding: 16px;
+	}
+
+	.info-label {
+		font-size: $font-12;
+		color: $gray-600;
+		margin-bottom: 4px;
+	}
+
+	.info-value {
+		font-size: $font-15;
+		font-weight: 600;
+		color: $gray-900;
+	}
+
+	/* Müşteri kartı */
+	.customer-box {
+		border: 1px solid $border-color;
+		border-radius: 12px;
+		background-color: $white;
+		padding: 18px;
+
+		.fw-bold {
+			font-size: $font-15;
+		}
+
+		.text-muted {
+			font-size: $font-13;
+		}
 	}
 }
