@@ -130,7 +130,7 @@ const TeamsCreateContent = () => {
                     {user.username?.[0]?.toUpperCase()}
                   </div>
 
-                  <div className="member-name">{user.username}</div>
+                 <div className="fw-semibold">{user.fullName}</div>
                   <div className="member-email">{user.email}</div>
 
                   {selected && (
