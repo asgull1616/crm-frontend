@@ -38,7 +38,7 @@ const SystemLogs = () => {
         <div className="col-xxl-12 mt-4">
             <div className={`card stretch stretch-full border-0 shadow-sm ${isExpanded ? "card-expand" : ""}`}>
                 <div className="d-flex justify-content-between align-items-center pe-4">
-                    <CardHeader title="Sistem Aktivite Logları" refresh={handleRefresh} remove={handleDelete} expanded={handleExpand} />
+                    <CardHeader title="Sistem Aktivite Hareketleri" refresh={handleRefresh} remove={handleDelete} expanded={handleExpand} />
                     
                     {/* Modern Search Bar */}
                     <div className="search-box" style={{ width: '250px' }}>

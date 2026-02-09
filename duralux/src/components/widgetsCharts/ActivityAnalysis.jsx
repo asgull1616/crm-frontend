@@ -6,11 +6,11 @@ const ActivityAnalysis = () => {
     return (
         <div className="col-xxl-12">
             <div className="card stretch stretch-full border-0 shadow-sm">
-                <CardHeader title="Activity & Geographic Breakdown" />
+                <CardHeader title="Faaliyet ve Coğrafi Dağılım" />
                 <div className="card-body">
                     <div className="row align-items-center">
                         <div className="col-md-5">
-                            <h5 className="fs-14 fw-bold mb-4">Top Regions</h5>
+                            <h5 className="fs-14 fw-bold mb-4">Popüler Bölgeler</h5>
                             <div className="mb-4">
                                 <div className="d-flex justify-content-between mb-2">
                                     <span className="fs-12 fw-medium">Türkiye</span>
@@ -22,7 +22,7 @@ const ActivityAnalysis = () => {
                             </div>
                             <div className="mb-0">
                                 <div className="d-flex justify-content-between mb-2">
-                                    <span className="fs-12 fw-medium">Europe</span>
+                                    <span className="fs-12 fw-medium">Avrupa</span>
                                     <span className="fs-12 text-muted">5%</span>
                                 </div>
                                 <div className="progress style-1" style={{height: '6px'}}>
@@ -30,7 +30,7 @@ const ActivityAnalysis = () => {
                                 </div>
                             <div className="mb-4">
                               <div className="d-flex justify-content-between mb-2">
-                                    <span className="fs-12 fw-medium">USA</span>
+                                    <span className="fs-12 fw-medium">Amerika</span>
                                     <span className="fs-12 text-muted">5%</span>
                               </div>
                                 <div className="progress style-1" style={{height: '6px'}}>
@@ -39,7 +39,7 @@ const ActivityAnalysis = () => {
                             </div>
                             <div className="mb-4">
                               <div className="d-flex justify-content-between mb-2">
-                                    <span className="fs-12 fw-medium">Asia</span>
+                                    <span className="fs-12 fw-medium">Asya</span>
                                     <span className="fs-12 text-muted">5%</span>
                               </div>
                                 <div className="progress style-1" style={{height: '6px'}}>
