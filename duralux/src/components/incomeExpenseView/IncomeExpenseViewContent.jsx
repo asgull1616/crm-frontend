@@ -3,31 +3,38 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { transactionService } from "@/lib/services/transaction.service";
+// ✅ İkonlar ve Enum Importları
+import {
+  FiArrowLeft,
+  FiEdit2,
+  FiCalendar,
+  FiTag,
+  FiDollarSign,
+  FiCreditCard,
+  FiHash,
+  FiFileText,
+  FiUser,
+  FiFile,
+  FiCheckCircle,
+} from "react-icons/fi";
+import {
+  TransactionTypeConfig,
+  PaymentMethodLabels,
+} from "../../lib/services/enums/transaction.enums";
 
-const badgeType = (type) => (type === "INCOME" ? "bg-success" : "bg-danger");
-const typeText = (type) => (type === "INCOME" ? "Gelir" : "Gider");
-
-const pmText = (pm) => {
-  switch (pm) {
-    case "BANK_TRANSFER":
-      return "Banka Havalesi";
-    case "CASH":
-      return "Nakit";
-    case "CREDIT_CARD":
-      return "Kredi Kartı";
-    case "OTHER":
-      return "Diğer";
-    default:
-      return pm || "-";
-  }
-};
-
+// Helper: Para Formatlama
 const formatMoney = (amount, currency = "TRY") => {
-  // backend Decimal string gelebilir (örn: "12500.00")
   const n = Number(String(amount ?? "0").replace(",", "."));
   const safe = Number.isFinite(n) ? n : 0;
-  const suffix = currency === "TRY" ? "₺" : currency;
-  return `${safe.toLocaleString("tr-TR", { minimumFractionDigits: 2, maximumFractionDigits: 2 })} ${suffix}`;
+  // Türkçe format: 12.345,67 ₺
+  return (
+    safe.toLocaleString("tr-TR", {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
+    }) +
+    " " +
+    (currency === "TRY" ? "₺" : currency)
+  );
 };
 
 export default function IncomeExpenseViewContent({ id }) {
@@ -57,11 +64,16 @@ export default function IncomeExpenseViewContent({ id }) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id]);
 
+  // Veriyi işleyip kullanıma hazır hale getiren memo
   const info = useMemo(() => {
     if (!data) return null;
 
     const dateText = data?.date
-      ? new Date(data.date).toLocaleDateString("tr-TR")
+      ? new Date(data.date).toLocaleDateString("tr-TR", {
+          day: "numeric",
+          month: "long",
+          year: "numeric",
+        })
       : "-";
 
     return {
@@ -72,7 +84,9 @@ export default function IncomeExpenseViewContent({ id }) {
       description: data.description ?? "-",
       amountText: formatMoney(data.amount, data.currency),
       currency: data.currency ?? "TRY",
-      paymentMethod: pmText(data.paymentMethod),
+      // Enum üzerinden Türkçe label çekiyoruz
+      paymentMethod:
+        PaymentMethodLabels[data.paymentMethod] || data.paymentMethod || "-",
       referenceNo: data.referenceNo ?? "-",
 
       customer: data.customer ?? null,
@@ -83,10 +97,14 @@ export default function IncomeExpenseViewContent({ id }) {
 
   if (loading) {
     return (
-      <div className="col-12">
-        <div className="card">
-          <div className="card-body">
-            <div className="text-muted">Yükleniyor...</div>
+      <div className="container-fluid py-4">
+        <div className="card border-0 shadow-sm rounded-4">
+          <div className="card-body text-center text-muted py-5">
+            <div
+              className="spinner-border text-primary mb-2"
+              role="status"
+            ></div>
+            <div>Yükleniyor...</div>
           </div>
         </div>
       </div>
@@ -95,24 +113,16 @@ export default function IncomeExpenseViewContent({ id }) {
 
   if (errMsg) {
     return (
-      <div className="col-12">
-        <div className="card border-danger">
-          <div className="card-body">
-            <div className="fw-semibold text-danger">Hata</div>
-            <div className="text-muted">{errMsg}</div>
-
-            <div className="d-flex gap-2 mt-3">
-              <button
-                className="btn btn-outline-secondary"
-                onClick={() => router.push("/income-expense/list")}
-              >
-                Listeye Dön
-              </button>
-              <button className="btn btn-outline-primary" onClick={fetchDetail}>
-                Tekrar Dene
-              </button>
-            </div>
-          </div>
+      <div className="container-fluid py-4">
+        <div className="alert alert-danger shadow-sm d-flex flex-column align-items-center p-4">
+          <h5 className="fw-bold mb-2">Bir Hata Oluştu</h5>
+          <p className="mb-4">{errMsg}</p>
+          <button
+            className="btn btn-light border px-4"
+            onClick={() => router.push("/income-expense/list")}
+          >
+            Listeye Dön
+          </button>
         </div>
       </div>
     );
@@ -120,167 +130,218 @@ export default function IncomeExpenseViewContent({ id }) {
 
   if (!info) return null;
 
+  // Enum Config'i çekiyoruz
+  const typeConfig = TransactionTypeConfig[info.type] || {};
+
   return (
-    <div className="col-12">
+    <div className="container-fluid py-4">
       {/* TOP BAR */}
-      <div className="d-flex align-items-center justify-content-between mb-3">
+      <div className="d-flex flex-wrap align-items-center justify-content-between gap-3 mb-4">
         <div>
-          <div className="d-flex align-items-center gap-2">
-            <h5 className="mb-0">Gelir / Gider Detay</h5>
-            <span className={`badge ${badgeType(info.type)}`}>
-              {typeText(info.type)}
+          <div className="d-flex align-items-center gap-3">
+            <h4 className="fw-bold text-dark mb-0">İşlem Detayı</h4>
+            {/* Dinamik Badge */}
+            <span
+              className={`badge rounded-pill px-3 py-2 ${typeConfig.class}`}
+            >
+              {typeConfig.label || info.type}
             </span>
           </div>
-          <div className="text-muted fs-12">Kayıt ID: {info.id}</div>
         </div>
 
         <div className="d-flex gap-2">
           <button
-            className="btn btn-outline-secondary"
+            className="btn btn-light border shadow-sm px-3"
             onClick={() => router.push("/income-expense/list")}
           >
-            Listeye Dön
+            <FiArrowLeft className="me-2" /> Listeye Dön
           </button>
 
           <button
-            className="btn text-white"
-            style={{ backgroundColor: "#E92B63", borderColor: "#E92B63" }}
+            className="btn text-white shadow-sm px-4"
+            style={{ backgroundColor: "#E92B63" }}
             onClick={() => router.push(`/income-expense/edit/${info.id}`)}
           >
-            Düzenle
+            <FiEdit2 className="me-2" /> Düzenle
           </button>
         </div>
       </div>
 
-      {/* MAIN GRID */}
-      <div className="row g-3">
-        {/* TRANSACTION CARD */}
+      <div className="row g-4">
+        {/* SOL KOLON: ANA BİLGİLER */}
         <div className="col-lg-8">
-          <div className="card">
-            <div className="card-header fw-semibold">İşlem Bilgileri</div>
-            <div className="card-body">
-              <div className="row g-3">
-                <div className="col-md-4">
-                  <div className="text-muted fs-12">Tarih</div>
-                  <div className="fw-semibold">{info.dateText}</div>
-                </div>
-
-                <div className="col-md-4">
-                  <div className="text-muted fs-12">Kategori</div>
-                  <div className="fw-semibold">{info.category}</div>
-                </div>
-
-                <div className="col-md-4">
-                  <div className="text-muted fs-12">Tutar</div>
-                  <div className="fw-bold">{info.amountText}</div>
+          <div
+            className="card border-0 shadow-sm"
+            style={{ borderRadius: "16px" }}
+          >
+            <div className="card-header bg-white py-3 border-bottom">
+              <h6 className="mb-0 fw-bold d-flex align-items-center gap-2">
+                <FiFileText className="text-muted" /> Temel Bilgiler
+              </h6>
+            </div>
+            <div className="card-body p-4">
+              <div className="row g-4">
+                {/* Tutar (Vurgulu) */}
+                <div className="col-12">
+                  <div className="p-3 rounded-3 bg-light border d-flex align-items-center justify-content-between">
+                    <span className="text-muted fw-bold small text-uppercase">
+                      Toplam Tutar
+                    </span>
+                    <span className="h3 mb-0 fw-bold text-dark">
+                      {info.amountText}
+                    </span>
+                  </div>
                 </div>
 
                 <div className="col-md-6">
-                  <div className="text-muted fs-12">Ödeme Yöntemi</div>
-                  <div className="fw-semibold">{info.paymentMethod}</div>
+                  <label className="text-muted small fw-bold text-uppercase d-block mb-1">
+                    <FiCalendar className="me-1" /> Tarih
+                  </label>
+                  <span className="fw-medium fs-5">{info.dateText}</span>
                 </div>
 
                 <div className="col-md-6">
-                  <div className="text-muted fs-12">Referans No</div>
-                  <div className="fw-semibold">{info.referenceNo}</div>
+                  <label className="text-muted small fw-bold text-uppercase d-block mb-1">
+                    <FiTag className="me-1" /> Kategori
+                  </label>
+                  <span className="fw-medium fs-5">{info.category}</span>
+                </div>
+
+                <div className="col-md-6">
+                  <label className="text-muted small fw-bold text-uppercase d-block mb-1">
+                    <FiCreditCard className="me-1" /> Ödeme Yöntemi
+                  </label>
+                  <span className="fw-medium">{info.paymentMethod}</span>
+                </div>
+
+                <div className="col-md-6">
+                  <label className="text-muted small fw-bold text-uppercase d-block mb-1">
+                    <FiHash className="me-1" /> Referans No
+                  </label>
+                  <span className="fw-medium font-monospace">
+                    {info.referenceNo}
+                  </span>
                 </div>
 
                 <div className="col-12">
-                  <div className="text-muted fs-12">Açıklama</div>
-                  <div className="fw-semibold">{info.description}</div>
+                  <label className="text-muted small fw-bold text-uppercase d-block mb-1">
+                    Açıklama
+                  </label>
+                  <p className="mb-0 text-dark bg-light p-3 rounded-3 border">
+                    {info.description}
+                  </p>
                 </div>
               </div>
             </div>
           </div>
         </div>
 
-        {/* SIDE CARDS */}
+        {/* SAĞ KOLON: İLİŞKİLİ KAYITLAR */}
         <div className="col-lg-4">
-          {/* CUSTOMER */}
-          <div className="card mb-3">
-            <div className="card-header fw-semibold d-flex justify-content-between align-items-center">
-              <span>Müşteri</span>
-              {info.customer?.id ? (
+          {/* MÜŞTERİ KARTI */}
+          <div
+            className="card border-0 shadow-sm mb-4"
+            style={{ borderRadius: "16px" }}
+          >
+            <div className="card-header bg-white py-3 border-bottom d-flex justify-content-between align-items-center">
+              <h6 className="mb-0 fw-bold d-flex align-items-center gap-2">
+                <FiUser className="text-muted" /> Müşteri
+              </h6>
+              {info.customer?.id && (
                 <button
-                  className="btn btn-sm btn-outline-secondary"
+                  className="btn btn-sm btn-light border py-0"
                   onClick={() =>
                     router.push(`/customers/view/${info.customer.id}`)
                   }
                 >
-                  Gör
+                  Git
                 </button>
-              ) : null}
+              )}
             </div>
             <div className="card-body">
               {info.customer ? (
                 <>
-                  <div className="text-muted fs-12">Ad Soyad</div>
-                  <div className="fw-semibold">{info.customer.fullName}</div>
-
-                  <div className="text-muted fs-12 mt-2">Firma</div>
-                  <div className="fw-semibold">
-                    {info.customer.companyName || "-"}
+                  <div className="fw-bold fs-5 text-dark">
+                    {info.customer.fullName}
+                  </div>
+                  <div className="text-muted small">
+                    {info.customer.companyName || "Şirket bilgisi yok"}
                   </div>
                 </>
               ) : (
-                <div className="text-muted">
-                  Bu işlem bir müşteriye bağlı değil.
-                </div>
+                <span className="text-muted small fst-italic">
+                  Bu işlem bir müşteriye bağlanmamış.
+                </span>
               )}
             </div>
           </div>
 
-          {/* PROPOSAL */}
-          <div className="card mb-3">
-            <div className="card-header fw-semibold d-flex justify-content-between align-items-center">
-              <span>Teklif</span>
-              {info.proposal?.id ? (
+          {/* TEKLİF KARTI */}
+          <div
+            className="card border-0 shadow-sm mb-4"
+            style={{ borderRadius: "16px" }}
+          >
+            <div className="card-header bg-white py-3 border-bottom d-flex justify-content-between align-items-center">
+              <h6 className="mb-0 fw-bold d-flex align-items-center gap-2">
+                <FiFile className="text-muted" /> İlgili Teklif
+              </h6>
+              {info.proposal?.id && (
                 <button
-                  className="btn btn-sm btn-outline-secondary"
+                  className="btn btn-sm btn-light border py-0"
                   onClick={() =>
                     router.push(`/proposal/view/${info.proposal.id}`)
                   }
                 >
-                  Gör
+                  Git
                 </button>
-              ) : null}
+              )}
             </div>
             <div className="card-body">
               {info.proposal ? (
                 <>
-                  <div className="text-muted fs-12">Başlık</div>
-                  <div className="fw-semibold">{info.proposal.title}</div>
-
-                  <div className="text-muted fs-12 mt-2">Durum</div>
-                  <div className="fw-semibold">{info.proposal.status}</div>
+                  <div className="fw-bold text-dark">{info.proposal.title}</div>
+                  <div className="mt-2">
+                    <span className="badge bg-info bg-opacity-10 text-info border border-info">
+                      {info.proposal.status}
+                    </span>
+                  </div>
                 </>
               ) : (
-                <div className="text-muted">
-                  Bu işlem bir teklife bağlı değil.
-                </div>
+                <span className="text-muted small fst-italic">
+                  Bu işlem bir teklife bağlanmamış.
+                </span>
               )}
             </div>
           </div>
 
-          {/* CREATED BY */}
-          <div className="card">
-            <div className="card-header fw-semibold">Oluşturan Kullanıcı</div>
-            <div className="card-body">
-              {info.createdByUser ? (
-                <>
-                  <div className="text-muted fs-12">Username</div>
-                  <div className="fw-semibold">
-                    {info.createdByUser.username}
+          {/* OLUŞTURAN KULLANICI */}
+          <div
+            className="card border-0 shadow-sm"
+            style={{ borderRadius: "16px" }}
+          >
+            <div className="card-body d-flex align-items-center gap-3">
+              <div className="bg-light rounded-circle p-2 text-muted">
+                <FiCheckCircle size={20} />
+              </div>
+              <div>
+                <small
+                  className="text-muted d-block text-uppercase fw-bold"
+                  style={{ fontSize: "10px" }}
+                >
+                  Kayıt Oluşturan
+                </small>
+                <span className="fw-bold text-dark">
+                  {info.createdByUser?.username || "Sistem"}
+                </span>
+                {info.createdByUser?.email && (
+                  <div
+                    className="text-muted small"
+                    style={{ fontSize: "11px" }}
+                  >
+                    {info.createdByUser.email}
                   </div>
-
-                  <div className="text-muted fs-12 mt-2">Email</div>
-                  <div className="fw-semibold">
-                    {info.createdByUser.email || "-"}
-                  </div>
-                </>
-              ) : (
-                <div className="text-muted">Kullanıcı bilgisi yok.</div>
-              )}
+                )}
+              </div>
             </div>
           </div>
         </div>

@@ -4,15 +4,24 @@ import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { transactionService } from "@/lib/services/transaction.service";
 import { proposalService } from "@/lib/services/proposal.service";
-import { FiDollarSign, FiCalendar, FiTag, FiFileText, FiHash, FiCreditCard } from "react-icons/fi";
+import {
+  FiDollarSign,
+  FiCalendar,
+  FiTag,
+  FiFileText,
+  FiHash,
+  FiCreditCard,
+} from "react-icons/fi";
 
-const PAYMENT_METHODS = [
-  { value: "BANK_TRANSFER", label: "Banka Havalesi" },
-  { value: "CASH", label: "Nakit" },
-  { value: "CREDIT_CARD", label: "Kredi Kartı" },
-  { value: "OTHER", label: "Diğer" },
-];
+// ✅ 1. Enum dosyamızı import ediyoruz
+import {
+  TransactionType,
+  TransactionTypeConfig,
+  PaymentMethod,
+  PaymentMethodLabels,
+} from "../../lib/services/enums/transaction.enums";
 
+// Helperlar (Aynen kaldı)
 const normalizeAmount = (value) =>
   value
     .toString()
@@ -31,13 +40,13 @@ export default function IncomeExpenseCreateContent() {
   const [errors, setErrors] = useState({});
 
   const [form, setForm] = useState({
-    type: "INCOME",
+    type: TransactionType.INCOME, // ✅ Enum kullanımı
     amount: "",
     currency: "TRY",
     date: new Date().toISOString().slice(0, 10),
     description: "",
     category: "",
-    paymentMethod: "BANK_TRANSFER",
+    paymentMethod: PaymentMethod.BANK_TRANSFER, // ✅ Enum kullanımı
     referenceNo: "",
     proposalId: "",
   });
@@ -59,6 +68,9 @@ export default function IncomeExpenseCreateContent() {
     setSelectedProposal(proposals.find((x) => x.id === id) || null);
   };
 
+  // --------------------------------------------------
+  // VALIDATE (Aynen kaldı)
+  // --------------------------------------------------
   const validate = () => {
     const e = {};
     if (!form.amount.trim()) {
@@ -75,6 +87,9 @@ export default function IncomeExpenseCreateContent() {
     return e;
   };
 
+  // --------------------------------------------------
+  // SUBMIT (Aynen kaldı)
+  // --------------------------------------------------
   const handleSubmit = async () => {
     const e = validate();
     if (Object.keys(e).length) {
@@ -102,7 +117,9 @@ export default function IncomeExpenseCreateContent() {
       router.push("/income-expense/list");
     } catch (err) {
       const msg = err?.response?.data?.message;
-      alert(Array.isArray(msg) ? msg.join("\n") : msg || "Kayıt oluşturulamadı");
+      alert(
+        Array.isArray(msg) ? msg.join("\n") : msg || "Kayıt oluşturulamadı",
+      );
     } finally {
       setLoading(false);
     }
@@ -110,67 +127,84 @@ export default function IncomeExpenseCreateContent() {
 
   return (
     <div className="container-fluid py-4">
-      <div className="card border-0 shadow-sm" style={{ borderRadius: "16px", overflow: "hidden" }}>
+      <div
+        className="card border-0 shadow-sm"
+        style={{ borderRadius: "16px", overflow: "hidden" }}
+      >
         <div className="card-header bg-white py-3 border-bottom">
           <h5 className="mb-0 fw-bold text-dark">Yeni Finansal İşlem Kaydı</h5>
         </div>
 
         <div className="card-body p-4">
           <div className="row g-4">
-            {/* TÜR SEÇİMİ - ÖZEL BUTONLAR */}
+            {/* TÜR SEÇİMİ - Enum Config ile Dinamik Butonlar */}
             <div className="col-12 mb-2">
-              <label className="form-label fw-bold small text-muted text-uppercase mb-3">İşlem Türü</label>
+              <label className="form-label fw-bold small text-muted text-uppercase mb-3">
+                İşlem Türü
+              </label>
               <div className="d-flex gap-3">
-                <button
-                  type="button"
-                  onClick={() => setType("INCOME")}
-                  className={`btn flex-fill py-3 fw-bold transition-all ${
-                    form.type === "INCOME" 
-                    ? "btn-success shadow-sm" 
-                    : "btn-outline-success border-2"
-                  }`}
-                  style={{ borderRadius: "12px" }}
-                >
-                  GELİR
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setType("EXPENSE")}
-                  className={`btn flex-fill py-3 fw-bold transition-all ${
-                    form.type === "EXPENSE" 
-                    ? "btn-danger shadow-sm" 
-                    : "btn-outline-danger border-2"
-                  }`}
-                  style={{ borderRadius: "12px" }}
-                >
-                  GİDER
-                </button>
+                {[TransactionType.INCOME, TransactionType.EXPENSE].map(
+                  (typeKey) => {
+                    const config = TransactionTypeConfig[typeKey];
+                    const isActive = form.type === typeKey;
+
+                    return (
+                      <button
+                        key={typeKey}
+                        type="button"
+                        onClick={() => setType(typeKey)}
+                        className={`btn flex-fill py-3 fw-bold transition-all ${
+                          isActive
+                            ? `${config.btnClass} shadow-sm`
+                            : `${config.outlineClass} border-2`
+                        }`}
+                        style={{ borderRadius: "12px" }}
+                      >
+                        {config.label}
+                      </button>
+                    );
+                  },
+                )}
               </div>
             </div>
 
-            {/* TUTAR VE TARİH */}
+            {/* TUTAR VE TARİH (Aynen kaldı) */}
             <div className="col-md-6">
-              <label className="form-label fw-bold small text-muted text-uppercase">Tutar</label>
+              <label className="form-label fw-bold small text-muted text-uppercase">
+                Tutar
+              </label>
               <div className="input-group">
-                <span className="input-group-text bg-light border-end-0 text-muted"><FiDollarSign /></span>
+                <span className="input-group-text bg-light border-end-0 text-muted">
+                  <FiDollarSign />
+                </span>
                 <input
-                  className={`form-control form-control-lg bg-light border-start-0 ${errors.amount ? "is-invalid" : ""}`}
+                  className={`form-control form-control-lg bg-light border-start-0 ${
+                    errors.amount ? "is-invalid" : ""
+                  }`}
                   placeholder="0.00"
                   value={form.amount}
                   onChange={onChange("amount")}
                   disabled={loading}
                 />
               </div>
-              {errors.amount && <div className="text-danger small mt-1">{errors.amount}</div>}
+              {errors.amount && (
+                <div className="text-danger small mt-1">{errors.amount}</div>
+              )}
             </div>
 
             <div className="col-md-6">
-              <label className="form-label fw-bold small text-muted text-uppercase">İşlem Tarihi</label>
+              <label className="form-label fw-bold small text-muted text-uppercase">
+                İşlem Tarihi
+              </label>
               <div className="input-group">
-                <span className="input-group-text bg-light border-end-0 text-muted"><FiCalendar /></span>
+                <span className="input-group-text bg-light border-end-0 text-muted">
+                  <FiCalendar />
+                </span>
                 <input
                   type="date"
-                  className={`form-control form-control-lg bg-light border-start-0 ${errors.date ? "is-invalid" : ""}`}
+                  className={`form-control form-control-lg bg-light border-start-0 ${
+                    errors.date ? "is-invalid" : ""
+                  }`}
                   value={form.date}
                   onChange={onChange("date")}
                   disabled={loading}
@@ -180,11 +214,17 @@ export default function IncomeExpenseCreateContent() {
 
             {/* KATEGORİ VE ÖDEME YÖNTEMİ */}
             <div className="col-md-6">
-              <label className="form-label fw-bold small text-muted text-uppercase">Kategori</label>
+              <label className="form-label fw-bold small text-muted text-uppercase">
+                Kategori
+              </label>
               <div className="input-group">
-                <span className="input-group-text bg-light border-end-0 text-muted"><FiTag /></span>
+                <span className="input-group-text bg-light border-end-0 text-muted">
+                  <FiTag />
+                </span>
                 <input
-                  className={`form-control bg-light border-start-0 ${errors.category ? "is-invalid" : ""}`}
+                  className={`form-control bg-light border-start-0 ${
+                    errors.category ? "is-invalid" : ""
+                  }`}
                   placeholder="Örn: Satış, Maaş, Kira..."
                   value={form.category}
                   onChange={onChange("category")}
@@ -194,37 +234,57 @@ export default function IncomeExpenseCreateContent() {
             </div>
 
             <div className="col-md-6">
-              <label className="form-label fw-bold small text-muted text-uppercase">Ödeme Yöntemi</label>
+              <label className="form-label fw-bold small text-muted text-uppercase">
+                Ödeme Yöntemi
+              </label>
               <div className="input-group">
-                <span className="input-group-text bg-light border-end-0 text-muted"><FiCreditCard /></span>
+                <span className="input-group-text bg-light border-end-0 text-muted">
+                  <FiCreditCard />
+                </span>
                 <select
                   className="form-select bg-light border-start-0"
                   value={form.paymentMethod}
                   onChange={onChange("paymentMethod")}
                   disabled={loading}
                 >
-                  {PAYMENT_METHODS.map((x) => (
-                    <option key={x.value} value={x.value}>{x.label}</option>
+                  {/* ✅ Enum'dan gelen değerleri döngüyle basıyoruz */}
+                  {Object.entries(PaymentMethodLabels).map(([key, label]) => (
+                    <option key={key} value={key}>
+                      {label}
+                    </option>
                   ))}
                 </select>
               </div>
             </div>
 
-            {/* TEKLİF VE MÜŞTERİ */}
+            {/* TEKLİF VE MÜŞTERİ (Aynen kaldı) */}
             <div className="col-md-6">
-              <label className="form-label fw-bold small text-muted text-uppercase">İlgili Teklif</label>
-              <select className="form-select bg-light" value={form.proposalId} onChange={onProposalChange} disabled={loading}>
+              <label className="form-label fw-bold small text-muted text-uppercase">
+                İlgili Teklif
+              </label>
+              <select
+                className="form-select bg-light"
+                value={form.proposalId}
+                onChange={onProposalChange}
+                disabled={loading}
+              >
                 <option value="">Teklif Seçiniz (Opsiyonel)</option>
                 {proposals.map((p) => (
-                  <option key={p.id} value={p.id}>{p.title}</option>
+                  <option key={p.id} value={p.id}>
+                    {p.title}
+                  </option>
                 ))}
               </select>
             </div>
 
             <div className="col-md-6">
-              <label className="form-label fw-bold small text-muted text-uppercase">Referans No</label>
+              <label className="form-label fw-bold small text-muted text-uppercase">
+                Referans No
+              </label>
               <div className="input-group">
-                <span className="input-group-text bg-light border-end-0 text-muted"><FiHash /></span>
+                <span className="input-group-text bg-light border-end-0 text-muted">
+                  <FiHash />
+                </span>
                 <input
                   className="form-control bg-light border-start-0"
                   placeholder="İşlem veya Fatura No"
@@ -239,8 +299,12 @@ export default function IncomeExpenseCreateContent() {
               <div className="col-12 animate__animated animate__fadeIn">
                 <div className="p-3 rounded-3 border bg-light d-flex align-items-center justify-content-between">
                   <div>
-                    <span className="small text-muted d-block text-uppercase fw-bold">Bağlı Müşteri</span>
-                    <span className="fw-bold text-primary">{selectedProposal.customer.fullName}</span>
+                    <span className="small text-muted d-block text-uppercase fw-bold">
+                      Bağlı Müşteri
+                    </span>
+                    <span className="fw-bold text-primary">
+                      {selectedProposal.customer.fullName}
+                    </span>
                   </div>
                 </div>
               </div>
@@ -248,11 +312,17 @@ export default function IncomeExpenseCreateContent() {
 
             {/* AÇIKLAMA */}
             <div className="col-12">
-              <label className="form-label fw-bold small text-muted text-uppercase">Açıklama</label>
+              <label className="form-label fw-bold small text-muted text-uppercase">
+                Açıklama
+              </label>
               <div className="input-group">
-                <span className="input-group-text bg-light border-end-0 text-muted"><FiFileText /></span>
+                <span className="input-group-text bg-light border-end-0 text-muted">
+                  <FiFileText />
+                </span>
                 <textarea
-                  className={`form-control bg-light border-start-0 ${errors.description ? "is-invalid" : ""}`}
+                  className={`form-control bg-light border-start-0 ${
+                    errors.description ? "is-invalid" : ""
+                  }`}
                   rows="3"
                   placeholder="İşlem ile ilgili notlarınız..."
                   value={form.description}
@@ -283,7 +353,11 @@ export default function IncomeExpenseCreateContent() {
           >
             {loading ? (
               <>
-                <span className="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                <span
+                  className="spinner-border spinner-border-sm me-2"
+                  role="status"
+                  aria-hidden="true"
+                ></span>
                 Kaydediliyor...
               </>
             ) : (
