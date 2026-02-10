@@ -1,36 +1,102 @@
 "use client";
 
-import React, { useState, useRef, useEffect, useMemo } from "react";
+import React, { useState, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import {
   FiUser,
   FiMail,
-  FiBriefcase,
-  FiMapPin,
-  FiSave,
-  FiChevronDown,
+  FiPhone,
   FiGlobe,
+  FiMapPin,
+  FiBriefcase,
   FiHash,
-  FiPieChart,
+  FiFileText,
   FiCheckCircle,
-  FiActivity,
-  FiClock,
   FiPlusCircle,
+  FiPieChart,
+  FiSave,
+  FiX,
 } from "react-icons/fi";
 import { customerService } from "@/lib/services/customer.service";
+import { validateCustomerForm } from "./validateCustomerForm";
+
+// ---------------------------------------------------------------------------
+// 1. ÖNEMLİ DÜZELTME: Alt bileşenler ana bileşenin DIŞINA alındı.
+// Bu sayede her render işleminde input focus kaybı yaşanmaz.
+// ---------------------------------------------------------------------------
+
+const FormInput = ({
+  label,
+  name,
+  type = "text",
+  icon: Icon,
+  value,
+  error,
+  placeholder,
+  onChange,
+  rows,
+}) => {
+  return (
+    <div className="mb-4">
+      <div className="d-flex align-items-center mb-1 justify-content-between">
+        <label
+          className="fw-semibold text-dark small"
+          style={{ fontSize: "13px" }}
+        >
+          {label}
+        </label>
+        {error && (
+          <span
+            className="text-danger small fw-bold fade-in"
+            style={{ fontSize: "11px" }}
+          >
+            {error}
+          </span>
+        )}
+      </div>
+      <div
+        className="input-group shadow-sm transition-all"
+        style={{
+          borderRadius: "12px",
+          overflow: "hidden",
+          border: error ? "1px solid #dc3545" : "1px solid #eee",
+        }}
+      >
+        <span className="input-group-text border-0 bg-light px-3 text-muted">
+          {Icon && <Icon size={18} />}
+        </span>
+
+        {type === "textarea" ? (
+          <textarea
+            className="form-control border-0 py-3 bg-white"
+            rows={rows || 3}
+            style={{ resize: "none", fontSize: "14px", fontWeight: "500" }}
+            placeholder={placeholder}
+            value={value}
+            onChange={(e) => onChange(name, e.target.value)}
+          />
+        ) : (
+          <input
+            type={type}
+            className="form-control border-0 py-3 bg-white"
+            style={{ fontSize: "14px", fontWeight: "500" }}
+            placeholder={placeholder}
+            value={value}
+            onChange={(e) => onChange(name, e.target.value)}
+          />
+        )}
+      </div>
+    </div>
+  );
+};
+
+// ---------------------------------------------------------------------------
+// ANA BİLEŞEN
+// ---------------------------------------------------------------------------
 
 const CustomerCreateContent = () => {
   const router = useRouter();
-  const dropdownRef = useRef(null);
-
   const [loading, setLoading] = useState(false);
-  const [isCountryOpen, setIsCountryOpen] = useState(false);
-
-  const [selectedCountry, setSelectedCountry] = useState({
-    code: "+90",
-    flag: "TR",
-    name: "TURKEY",
-  });
 
   const [form, setForm] = useState({
     fullName: "",
@@ -41,6 +107,7 @@ const CustomerCreateContent = () => {
     website: "",
     vatNumber: "",
     address: "",
+    description: "",
     status: "NEW",
   });
 
@@ -48,38 +115,38 @@ const CustomerCreateContent = () => {
 
   /* ---------------- helpers ---------------- */
 
-  const onChange = (field, value) => {
+  const handleChange = (field, value) => {
     setForm((prev) => ({ ...prev, [field]: value }));
-    setErrors((prev) => ({ ...prev, [field]: undefined }));
+    // Hata varsa temizle
+    if (errors[field]) {
+      setErrors((prev) => ({ ...prev, [field]: undefined }));
+    }
   };
 
   const progress = useMemo(() => {
-    const values = Object.values(form).filter(
-      (v) => v && v !== "" && v !== "+90",
+    const fieldsToCheck = [
+      "fullName",
+      "email",
+      "phone",
+      "companyName",
+      "website",
+      "address",
+    ];
+    const filled = fieldsToCheck.filter(
+      (k) => form[k] && form[k] !== "" && form[k] !== "+90",
     );
-    return Math.round((values.length / Object.keys(form).length) * 100);
+    return Math.round((filled.length / fieldsToCheck.length) * 100);
   }, [form]);
 
   /* ---------------- submit ---------------- */
 
   const onSubmit = async () => {
-    const newErrors = {};
+    const validationErrors = validateCustomerForm(form);
 
-    if (!form.fullName?.trim()) {
-      newErrors.fullName = "İsim soyisim zorunlu";
-    }
-
-    if (!form.email?.trim()) {
-      newErrors.email = "Email zorunlu";
-    }
-
-    const phoneDigits = form.phone?.replace(/\D/g, "") || "";
-    if (phoneDigits.length < 10) {
-      newErrors.phone = "Telefon numarası geçersiz";
-    }
-
-    if (Object.keys(newErrors).length > 0) {
-      setErrors(newErrors);
+    if (Object.keys(validationErrors).length > 0) {
+      setErrors(validationErrors);
+      // Sayfayı en üste kaydırarak hatayı göster (UX)
+      window.scrollTo({ top: 0, behavior: "smooth" });
       return;
     }
 
@@ -91,27 +158,13 @@ const CustomerCreateContent = () => {
       setLoading(true);
       await customerService.create(cleanedForm);
       router.push("/customers/list");
-    } catch (e) {
-      console.error(e);
-      alert("Müşteri oluşturulamadı");
+    } catch (err) {
+      console.error(err);
+      alert("Müşteri oluşturulamadı. Lütfen tekrar deneyin.");
     } finally {
       setLoading(false);
     }
   };
-
-  /* ---------------- dropdown close ---------------- */
-
-  useEffect(() => {
-    const handleClickOutside = (e) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(e.target)) {
-        setIsCountryOpen(false);
-      }
-    };
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, []);
-
-  /* ---------------- UI ---------------- */
 
   return (
     <div
@@ -119,142 +172,307 @@ const CustomerCreateContent = () => {
       style={{
         backgroundColor: "#F9FAFB",
         minHeight: "100vh",
-        padding: "40px",
+        padding: "30px",
+        fontFamily: "'Inter', sans-serif",
       }}
     >
-      <div className="row g-4 align-items-start">
-        {/* SOL FORM */}
+      {/* HEADER: Sadece Başlık */}
+      <div
+        className="d-flex justify-content-between align-items-center mb-4 bg-white p-4 shadow-sm"
+        style={{ borderRadius: "20px" }}
+      >
+        <div>
+          <h4 className="fw-bold text-dark mb-1">Yeni Müşteri Kaydı</h4>
+          <p className="text-muted small mb-0">
+            Sisteme yeni bir müşteri profili tanımlıyorsunuz.
+          </p>
+        </div>
+        {/* Header'daki buton kaldırıldı, aşağıya taşındı */}
+      </div>
+
+      <div className="row g-4">
+        {/* SOL: FORM ALANI */}
         <div className="col-lg-8">
           <div
             className="card border-0 shadow-sm"
-            style={{ borderRadius: "40px", padding: "50px" }}
+            style={{ borderRadius: "30px", overflow: "hidden" }}
           >
-            <div className="row g-4">
-              {/* FULL NAME */}
-              <div className="col-md-6">
-                <label className="form-label small text-muted fw-medium">
-                  İsim Soyisim
-                </label>
-                <input
-                  className="form-control"
-                  value={form.fullName}
-                  onChange={(e) => onChange("fullName", e.target.value)}
-                />
-                {errors.fullName && (
-                  <small className="text-danger">{errors.fullName}</small>
-                )}
-              </div>
-
-              {/* EMAIL */}
-              <div className="col-md-6">
-                <label className="form-label small text-muted fw-medium">
-                  Email
-                </label>
-                <input
-                  type="email"
-                  className="form-control"
-                  value={form.email}
-                  onChange={(e) => onChange("email", e.target.value)}
-                />
-                {errors.email && (
-                  <small className="text-danger">{errors.email}</small>
-                )}
-              </div>
-
-              {/* PHONE */}
-              <div className="col-md-6" ref={dropdownRef}>
-                <label className="form-label small text-muted fw-medium">
-                  Telefon
-                </label>
-                <input
-                  className="form-control"
-                  value={form.phone}
-                  onChange={(e) => onChange("phone", e.target.value)}
-                />
-                {errors.phone && (
-                  <small className="text-danger">{errors.phone}</small>
-                )}
-              </div>
-
-              {/* COMPANY */}
-              <div className="col-md-6">
-                <label className="form-label small text-muted fw-medium">
-                  Şirket
-                </label>
-                <input
-                  className="form-control"
-                  value={form.companyName}
-                  onChange={(e) => onChange("companyName", e.target.value)}
-                />
-              </div>
-
-              {/* WEBSITE */}
-              <div className="col-md-6">
-                <label className="form-label small text-muted fw-medium">
-                  Website
-                </label>
-                <input
-                  className="form-control"
-                  value={form.website}
-                  onChange={(e) => onChange("website", e.target.value)}
-                />
-              </div>
-
-              {/* VAT */}
-              <div className="col-md-6">
-                <label className="form-label small text-muted fw-medium">
-                  Vergi No
-                </label>
-                <input
-                  className="form-control"
-                  value={form.vatNumber}
-                  onChange={(e) => onChange("vatNumber", e.target.value)}
-                />
-              </div>
-
-              {/* ADDRESS */}
-              <div className="col-12">
-                <label className="form-label small text-muted fw-medium">
-                  Adres
-                </label>
-                <textarea
-                  className="form-control"
-                  rows={3}
-                  value={form.address}
-                  onChange={(e) => onChange("address", e.target.value)}
-                />
-              </div>
+            {/* Pembe Başlık Çizgisi */}
+            <div
+              className="text-center py-3 border-bottom"
+              style={{ backgroundColor: "#fdf2f6" }}
+            >
+              <span className="fw-bold" style={{ color: "#D95F80" }}>
+                <FiUser className="me-2" /> Müşteri Profili
+              </span>
             </div>
 
-            <div className="d-flex justify-content-end mt-4 gap-2">
-              <button className="btn btn-light" onClick={() => router.back()}>
-                İptal
-              </button>
-              <button
-                className="btn btn-primary"
-                onClick={onSubmit}
-                disabled={loading}
-              >
-                {loading ? "Kaydediliyor..." : "Yeni Müşteri Oluştur"}
-              </button>
+            <div className="card-body p-5">
+              <h6 className="fw-bold mb-4 text-dark">Müşteri Bilgileri:</h6>
+
+              {/* Form Inputları - Artık Props ile yönetiliyor */}
+              <div className="row">
+                <div className="col-md-6">
+                  <FormInput
+                    label="İsim Soyisim:"
+                    name="fullName"
+                    value={form.fullName}
+                    error={errors.fullName}
+                    icon={FiUser}
+                    onChange={handleChange}
+                  />
+                </div>
+                <div className="col-md-6">
+                  <FormInput
+                    label="Email:"
+                    name="email"
+                    type="email"
+                    value={form.email}
+                    error={errors.email}
+                    icon={FiMail}
+                    onChange={handleChange}
+                  />
+                </div>
+              </div>
+
+              <div className="row">
+                <div className="col-md-6">
+                  <FormInput
+                    label="Telefon:"
+                    name="phone"
+                    value={form.phone}
+                    error={errors.phone}
+                    icon={FiPhone}
+                    onChange={handleChange}
+                  />
+                </div>
+                <div className="col-md-6">
+                  <FormInput
+                    label="Şirket:"
+                    name="companyName"
+                    value={form.companyName}
+                    icon={FiBriefcase}
+                    onChange={handleChange}
+                  />
+                </div>
+              </div>
+
+              <div className="row">
+                <div className="col-md-6">
+                  <FormInput
+                    label="Unvan / Pozisyon:"
+                    name="designation"
+                    value={form.designation}
+                    icon={FiHash}
+                    placeholder="Örn: Pazarlama Müdürü"
+                    onChange={handleChange}
+                  />
+                </div>
+                <div className="col-md-6">
+                  <FormInput
+                    label="Website:"
+                    name="website"
+                    value={form.website}
+                    error={errors.website}
+                    icon={FiGlobe}
+                    onChange={handleChange}
+                  />
+                </div>
+              </div>
+
+              <FormInput
+                label="Vergi No (VAT):"
+                name="vatNumber"
+                value={form.vatNumber}
+                error={errors.vatNumber}
+                icon={FiHash}
+                onChange={handleChange}
+              />
+
+              <FormInput
+                label="Adres:"
+                name="address"
+                type="textarea"
+                rows={3}
+                value={form.address}
+                icon={FiMapPin}
+                onChange={handleChange}
+              />
+
+              <FormInput
+                label="Tanım / Notlar:"
+                name="description"
+                type="textarea"
+                rows={3}
+                value={form.description}
+                icon={FiFileText}
+                onChange={handleChange}
+              />
+
+              {/* BUTONLAR - EN ALTTA */}
+              <hr className="my-4 text-muted opacity-25" />
+
+              <div className="d-flex justify-content-end align-items-center gap-3">
+                <button
+                  className="btn btn-light rounded-pill px-4 py-2 fw-bold text-muted border"
+                  onClick={() => router.back()}
+                >
+                  <FiX className="me-2" /> VAZGEÇ
+                </button>
+
+                <button
+                  className="btn text-white px-5 py-3 rounded-pill fw-bold shadow-sm d-flex align-items-center gap-2 hover-scale"
+                  onClick={onSubmit}
+                  disabled={loading}
+                  style={{
+                    backgroundColor: "#D95F80",
+                    border: "none",
+                    minWidth: "200px",
+                    justifyContent: "center",
+                  }}
+                >
+                  {loading ? (
+                    <span className="spinner-border spinner-border-sm"></span>
+                  ) : (
+                    <FiSave size={20} />
+                  )}
+                  {loading ? " KAYDEDİLİYOR..." : " MÜŞTERİ OLUŞTUR"}
+                </button>
+              </div>
             </div>
           </div>
         </div>
 
-        {/* SAĞ PANEL */}
+        {/* SAĞ: TAKİP PANELİ */}
         <div className="col-lg-4">
-          <div className="card border-0 shadow-sm p-4">
-            <h6 className="fw-bold mb-3">
-              <FiPieChart /> İşlem Takibi
+          {/* 1. İŞLEM TAKİP PANELİ (DOLULUK) */}
+          <div
+            className="card border-0 shadow-sm mb-4 sticky-top"
+            style={{
+              borderRadius: "30px",
+              padding: "30px",
+              top: "20px",
+              zIndex: 10,
+            }}
+          >
+            <h6
+              className="fw-bold mb-4"
+              style={{ color: "#D95F80", fontSize: "14px" }}
+            >
+              <FiPieChart className="me-2" /> İşlem Takip Paneli
             </h6>
 
-            <div className="text-center">
-              <h2>%{progress}</h2>
-              <small className="text-muted">Doluluk</small>
+            <div className="d-flex flex-column align-items-center justify-content-center py-4 position-relative">
+              <div
+                style={{
+                  width: "140px",
+                  height: "140px",
+                  borderRadius: "50%",
+                  background: `conic-gradient(#D95F80 ${progress}%, #f3f4f6 0)`,
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  marginBottom: "15px",
+                  boxShadow: "0 4px 15px rgba(0,0,0,0.05)",
+                }}
+              >
+                <div
+                  style={{
+                    width: "115px",
+                    height: "115px",
+                    borderRadius: "50%",
+                    background: "white",
+                    display: "flex",
+                    flexDirection: "column",
+                    alignItems: "center",
+                    justifyContent: "center",
+                  }}
+                >
+                  <h2
+                    className="fw-bold mb-0"
+                    style={{ color: "#333", fontSize: "2rem" }}
+                  >
+                    %{progress}
+                  </h2>
+                  <span
+                    className="text-muted"
+                    style={{
+                      fontSize: "11px",
+                      fontWeight: "700",
+                      letterSpacing: "0.5px",
+                    }}
+                  >
+                    DOLULUK
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            <div className="bg-light p-3 rounded-4 d-flex justify-content-between align-items-center mt-2">
+              <span className="text-muted small fw-bold">Veri Kalitesi</span>
+              <span
+                className={`badge shadow-sm px-3 py-2 ${progress >= 80 ? "bg-success text-white" : "bg-white text-dark"}`}
+                style={{ borderRadius: "10px", transition: "all 0.3s" }}
+              >
+                {progress < 50 ? "Düşük" : progress < 80 ? "Orta" : "Mükemmel"}
+              </span>
+            </div>
+
+            <div className="mt-4 pt-4 border-top">
+              <h6 className="fw-bold mb-3 small text-muted">SÜREÇ TAKİBİ</h6>
+              <div className="vstack gap-2">
+                <div className="p-3 rounded-3 d-flex align-items-center gap-3 bg-white border">
+                  <FiCheckCircle className="text-success" size={18} />
+                  <span className="text-dark fw-bold small">
+                    Protokol Oluşturuldu
+                  </span>
+                </div>
+                <div className="p-3 rounded-3 d-flex align-items-center gap-3 bg-white border opacity-50">
+                  <FiPlusCircle className="text-muted" size={18} />
+                  <span className="text-muted fw-bold small">
+                    Onay Bekleniyor
+                  </span>
+                </div>
+              </div>
             </div>
           </div>
         </div>
       </div>
+
+      <style jsx>{`
+        .hover-scale {
+          transition: transform 0.2s ease-in-out;
+        }
+        .hover-scale:hover {
+          transform: translateY(-2px);
+          opacity: 0.95;
+        }
+        .hover-scale:active {
+          transform: translateY(0);
+        }
+
+        .form-control:focus {
+          box-shadow: none;
+          background-color: #fff;
+        }
+        .input-group:focus-within {
+          border-color: #d95f80 !important;
+          box-shadow: 0 0 0 4px rgba(217, 95, 128, 0.1) !important;
+        }
+        .fade-in {
+          animation: fadeIn 0.3s ease-in;
+        }
+        @keyframes fadeIn {
+          from {
+            opacity: 0;
+            transform: translateY(-5px);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0);
+          }
+        }
+      `}</style>
     </div>
   );
 };
