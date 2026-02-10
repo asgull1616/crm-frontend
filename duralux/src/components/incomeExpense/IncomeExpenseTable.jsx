@@ -132,18 +132,20 @@ export default function IncomeExpenseTable() {
 
                   {/* ✅ AKSİYONLAR: Detay + Düzenle + Sil */}
                   <td className="text-end">
-                    <div className="d-inline-flex gap-2">
+                    <div className="d-flex justify-content-end gap-2">
                       <button
                         className="btn btn-sm btn-outline-secondary"
+                        title="Detay"
                         onClick={() =>
                           router.push(`/income-expense/view/${x.id}`)
                         }
                       >
-                        Detay
+                        👁️
                       </button>
 
                       <button
                         className="btn btn-sm"
+                        title="Düzenle"
                         style={{
                           color: "#E92B63",
                           border: "1px solid #E92B63",
@@ -152,14 +154,15 @@ export default function IncomeExpenseTable() {
                           router.push(`/income-expense/edit/${x.id}`)
                         }
                       >
-                        Düzenle
+                        ✏️
                       </button>
 
                       <button
                         className="btn btn-sm btn-outline-danger"
+                        title="Sil"
                         onClick={() => handleDelete(x.id)}
                       >
-                        Sil
+                        🗑️
                       </button>
                     </div>
                   </td>

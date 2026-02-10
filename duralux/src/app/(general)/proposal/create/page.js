@@ -10,9 +10,7 @@ const ProposalSent = dynamic(
 const page = () => {
   return (
     <>
-      <PageHeader>
-        {/* <ProposalEditHeader /> */}
-      </PageHeader>
+      <PageHeader>{/* <ProposalEditHeader /> */}</PageHeader>
       <div className="main-content">
         <div className="row">
           <ProposalCreateContent />

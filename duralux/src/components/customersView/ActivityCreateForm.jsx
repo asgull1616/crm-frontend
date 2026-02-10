@@ -1,38 +1,38 @@
-'use client'
-import { useState } from 'react'
-import { activityService } from '@/lib/services/activity.service'
+"use client";
+import { useState } from "react";
+import { activityService } from "@/lib/services/activity.service";
 
 const ACTIVITY_TYPES = [
-  { value: 'CALL', label: '📞 Telefon' },
-  { value: 'EMAIL', label: '✉️ E-posta' },
-  { value: 'MEETING', label: '📅 Toplantı' },
-  { value: 'NOTE', label: '📝 Not' },
-]
+  { value: "CALL", label: "📞 Telefon" },
+  { value: "EMAIL", label: "✉️ E-posta" },
+  { value: "MEETING", label: "📅 Toplantı" },
+  { value: "NOTE", label: "📝 Not" },
+];
 
 const ActivityCreateForm = ({ customerId, onCreated }) => {
-  const [type, setType] = useState('CALL')
-  const [title, setTitle] = useState('')
-  const [description, setDescription] = useState('')
-  const [loading, setLoading] = useState(false)
+  const [type, setType] = useState("CALL");
+  const [title, setTitle] = useState("");
+  const [description, setDescription] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const submit = async () => {
-    if (!title.trim()) return alert('Başlık zorunlu')
+    if (!title.trim()) return alert("Başlık zorunlu");
 
-    setLoading(true)
+    setLoading(true);
     try {
       await activityService.create({
         customerId,
         type,
         title,
         description,
-      })
-      setTitle('')
-      setDescription('')
-      onCreated?.()
+      });
+      setTitle("");
+      setDescription("");
+      onCreated?.();
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
-  }
+  };
 
   return (
     <div className="card mb-4">
@@ -77,24 +77,23 @@ const ActivityCreateForm = ({ customerId, onCreated }) => {
 
           <div className="col-12 text-end">
             <button
-  className="btn btn-sm text-white"
-  disabled={loading}
-  onClick={submit}
-  style={{
-    backgroundColor: "#E92B63",
-    borderColor: "#E92B63",
-    opacity: loading ? 0.6 : 1,
-    cursor: loading ? "not-allowed" : "pointer",
-  }}
->
-  {loading ? "Ekleniyor..." : "Aktivite Ekle"}
-</button>
-
+              className="btn btn-sm text-white"
+              disabled={loading}
+              onClick={submit}
+              style={{
+                backgroundColor: "#E92B63",
+                borderColor: "#E92B63",
+                opacity: loading ? 0.6 : 1,
+                cursor: loading ? "not-allowed" : "pointer",
+              }}
+            >
+              {loading ? "Ekleniyor..." : "Aktivite Ekle"}
+            </button>
           </div>
         </div>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default ActivityCreateForm
+export default ActivityCreateForm;
