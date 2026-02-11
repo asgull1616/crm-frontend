@@ -142,5 +142,41 @@ export const menuList = [
       },
     ],
   },
-  
+  {
+    id: 9,
+    name: "Plan & Akış",
+    path: "#",
+    icon: "feather-at-sign", // icon çalışmıyorsa sonra düzeltiriz
+    dropdownMenu: [
+      {
+        id: 1,
+        name: "Pano",
+        path: "/program/board",
+        subdropdownMenu: false,
+      },
+      {
+        id: 2,
+        name: "Plan",
+        path: "/program/plan",
+        subdropdownMenu: false,
+      },
+    ],
+  },
+
+  {
+    id: 10,
+    name: "Projelerimiz",
+    path: "#",
+    icon: "feather-folder", // ikon görünmüyorsa sidebar render'a bakacağız
+    dropdownMenu: [
+      {
+        id: 1,
+        name: "Proje Kartları",
+        path: "/projects/board",
+        subdropdownMenu: false,
+      },
+    ],
+  },
+ 
+
 ];
