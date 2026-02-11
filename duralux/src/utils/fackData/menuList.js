@@ -56,50 +56,50 @@ export const menuList = [
       this._dropdownMenu = value;
     },
   },
- {
-  id: 6,
-  name: "Ekipler",
-  path: "#",
-  icon: "feather-users",
-  dropdownMenu: [
-    // {
-    //   id: 1,
-    //   name: "Genel Bakış",
-    //   path: "/teams",
-    //   subdropdownMenu: false,
-    // },
-    {
-      id: 2,
-      name: "Ekip Listesi",
-      path: "/teams/list",
-      subdropdownMenu: false,
-    },
-    {
-      id: 3,
-      name: "Çalışanlar",
-      path: "/teams/employees",
-      subdropdownMenu: false,
-    },
-    {
-      id: 4,
-      name: "İzinler",
-      path: "/teams/leaves",
-      subdropdownMenu: false,
-    },
-    {
-      id: 5,
-      name: "Maaş & Ödemeler",
-      path: "/teams/payroll",
-      subdropdownMenu: false,
-    },
-    // {
-    //   id: 6,
-    //   name: "Ekip Oluştur",
-    //   path: "/teams/create",
-    //   subdropdownMenu: false,
-    // },
-  ],
-},
+  {
+    id: 6,
+    name: "Ekipler",
+    path: "#",
+    icon: "feather-users",
+    dropdownMenu: [
+      // {
+      //   id: 1,
+      //   name: "Genel Bakış",
+      //   path: "/teams",
+      //   subdropdownMenu: false,
+      // },
+      {
+        id: 2,
+        name: "Ekip Listesi",
+        path: "/teams/list",
+        subdropdownMenu: false,
+      },
+      {
+        id: 3,
+        name: "Çalışanlar",
+        path: "/teams/employees",
+        subdropdownMenu: false,
+      },
+      {
+        id: 4,
+        name: "İzinler",
+        path: "/teams/leaves",
+        subdropdownMenu: false,
+      },
+      {
+        id: 5,
+        name: "Maaş & Ödemeler",
+        path: "/teams/payroll",
+        subdropdownMenu: false,
+      },
+      // {
+      //   id: 6,
+      //   name: "Ekip Oluştur",
+      //   path: "/teams/create",
+      //   subdropdownMenu: false,
+      // },
+    ],
+  },
 
   {
     id: 7,
@@ -177,6 +177,38 @@ export const menuList = [
       },
     ],
   },
- 
+  {
+    id: 11,
+    name: "Dosyalar",
+    path: "#",
+    icon: "feather-at-sign",
+    dropdownMenu: [
+      {
+        id: 1,
+        name: "Sözleşmeler",
+        path: "/files/contracts", 
+        subdropdownMenu: false,
+      },
+      {
+        id: 2,
+        name: "Kaynak Kod Linkleri",
+        path: "/files/source",
+        subdropdownMenu: false,
+      },
+      {
+        id: 3,
+        name: "Lisanslar",
+        path: "/files/licenses",
+        subdropdownMenu: false,
+      },
+      {
+        id: 4,
+        name: "Hosting Bilgileri",
+        path: "/files/hosting",
+        subdropdownMenu: false,
+      },
+    ],
+  },
+
 
 ];
