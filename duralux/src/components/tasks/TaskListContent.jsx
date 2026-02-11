@@ -4,20 +4,11 @@ import { useRouter } from "next/navigation";
 import { taskService } from "@/lib/services/task.service";
 import { userService } from "@/lib/services/user.service";
 
-const statusColors = {
-  NEW: "secondary",
-  IN_PROGRESS: "primary",
-  ON_HOLD: "warning",
-  COMPLETED: "success",
-};
-
-// Sayaç renkleri: ALL (Tümü) orta tonda bir gümüş gri yapıldı
-const statusHexCodes = {
-  ALL: "#cbd5e0", // Orta ton Gümüş/Gri
-  NEW: "#6c757d", // secondary
-  IN_PROGRESS: "#0d6efd", // primary
-  ON_HOLD: "#ffc107", // warning
-  COMPLETED: "#198754", // success
+const statusMeta = {
+  NEW: { label: "Yeni", chipBg: "#F1F5F9", chipText: "#0F172A" },
+  IN_PROGRESS: { label: "İşlemde", chipBg: "#EEF2FF", chipText: "#3730A3" },
+  ON_HOLD: { label: "Beklemede", chipBg: "#FFFBEB", chipText: "#92400E" },
+  COMPLETED: { label: "Tamamlandı", chipBg: "#ECFDF5", chipText: "#065F46" },
 };
 
 const formatDate = (val) =>
@@ -33,10 +24,10 @@ export default function TaskListContent() {
   const stats = useMemo(() => {
     return {
       total: tasks.length,
-      new: tasks.filter((t) => t.status === "NEW").length,
-      inProgress: tasks.filter((t) => t.status === "IN_PROGRESS").length,
-      onHold: tasks.filter((t) => t.status === "ON_HOLD").length,
-      completed: tasks.filter((t) => t.status === "COMPLETED").length,
+      NEW: tasks.filter((t) => t.status === "NEW").length,
+      IN_PROGRESS: tasks.filter((t) => t.status === "IN_PROGRESS").length,
+      ON_HOLD: tasks.filter((t) => t.status === "ON_HOLD").length,
+      COMPLETED: tasks.filter((t) => t.status === "COMPLETED").length,
     };
   }, [tasks]);
 
@@ -89,170 +80,303 @@ export default function TaskListContent() {
     }
   };
 
-  if (loading)
+  const statCards = [
+    { key: "ALL", title: "Tümü", subtitle: "Toplam görev", value: stats.total },
+    { key: "NEW", title: "Yeni", subtitle: "Yeni açılan", value: stats.NEW },
+    {
+      key: "IN_PROGRESS",
+      title: "İşlemde",
+      subtitle: "Devam eden",
+      value: stats.IN_PROGRESS,
+    },
+    {
+      key: "ON_HOLD",
+      title: "Beklemede",
+      subtitle: "Duraklatılan",
+      value: stats.ON_HOLD,
+    },
+    {
+      key: "COMPLETED",
+      title: "Tamamlandı",
+      subtitle: "Bitirilen",
+      value: stats.COMPLETED,
+    },
+  ];
+
+  if (loading) {
     return (
-      <div className="p-5 text-center fw-bold text-primary">Yükleniyor...</div>
+      <div className="py-5 text-center">
+        <div className="fw-semibold text-muted">Yükleniyor…</div>
+      </div>
     );
+  }
 
   return (
     <div className="col-12">
-      {/* İstatistik Sayaçları */}
-      <div className="row g-3 mb-4">
-        {[
-          { label: "TÜMÜ", count: stats.total, key: "ALL", icon: "📋" },
-          { label: "YENİ", count: stats.new, key: "NEW", icon: "🆕" },
-          {
-            label: "İŞLEMDE",
-            count: stats.inProgress,
-            key: "IN_PROGRESS",
-            icon: "⚡",
-          },
-          {
-            label: "BEKLEMEDE",
-            count: stats.onHold,
-            key: "ON_HOLD",
-            icon: "🕒",
-          },
-          {
-            label: "TAMAMLANDI",
-            count: stats.completed,
-            key: "COMPLETED",
-            icon: "✅",
-          },
-        ].map((item) => (
-          <div className="col" key={item.key}>
-            <div
-              className="card border-0 shadow-sm h-100 transition-all"
-              style={{
-                cursor: "pointer",
-                backgroundColor:
-                  filter === item.key ? statusHexCodes[item.key] : "white",
-                color: filter === item.key ? "white" : "inherit",
-                borderRadius: "15px",
-                transition: "all 0.3s ease",
-                borderBottom:
-                  filter !== item.key
-                    ? `4px solid ${statusHexCodes[item.key]}`
-                    : "none",
-              }}
-              onClick={() => setFilter(item.key)}
-            >
-              <div className="card-body p-3">
-                <div className="d-flex justify-content-between align-items-start">
-                  <div>
-                    <div
-                      className={`small fw-bold mb-1 ${filter === item.key ? "text-white-50" : "text-muted"}`}
-                    >
-                      {item.label}
-                    </div>
-                    <div className="h2 mb-0 fw-bold">{item.count}</div>
-                  </div>
-                  <div
-                    className="rounded-circle d-flex align-items-center justify-content-center"
-                    style={{
-                      width: "35px",
-                      height: "35px",
-                      backgroundColor:
-                        filter === item.key
-                          ? "rgba(255,255,255,0.2)"
-                          : "rgba(0,0,0,0.05)",
-                      fontSize: "1rem",
-                    }}
-                  >
-                    {item.icon}
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        ))}
+      {/* ÜST BAR */}
+      <div className="d-flex align-items-center justify-content-end mb-3">
+
+
+        <button
+          className="btn btn-sm text-white px-3"
+          style={{
+            backgroundColor: "#E92B63",
+            borderRadius: "10px",
+            fontWeight: 700,
+          }}
+          onClick={() => router.push("/tasks/create")}
+        >
+          + Yeni Görev
+        </button>
       </div>
 
-      {/* Görev Listesi */}
-      <div className="card shadow-sm border-0" style={{ borderRadius: "15px" }}>
-        <div className="card-header bg-white py-3 d-flex justify-content-between align-items-center border-0">
-          <h5 className="mb-0 fw-bold text-dark">Görev Listesi</h5>
+      {/* İSTATİSTİK / FİLTRE KARTLARI */}
+      <div className="row g-3 mb-4">
+        {statCards.map((c) => {
+          const active = filter === c.key;
+          const width =
+            stats.total === 0 ? 0 : Math.min(100, (c.value / stats.total) * 100);
+
+          return (
+            <div className="col-12 col-md" key={c.key}>
+              <button
+                type="button"
+                className="w-100 text-start border-0 p-0 bg-transparent"
+                onClick={() => setFilter(c.key)}
+                style={{ cursor: "pointer" }}
+              >
+                <div
+                  className="card h-100 task-filter-card"
+                  style={{
+                    borderRadius: 14,
+                    border: active ? "1px solid #111827" : "1px solid #E5E7EB",
+                    boxShadow: active
+                      ? "0 8px 24px rgba(17,24,39,0.12)"
+                      : "0 6px 18px rgba(17,24,39,0.06)",
+                    transition: "all .2s ease",
+                  }}
+                >
+
+                  <div className="card-body py-3">
+                    <div className="d-flex align-items-start justify-content-between">
+                      <div>
+                        <div className="fw-semibold text-dark">{c.title}</div>
+                        <div className="text-muted small">{c.subtitle}</div>
+                      </div>
+                      <div
+                        className="fw-bold"
+                        style={{
+                          fontSize: 22,
+                          color: active ? "#111827" : "#374151",
+                        }}
+                      >
+                        {c.value}
+                      </div>
+                    </div>
+
+                    <div className="mt-3">
+                      <div
+                        style={{
+                          height: 4,
+                          borderRadius: 999,
+                          background: "#F3F4F6",
+                          overflow: "hidden",
+                        }}
+                      >
+                        <div
+                          style={{
+                            height: "100%",
+                            width: `${width}%`,
+                            background: active ? "#111827" : "#9CA3AF",
+                            borderRadius: 999,
+                            transition: "width .18s ease",
+                          }}
+                        />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </button>
+            </div>
+          );
+        })}
+      </div>
+
+      {/* LİSTE KARTI */}
+      <div
+        className="card border-0"
+        style={{
+          borderRadius: 16,
+          boxShadow: "0 10px 28px rgba(17,24,39,0.08)",
+        }}
+      >
+        <div
+          className="card-header bg-white border-0 d-flex align-items-center justify-content-between"
+          style={{ borderTopLeftRadius: 16, borderTopRightRadius: 16 }}
+        >
+          <div className="fw-bold text-dark">
+            Görev Listesi{" "}
+            <span className="text-muted fw-normal">({filteredTasks.length})</span>
+          </div>
+
           <button
-            className="btn text-white px-4 shadow-sm"
-            style={{
-              backgroundColor: "#E92B63",
-              borderRadius: "10px",
-              fontWeight: "bold",
-            }}
-            onClick={() => router.push("/tasks/create")}
+            className="btn btn-sm btn-outline-secondary"
+            onClick={() => fetchAll()}
+            title="Yenile"
           >
-            + YENİ GÖREV
+            ↻ Yenile
           </button>
         </div>
 
         <div className="card-body p-0">
-          <div className="table-responsive">
-            <table className="table table-hover align-middle mb-0 text-nowrap">
-              <thead className="bg-light">
-                <tr>
-                  <th className="ps-4 py-3 border-0 text-muted small fw-bold">
-                    BAŞLIK
-                  </th>
-                  <th className="border-0 text-muted small fw-bold">DURUM</th>
-                  <th className="border-0 text-muted small fw-bold">ATANAN</th>
-                  <th className="border-0 text-muted small fw-bold">BİTİŞ</th>
-                  <th className="text-end pe-4 border-0 text-muted small fw-bold">
-                    AKSİYON
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
-                {filteredTasks.map((task) => (
-                  <tr key={task.id}>
-                    <td className="ps-4 fw-bold text-dark">{task.title}</td>
-                    <td>
-                      <span
-                        className={`badge bg-${statusColors[task.status]} px-3 py-2 rounded-pill`}
-                        style={{ fontSize: "0.7rem" }}
-                      >
-                        {task.status}
-                      </span>
-                    </td>
-                    <td className="text-muted small">
-                      {getUserLabel(task.assignedUserId)}
-                    </td>
-                    <td className="text-muted small">
-                      {formatDate(task.endDate)}
-                    </td>
-                    <td className="text-end pe-4">
-                      <div className="d-flex justify-content-end gap-2">
-                        <button
-                          className="btn btn-sm btn-outline-info"
-                          title="Görüntüle"
-                          onClick={() => router.push(`/tasks/view/${task.id}`)}
-                        >
-                          👁️
-                        </button>
-
-                        <button
-                          className="btn btn-sm btn-outline-primary"
-                          title="Güncelle"
-                          onClick={() => router.push(`/tasks/edit/${task.id}`)}
-                        >
-                          ✏️
-                        </button>
-
-                        <button
-                          className="btn btn-sm btn-outline-danger"
-                          title="Sil"
-                          onClick={() => handleDelete(task.id)}
-                        >
-                          🗑️
-                        </button>
-                      </div>
-                    </td>
+          {filteredTasks.length === 0 ? (
+            <div className="p-5 text-center">
+              <div className="fw-semibold text-dark mb-1">Kayıt bulunamadı</div>
+              <div className="text-muted small mb-3">
+                Bu filtre için gösterilecek görev yok.
+              </div>
+              <button
+                className="btn btn-sm btn-outline-dark"
+                onClick={() => setFilter("ALL")}
+              >
+                Filtreyi kaldır
+              </button>
+            </div>
+          ) : (
+            <div className="table-responsive">
+              <table className="table align-middle mb-0">
+                <thead style={{ background: "#F8FAFC" }}>
+                  <tr className="text-muted small">
+                    <th className="ps-4 py-3 border-0 fw-semibold">Başlık</th>
+                    <th className="py-3 border-0 fw-semibold">Durum</th>
+                    <th className="py-3 border-0 fw-semibold">Atanan</th>
+                    <th className="py-3 border-0 fw-semibold">Bitiş</th>
+                    <th className="py-3 pe-4 border-0 fw-semibold text-end">
+                      Aksiyon
+                    </th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+                </thead>
+
+                <tbody>
+                  {filteredTasks.map((task) => {
+                    const meta =
+                      statusMeta[task.status] || {
+                        label: task.status,
+                        chipBg: "#F3F4F6",
+                        chipText: "#111827",
+                      };
+
+                    return (
+                      <tr
+                        key={task.id}
+                        style={{ borderTop: "1px solid #F1F5F9" }}
+                      >
+                        <td className="ps-4 py-3">
+                          <div className="fw-semibold text-dark">{task.title}</div>
+                        </td>
+
+                        <td className="py-3">
+                          <span
+                            className="px-2 py-1"
+                            style={{
+                              display: "inline-flex",
+                              alignItems: "center",
+                              gap: 6,
+                              borderRadius: 999,
+                              background: meta.chipBg,
+                              color: meta.chipText,
+                              fontSize: 12,
+                              fontWeight: 700,
+                            }}
+                          >
+                            <span
+                              style={{
+                                width: 6,
+                                height: 6,
+                                borderRadius: 999,
+                                background: meta.chipText,
+                                display: "inline-block",
+                              }}
+                            />
+                            {meta.label}
+                          </span>
+                        </td>
+
+                        <td className="py-3 text-muted small">
+                          {getUserLabel(task.assignedUserId)}
+                        </td>
+
+                        <td className="py-3 text-muted small">
+                          {formatDate(task.endDate)}
+                        </td>
+
+                        <td className="py-3 pe-4">
+                          <div className="d-flex justify-content-end gap-2">
+                            <button
+                              className="btn btn-sm btn-outline-secondary"
+                              title="Görüntüle"
+                              onClick={() => router.push(`/tasks/view/${task.id}`)}
+                            >
+                              Görüntüle
+                            </button>
+
+                            <button
+                              className="btn btn-sm btn-outline-primary"
+                              title="Güncelle"
+                              onClick={() => router.push(`/tasks/edit/${task.id}`)}
+                            >
+                              Düzenle
+                            </button>
+
+                            <button
+                              className="btn btn-sm btn-outline-danger"
+                              title="Sil"
+                              onClick={() => handleDelete(task.id)}
+                            >
+                              Sil
+                            </button>
+                          </div>
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            </div>
+          )}
         </div>
       </div>
+
+      <style jsx global>{`
+  /* ===== FILTRE KARTLARI PEMBE HOVER ===== */
+
+  .task-filter-card {
+    transition: all 0.25s ease;
+  }
+
+  .task-filter-card:hover {
+    transform: translateY(-4px);
+    background: #fff0f6; /* çok soft pembe */
+    border: 1px solid #f8a5c2 !important;
+    box-shadow: 0 12px 28px rgba(233, 43, 99, 0.18);
+  }
+
+  /* Aktif kart hover'da daha koyu pembe olsun */
+  .task-filter-card.active,
+  .task-filter-card.active:hover {
+    background: linear-gradient(
+      135deg,
+      #ffe4ec,
+      #ffc1d6
+    ) !important;
+    border: 1px solid #e92b63 !important;
+    box-shadow: 0 14px 34px rgba(233, 43, 99, 0.25);
+  }
+`}</style>
+
+
+
+
     </div>
   );
 }
