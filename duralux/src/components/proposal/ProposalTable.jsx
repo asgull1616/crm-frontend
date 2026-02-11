@@ -1,125 +1,104 @@
 "use client";
 
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import { FiEye, FiEdit3, FiTrash2, FiMoreHorizontal } from "react-icons/fi";
 import { useRouter } from "next/navigation";
 import Table from "@/components/shared/table/Table";
 import Dropdown from "@/components/shared/Dropdown";
 import { proposalService } from "@/lib/services/proposal.service";
+import { customerService } from "@/lib/services/customer.service"; // Müşteri servisi gerekli
 
-/* 🔹 Status mapper */
 const mapStatus = (status) => {
   switch (status) {
-    case "DRAFT":
-      return { content: "Taslak", color: "bg-warning" };
-    case "SENT":
-      return { content: "Gönderildi", color: "bg-info" };
-    case "APPROVED":
-      return { content: "Onaylandı", color: "bg-success" };
-    case "REJECTED":
-      return { content: "Reddedildi", color: "bg-danger" };
-    default:
-      return { content: status, color: "bg-secondary" };
+    case "DRAFT": return { content: "Taslak", color: "bg-warning" };
+    case "SENT": return { content: "Gönderildi", color: "bg-info" };
+    case "APPROVED": return { content: "Onaylandı", color: "bg-success" };
+    case "REJECTED": return { content: "Reddedildi", color: "bg-danger" };
+    default: return { content: status, color: "bg-secondary" };
   }
 };
 
 const ProposalTable = () => {
   const router = useRouter();
-
-  const getActions = (id) => [
-    {
-      label: "Düzenle",
-      icon: <FiEdit3 />,
-      onClick: () => router.push(`/proposal/edit/${id}`),
-    },
-    { type: "divider" },
-    {
-      label: "Sil",
-      icon: <FiTrash2 />,
-      variant: "danger",
-      onClick: () => handleDelete(id),
-    },
-  ];
-  const handleDelete = async (id) => {
-    const ok = window.confirm("Bu teklifi silmek istiyor musunuz?");
-    if (!ok) return;
-
-    try {
-      await proposalService.remove(id);
-      setData((prev) => prev.filter((item) => item.id !== id));
-    } catch (err) {
-      console.error(err);
-      alert("Silme işlemi başarısız");
-    }
-  };
-
   const [data, setData] = useState([]);
 
-  /* 🔹 Fetch proposals */
   useEffect(() => {
-    proposalService.list({ page: 1, limit: 10 }).then((res) => {
-      const items = res?.data?.items || [];
+    const fetchData = async () => {
+      try {
+        // 1. Önce tüm müşterileri çekiyoruz (ID'leri isimle eşleştirmek için)
+        const customerRes = await customerService.list();
+        const customers = customerRes?.data?.items || customerRes?.data?.data || customerRes?.data || [];
 
-      const mappedData = items.map((p) => ({
-        id: p.id,
-        proposal: p.id.slice(0, 8),
-        client: {
-          name: p.customerName,
-          email: p.customerEmail,
-        },
-        subject: p.title,
-        amount: p.totalAmount ? `${p.currency} ${p.totalAmount}` : "-",
-        date: new Date(p.createdAt).toLocaleDateString("tr-TR"),
-        status: mapStatus(p.status),
-      }));
+        // 2. Teklif listesini çekiyoruz
+        const proposalRes = await proposalService.list({ page: 1, limit: 10 });
+        const proposals = proposalRes?.data?.items || proposalRes?.data?.data || proposalRes?.data || [];
 
-      setData(mappedData);
-    });
+        const mappedData = proposals.map((p) => {
+          // İsim üzerinden müşteri listesinde arama yapıyoruz
+          const matched = customers.find(c => 
+            c.fullName?.trim().toLowerCase() === p.customerName?.trim().toLowerCase()
+          );
+
+          return {
+            id: p.id,
+            proposal: p.id?.slice(0, 8),
+            client: {
+              // Eşleşen müşteri varsa onun ID'sini, yoksa teklifteki ID'yi al
+              id: matched?.id || p.customerId, 
+              name: p.customerName || matched?.fullName || "Bilinmeyen Müşteri",
+              email: p.customerEmail || matched?.email || "",
+            },
+            subject: p.title,
+            amount: p.totalAmount ? `TRY ${p.totalAmount}` : "-",
+            date: p.createdAt ? new Date(p.createdAt).toLocaleDateString("tr-TR") : "-",
+            status: mapStatus(p.status),
+          };
+        });
+
+        setData(mappedData);
+      } catch (err) {
+        console.error("Veri yükleme hatası:", err);
+      }
+    };
+
+    fetchData();
   }, []);
 
-  /* 🔹 Table columns */
   const columns = [
     {
       accessorKey: "proposal",
-      header: () => "Teklif ID",
+      header: "Teklif ID",
       cell: (info) => <span className="fw-bold">{info.getValue()}</span>,
     },
     {
       accessorKey: "client",
-      header: () => "Müşteri",
+      header: "Müşteri",
       cell: (info) => {
         const client = info.getValue();
+        // ID bulunamazsa Link yerine sadece isim göster (Hata almamak için)
+        if (!client?.id) {
+          return <span className="fw-bold text-dark">{client?.name}</span>;
+        }
+
         return (
           <div className="hstack gap-3">
-            <div>
-              <span className="text-truncate-1-line">{client?.name}</span>
-              <small className="fs-12 fw-normal text-muted">
-                {client?.email}
-              </small>
-            </div>
+            <Link 
+              href={`/customers/view/${client.id}`} 
+              className="text-truncate-1-line fw-bold text-dark text-decoration-none hover-link"
+            >
+              {client.name}
+            </Link>
           </div>
         );
       },
     },
-    {
-      accessorKey: "subject",
-      header: () => "Konu",
-    },
-    {
-      accessorKey: "amount",
-      header: () => "Tutar",
-      meta: {
-        className: "fw-bold text-dark",
-      },
-    },
-    {
-      accessorKey: "date",
-      header: () => "Oluşturulma Tarihi",
-    },
+    { accessorKey: "subject", header: "Konu" },
+    { accessorKey: "amount", header: "Tutar", meta: { className: "fw-bold text-dark" } },
+    { accessorKey: "date", header: "Oluşturulma Tarihi" },
     {
       accessorKey: "status",
-      header: () => "Durum",
+      header: "Durum",
       cell: (info) => (
         <span className={`badge ${info.getValue().color}`}>
           {info.getValue().content}
@@ -128,31 +107,38 @@ const ProposalTable = () => {
     },
     {
       accessorKey: "actions",
-      header: () => "Eylemler",
+      header: "Eylemler",
       cell: ({ row }) => (
         <div className="hstack gap-2 justify-content-end">
-          <Link
-            href={`/proposal/view/${row.original.id}`}
-            className="avatar-text avatar-md"
-          >
+          <Link href={`/proposal/view/${row.original.id}`} className="avatar-text avatar-md">
             <FiEye />
           </Link>
-
           <Dropdown
-            dropdownItems={getActions(row.original.id)}
+            dropdownItems={[
+              { label: "Düzenle", icon: <FiEdit3 />, onClick: () => router.push(`/proposal/edit/${row.original.id}`) },
+              { type: "divider" },
+              { label: "Sil", icon: <FiTrash2 />, variant: "danger", onClick: () => {} }
+            ]}
             triggerIcon={<FiMoreHorizontal />}
             triggerClass="avatar-md"
-            triggerPosition="0,21"
           />
         </div>
       ),
-      meta: {
-        headerClassName: "text-end",
-      },
     },
   ];
 
-  return <Table data={data} columns={columns} />;
+  return (
+    <>
+      <Table data={data} columns={columns} />
+      <style jsx global>{`
+        .hover-link:hover { 
+          color: #E92B63 !important; 
+          text-decoration: underline !important; 
+          cursor: pointer; 
+        }
+      `}</style>
+    </>
+  );
 };
 
 export default ProposalTable;

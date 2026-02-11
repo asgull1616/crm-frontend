@@ -3,10 +3,8 @@
 import React, { useState, useEffect } from 'react';
 
 const AddProposal = ({ previtems, onItemsChange }) => {
-    // HATA ÇÖZÜMÜ: previtems undefined ise boş bir dizi ile başlat
     const [items, setItems] = useState(previtems || []);
 
-    // Kalemlerde her değişiklik olduğunda üst bileşene haber ver
     useEffect(() => {
         if (onItemsChange) {
             onItemsChange(items);
@@ -15,18 +13,18 @@ const AddProposal = ({ previtems, onItemsChange }) => {
 
     const addItem = () => {
         const newItem = {
-            id: Date.now(), // Daha benzersiz bir ID için Date.now()
-            product: '',
-            qty: 1,
-            price: 0,
-            tax: 20, // Varsayılan KDV %20
-            total: 0
+            id: Date.now(),
+            product: '',      
+            description: '',  
+            warranty: '',     
+            price: 0,         
+            qty: 1,           
+            tax: 0            
         };
         setItems([...items, newItem]);
     };
 
     const removeItem = (id) => {
-        // Belirli bir ID'ye göre silme işlemi (pop yerine filter kullanımı daha güvenlidir)
         setItems(items.filter(item => item.id !== id));
     };
 
@@ -40,130 +38,89 @@ const AddProposal = ({ previtems, onItemsChange }) => {
         setItems(updatedItems);
     };
 
-    // HATA ÇÖZÜMÜ: items?.reduce kullanarak dizinin varlığından emin oluyoruz
-    const subTotal = items?.reduce((accumulator, currentValue) => {
-        return accumulator + (Number(currentValue.price || 0) * Number(currentValue.qty || 0));
-    }, 0) || 0;
-
-    // Satır bazlı KDV hesaplandığı için toplam KDV'yi de reduce ile alıyoruz
-    const totalTaxAmount = items?.reduce((accumulator, currentValue) => {
-        const itemSub = Number(currentValue.price || 0) * Number(currentValue.qty || 0);
-        return accumulator + (itemSub * (Number(currentValue.tax || 0) / 100));
-    }, 0) || 0;
-
-    const grandTotal = subTotal + totalTaxAmount;
+    const totalAmount = items?.reduce((acc, item) => acc + Number(item.price || 0), 0) || 0;
 
     return (
         <div className="col-12">
-            <div className="card stretch stretch-full proposal-table">
-                <div className="card-body">
+            <div className="card border-0 shadow-sm" style={{ borderRadius: '12px' }}>
+                <div className="card-body p-4">
                     <div className="row">
-                        <div className="col-lg-8">
+                        {/* Sol Taraf: Tablo */}
+                        <div className="col-lg-9">
                             <div className="mb-4 d-flex justify-content-between align-items-center">
                                 <div>
-                                    <h5 className="fw-bold">Teklif Kalemleri:</h5>
-                                    <span className="fs-12 text-muted">Teklifte sunulan ürün ve hizmetlerin listesi</span>
+                                    <h5 className="fw-bold mb-1 text-dark">Teklif Kalemleri</h5>
+                                    <span className="fs-13 text-muted">Hizmet detaylarını ve garanti sürelerini aşağıya giriniz.</span>
                                 </div>
                                 <button
-                                    className="btn btn-md text-white shadow-sm"
+                                    className="btn btn-md text-white fw-bold px-4 shadow-sm"
                                     onClick={addItem}
-                                    style={{ backgroundColor: "#E92B63", borderColor: "#E92B63" }}
+                                    style={{ backgroundColor: "#E92B63", borderColor: "#E92B63", borderRadius: '8px' }}
                                 >
                                     + Yeni Kalem Ekle
                                 </button>
                             </div>
+                            
                             <div className="table-responsive">
-                                <table className="table table-bordered overflow-hidden">
-                                    <thead>
-                                        <tr className="bg-light">
-                                            <th className="text-center wd-50">#</th>
-                                            <th className="text-center">Hizmet / Ürün</th>
-                                            <th className="text-center wd-100">Adet</th>
-                                            <th className="text-center wd-150">Birim Fiyat</th>
-                                            <th className="text-center wd-100">KDV (%)</th>
-                                            <th className="text-center wd-150">Ara Toplam</th>
-                                            <th className="text-center wd-50">İşlem</th>
+                                <table className="table table-hover align-middle border-light">
+                                    <thead className="bg-light">
+                                        <tr className="text-muted small text-uppercase">
+                                            <th className="text-center" style={{ width: '50px' }}>#</th>
+                                            <th>Ürün / Hizmet</th>
+                                            <th>İçerik Açıklaması</th>
+                                            <th className="text-center">Garanti</th>
+                                            <th className="text-end">Satış Fiyatı</th>
+                                            <th></th>
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        {items.length > 0 ? (
-                                            items.map((item, index) => (
-                                                <tr key={item.id}>
-                                                    <td className="text-center align-middle">{index + 1}</td>
-                                                    <td>
-                                                        <input 
-                                                            type="text" 
-                                                            className="form-control" 
-                                                            placeholder="Hizmet / Ürün Adı" 
-                                                            value={item.product} 
-                                                            onChange={(e) => handleInputChange(item.id, 'product', e.target.value)} 
-                                                        />
-                                                    </td>
-                                                    <td>
-                                                        <input 
-                                                            type="number" 
-                                                            className="form-control text-center" 
-                                                            value={item.qty} 
-                                                            min="1" 
-                                                            onChange={(e) => handleInputChange(item.id, 'qty', parseInt(e.target.value) || 0)} 
-                                                        />
-                                                    </td>
-                                                    <td>
-                                                        <input 
-                                                            type="number" 
-                                                            className="form-control text-end" 
-                                                            value={item.price} 
-                                                            onChange={(e) => handleInputChange(item.id, 'price', parseFloat(e.target.value) || 0)} 
-                                                        />
-                                                    </td>
-                                                    <td>
-                                                        <select 
-                                                            className="form-control" 
-                                                            value={item.tax} 
-                                                            onChange={(e) => handleInputChange(item.id, 'tax', parseInt(e.target.value))}
-                                                        >
-                                                            <option value="0">%0</option>
-                                                            <option value="1">%1</option>
-                                                            <option value="10">%10</option>
-                                                            <option value="20">%20</option>
-                                                        </select>
-                                                    </td>
-                                                    <td className="text-end align-middle fw-bold">
-                                                        ₺{(item.qty * item.price).toLocaleString('tr-TR', { minimumFractionDigits: 2 })}
-                                                    </td>
-                                                    <td className="text-center">
-                                                        <button className="btn btn-sm btn-soft-danger" onClick={() => removeItem(item.id)}>
-                                                            <i className="feather-trash-2"></i>
-                                                        </button>
-                                                    </td>
-                                                </tr>
-                                            ))
-                                        ) : (
-                                            <tr>
-                                                <td colSpan="7" className="text-center text-muted py-4">Henüz bir kalem eklenmedi.</td>
+                                        {items.map((item, index) => (
+                                            <tr key={item.id}>
+                                                <td className="text-center fw-bold text-muted">{index + 1}</td>
+                                                <td>
+                                                    <input type="text" className="form-control border-light" placeholder="Örn: Yazılım Paketi" value={item.product} onChange={(e) => handleInputChange(item.id, 'product', e.target.value)} />
+                                                </td>
+                                                <td>
+                                                    <textarea className="form-control border-light" rows="1" placeholder="Detaylar..." value={item.description} onChange={(e) => handleInputChange(item.id, 'description', e.target.value)} />
+                                                </td>
+                                                <td>
+                                                    <input type="text" className="form-control text-center border-light" placeholder="2 Yıl" value={item.warranty} onChange={(e) => handleInputChange(item.id, 'warranty', e.target.value)} />
+                                                </td>
+                                                <td>
+                                                    <div className="input-group">
+                                                        <span className="input-group-text bg-light text-muted border-light">₺</span>
+                                                        <input type="number" className="form-control text-end fw-bold border-light" value={item.price} onChange={(e) => handleInputChange(item.id, 'price', parseFloat(e.target.value) || 0)} />
+                                                    </div>
+                                                </td>
+                                                <td className="text-center">
+                                                    <button className="btn btn-link text-danger p-0" onClick={() => removeItem(item.id)}>
+                                                        <i className="feather-trash-2 fs-5"></i>
+                                                    </button>
+                                                </td>
                                             </tr>
-                                        )}
+                                        ))}
                                     </tbody>
                                 </table>
                             </div>
                         </div>
 
-                        <div className="col-lg-4">
-                            <div className="card border shadow-none bg-gray-50">
-                                <div className="card-body">
-                                    <h5 className="fw-bold mb-3">Özet Tutar</h5>
+                        {/* Sağ Taraf: İSTEDİĞİN ÖZET TUTAR KISMI */}
+                        <div className="col-lg-3">
+                            <div className="card border shadow-none h-100" style={{ backgroundColor: '#f8fafc', borderRadius: '10px' }}>
+                                <div className="card-body p-4">
+                                    <h6 className="fw-bold mb-3">Özet Tutar</h6>
                                     <div className="d-flex justify-content-between mb-2">
-                                        <span className="text-muted">Ara Toplam:</span>
-                                        <span className="fw-bold">₺{subTotal.toLocaleString('tr-TR', { minimumFractionDigits: 2 })}</span>
+                                        <span className="text-muted small">Ara Toplam:</span>
+                                        <span className="fw-bold small">₺{totalAmount.toLocaleString('tr-TR', { minimumFractionDigits: 2 })}</span>
                                     </div>
                                     <div className="d-flex justify-content-between mb-2">
-                                        <span className="text-muted">Toplam KDV:</span>
-                                        <span className="fw-bold text-danger">₺{totalTaxAmount.toLocaleString('tr-TR', { minimumFractionDigits: 2 })}</span>
+                                        <span className="text-muted small">Toplam KDV:</span>
+                                        <span className="fw-bold small text-danger">₺0,00</span>
                                     </div>
                                     <hr />
                                     <div className="d-flex justify-content-between">
-                                        <span className="h6 fw-bold">Genel Toplam:</span>
-                                        <span className="h5 fw-bold text-primary">₺{grandTotal.toLocaleString('tr-TR', { minimumFractionDigits: 2 })}</span>
+                                        <span className="fw-bold">Genel Toplam:</span>
+                                        <span className="fw-bold text-primary">₺{totalAmount.toLocaleString('tr-TR', { minimumFractionDigits: 2 })}</span>
                                     </div>
                                 </div>
                             </div>
