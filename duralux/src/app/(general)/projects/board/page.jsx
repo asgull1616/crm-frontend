@@ -237,6 +237,8 @@ export default function ProjectsBoardPage() {
         </div>
       </div>
 
+      
+
       {/* TABLO */}
       <div style={tableCard}>
         <div style={{ overflowX: "auto" }}>
@@ -265,7 +267,10 @@ export default function ProjectsBoardPage() {
                     ...(selectedProjectId === p.id ? selectedRow : {}),
                     cursor: "pointer",
                 }}
-                onClick={() => window.location.href = `/projects/${p.id}`}
+                onClick={() => {
+                sessionStorage.setItem("selectedProject", JSON.stringify(p));
+                window.location.href = `/projects/${p.id}`;
+                }}
                 >
                 <td style={{ ...td, fontWeight: 950 }}>{p.project}</td>
                 <td style={td}>{p.customer}</td>
