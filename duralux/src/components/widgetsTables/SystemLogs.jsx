@@ -13,12 +13,12 @@ const logsData = [
 
 const getBadge = (type) => {
     switch (type) {
-        case 'login': return <span className="badge bg-soft-info text-info">Giriş</span>
-        case 'update': return <span className="badge bg-soft-primary text-primary">Güncelleme</span>
-        case 'create': return <span className="badge bg-soft-success text-success">Oluşturma</span>
-        case 'warning': return <span className="badge bg-soft-warning text-warning">Kritik</span>
-        case 'delete': return <span className="badge bg-soft-danger text-danger">Silme</span>
-        default: return <span className="badge bg-soft-secondary text-secondary">İşlem</span>
+        case 'login': return <span className="crm-badge bg-soft-info text-info">Giriş</span>
+        case 'update': return <span className="crm-badge bg-soft-primary text-primary">Güncelleme</span>
+        case 'create': return <span className="crm-badge bg-soft-success text-success">Oluşturma</span>
+        case 'warning': return <span className="crm-badge bg-soft-warning text-warning">Kritik</span>
+        case 'delete': return <span className="crm-badge bg-soft-danger text-danger">Silme</span>
+        default: return <span className="crm-badge bg-soft-secondary text-secondary">İşlem</span>
     }
 }
 
