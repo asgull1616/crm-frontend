@@ -1,8 +1,8 @@
-'use client';
+"use client";
 
-import { useEffect } from 'react';
-import { useRouter } from 'next/navigation';
-import { authService } from '@/lib/services/auth.service';
+import { useEffect } from "react";
+import { useRouter } from "next/navigation";
+import { authService } from "@/lib/services/auth.service";
 
 const Page = () => {
   const router = useRouter();
@@ -10,14 +10,14 @@ const Page = () => {
     authService
       .me()
       .then((res) => {
-        if (res.data.role === 'ADMIN') {
-          router.push('/dashboards/analytics/admin');
+        if (res.data.role === "ADMIN") {
+          router.push("/dashboards/analytics/admin");
         } else {
-          router.push('/dashboards/analytics/user');
+          router.push("/dashboards/analytics/user");
         }
       })
       .catch(() => {
-        router.push('/auth/login');
+        router.replace("/authentication/login/cover");
       });
   }, []);
   return null;

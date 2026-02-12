@@ -1,29 +1,26 @@
-import LoginForm from '@/components/authentication/LoginForm'
-import Image from 'next/image'
-import React from 'react'
+import LoginForm from "@/components/authentication/LoginForm";
+import React from "react";
 
 const page = () => {
-    return (
-        <main className="auth-cover-wrapper">
-            <div className="auth-cover-content-inner">
-                <div className="auth-cover-content-wrapper">
-                    <div className="auth-img">
-                        <Image width={600} height={600} sizes='100vw' src="/images/auth/auth-cover-login-bg.svg" alt="img" className="img-fluid" />
-                    </div>
-                </div>
+  return (
+    <main className="auth-minimal-wrapper">
+      <div className="auth-minimal-inner">
+        <div className="minimal-card-wrapper">
+          <div className="card mb-4 mt-5 mx-4 mx-sm-0 position-relative">
+            <div className="wd-50 bg-white p-2 rounded-circle shadow-lg position-absolute translate-middle top-0 start-50">
+              <img src="/images/codyol.png" alt="img" className="img-fluid" />
             </div>
-            <div className="auth-cover-sidebar-inner">
-                <div className="auth-cover-card-wrapper">
-                    <div className="auth-cover-card p-sm-5">
-                        <div className="wd-50 mb-5">
-                            <img src="/images/logo-abbr.png" alt='img' className="img-fluid" />
-                        </div>
-                        <LoginForm registerPath={"/authentication/register/cover"} resetPath={"/authentication/reset/cover"} />
-                    </div>
-                </div>
+            <div className="card-body p-sm-5">
+              <LoginForm
+                registerPath={"/authentication/register/minimal"}
+                resetPath={"/authentication/reset/minimal"}
+              />
             </div>
-        </main>
-    )
-}
+          </div>
+        </div>
+      </div>
+    </main>
+  );
+};
 
-export default page
+export default page;

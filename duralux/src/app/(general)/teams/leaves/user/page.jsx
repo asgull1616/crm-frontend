@@ -1,12 +1,12 @@
-'use client';
+"use client";
 
-import { useEffect } from 'react';
-import { useRouter } from 'next/navigation';
-import { authService } from '@/lib/services/auth.service';
+import { useEffect } from "react";
+import { useRouter } from "next/navigation";
+import { authService } from "@/lib/services/auth.service";
 
-import PageHeader from '@/components/shared/pageHeader/PageHeader';
-import LeaveRequestCard from '@/components/teams/leaves/LeaveRequestCard';
-import LeaveHistoryCard from '@/components/teams/leaves/LeaveHistoryCard';
+import PageHeader from "@/components/shared/pageHeader/PageHeader";
+import LeaveRequestCard from "@/components/teams/leaves/LeaveRequestCard";
+import LeaveHistoryCard from "@/components/teams/leaves/LeaveHistoryCard";
 
 const UserLeavesPage = () => {
   const router = useRouter();
@@ -15,21 +15,18 @@ const UserLeavesPage = () => {
     authService
       .me()
       .then((res) => {
-        if (res.data.role === 'ADMIN') {
-          router.replace('/leaves/admin');
+        if (res.data.role === "ADMIN") {
+          router.replace("/leaves/admin");
         }
       })
       .catch(() => {
-        router.replace('/auth/login');
+        router.replace("/authentication/login/cover");
       });
   }, [router]);
 
   return (
     <>
-      <PageHeader
-        title="İzinlerim"
-        breadcrumb={['Ana Sayfa', 'İzinler']}
-      />
+      <PageHeader title="İzinlerim" breadcrumb={["Ana Sayfa", "İzinler"]} />
 
       <div className="container-fluid mt-4">
         <div className="row g-4">
