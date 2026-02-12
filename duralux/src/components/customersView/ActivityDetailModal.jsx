@@ -13,6 +13,7 @@ import {
 } from "react-icons/fi";
 import { activityService } from "@/lib/services/activity.service";
 import Link from "next/link";
+import Swal from 'sweetalert2';
 
 const TYPE_UI = {
   CALL: { label: "📞 Telefon", color: "primary" },
@@ -51,11 +52,53 @@ const ActivityDetailModal = ({ activityId, onClose, onDeleted, onUpdated }) => {
   };
 
   const handleDelete = async () => {
-    if (!confirm("Bu aktivite silinsin mi?")) return;
-    await activityService.delete(activityId);
-    onDeleted?.();
-    onClose();
-  };
+    // Eski confirm kutusu yerine modern SweetAlert2
+    Swal.fire({
+        title: 'Aktivite Silinsin mi?',
+        text: "Bu aktivite kaydı kalıcı olarak silinecektir!",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#E92B63', // Sizin pembe buton renginiz
+        cancelButtonColor: '#6c757d',
+        confirmButtonText: 'Evet, Sil!',
+        cancelButtonText: 'Vazgeç',
+        background: '#ffffff',
+        customClass: {
+            popup: 'rounded-5 shadow-lg border-0',
+            confirmButton: 'rounded-pill px-4 fw-bold',
+            cancelButton: 'rounded-pill px-4 fw-bold'
+        }
+    }).then(async (result) => {
+        if (result.isConfirmed) {
+            try {
+                // Silme isteğini gönderiyoruz
+                await activityService.delete(activityId);
+                
+                // Başarı bildirimi
+                Swal.fire({
+                    title: 'Silindi!',
+                    text: 'Aktivite başarıyla kaldırıldı.',
+                    icon: 'success',
+                    timer: 1500,
+                    showConfirmButton: false,
+                    borderRadius: '25px'
+                });
+
+                // Modal'ı kapat ve listeyi yenile
+                onDeleted?.();
+                onClose();
+            } catch (error) {
+                console.error("Silme hatası:", error);
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Hata!',
+                    text: 'Aktivite silinirken bir sorun oluştu.',
+                    confirmButtonColor: '#E92B63'
+                });
+            }
+        }
+    });
+};
 
   const handleUpdate = async () => {
     await activityService.update(activityId, {
