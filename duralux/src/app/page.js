@@ -6,6 +6,7 @@ import { authService } from "@/lib/services/auth.service";
 
 const Page = () => {
   const router = useRouter();
+
   useEffect(() => {
     authService
       .me()
@@ -19,7 +20,9 @@ const Page = () => {
       .catch(() => {
         router.replace("/authentication/login/cover");
       });
-  }, []);
+  }, [router]);
+
   return null;
 };
+
 export default Page;

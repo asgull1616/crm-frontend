@@ -1,64 +1,80 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { authService } from '@/lib/services/auth.service';
 
 const DEFAULT_AVATAR = '/images/default-avatar.png';
+const FLAG_KEY = 'show_welcome_popup';
 
 const WelcomePopup = () => {
   const [username, setUsername] = useState('');
   const [profileImage, setProfileImage] = useState(null);
-  const [visible, setVisible] = useState(true);
+
+  const [visible, setVisible] = useState(false);
   const [closing, setClosing] = useState(false);
+
+  const timerRef = useRef(null);
 
   const closePopup = () => {
     setClosing(true);
-    setTimeout(() => {
+    window.setTimeout(() => {
       setVisible(false);
-    }, 300); 
+      setClosing(false);
+    }, 300);
   };
 
+  //sadece login sonrası 1 kere aç
   useEffect(() => {
-    const fetchUser = async () => {
+    const shouldShow = sessionStorage.getItem(FLAG_KEY) === '1';
+    if (!shouldShow) return;
+
+    sessionStorage.removeItem(FLAG_KEY);
+
+    (async () => {
       try {
         const res = await authService.me();
-        setUsername(res.data.username);
-        setProfileImage(res.data.profileImage);
+        setUsername(res?.data?.username || '');
+        setProfileImage(res?.data?.profileImage || null);
       } catch (err) {
         console.log(err);
+      } finally {
+        setClosing(false);
+        setVisible(true);
       }
-    };
+    })();
+  }, []);
 
-    fetchUser();
+  //visible açılınca: 3sn timer + ESC listener burada
+  useEffect(() => {
+    if (!visible) return;
 
-    const timer = setTimeout(() => {
+    //3 sn sonra kapat
+    timerRef.current = window.setTimeout(() => {
       closePopup();
     }, 3000);
 
+    //ESC ile kapat
     const escHandler = (e) => {
-      if (e.key === 'Escape') {
-        closePopup();
-      }
+      if (e.key === 'Escape') closePopup();
     };
 
     window.addEventListener('keydown', escHandler);
 
     return () => {
-      clearTimeout(timer);
+      if (timerRef.current) clearTimeout(timerRef.current);
       window.removeEventListener('keydown', escHandler);
     };
-  }, []);
+  }, [visible]);
 
   if (!visible) return null;
 
   return (
-    <div className={`welcome-overlay ${closing ? 'fade-out' : 'fade-in'}`}>
-      <div className="welcome-box position-relative">
-
-        <button
-          className="welcome-close"
-          onClick={closePopup}
-        >
+    <div
+      className={`welcome-overlay ${closing ? 'fade-out' : 'fade-in'}`}
+      onClick={closePopup}
+    >
+      <div className="welcome-box position-relative" onClick={(e) => e.stopPropagation()}>
+        <button className="welcome-close" onClick={closePopup}>
           ×
         </button>
 

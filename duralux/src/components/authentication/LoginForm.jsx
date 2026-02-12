@@ -41,6 +41,8 @@ const LoginForm = ({ registerPath, resetPath }) => {
       );
 
       console.log("5️⃣ DASHBOARD YÖNLENDİRME");
+      // ✅ sadece login sonrası 1 kere göster
+      sessionStorage.setItem("show_welcome_popup", "1");
       router.replace("/");
     } catch (error) {
       console.error("❌ LOGIN ERROR:", error);
