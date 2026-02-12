@@ -129,76 +129,13 @@ body {
     background-color: #f4f7f6;
 }
 
+/* ================================================= */
+/* DASHBOARD – SIDEBAR & CONTENT GAP                */
+/* ================================================= */
 
 .sales-pipeline-wrapper {
   margin-bottom: 24px;
 }
 
-.welcome-overlay {
-  position: fixed;
-  inset: 0;
-
-  background: rgba(15, 23, 42, 0.35); /* hafif koyu */
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 9999;
-
-  transition: opacity 0.3s ease;
-}
-
-.welcome-box {
-  background: rgba(255, 255, 255, 0.85);
-  backdrop-filter: blur(6px);
-  -webkit-backdrop-filter: blur(6px);
-
-  padding: 40px 50px;
-  border-radius: 20px;
-  text-align: center;
-  min-width: 320px;
-
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
-  transition: transform 0.3s ease, opacity 0.3s ease;
-}
 
 
-/* Fade In */
-.fade-in {
-  opacity: 1;
-}
-
-.fade-in .welcome-box {
-  transform: scale(1);
-  opacity: 1;
-}
-
-/* Fade Out */
-.fade-out {
-  opacity: 0;
-}
-
-.fade-out .welcome-box {
-  transform: scale(0.9);
-  opacity: 0;
-}
-
-.welcome-close {
-  position: absolute;
-  top: 10px;
-  right: 15px;
-  border: none;
-  background: transparent;
-  font-size: 22px;
-  cursor: pointer;
-  font-weight: bold;
-  color: #64748b;
-  transition: 0.2s;
-}
-
-.welcome-close:hover {
-  color: #ef4444;
-  transform: scale(1.2);
-}

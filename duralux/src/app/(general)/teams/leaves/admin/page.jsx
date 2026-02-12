@@ -34,8 +34,8 @@ const fetchLeaves = async () => {
   // ✅ ONAYLA
 const handleApprove = async (leave) => {
   try {
-    await leavesService.approve(leave.id); // ✅ DOĞRU SERVICE
-    await fetchLeaves();                   // ✅ HEM KARTLAR HEM TAKVİM
+    await leavesService.approve(leave.id); 
+    await fetchLeaves();                   
   } catch (e) {
     console.error('İzin onaylanamadı', e);
   }

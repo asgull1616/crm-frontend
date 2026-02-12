@@ -1,0 +1,45 @@
+/* ===== AKSIYON BUTONLARI ===== */
+
+.action-group {
+  display: inline-flex;
+  gap: 8px;
+}
+
+.action-btn {
+  font-size: 13px;
+  font-weight: 500;
+  padding: 6px 14px;
+  border-radius: 8px;
+  border: none;
+  transition: all 0.2s ease;
+}
+
+/* Görüntüle */
+.action-btn.view {
+  background: #F1F5F9;
+  color: #334155;
+}
+
+.action-btn.view:hover {
+  background: #E2E8F0;
+}
+
+/* Düzenle */
+.action-btn.edit {
+  background: #EEF2FF;
+  color: #3730A3;
+}
+
+.action-btn.edit:hover {
+  background: #E0E7FF;
+}
+
+/* Sil */
+.action-btn.delete {
+  background: #FFECEC;
+  color: #DC2626;
+}
+
+.action-btn.delete:hover {
+  background: #FFDADA;
+}
