@@ -1,20 +1,11 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useMemo, useState } from "react";
+
+const API_BASE = process.env.NEXT_PUBLIC_API_URL;
 
 export default function LicensesPage() {
-
-  const [licenses, setLicenses] = useState([
-    {
-      id: 1,
-      name: "SSL Sertifikası",
-      provider: "Let's Encrypt",
-      start: "01.01.2026",
-      end: "01.01.2027",
-      status: "Aktif"
-    }
-  ]);
-
+  const [licenses, setLicenses] = useState([]);
   const [isOpen, setIsOpen] = useState(false);
 
   const [newName, setNewName] = useState("");
@@ -22,49 +13,137 @@ export default function LicensesPage() {
   const [newStart, setNewStart] = useState("");
   const [newEnd, setNewEnd] = useState("");
 
-  const handleDelete = (id) => {
-    setLicenses(prev => prev.filter(l => l.id !== id));
-  };
+  const [loading, setLoading] = useState(false);
 
-  const calculateStatus = (endDate) => {
+  const token = useMemo(() => {
+    if (typeof window === "undefined") return null;
+    return localStorage.getItem("accessToken");
+  }, []);
+
+  const authHeaders = useMemo(() => {
+    const h = { "Content-Type": "application/json" };
+    if (token) h.Authorization = `Bearer ${token}`;
+    return h;
+  }, [token]);
+
+  // Backend -> UI map
+  const toUiItem = (x) => {
     const today = new Date();
-    const end = new Date(endDate);
+    const end = new Date(x.endDate);
 
-    if (end < today) return "Süresi Doldu";
+    let status = "Aktif";
+    if (end < today) status = "Süresi Doldu";
+    else if ((end - today) / (1000 * 60 * 60 * 24) < 30)
+      status = "Yaklaşıyor";
 
-    const diffDays = (end - today) / (1000 * 60 * 60 * 24);
-    if (diffDays < 30) return "Yaklaşıyor";
-
-    return "Aktif";
+    return {
+      id: x.id,
+      name: x.title,
+      provider: x.provider,
+      start: new Date(x.startDate).toLocaleDateString("tr-TR"),
+      end: new Date(x.endDate).toLocaleDateString("tr-TR"),
+      status,
+    };
   };
 
-  const handleCreate = () => {
-    if (!newName || !newProvider || !newStart || !newEnd) return;
+  // ✅ LIST
+  useEffect(() => {
+    const fetchLicenses = async () => {
+      try {
+        setLoading(true);
+        const res = await fetch(
+          `${API_BASE}/api/files/licenses?page=1&limit=50`,
+          {
+            method: "GET",
+            headers: authHeaders,
+          }
+        );
 
-    const status = calculateStatus(newEnd);
+        if (!res.ok) {
+          console.error("License list failed:", res.status);
+          return;
+        }
 
-    const newLicense = {
-      id: Date.now(),
-      name: newName,
-      provider: newProvider,
-      start: newStart,
-      end: newEnd,
-      status
+        const json = await res.json();
+        const items = (json?.data || []).map(toUiItem);
+        setLicenses(items);
+      } catch (e) {
+        console.error("License list error:", e);
+      } finally {
+        setLoading(false);
+      }
     };
 
-    setLicenses(prev => [...prev, newLicense]);
+    fetchLicenses();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [authHeaders]);
 
-    setNewName("");
-    setNewProvider("");
-    setNewStart("");
-    setNewEnd("");
-    setIsOpen(false);
+  // ✅ DELETE
+  const handleDelete = async (id) => {
+    const prev = licenses;
+    setLicenses((p) => p.filter((l) => l.id !== id));
+
+    try {
+      const res = await fetch(
+        `${API_BASE}/api/files/licenses/${id}`,
+        {
+          method: "DELETE",
+          headers: token ? { Authorization: `Bearer ${token}` } : {},
+        }
+      );
+
+      if (!res.ok) {
+        console.error("Delete failed:", res.status);
+        setLicenses(prev);
+      }
+    } catch (e) {
+      console.error("Delete error:", e);
+      setLicenses(prev);
+    }
+  };
+
+  // ✅ CREATE
+  const handleCreate = async () => {
+    if (!newName || !newProvider || !newStart || !newEnd) return;
+
+    try {
+      const res = await fetch(
+        `${API_BASE}/api/files/licenses`,
+        {
+          method: "POST",
+          headers: authHeaders,
+          body: JSON.stringify({
+            title: newName,
+            provider: newProvider,
+            startDate: newStart,
+            endDate: newEnd,
+            status: "ACTIVE",
+          }),
+        }
+      );
+
+      if (!res.ok) {
+        console.error("Create failed:", res.status);
+        return;
+      }
+
+      const created = await res.json();
+      const uiItem = toUiItem(created);
+
+      setLicenses((prev) => [...prev, uiItem]);
+
+      setNewName("");
+      setNewProvider("");
+      setNewStart("");
+      setNewEnd("");
+      setIsOpen(false);
+    } catch (e) {
+      console.error("Create error:", e);
+    }
   };
 
   return (
     <div className="licenses-wrapper">
-
-      {/* HEADER */}
       <div className="contracts-header">
         <div>
           <h2>Lisanslar</h2>
@@ -76,11 +155,11 @@ export default function LicensesPage() {
         </button>
       </div>
 
-      {/* GRID */}
-      <div className="licenses-grid">
-        {licenses.map(item => (
-          <div key={item.id} className="license-card">
+      {loading && <p style={{ marginTop: 10 }}>Yükleniyor...</p>}
 
+      <div className="licenses-grid">
+        {licenses.map((item) => (
+          <div key={item.id} className="license-card">
             <button
               className="license-delete"
               onClick={() => handleDelete(item.id)}
@@ -104,16 +183,13 @@ export default function LicensesPage() {
                 <span>Bitiş: {item.end}</span>
               </div>
             </div>
-
           </div>
         ))}
       </div>
 
-      {/* MODAL */}
       {isOpen && (
         <div className="modal-overlay">
           <div className="modal-card">
-
             <h3>Yeni Lisans Ekle</h3>
 
             <div className="modal-field">
@@ -153,19 +229,14 @@ export default function LicensesPage() {
             </div>
 
             <div className="modal-actions">
-              <button onClick={() => setIsOpen(false)}>
-                İptal
-              </button>
-
+              <button onClick={() => setIsOpen(false)}>İptal</button>
               <button className="btn-gradient" onClick={handleCreate}>
                 Oluştur
               </button>
             </div>
-
           </div>
         </div>
       )}
-
     </div>
   );
 }
