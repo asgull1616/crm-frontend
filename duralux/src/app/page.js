@@ -17,7 +17,7 @@ const Page = () => {
         }
       })
       .catch(() => {
-        router.push('/auth/login');
+        router.push('/auth/login/minimal');
       });
   }, []);
   return null;
