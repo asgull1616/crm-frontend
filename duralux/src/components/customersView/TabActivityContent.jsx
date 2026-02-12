@@ -15,6 +15,12 @@ const ACTIVITY_UI = {
 
   TASK_CREATED: { label: "Görev oluşturuldu", color: "warning" },
   TASK_COMPLETED: { label: "Görev tamamlandı", color: "success" },
+  
+  // ... mevcut tipler
+  PAYMENT_RECEIVED: { label: "Ödeme Alındı", color: "success" },
+  PAYMENT_PENDING: { label: "Bekleyen Ödeme", color: "warning" },
+  // ...
+
 
   CUSTOMER_CREATED: { label: "Müşteri oluşturuldu", color: "primary" },
   CUSTOMER_UPDATED: { label: "Müşteri güncellendi", color: "info" },
