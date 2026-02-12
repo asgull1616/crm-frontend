@@ -106,7 +106,7 @@ export const menuList = [
 
   {
     id: 8,
-    name: "Gelir / Gider",
+    name: "Ödemeler",
     path: "#",
     icon: "feather-dollar-sign",
     dropdownMenu: [
