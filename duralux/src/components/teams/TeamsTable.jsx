@@ -54,6 +54,7 @@ const TeamsTable = () => {
   const [isAdmin, setIsAdmin] = useState(false);
 
   const router = useRouter();
+const [deleteId, setDeleteId] = useState(null);
 
   /* --------- USER ROLE --------- */
   useEffect(() => {
@@ -71,15 +72,14 @@ const TeamsTable = () => {
   }, []);
 
   /* --------- DELETE (ADMIN ONLY) --------- */
-  const handleDelete = async (teamId) => {
-    if (!isAdmin) return;
+const confirmDelete = async () => {
+  if (!deleteId) return;
 
-    const ok = window.confirm('Bu ekibi silmek istiyor musunuz?');
-    if (!ok) return;
+  await teamService.remove(deleteId);
+  setData((prev) => prev.filter((t) => t.id !== deleteId));
+  setDeleteId(null);
+};
 
-    await teamService.remove(teamId);
-    setData((prev) => prev.filter((t) => t.id !== teamId));
-  };
 
   /* --------- TABLE COLUMNS --------- */
   const columns = [
@@ -151,8 +151,8 @@ const TeamsTable = () => {
                   {
                     label: 'Sil',
                     icon: <FiTrash2 size={20} />,
-                    onClick: () =>
-                      handleDelete(row.original.id),
+                   onClick: () => setDeleteId(row.original.id),
+
                   },
                 ]}
               />
@@ -171,7 +171,30 @@ const TeamsTable = () => {
     );
   }
 
-  return <Table data={data} columns={columns} loading={loading} />;
+  return (
+    <>
+      <Table data={data} columns={columns} loading={loading} />
+      {deleteId && (
+        <div className="modal show d-block" style={{ backgroundColor: "rgba(0,0,0,0.5)" }}>
+          <div className="modal-dialog">
+            <div className="modal-content">
+              <div className="modal-header">
+                <h5 className="modal-title">Ekip Sil</h5>
+                <button type="button" className="btn-close" onClick={() => setDeleteId(null)}></button>
+              </div>
+              <div className="modal-body">
+                Bu ekibi silmek istediğinize emin misiniz?
+              </div>
+              <div className="modal-footer">
+                <button type="button" className="btn btn-secondary" onClick={() => setDeleteId(null)}>İptal</button>
+                <button type="button" className="btn btn-danger" onClick={confirmDelete}>Sil</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+    </>
+  );      
 };
 
 export default TeamsTable;

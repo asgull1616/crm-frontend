@@ -275,7 +275,9 @@ export default function TaskListContent() {
                           <div className="fw-semibold text-dark">{task.title}</div>
                         </td>
 
-                        <td className="py-3">
+                        <td className="ps-4 py-4">
+
+
                           <span
                             className="px-2 py-1"
                             style={{
@@ -310,31 +312,30 @@ export default function TaskListContent() {
                           {formatDate(task.endDate)}
                         </td>
 
-                        <td className="py-3 pe-4">
-                          <div className="d-flex justify-content-end gap-2">
+                        <td className="pe-4 text-end">
+                          <div className="action-group">
+
                             <button
-                              className="btn btn-sm btn-outline-secondary"
-                              title="Görüntüle"
+                              className="action-btn view"
                               onClick={() => router.push(`/tasks/view/${task.id}`)}
                             >
                               Görüntüle
                             </button>
 
                             <button
-                              className="btn btn-sm btn-outline-primary"
-                              title="Güncelle"
+                              className="action-btn edit"
                               onClick={() => router.push(`/tasks/edit/${task.id}`)}
                             >
                               Düzenle
                             </button>
 
                             <button
-                              className="btn btn-sm btn-outline-danger"
-                              title="Sil"
+                              className="action-btn delete"
                               onClick={() => handleDelete(task.id)}
                             >
                               Sil
                             </button>
+
                           </div>
                         </td>
                       </tr>
@@ -346,37 +347,6 @@ export default function TaskListContent() {
           )}
         </div>
       </div>
-
-      <style jsx global>{`
-  /* ===== FILTRE KARTLARI PEMBE HOVER ===== */
-
-  .task-filter-card {
-    transition: all 0.25s ease;
-  }
-
-  .task-filter-card:hover {
-    transform: translateY(-4px);
-    background: #fff0f6; /* çok soft pembe */
-    border: 1px solid #f8a5c2 !important;
-    box-shadow: 0 12px 28px rgba(233, 43, 99, 0.18);
-  }
-
-  /* Aktif kart hover'da daha koyu pembe olsun */
-  .task-filter-card.active,
-  .task-filter-card.active:hover {
-    background: linear-gradient(
-      135deg,
-      #ffe4ec,
-      #ffc1d6
-    ) !important;
-    border: 1px solid #e92b63 !important;
-    box-shadow: 0 14px 34px rgba(233, 43, 99, 0.25);
-  }
-`}</style>
-
-
-
-
     </div>
   );
 }
