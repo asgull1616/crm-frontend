@@ -535,10 +535,10 @@ body {
 }
 
 .license-card:hover {
-  transform: translateY(-8px);
+  transform: translateY(-10px);
   box-shadow:
-    0 30px 60px rgba(0,0,0,.08),
-    0 20px 45px rgba(233,59,98,.15);
+    0 35px 70px rgba(0,0,0,.08),
+    0 0 40px rgba(233,59,98,.25);
 }
 
 /* DELETE */
@@ -593,6 +593,27 @@ body {
   font-weight: 600;
   background: linear-gradient(135deg,#22c55e,#16a34a);
   color: white;
+}/* STATUS VARIANTS */
+
+/* AKTİF */
+.license-badge.ACTIVE {
+  background: linear-gradient(135deg, #8ee4c1, #34d399);
+  color: #065f46;
+  box-shadow: 0 8px 20px rgba(52,211,153,.25);
+}
+
+/* YAKLAŞIYOR */
+.license-badge.SOON {
+  background: linear-gradient(135deg, #ffe5c7, #ffb77a);
+  color: #7c2d12;
+  box-shadow: 0 8px 20px rgba(255,183,122,.25);
+}
+
+/* SÜRESİ DOLDU */
+.license-badge.EXPIRED {
+  background: linear-gradient(135deg, #ffd1dc, #ff7aa2);
+  color: #7a003c;
+  box-shadow: 0 8px 20px rgba(255,122,162,.25);
 }
 
 /* BODY */
@@ -616,6 +637,18 @@ body {
   gap: 6px;
   font-size: 13px;
   color: #6b7280;
+}
+
+.license-remaining {
+  margin-top: 14px;
+  font-size: 12px;
+  font-weight: 600;
+  padding: 8px 16px;
+  border-radius: 999px;
+  width: fit-content;
+  background: rgba(233,59,98,.08);
+  color: #E92B63;
+  backdrop-filter: blur(6px);
 }
 
 
