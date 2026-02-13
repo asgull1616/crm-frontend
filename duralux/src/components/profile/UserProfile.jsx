@@ -1,13 +1,24 @@
 'use client'
-import React, { useState } from 'react';
-import Link from 'next/link';
+import React, { useState, useEffect } from 'react';
 import {
-  FaUser, FaEnvelope, FaPhone, FaMapMarkerAlt, FaBuilding,
-  FaPen, FaKey, FaDesktop, FaArrowLeft, FaCalendarAlt
+  FaUser, FaEnvelope, FaPhone, FaMapMarkerAlt, FaCalendarAlt, 
+  FaUserEdit, FaSave, FaTimes, FaCreditCard, FaBriefcase, 
+  FaArrowLeft, FaIdCard, FaTint, FaHospital, FaUniversity
 } from 'react-icons/fa';
+import { profileService } from '../../lib/services/profile.service'; 
 
 const UserProfile = () => {
-  const [activeTab, setActiveTab] = useState('info');
+  const [isEditing, setIsEditing] = useState(false);
+  const [loading, setLoading] = useState(true);
+  
+  // ProfileResponseDto'daki tüm alanları kapsayan state
+  const [userData, setUserData] = useState({
+    firstName: "", lastName: "", birthDate: "", bloodGroup: "",
+    avatarUrl: "", bio: "", phone: "", address: "",
+    location: "", position: "", department: "", startDate: "",
+    employeeId: "", iban: "", bankName: "", emergencyPerson: "",
+    emergencyPhone: "", email: "" 
+  });
 
   const colors = {
     primary: '#E8527F',
@@ -16,138 +27,169 @@ const UserProfile = () => {
     textLight: '#64748b',
     bg: '#f8fafc',
     cardBg: '#ffffff',
-    inputBg: '#f1f5f9',
-    success: '#10b981',
-    danger: '#ef4444'
+    inputBg: '#f1f5f9'
   };
 
   const styles = {
-    container: { backgroundColor: colors.bg, minHeight: '100vh', padding: '40px', fontFamily: "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif", color: colors.textMain },
-    wrapper: { display: 'flex', gap: '40px', maxWidth: '1600px', margin: '0 auto', alignItems: 'flex-start' },
-    backButton: { display: 'inline-flex', alignItems: 'center', gap: '8px', padding: '12px 0', marginBottom: '10px', color: colors.textLight, textDecoration: 'none', fontSize: '14px', fontWeight: '600', cursor: 'pointer' },
-    card: { backgroundColor: colors.cardBg, borderRadius: '24px', boxShadow: '0 20px 40px -10px rgba(0,0,0,0.04)', border: '1px solid rgba(255,255,255,0.5)', overflow: 'hidden' },
-    leftColumn: { flex: '1', minWidth: '340px', maxWidth: '420px' },
-    profileHeader: { display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '50px 30px 30px 30px', textAlign: 'center' },
-    avatar: { width: '120px', height: '120px', borderRadius: '50%', backgroundColor: colors.primarySoft, color: colors.primary, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '50px', marginBottom: '20px' },
-    name: { fontSize: '26px', fontWeight: '700', margin: '10px 0 5px 0' },
-    role: { fontSize: '15px', fontWeight: '500', color: colors.textLight, backgroundColor: '#f1f5f9', padding: '6px 16px', borderRadius: '20px' },
-    bioBox: { margin: '0 30px 30px 30px', padding: '25px', backgroundColor: colors.primarySoft, borderRadius: '16px' },
-    bioText: { fontSize: '15px', lineHeight: '1.6', fontStyle: 'italic', textAlign: 'center' },
-    contactList: { padding: '0 30px 40px 30px', display: 'flex', flexDirection: 'column', gap: '15px' },
-    contactItem: { display: 'flex', alignItems: 'center', fontSize: '14px', color: colors.textLight },
-    contactIcon: { marginRight: '15px', color: colors.primary },
-    rightColumn: { flex: '3', display: 'flex', flexDirection: 'column', gap: '30px' },
-    tabContainer: { display: 'inline-flex', backgroundColor: '#e2e8f0', borderRadius: '16px', padding: '6px', alignSelf: 'flex-start' },
-    tabButton: (isActive) => ({ padding: '12px 30px', borderRadius: '12px', border: 'none', cursor: 'pointer', fontSize: '14px', fontWeight: '600', backgroundColor: isActive ? colors.cardBg : 'transparent', color: isActive ? colors.primary : colors.textLight }),
-    contentCard: { padding: '50px', minHeight: '600px' },
-    sectionTitle: { fontSize: '22px', fontWeight: '700', marginBottom: '30px', display: 'flex', alignItems: 'center', gap: '10px' },
-    formGroup: { marginBottom: '20px' },
-    label: { display: 'block', marginBottom: '10px', fontSize: '13px', fontWeight: '600', color: '#94a3b8' },
-    input: { width: '100%', padding: '16px 20px', borderRadius: '14px', border: '1px solid transparent', backgroundColor: colors.inputBg, fontSize: '15px', color: colors.textMain, outline: 'none' },
-    primaryButton: { padding: '16px 40px', backgroundColor: colors.primary, color: '#fff', border: 'none', borderRadius: '14px', fontSize: '15px', fontWeight: '600', cursor: 'pointer' },
-    securitySection: { marginBottom: '40px', paddingBottom: '40px', borderBottom: '1px solid #f1f5f9' },
-    sessionList: { display: 'flex', flexDirection: 'column', gap: '15px' },
-    sessionItem: { display: 'flex', alignItems: 'center', padding: '15px', borderRadius: '16px', border: '1px solid #e2e8f0', backgroundColor: '#fff' },
-    sessionIconBox: { width: '45px', height: '45px', borderRadius: '12px', backgroundColor: '#f1f5f9', color: colors.textLight, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '20px', marginRight: '15px' },
-    sessionInfo: { flex: 1 },
-    sessionTitleText: { fontWeight: '600', fontSize: '15px', marginBottom: '2px' },
-    sessionMeta: { fontSize: '13px', color: colors.textLight },
-    activeBadge: { fontSize: '12px', fontWeight: '700', color: colors.success, backgroundColor: '#d1fae5', padding: '4px 10px', borderRadius: '20px' }
+    container: { backgroundColor: colors.bg, minHeight: '100vh', padding: '40px', color: colors.textMain },
+    wrapper: { display: 'flex', gap: '40px', maxWidth: '1400px', margin: '0 auto' },
+    card: { backgroundColor: colors.cardBg, borderRadius: '20px', padding: '30px', boxShadow: '0 4px 20px rgba(0,0,0,0.05)', marginBottom: '30px' },
+    sectionTitle: { display: 'flex', alignItems: 'center', gap: '10px', fontSize: '18px', fontWeight: '700', marginBottom: '20px', color: colors.primary },
+    grid: { display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '20px' },
+    inputGroup: { display: 'flex', flexDirection: 'column', gap: '5px' },
+    label: { fontSize: '11px', fontWeight: 'bold', color: colors.textLight, textTransform: 'uppercase', letterSpacing: '0.5px' },
+    input: { padding: '12px', borderRadius: '10px', border: '1px solid #e2e8f0', backgroundColor: colors.inputBg, outline: 'none', fontSize: '14px' },
+    displayValue: { fontSize: '15px', fontWeight: '600', padding: '5px 0', color: colors.textMain }
   };
+
+  const bloodGroups = ["A Rh+", "A Rh-", "B Rh+", "B Rh-", "AB Rh+", "AB Rh-", "0 Rh+", "0 Rh-"];
+
+  useEffect(() => {
+    const fetchProfile = async () => {
+      try {
+        const res = await profileService.getMe();
+        if (res && res.data) {
+          setUserData(res.data);
+        }
+      } catch (error) {
+        console.error("❌ Profil çekme hatası:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchProfile();
+  }, []);
+
+  const handleSave = async () => {
+    try {
+      // UpdateProfileDto'ya uygun şekilde veriyi temizleyerek gönderiyoruz
+      const { email, id, userId, createdAt, updatedAt, ...updateData } = userData;
+      const res = await profileService.updateMe(updateData);
+      if (res.data) {
+        setUserData(res.data);
+        setIsEditing(false);
+        alert("Profil başarıyla güncellendi!");
+      }
+    } catch (error) {
+      alert("Hata: " + (error.response?.data?.message || "İşlem başarısız"));
+    }
+  };
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setUserData(prev => ({ ...prev, [name]: value }));
+  };
+
+  const formatDate = (date) => date ? new Date(date).toISOString().split('T')[0] : "";
+
+  if (loading) return <div style={{padding: '50px', textAlign: 'center'}}>Veriler yükleniyor...</div>;
 
   return (
     <div style={styles.container}>
       <div style={styles.wrapper}>
         
-        {/* SOL KOLON */}
-        <div style={styles.leftColumn}>
-          <Link href="/" style={styles.backButton}>
-            <FaArrowLeft size={14} /> Ana Sayfaya Dön
-          </Link>
-
+        {/* SOL KOLON: Özet Bilgiler */}
+        <div style={{ flex: '1', minWidth: '300px' }}>
           <div style={styles.card}>
-            <div style={styles.profileHeader}>
-              <div style={styles.avatar}> <FaUser /> </div>
-              <h2 style={styles.name}>Esmanur Erden</h2>
-              <span style={styles.role}>Admin & Backend Developer</span>
+            <div style={{ textAlign: 'center' }}>
+              <img 
+                src={userData.avatarUrl || 'https://via.placeholder.com/150'} 
+                style={{ width: '130px', height: '130px', borderRadius: '50%', objectFit: 'cover', border: `4px solid ${colors.primarySoft}` }} 
+                alt="Avatar"
+              />
+              <h2 style={{ margin: '20px 0 5px', fontSize: '24px' }}>{userData.firstName} {userData.lastName}</h2>
+              <p style={{ color: colors.textLight, fontWeight: '500' }}>{userData.position || 'Pozisyon Belirtilmedi'}</p>
+              <div style={{ marginTop: '15px', padding: '10px', backgroundColor: colors.primarySoft, borderRadius: '10px', fontSize: '13px', fontStyle: 'italic' }}>
+                {userData.bio || "Henüz bir biyografi eklenmemiş."}
+              </div>
             </div>
-            <div style={styles.bioBox}>
-              <p style={styles.bioText}>Codyol projesinde backend mimarisini ve CRM entegrasyonlarını geliştiriyorum.</p>
+            
+            <div style={{ marginTop: '25px', display: 'flex', flexDirection: 'column', gap: '12px' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '10px', fontSize: '14px' }}><FaEnvelope color={colors.primary}/> {userData.email}</div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '10px', fontSize: '14px' }}><FaBriefcase color={colors.primary}/> {userData.department || 'Departman Yok'}</div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '10px', fontSize: '14px' }}><FaMapMarkerAlt color={colors.primary}/> {userData.location || 'Konum Yok'}</div>
             </div>
-            <div style={styles.contactList}>
-              <div style={styles.contactItem}><FaEnvelope style={styles.contactIcon} /> esmanur@codyol.com</div>
-              <div style={styles.contactItem}><FaPhone style={styles.contactIcon} /> +90 555 123 45 67</div>
-              {/* SOL TARAF: Doğum Tarihi Eklendi */}
-              <div style={styles.contactItem}><FaCalendarAlt style={styles.contactIcon} /> 1 Ocak 2000</div>
-              <div style={styles.contactItem}><FaBuilding style={styles.contactIcon} /> Codyol Digital Agency</div>
-              <div style={styles.contactItem}><FaMapMarkerAlt style={styles.contactIcon} /> İstanbul, Türkiye</div>
-            </div>
+
+            <button 
+              onClick={() => setIsEditing(!isEditing)} 
+              style={{ width: '100%', marginTop: '30px', padding: '14px', borderRadius: '12px', border: 'none', backgroundColor: isEditing ? '#64748b' : colors.primary, color: 'white', fontWeight: '700', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}
+            >
+              {isEditing ? <><FaTimes /> İptal Et</> : <><FaUserEdit /> Profili Düzenle</>}
+            </button>
           </div>
         </div>
 
-        {/* SAĞ KOLON */}
-        <div style={styles.rightColumn}>
-          <div style={styles.tabContainer}>
-            <button style={styles.tabButton(activeTab === 'info')} onClick={() => setActiveTab('info')}>Profil Düzenle</button>
-            <button style={styles.tabButton(activeTab === 'security')} onClick={() => setActiveTab('security')}>Güvenlik</button>
+        {/* SAĞ KOLON: Detaylı Bilgiler */}
+        <div style={{ flex: '2.5' }}>
+          
+          {/* 1. KURUMSAL BİLGİLER */}
+          <div style={styles.card}>
+            <div style={styles.sectionTitle}><FaIdCard /> Kurumsal Bilgiler</div>
+            <div style={styles.grid}>
+              <InputOrDisplay label="Ad" name="firstName" value={userData.firstName} isEditing={isEditing} onChange={handleChange} styles={styles} />
+              <InputOrDisplay label="Soyad" name="lastName" value={userData.lastName} isEditing={isEditing} onChange={handleChange} styles={styles} />
+              <InputOrDisplay label="Pozisyon" name="position" value={userData.position} isEditing={isEditing} onChange={handleChange} styles={styles} />
+              <InputOrDisplay label="Departman" name="department" value={userData.department} isEditing={isEditing} onChange={handleChange} styles={styles} />
+              <InputOrDisplay label="Personel ID" name="employeeId" value={userData.employeeId} isEditing={isEditing} onChange={handleChange} styles={styles} />
+              <InputOrDisplay label="İşe Başlama" name="startDate" value={formatDate(userData.startDate)} type="date" isEditing={isEditing} onChange={handleChange} styles={styles} />
+            </div>
           </div>
 
-          <div style={{ ...styles.card, ...styles.contentCard }}>
-            {/* PROFİL SEKMESİ */}
-            {activeTab === 'info' && (
-              <>
-                <h3 style={styles.sectionTitle}><FaPen style={{color: colors.primary}} size={18}/> Bilgileri Güncelle</h3>
-                <div style={{display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px'}}>
-                  <div style={styles.formGroup}><label style={styles.label}>AD</label><input type="text" style={styles.input} /></div>
-                  <div style={styles.formGroup}><label style={styles.label}>SOYAD</label><input type="text" style={styles.input} /></div>
-                </div>
-
-                {/* SAĞ TARAF: Telefon ve Doğum Tarihi Form Alanları */}
-                <div style={{display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px'}}>
-                  <div style={styles.formGroup}><label style={styles.label}>TELEFON</label><input type="tel" style={styles.input} placeholder="+90 5XX XXX XX XX" /></div>
-                  <div style={styles.formGroup}><label style={styles.label}>DOĞUM TARİHİ</label><input type="date" style={styles.input} /></div>
-                </div>
-
-                <div style={styles.formGroup}><label style={styles.label}>E-POSTA</label><input type="email" style={styles.input} /></div>
-                <div style={styles.formGroup}><label style={styles.label}>ÜNVAN</label><input type="text" style={styles.input} /></div>
-                <div style={styles.formGroup}><label style={styles.label}>BİYOGRAFİ</label><textarea rows="4" style={{...styles.input, resize: 'none'}} /></div>
-                <div style={{textAlign: 'right'}}><button style={styles.primaryButton}>Değişiklikleri Kaydet</button></div>
-              </>
-            )}
-
-            {/* GÜVENLİK SEKMESİ */}
-            {activeTab === 'security' && (
-              <>
-                <div style={styles.securitySection}>
-                  <h3 style={styles.sectionTitle}><FaKey style={{color: colors.primary}} size={18}/> Şifre Değiştir</h3>
-                  <div style={styles.formGroup}><label style={styles.label}>Mevcut Şifre</label><input type="password" style={styles.input} /></div>
-                  <div style={{display: 'flex', gap: '20px'}}>
-                    <div style={{...styles.formGroup, flex: 1}}><label style={styles.label}>Yeni Şifre</label><input type="password" style={styles.input} /></div>
-                    <div style={{...styles.formGroup, flex: 1}}><label style={styles.label}>Yeni Şifre (Tekrar)</label><input type="password" style={styles.input} /></div>
-                  </div>
-                  <div style={{textAlign: 'right'}}><button style={{...styles.primaryButton, backgroundColor: colors.danger}}>Şifreyi Güncelle</button></div>
-                </div>
-
-                <div>
-                  <h3 style={styles.sectionTitle}><FaDesktop style={{color: colors.primary}} size={18}/> Aktif Oturumlar</h3>
-                  <div style={styles.sessionList}>
-                    <div style={styles.sessionItem}>
-                      <div style={styles.sessionIconBox}><FaDesktop /></div>
-                      <div style={styles.sessionInfo}>
-                        <div style={styles.sessionTitleText}>Windows PC - Chrome</div>
-                        <div style={styles.sessionMeta}>İstanbul, TR • 192.168.1.1</div>
-                      </div>
-                      <span style={styles.activeBadge}>Şu An Aktif</span>
-                    </div>
-                  </div>
-                </div>
-              </>
-            )}
+          {/* 2. KİŞİSEL BİLGİLER */}
+          <div style={styles.card}>
+            <div style={styles.sectionTitle}><FaCalendarAlt /> Kişisel & İletişim Bilgileri</div>
+            <div style={styles.grid}>
+              <InputOrDisplay label="Doğum Tarihi" name="birthDate" value={formatDate(userData.birthDate)} type="date" isEditing={isEditing} onChange={handleChange} styles={styles} />
+              <div style={styles.inputGroup}>
+                <label style={styles.label}>Kan Grubu</label>
+                {isEditing ? (
+                  <select name="bloodGroup" value={userData.bloodGroup || ""} onChange={handleChange} style={styles.input}>
+                    <option value="">Seçiniz</option>
+                    {bloodGroups.map(g => <option key={g} value={g}>{g}</option>)}
+                  </select>
+                ) : <div style={styles.displayValue}>{userData.bloodGroup || "-"}</div>}
+              </div>
+              <InputOrDisplay label="Telefon" name="phone" value={userData.phone} isEditing={isEditing} onChange={handleChange} styles={styles} />
+              <InputOrDisplay label="Şehir / Ülke" name="location" value={userData.location} isEditing={isEditing} onChange={handleChange} styles={styles} />
+              <div style={{ gridColumn: 'span 2', ...styles.inputGroup }}>
+                <InputOrDisplay label="Tam Adres" name="address" value={userData.address} isEditing={isEditing} onChange={handleChange} styles={styles} />
+              </div>
+            </div>
           </div>
+
+          {/* 3. FİNANSAL & ACİL DURUM */}
+          <div style={styles.card}>
+            <div style={styles.sectionTitle}><FaCreditCard /> Finansal & Acil Durum</div>
+            <div style={styles.grid}>
+              <InputOrDisplay label="Banka Adı" name="bankName" value={userData.bankName} isEditing={isEditing} onChange={handleChange} styles={styles} />
+              <InputOrDisplay label="IBAN" name="iban" value={userData.iban} isEditing={isEditing} onChange={handleChange} styles={styles} />
+              <InputOrDisplay label="Acil Durum Kişisi" name="emergencyPerson" value={userData.emergencyPerson} isEditing={isEditing} onChange={handleChange} styles={styles} />
+              <InputOrDisplay label="Acil Durum Telefon" name="emergencyPhone" value={userData.emergencyPhone} isEditing={isEditing} onChange={handleChange} styles={styles} />
+            </div>
+          </div>
+
+          {isEditing && (
+            <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '40px' }}>
+              <button onClick={handleSave} style={{ padding: '16px 50px', backgroundColor: '#10b981', color: 'white', border: 'none', borderRadius: '12px', fontWeight: 'bold', fontSize: '16px', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '10px', boxShadow: '0 4px 12px rgba(16, 185, 129, 0.2)' }}>
+                <FaSave /> DEĞİŞİKLİKLERİ KAYDET
+              </button>
+            </div>
+          )}
         </div>
       </div>
     </div>
   );
 };
+
+const InputOrDisplay = ({ label, name, value, isEditing, onChange, styles, type = "text" }) => (
+  <div style={styles.inputGroup}>
+    <label style={styles.label}>{label}</label>
+    {isEditing ? (
+      <input type={type} name={name} value={value || ""} onChange={onChange} style={styles.input} />
+    ) : (
+      <div style={styles.displayValue}>{value || "-"}</div>
+    )}
+  </div>
+);
 
 export default UserProfile;

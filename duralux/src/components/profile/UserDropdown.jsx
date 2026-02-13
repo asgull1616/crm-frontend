@@ -2,15 +2,38 @@
 import React, { useState, useRef, useEffect } from 'react';
 import Link from 'next/link';
 import { FaUserCircle, FaSignOutAlt, FaUser } from 'react-icons/fa';
+// Kendi dosya yollarına göre kontrol et
+import { profileService } from '../../lib/services/profile.service'; 
+import api from '../../lib/axios'; 
 
 const UserDropdown = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const [userData, setUserData] = useState({ fullName: 'Yükleniyor...', role: 'Kullanıcı' });
   const dropdownRef = useRef(null);
 
-  const toggleMenu = () => {
-    setIsOpen(!isOpen);
-  };
+  useEffect(() => {
+    const fetchUserData = async () => {
+      try {
+        // profileService.getMe() zaten "profile/me" adresine GET isteği atar
+        const res = await profileService.getMe();
+        
+        if (res.data) {
+          // Backend ProfileResponseDto'dan gelen firstName ve lastName alanlarını birleştiriyoruz
+          const { firstName, lastName, position } = res.data;
+          setUserData({
+            fullName: firstName ? `${firstName} ${lastName || ''}` : 'Kullanıcı',
+            role: position || 'USER' // ProfileResponseDto'daki position alanını kullanıyoruz
+          });
+        }
+      } catch (err) { 
+        console.error("Dropdown veri çekme hatası:", err);
+        setUserData({ fullName: 'Misafir', role: 'USER' });
+      }
+    };
+    fetchUserData();
+  }, []);
 
+  // Dropdown dışına tıklandığında kapatma mantığı
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
@@ -18,136 +41,64 @@ const UserDropdown = () => {
       }
     };
     document.addEventListener('mousedown', handleClickOutside);
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
-    };
+    return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
-  const styles = {
-    container: {
-      position: 'relative',
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center',
-      marginLeft: '15px',
-      cursor: 'pointer'
-    },
-    triggerButton: {
-      background: 'none',
-      border: 'none',
-      cursor: 'pointer',
-      padding: '0',
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center',
-      color: '#9ca3af',
-      transition: 'color 0.2s',
-    },
-    dropdownMenu: {
-      position: 'absolute',
-      top: '55px', 
-      right: '0',
-      backgroundColor: '#ffffff',
-      border: '1px solid #e2e8f0',
-      borderRadius: '16px',
-      boxShadow: '0 15px 30px -5px rgba(0, 0, 0, 0.1)',
-      minWidth: '220px',
-      zIndex: 100,
-      overflow: 'hidden',
-    },
-    header: {
-      padding: '16px',
-      borderBottom: '1px solid #f1f5f9',
-      display: 'flex',
-      alignItems: 'center',
-      gap: '12px',
-      backgroundColor: '#f8fafc'
-    },
-    headerIcon: {
-        fontSize: '32px',
-        color: '#cbd5e1'
-    },
-    userName: {
-      margin: 0,
-      fontWeight: '700',
-      color: '#1e293b',
-      fontSize: '14px',
-    },
-    menuLink: {
-      display: 'flex',
-      alignItems: 'center',
-      padding: '12px 16px',
-      textDecoration: 'none',
-      color: '#475569',
-      fontSize: '14px',
-      fontWeight: '500',
-      transition: 'all 0.2s',
-      cursor: 'pointer',
-      border: 'none',
-      background: 'none',
-      width: '100%',
-      textAlign: 'left'
-    },
-    icon: {
-      marginRight: '12px',
-      fontSize: '16px',
-      color: '#64748b',
-    },
-    signOutLink: {
-        borderTop: '1px solid #f1f5f9',
-        color: '#ef4444',
-    },
-    signOutIcon: {
-        color: '#ef4444',
-        marginRight: '12px',
-        fontSize: '16px',
-    }
+  // Çıkış işlemi: localStorage temizliği ve yönlendirme
+  const handleLogoutClick = () => {
+    localStorage.removeItem("accessToken");
+    localStorage.removeItem("refreshToken");
+    window.location.href = "/authentication/login/minimal";
   };
 
   return (
-    <div style={styles.container} ref={dropdownRef}>
-      
+    <div style={{ position: 'relative' }} ref={dropdownRef}>
       <button 
-        onClick={toggleMenu} 
-        style={{...styles.triggerButton, color: isOpen ? '#E8527F' : '#9ca3af'}}
+        onClick={() => setIsOpen(!isOpen)} 
+        style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 0, display: 'flex' }}
       >
-         <FaUserCircle size={40} />
+        <FaUserCircle size={40} color={isOpen ? '#E8527F' : '#9ca3af'} />
       </button>
 
       {isOpen && (
-        <div style={styles.dropdownMenu}>
-          
-          <div style={styles.header}>
-            <FaUserCircle style={styles.headerIcon} />
-            <div style={{display: 'flex', flexDirection: 'column'}}>
-              <span style={styles.userName}>Esmanur Erden</span>
-              <span style={{fontSize: '11px', color: '#64748b', fontWeight: '600', textTransform: 'uppercase'}}>Admin</span>
+        <div style={{
+          position: 'absolute', top: '55px', right: '0', backgroundColor: '#fff', 
+          borderRadius: '16px', boxShadow: '0 10px 25px rgba(0,0,0,0.1)', 
+          minWidth: '220px', zIndex: 100, overflow: 'hidden'
+        }}>
+          {/* Kullanıcı Bilgi Özeti */}
+          <div style={{ padding: '16px', borderBottom: '1px solid #f1f5f9', display: 'flex', alignItems: 'center', gap: '10px' }}>
+            <FaUserCircle size={30} color="#cbd5e1" />
+            <div style={{ overflow: 'hidden' }}>
+              <div style={{ fontWeight: '700', fontSize: '14px', whiteSpace: 'nowrap', textOverflow: 'ellipsis', overflow: 'hidden' }}>
+                {userData.fullName}
+              </div>
+              <div style={{ fontSize: '11px', color: '#64748b', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
+                {userData.role}
+              </div>
             </div>
           </div>
 
-          <div style={{display: 'flex', flexDirection: 'column', padding: '4px'}}>
-            
-            {/* Sadece Profilim Linki Kalsın */}
-            <Link href="/profile" 
-               style={styles.menuLink}
-               onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#f1f5f9'}
-               onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
-               onClick={() => setIsOpen(false)}
+          {/* Menü Linkleri */}
+          <div style={{ padding: '8px' }}>
+            <Link 
+              href="/profile" 
+              style={{ display: 'flex', alignItems: 'center', padding: '10px', textDecoration: 'none', color: '#475569', fontSize: '14px', borderRadius: '8px' }} 
+              onClick={() => setIsOpen(false)}
             >
-              <FaUser style={styles.icon} />
-              Profilim
+              <FaUser style={{ marginRight: '10px', color: '#E8527F' }} /> Profilim
             </Link>
 
-            <Link href="/authentication/login/minimal" 
-               style={{...styles.menuLink, ...styles.signOutLink}}
-               onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#fef2f2'}
-               onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
-               onClick={() => setIsOpen(false)}
+            <button 
+              onClick={handleLogoutClick}
+              style={{ 
+                display: 'flex', alignItems: 'center', width: '100%', padding: '10px', 
+                color: '#ef4444', border: 'none', background: 'none', cursor: 'pointer', 
+                borderTop: '1px solid #f1f5f9', marginTop: '5px', fontSize: '14px', textAlign: 'left'
+              }}
             >
-              <FaSignOutAlt style={styles.signOutIcon} />
-              Güvenli Çıkış
-            </Link>
-
+              <FaSignOutAlt style={{ marginRight: '10px' }} /> Güvenli Çıkış
+            </button>
           </div>
         </div>
       )}

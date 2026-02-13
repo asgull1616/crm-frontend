@@ -4,7 +4,7 @@ import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { taskService } from "@/lib/services/task.service";
 import { customerService } from "@/lib/services/customer.service";
-import { userService } from "@/lib/services/user.service";
+import { userService } from "@/lib/services/profile.service";
 
 const initialForm = {
   title: "",
