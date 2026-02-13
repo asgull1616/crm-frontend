@@ -38,9 +38,6 @@ const Home = () => {
 
       <div className="main-content">
         <div className="row">
-          <TrendAnalysisChart />
-          <Sales />
-          <ActivityAnalysis />
           <SystemLogs />
 
           <LatestLeads title={'Teklif & Görev Süreçleri (Demo)'} />

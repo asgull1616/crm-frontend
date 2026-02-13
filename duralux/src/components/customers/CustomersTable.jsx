@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react'
 import { FiUsers, FiTrash2, FiEdit3, FiMail, FiPhone, FiChevronLeft, FiChevronRight } from 'react-icons/fi'
 import Link from 'next/link'
 import { customerService } from '@/lib/services/customer.service'
+import Swal from 'sweetalert2';
 
 const CustomersTable = () => {
     const [customers, setCustomers] = useState([])
@@ -29,15 +30,53 @@ const CustomersTable = () => {
     }
 
     const handleDelete = async (id) => {
-        if (window.confirm('Bu müşteriyi silmek istediğinize emin misiniz?')) {
+    // Fotoğraftaki eski kutu yerine bu modern modal açılacak
+    Swal.fire({
+        title: 'Müşteriyi Sil?',
+        text: "Bu işlem geri alınamaz ve tüm veriler kaybolur!",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#E92B63', // Senin buton rengin
+        cancelButtonColor: '#6c757d',
+        confirmButtonText: 'Evet, Silinsin',
+        cancelButtonText: 'Vazgeç',
+        background: '#ffffff',
+        customClass: {
+            popup: 'rounded-5 shadow-lg',
+            confirmButton: 'rounded-pill px-4',
+            cancelButton: 'rounded-pill px-4'
+        }
+    }).then(async (result) => {
+        if (result.isConfirmed) {
             try {
+                // Silme isteğini gönderiyoruz
                 await customerService.delete(id);
+                
+                // State'i güncelle (Listeden anında kalksın)
                 setCustomers(prev => prev.filter(c => c.id !== id));
+                
+                // Başarı bildirimi
+                Swal.fire({
+                    title: 'Başarılı!',
+                    text: 'Müşteri kaydı silindi.',
+                    icon: 'success',
+                    timer: 1500,
+                    showConfirmButton: false,
+                    borderRadius: '20px'
+                });
             } catch (error) {
+                // Konsoldaki 400/500 hatalarını burada yakalıyoruz
                 console.error("Silme hatası:", error);
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Hata!',
+                    text: 'Müşteri silinemedi. Sunucuyla bağlantı kurulamıyor.',
+                    confirmButtonColor: '#E92B63'
+                });
             }
         }
-    }
+    });
+};
 
     // --- SAYFALAMA MANTIĞI ---
     const indexOfLastItem = currentPage * itemsPerPage;

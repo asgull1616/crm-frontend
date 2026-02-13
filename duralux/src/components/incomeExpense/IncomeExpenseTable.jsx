@@ -1,343 +1,239 @@
 "use client";
 
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useState, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import { transactionService } from "@/lib/services/transaction.service";
-// İkonlar
 import {
-  FiCreditCard,
-  FiDollarSign,
-  FiBriefcase,
-  FiArchive,
   FiTrendingUp,
   FiTrendingDown,
-  FiActivity,
+  FiClock,
+  FiCheckCircle,
+  FiEdit2,
+  FiEye,
+  FiChevronUp,
+  FiChevronDown
 } from "react-icons/fi";
 
-// Enumlar
-import {
-  TransactionType,
-  TransactionTypeConfig,
-  PaymentMethod,
-  PaymentMethodLabels,
-} from "../../lib/services/enums/transaction.enums";
+import { TransactionType } from "../../lib/services/enums/transaction.enums";
 
 export default function IncomeExpenseTable() {
   const router = useRouter();
-
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [activeFilter, setActiveFilter] = useState("ALL");
+  const [sortConfig, setSortConfig] = useState({ key: 'date', direction: 'desc' }); // ✅ Sıralama State'i geri geldi
+  
+  const [stats, setStats] = useState({
+    totalSales: 0,
+    totalCollected: 0,
+    pendingPayment: 0,
+    totalExpense: 0,
+  });
 
-  // --------------------------------------------------
-  // FETCH LIST
-  // --------------------------------------------------
-  const fetchList = async () => {
+  const fetchData = async () => {
     setLoading(true);
     try {
-      // Not: İstatistiklerin tüm veriyi kapsaması için limit yüksek tutuldu
-      // Gerçek projede bu istatistikler Backend'den (/summary endpointi ile) gelmelidir.
-      const res = await transactionService.list({ limit: 100 });
-      setItems(res?.data?.items || []);
+      const [listRes, statsRes] = await Promise.all([
+        transactionService.list({ limit: 100 }),
+        transactionService.summary() 
+      ]);
+      setItems(listRes?.data?.items || []);
+      const s = statsRes?.data?.data || statsRes?.data || statsRes;
+      if (s) {
+        setStats({
+          totalSales: Number(s.totalSales || 0),
+          totalCollected: Number(s.totalCollected || 0),
+          pendingPayment: Number(s.pendingPayment || 0),
+          totalExpense: Number(s.totalExpense || 0),
+        });
+      }
     } catch (err) {
-      console.error(err);
-      alert("Kayıtlar yüklenemedi");
+      console.error("Raporlama hatası:", err);
     } finally {
       setLoading(false);
     }
   };
 
-  useEffect(() => {
-    fetchList();
-  }, []);
+  useEffect(() => { fetchData(); }, []);
 
-  // --------------------------------------------------
-  // SUMMARY (Gelir/Gider + Ödeme Yöntemleri)
-  // --------------------------------------------------
-  const summary = useMemo(() => {
-    let income = 0;
-    let expense = 0;
+  // ✅ Toggle Özelliği
+  const handleFilterClick = (filterId) => {
+    setActiveFilter((prev) => (prev === filterId ? "ALL" : filterId));
+  };
 
-    // Ödeme Yöntemlerine göre toplamları tutacak obje
-    // Başlangıç: { CASH: 0, BANK_TRANSFER: 0 ... }
-    const byMethod = {};
-    Object.keys(PaymentMethod).forEach((key) => (byMethod[key] = 0));
+  // ✅ Sıralama Fonksiyonu
+  const requestSort = (key) => {
+    let direction = 'asc';
+    if (sortConfig.key === key && sortConfig.direction === 'asc') {
+      direction = 'desc';
+    }
+    setSortConfig({ key, direction });
+  };
 
-    for (const item of items) {
-      const amt = Number(item.amount);
+  const calculateDaysDiff = (dueDate) => {
+    if (!dueDate) return 999999;
+    const today = new Date().setHours(0,0,0,0);
+    const target = new Date(dueDate).setHours(0,0,0,0);
+    return Math.ceil((target - today) / (1000 * 60 * 60 * 24));
+  };
 
-      // 1. Genel Toplamlar
-      if (item.type === TransactionType.INCOME) {
-        income += amt;
+  const processedItems = useMemo(() => {
+    // 1. Filtreleme
+    let filtered = items;
+    if (activeFilter !== "ALL") {
+      filtered = items.filter(item => {
+        const remaining = Number(item.amount) - (Number(item.paidAmount) || 0);
+        const isOverdue = item.dueDate && new Date(item.dueDate) < new Date();
+        if (activeFilter === "INCOME") return item.type === TransactionType.INCOME;
+        if (activeFilter === "EXPENSE") return item.type === TransactionType.EXPENSE;
+        if (activeFilter === "PENDING") return remaining > 0;
+        if (activeFilter === "COLLECTED") return Number(item.paidAmount) > 0;
+        return true;
+      });
+    }
+
+    // 2. Sıralama
+    const sortableItems = [...filtered];
+    sortableItems.sort((a, b) => {
+      let aVal, bVal;
+      if (sortConfig.key === 'remainingDays') {
+        aVal = calculateDaysDiff(a.dueDate);
+        bVal = calculateDaysDiff(b.dueDate);
+      } else if (sortConfig.key === 'remainingAmount') {
+        aVal = Number(a.amount) - Number(a.paidAmount || 0);
+        bVal = Number(b.amount) - Number(b.paidAmount || 0);
+      } else if (sortConfig.key === 'customer') {
+        aVal = a.customer?.fullName || "";
+        bVal = b.customer?.fullName || "";
       } else {
-        expense += amt;
+        aVal = a[sortConfig.key];
+        bVal = b[sortConfig.key];
       }
+      if (aVal < bVal) return sortConfig.direction === 'asc' ? -1 : 1;
+      if (aVal > bVal) return sortConfig.direction === 'asc' ? 1 : -1;
+      return 0;
+    });
+    return sortableItems;
+  }, [items, activeFilter, sortConfig]);
 
-      // 2. Ödeme Yöntemi Toplamları (Varsa ekle)
-      if (byMethod[item.paymentMethod] !== undefined) {
-        byMethod[item.paymentMethod] += amt;
-      }
-    }
-
-    return { income, expense, net: income - expense, byMethod };
-  }, [items]);
-
-  // --------------------------------------------------
-  // ACTIONS
-  // --------------------------------------------------
-  const handleDelete = async (id) => {
-    const ok = window.confirm("Kayıt silinsin mi?");
-    if (!ok) return;
-
-    try {
-      await transactionService.remove(id);
-      fetchList();
-    } catch (err) {
-      console.error(err);
-      alert("Silme işlemi başarısız");
-    }
+  const formatMoney = (amount) => {
+    return new Intl.NumberFormat("tr-TR", { minimumFractionDigits: 2 }).format(Number(amount) || 0) + " ₺";
   };
 
-  const formatMoney = (amount, currency = "TRY") => {
-    return (
-      Number(amount).toLocaleString("tr-TR", { minimumFractionDigits: 2 }) +
-      " ₺"
-    );
+  const getRemainingDays = (dueDate) => {
+    const diff = calculateDaysDiff(dueDate);
+    if (dueDate === null || diff === 999999) return { text: "—", class: "text-muted opacity-50" };
+    if (diff < 0) return { text: `${Math.abs(diff)} gün geçti`, class: "text-danger fw-bold" };
+    if (diff === 0) return { text: "Bugün", class: "text-warning fw-bold" };
+    return { text: `${diff} gün kaldı`, class: "text-secondary" };
   };
 
-  // Kart İkon Helper'ı
-  const getMethodIcon = (method) => {
-    switch (method) {
-      case PaymentMethod.CASH:
-        return <FiDollarSign size={20} />;
-      case PaymentMethod.CREDIT_CARD:
-        return <FiCreditCard size={20} />;
-      case PaymentMethod.BANK_TRANSFER:
-        return <FiBriefcase size={20} />;
-      default:
-        return <FiArchive size={20} />;
-    }
-  };
-
-  // --------------------------------------------------
-  // UI
-  // --------------------------------------------------
   return (
-    <div className="col-12">
-      {/* BAŞLIK VE BUTON */}
-      <div className="d-flex justify-content-between align-items-center mb-4">
-        <h5 className="fw-bold text-dark mb-0">Finansal Genel Bakış</h5>
-        <button
-          className="btn btn-sm text-white fw-bold px-4 py-2 shadow-sm"
-          style={{ backgroundColor: "#E92B63", borderRadius: "8px" }}
-          onClick={() => router.push("/income-expense/create")}
-        >
-          + Yeni Kayıt
-        </button>
-      </div>
-
-      {/* 1. SATIR: ANA KARTLAR (GELİR - GİDER - NET) */}
+    <div className="col-12 px-3">
+      {/* ÜST PANEL: PASTEL KARTLAR */}
       <div className="row g-3 mb-4">
-        <div className="col-md-4">
-          <div
-            className="card border-0 shadow-sm h-100"
-            style={{ borderLeft: "4px solid #198754" }}
-          >
-            <div className="card-body">
-              <div className="d-flex justify-content-between align-items-center mb-2">
-                <div className="text-muted small fw-bold text-uppercase">
-                  Toplam Gelir
-                </div>
-                <div className="bg-success bg-opacity-10 text-success p-2 rounded-circle">
-                  <FiTrendingUp />
-                </div>
-              </div>
-              <div className="h3 mb-0 fw-bold text-success">
-                {formatMoney(summary.income)}
-              </div>
-            </div>
-          </div>
-        </div>
-        <div className="col-md-4">
-          <div
-            className="card border-0 shadow-sm h-100"
-            style={{ borderLeft: "4px solid #dc3545" }}
-          >
-            <div className="card-body">
-              <div className="d-flex justify-content-between align-items-center mb-2">
-                <div className="text-muted small fw-bold text-uppercase">
-                  Toplam Gider
-                </div>
-                <div className="bg-danger bg-opacity-10 text-danger p-2 rounded-circle">
-                  <FiTrendingDown />
-                </div>
-              </div>
-              <div className="h3 mb-0 fw-bold text-danger">
-                {formatMoney(summary.expense)}
-              </div>
-            </div>
-          </div>
-        </div>
-        <div className="col-md-4">
-          <div
-            className="card border-0 shadow-sm h-100"
-            style={{
-              borderLeft: `4px solid ${summary.net >= 0 ? "#0d6efd" : "#dc3545"}`,
-            }}
-          >
-            <div className="card-body">
-              <div className="d-flex justify-content-between align-items-center mb-2">
-                <div className="text-muted small fw-bold text-uppercase">
-                  Net Bakiye
-                </div>
-                <div className="bg-primary bg-opacity-10 text-primary p-2 rounded-circle">
-                  <FiActivity />
-                </div>
-              </div>
-              <div
-                className={`h3 mb-0 fw-bold ${summary.net >= 0 ? "text-primary" : "text-danger"}`}
+        {[
+          { id: "INCOME", label: "Toplam Satış", val: stats.totalSales, color: "#cfe2ff", text: "#084298", icon: <FiTrendingUp /> },
+          { id: "COLLECTED", label: "Toplam Tahsilat", val: stats.totalCollected, color: "#d1e7dd", text: "#0f5132", icon: <FiCheckCircle /> },
+          { id: "PENDING", label: "Bekleyen Ödeme", val: stats.pendingPayment, color: "#fff3cd", text: "#664d03", icon: <FiClock /> },
+          { id: "EXPENSE", label: "Toplam Gider", val: stats.totalExpense, color: "#f8d7da", text: "#842029", icon: <FiTrendingDown /> },
+        ].map((card) => {
+          const isActive = activeFilter === card.id;
+          return (
+            <div className="col-md-3" key={card.id} style={{ cursor: 'pointer' }} onClick={() => handleFilterClick(card.id)}>
+              <div 
+                className="card border-0 shadow-sm transition-all h-100" 
+                style={{ 
+                  backgroundColor: card.color, 
+                  opacity: activeFilter === "ALL" || isActive ? 1 : 0.5, // Saydamlık
+                  transform: isActive ? 'translateY(-8px)' : 'none', // Animasyon
+                  borderLeft: isActive ? `6px solid ${card.text}` : 'none',
+                  transition: 'all 0.3s ease-in-out'
+                }}
               >
-                {formatMoney(summary.net)}
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* 2. SATIR: ÖDEME YÖNTEMLERİNE GÖRE DAĞILIM */}
-      <h6 className="text-muted small fw-bold text-uppercase mb-3 ps-1">
-        Ödeme Yöntemi Dağılımı
-      </h6>
-      <div className="row g-3 mb-4">
-        {Object.keys(PaymentMethod).map((method) => (
-          <div className="col-md-3 col-sm-6" key={method}>
-            <div className="card border-0 shadow-sm">
-              <div className="card-body d-flex align-items-center gap-3">
-                <div className="bg-light p-3 rounded-circle text-muted">
-                  {getMethodIcon(method)}
-                </div>
-                <div>
-                  <div
-                    className="text-muted small fw-bold"
-                    style={{ fontSize: "11px" }}
-                  >
-                    {PaymentMethodLabels[method]}
+                <div className="card-body">
+                  <div className="d-flex justify-content-between align-items-center mb-1">
+                    <small className="fw-bold text-uppercase" style={{ color: card.text, fontSize: '11px' }}>{card.label}</small>
+                    <span style={{ color: card.text }}>{card.icon}</span>
                   </div>
-                  <div className="fw-bold fs-5 text-dark">
-                    {formatMoney(summary.byMethod[method])}
-                  </div>
+                  <h4 className="fw-bold mb-0" style={{ color: card.text }}>{formatMoney(card.val)}</h4>
                 </div>
               </div>
             </div>
-          </div>
-        ))}
+          );
+        })}
       </div>
 
-      {/* 3. TABLO */}
-      <div
-        className="card border-0 shadow-sm"
-        style={{ borderRadius: "12px", overflow: "hidden" }}
-      >
-        <div className="card-body p-0">
-          <div className="table-responsive">
-            <table className="table table-hover mb-0 align-middle">
-              <thead className="bg-light">
-                <tr>
-                  <th className="py-3 ps-4 text-muted small fw-bold text-uppercase border-0">
-                    Tarih
-                  </th>
-                  <th className="py-3 text-muted small fw-bold text-uppercase border-0">
-                    Açıklama
-                  </th>
-                  <th className="py-3 text-muted small fw-bold text-uppercase border-0">
-                    Tür
-                  </th>
-                  <th className="py-3 text-muted small fw-bold text-uppercase border-0">
-                    Kategori
-                  </th>
-                  <th className="py-3 text-muted small fw-bold text-uppercase border-0">
-                    Ödeme Yöntemi
-                  </th>
-                  <th className="py-3 text-muted small fw-bold text-uppercase border-0 text-end pe-4">
-                    Tutar
-                  </th>
-                  <th className="py-3 text-muted small fw-bold text-uppercase border-0 text-end pe-4">
-                    Aksiyon
-                  </th>
-                </tr>
-              </thead>
-
-              <tbody>
-                {items.map((x) => {
-                  const typeConfig = TransactionTypeConfig[x.type] || {};
-                  return (
-                    <tr key={x.id}>
-                      <td className="ps-4">
-                        {new Date(x.date).toLocaleDateString("tr-TR")}
-                      </td>
-                      <td className="fw-medium text-dark">{x.description}</td>
-                      <td>
-                        <span
-                          className={`badge rounded-pill px-3 py-2 ${typeConfig.class}`}
-                        >
-                          {typeConfig.label || x.type}
+      {/* TABLO: SIRALAMA ÖZELLİĞİ AKTİF */}
+      <div className="card border-0 shadow-sm" style={{ borderRadius: "16px", overflow: "hidden" }}>
+        <div className="table-responsive">
+          <table className="table table-hover mb-0 align-middle">
+            <thead style={{ backgroundColor: "#f8f9fa" }}>
+              <tr className="small fw-bold text-uppercase text-muted">
+                <th className="py-4 ps-4 pointer" onClick={() => requestSort('customer')}>
+                  Müşteri {sortConfig.key === 'customer' && (sortConfig.direction === 'asc' ? <FiChevronUp /> : <FiChevronDown />)}
+                </th>
+                <th>Tür</th>
+                <th className="pointer" onClick={() => requestSort('amount')}>
+                  Toplam {sortConfig.key === 'amount' && (sortConfig.direction === 'asc' ? <FiChevronUp /> : <FiChevronDown />)}
+                </th>
+                <th className="text-success opacity-75">Ödenen</th>
+                <th className="text-danger opacity-75 pointer" onClick={() => requestSort('remainingAmount')}>
+                  Kalan {sortConfig.key === 'remainingAmount' && (sortConfig.direction === 'asc' ? <FiChevronUp /> : <FiChevronDown />)}
+                </th>
+                <th>Vade</th>
+                <th className="pointer text-primary" onClick={() => requestSort('remainingDays')}>
+                   Kalan Gün {sortConfig.key === 'remainingDays' && (sortConfig.direction === 'asc' ? <FiChevronUp /> : <FiChevronDown />)}
+                </th>
+                <th>Durum</th>
+                <th className="text-end pe-4">İşlem</th>
+              </tr>
+            </thead>
+            <tbody>
+              {processedItems.map((x) => {
+                const remainingAmount = Number(x.amount) - (Number(x.paidAmount) || 0);
+                const dayInfo = getRemainingDays(x.dueDate);
+                const isGecikti = dayInfo.text.includes("geçti");
+                
+                return (
+                  <tr key={x.id} style={{ backgroundColor: isGecikti ? "#fff8f8" : "transparent" }}>
+                    <td className="ps-4">
+                      <div className="fw-bold text-dark" style={{ fontSize: '14px' }}>{x.customer?.fullName || "—"}</div>
+                      <small className="text-muted opacity-75">{x.description}</small>
+                    </td>
+                    <td>
+                      <span className={`badge rounded-pill fw-medium ${x.type === TransactionType.INCOME ? 'bg-success-subtle text-success' : 'bg-danger-subtle text-danger'}`} style={{ fontSize: '11px', padding: '5px 12px' }}>
+                        {x.type === TransactionType.INCOME ? "Gelir" : "Gider"}
+                      </span>
+                    </td>
+                    <td className="fw-bold text-secondary">{formatMoney(x.amount)}</td>
+                    <td className="text-success opacity-75">{formatMoney(x.paidAmount || 0)}</td>
+                    <td className="text-danger opacity-75 fw-medium">{formatMoney(remainingAmount)}</td>
+                    <td className="text-muted small">{x.dueDate ? new Date(x.dueDate).toLocaleDateString("tr-TR") : "—"}</td>
+                    <td className={`small ${dayInfo.class}`}>{dayInfo.text}</td>
+                    <td>
+                        <span className={`badge opacity-75 ${remainingAmount <= 0 ? 'bg-success' : isGecikti ? 'bg-danger' : 'bg-warning text-dark'}`}>
+                            {remainingAmount <= 0 ? 'Ödendi' : isGecikti ? 'Gecikti' : 'Bekliyor'}
                         </span>
-                      </td>
-                      <td>{x.category}</td>
-                      <td className="text-muted small">
-                        {PaymentMethodLabels[x.paymentMethod] ||
-                          x.paymentMethod}
-                      </td>
-                      <td className="text-end pe-4 fw-bold text-dark">
-                        {formatMoney(x.amount, x.currency)}
-                      </td>
-                      <td className="text-end pe-4">
+                    </td>
+                    <td className="text-end pe-4">
                         <div className="d-flex justify-content-end gap-2">
-                          <button
-                            className="btn btn-sm btn-light border"
-                            onClick={() =>
-                              router.push(`/income-expense/view/${x.id}`)
-                            }
-                          >
-                            👁️
-                          </button>
-                          <button
-                            className="btn btn-sm btn-light border text-primary"
-                            onClick={() =>
-                              router.push(`/income-expense/edit/${x.id}`)
-                            }
-                          >
-                            ✏️
-                          </button>
-                          <button
-                            className="btn btn-sm btn-light border text-danger"
-                            onClick={() => handleDelete(x.id)}
-                          >
-                            🗑️
-                          </button>
+                            <button className="btn btn-sm btn-link text-muted p-0" onClick={() => router.push(`/income-expense/view/${x.id}`)}><FiEye size={18}/></button>
+                            <button className="btn btn-sm btn-link text-primary p-0" onClick={() => router.push(`/income-expense/edit/${x.id}`)}><FiEdit2 size={16}/></button>
                         </div>
-                      </td>
-                    </tr>
-                  );
-                })}
-                {!loading && items.length === 0 && (
-                  <tr>
-                    <td colSpan={7} className="text-center text-muted py-5">
-                      Kayıt bulunamadı
                     </td>
                   </tr>
-                )}
-                {loading && (
-                  <tr>
-                    <td colSpan={7} className="text-center text-muted py-5">
-                      Yükleniyor...
-                    </td>
-                  </tr>
-                )}
-              </tbody>
-            </table>
-          </div>
+                );
+              })}
+            </tbody>
+          </table>
         </div>
       </div>
+      
+      <style jsx>{`
+        .pointer { cursor: pointer; }
+        .pointer:hover { background-color: rgba(0,0,0,0.02); }
+      `}</style>
     </div>
   );
 }

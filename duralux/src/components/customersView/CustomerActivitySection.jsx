@@ -13,11 +13,28 @@ import { activityService } from "@/lib/services/activity.service";
 import ActivityCreateForm from "./ActivityCreateForm";
 import ActivityDetailModal from "./ActivityDetailModal";
 
-const CustomerActivitySection = ({ customerId }) => {
+// 🔹 DURUM AŞAMALARI (Backend status ID'leri ile birebir eşleşmeli)
+const STEPS = [
+  { id: 'NEW', label: 'Lead' },
+  { id: 'CONTACTED', label: 'Görüşüldü' },
+  { id: 'OFFER_SENT', label: 'Teklif' },
+  { id: 'WAITING_APPROVAL', label: 'Sözleşme' },
+  { id: 'WON', label: 'Kazanıldı' }
+];
+
+const CustomerActivitySection = ({ customerId, customerStatus = 'NEW' }) => {
   const [activities, setActivities] = useState([]);
   const [loading, setLoading] = useState(true);
   const [limit, setLimit] = useState(3);
   const [selectedActivityId, setSelectedActivityId] = useState(null);
+
+  // 🔹 İLERLEME HESAPLAMA MANTIĞI
+  // Mevcut durumun dizideki indeksini buluyoruz
+  const currentStepIndex = STEPS.findIndex(s => s.id === customerStatus);
+  // Eğer durum bulunamazsa en başı göster
+  const activeIndex = currentStepIndex === -1 ? 0 : currentStepIndex;
+  // Yeşil barın yüzdesini hesapla
+  const progressPercentage = (activeIndex / (STEPS.length - 1)) * 100;
 
   useEffect(() => {
     if (customerId) loadActivities();
@@ -45,7 +62,7 @@ const CustomerActivitySection = ({ customerId }) => {
 
   return (
     <>
-      {/* 1. KART: Müşteri Yolculuğu */}
+      {/* 1. KART: Müşteri Yolculuğu (DİNAMİK STEPPER) */}
       <div className="card border-0 shadow-sm p-4 mb-4" style={cardStyle}>
         <h6
           className="fw-bold mb-4 d-flex align-items-center gap-2"
@@ -54,8 +71,8 @@ const CustomerActivitySection = ({ customerId }) => {
           <FiActivity className="text-muted" /> Müşteri Durumu
         </h6>
 
-        {/* Stepper Görseli */}
         <div className="position-relative py-4">
+          {/* Gri Arka Plan Çizgisi */}
           <div
             className="position-absolute w-100 bg-light"
             style={{
@@ -65,14 +82,18 @@ const CustomerActivitySection = ({ customerId }) => {
               zIndex: 0,
             }}
           ></div>
+          
+          {/* 🟢 AKTİF YEŞİL İLERLEME ÇİZGİSİ */}
           <div
-            className="position-absolute bg-success opacity-25"
+            className="position-absolute bg-success transition-all"
             style={{
               height: "4px",
               top: "50%",
               transform: "translateY(-50%)",
-              width: "40%",
+              width: `${progressPercentage}%`,
               zIndex: 1,
+              transition: 'width 0.6s cubic-bezier(0.4, 0, 0.2, 1)',
+              opacity: 0.5
             }}
           ></div>
 
@@ -80,20 +101,22 @@ const CustomerActivitySection = ({ customerId }) => {
             className="d-flex justify-content-between position-relative"
             style={{ zIndex: 2 }}
           >
-            {["Lead", "Görüşüldü", "Teklif", "Sözleşme", "Kazanıldı"].map(
-              (step, idx) => (
-                <div key={idx} className="text-center">
+            {STEPS.map((step, idx) => {
+              const isCompleted = idx <= activeIndex;
+              return (
+                <div key={step.id} className="text-center">
                   <div
-                    className="rounded-circle mx-auto mb-2 d-flex align-items-center justify-content-center shadow-sm"
+                    className="rounded-circle mx-auto mb-2 d-flex align-items-center justify-content-center shadow-sm transition-all"
                     style={{
-                      width: "28px",
-                      height: "28px",
-                      backgroundColor: idx <= 1 ? "#9FB8A0" : "#fff",
-                      border: idx > 1 ? "2px solid #E5E7EB" : "none",
+                      width: "30px",
+                      height: "30px",
+                      backgroundColor: isCompleted ? "#9FB8A0" : "#fff",
+                      border: isCompleted ? "none" : "2px solid #E5E7EB",
+                      transition: 'all 0.3s ease'
                     }}
                   >
-                    {idx <= 1 ? (
-                      <FiCheckCircle color="white" size={16} />
+                    {isCompleted ? (
+                      <FiCheckCircle color="white" size={18} />
                     ) : (
                       <div
                         className="rounded-circle bg-light"
@@ -102,14 +125,14 @@ const CustomerActivitySection = ({ customerId }) => {
                     )}
                   </div>
                   <span
-                    className="text-muted"
-                    style={{ fontSize: "10px", fontWeight: "500" }}
+                    className={`fw-bold ${isCompleted ? 'text-dark' : 'text-muted'}`}
+                    style={{ fontSize: "10px", transition: 'color 0.3s' }}
                   >
-                    {step}
+                    {step.label}
                   </span>
                 </div>
-              ),
-            )}
+              );
+            })}
           </div>
         </div>
       </div>
@@ -139,10 +162,10 @@ const CustomerActivitySection = ({ customerId }) => {
               <span className="text-muted small">Kayıt yok.</span>
             )}
 
-            {activities.slice(0, limit).map((act, i) => (
+            {activities.slice(0, limit).map((act) => (
               <div
                 key={act.id}
-                className="d-flex align-items-center justify-content-between pb-3 border-bottom cursor-pointer"
+                className="d-flex align-items-center justify-content-between pb-3 border-bottom cursor-pointer hover-bg-light transition-all px-2 rounded-3"
                 onClick={() => setSelectedActivityId(act.id)}
                 style={{ cursor: "pointer" }}
               >
@@ -170,10 +193,10 @@ const CustomerActivitySection = ({ customerId }) => {
 
             {activities.length > limit && (
               <button
-                className="btn btn-link text-muted p-0 text-decoration-none small"
+                className="btn btn-link text-muted p-0 text-decoration-none small text-start ps-2 mt-2"
                 onClick={() => setLimit((l) => l + 5)}
               >
-                <FiMoreHorizontal /> Daha fazla göster
+                <FiMoreHorizontal className="me-1" /> Daha fazla göster
               </button>
             )}
           </div>
@@ -189,6 +212,11 @@ const CustomerActivitySection = ({ customerId }) => {
           onUpdated={loadActivities}
         />
       )}
+
+      <style jsx>{`
+        .transition-all { transition: all 0.3s ease; }
+        .hover-bg-light:hover { background-color: #f8fafc; }
+      `}</style>
     </>
   );
 };

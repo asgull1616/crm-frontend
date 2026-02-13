@@ -1,18 +1,18 @@
+
 export const menuList = [
   {
     id: 0,
-    name: "dashboards",
+    name: "Dashboards",
     path: "/",
-    icon: "feather-airplay",
-    dropdownMenu: [
-
-    ],
+    icon: "feather-grid",
+    dropdownMenu: [],
   },
+
   {
     id: 3,
     name: "Teklifler",
     path: "#",
-    icon: "feather-at-sign",
+    icon: "feather-file-text",
     dropdownMenu: [
       {
         id: 1,
@@ -20,7 +20,6 @@ export const menuList = [
         path: "/proposal/list",
         subdropdownMenu: false,
       },
-
       {
         id: 4,
         name: "Teklif Oluştur",
@@ -34,8 +33,8 @@ export const menuList = [
     id: 5,
     name: "Müşteriler",
     path: "#",
-    icon: "feather-users",
-    _dropdownMenu: [
+    icon: "feather-user",
+    dropdownMenu: [
       {
         id: 1,
         name: "Müşterileri Görüntüle",
@@ -49,25 +48,14 @@ export const menuList = [
         subdropdownMenu: false,
       },
     ],
-    get dropdownMenu() {
-      return this._dropdownMenu;
-    },
-    set dropdownMenu(value) {
-      this._dropdownMenu = value;
-    },
   },
+
   {
     id: 6,
     name: "Ekipler",
     path: "#",
     icon: "feather-users",
     dropdownMenu: [
-      // {
-      //   id: 1,
-      //   name: "Genel Bakış",
-      //   path: "/teams",
-      //   subdropdownMenu: false,
-      // },
       {
         id: 2,
         name: "Ekip Listesi",
@@ -92,12 +80,6 @@ export const menuList = [
         path: "/teams/payroll",
         subdropdownMenu: false,
       },
-      // {
-      //   id: 6,
-      //   name: "Ekip Oluştur",
-      //   path: "/teams/create",
-      //   subdropdownMenu: false,
-      // },
     ],
   },
 
@@ -105,7 +87,7 @@ export const menuList = [
     id: 7,
     name: "Görevler",
     path: "#",
-    icon: "feather-briefcase",
+    icon: "feather-check-circle",
     dropdownMenu: [
       {
         id: 1,
@@ -124,7 +106,7 @@ export const menuList = [
 
   {
     id: 8,
-    name: "Gelir / Gider",
+    name: "Ödemeler",
     path: "#",
     icon: "feather-dollar-sign",
     dropdownMenu: [
@@ -142,11 +124,12 @@ export const menuList = [
       },
     ],
   },
+
   {
     id: 9,
     name: "Plan & Akış",
     path: "#",
-    icon: "feather-at-sign", // icon çalışmıyorsa sonra düzeltiriz
+    icon: "feather-layers",
     dropdownMenu: [
       {
         id: 1,
@@ -167,7 +150,7 @@ export const menuList = [
     id: 10,
     name: "Projelerimiz",
     path: "#",
-    icon: "feather-folder", // ikon görünmüyorsa sidebar render'a bakacağız
+    icon: "feather-folder",
     dropdownMenu: [
       {
         id: 1,
@@ -177,16 +160,17 @@ export const menuList = [
       },
     ],
   },
+
   {
     id: 11,
     name: "Dosyalar",
     path: "#",
-    icon: "feather-at-sign",
+    icon: "feather-file",
     dropdownMenu: [
       {
         id: 1,
         name: "Sözleşmeler",
-        path: "/files/contracts", 
+        path: "/files/contracts",
         subdropdownMenu: false,
       },
       {
@@ -209,6 +193,4 @@ export const menuList = [
       },
     ],
   },
-
-
 ];

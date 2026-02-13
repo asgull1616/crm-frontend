@@ -77,11 +77,19 @@
 
 //ADMİN PANEL
 .admin-stat-card {
-  border-radius: 14px;
-  padding: 20px;
+  border-radius: 18px;
+  padding: 24px;
   color: #fff;
   font-size: 18px;
+  transition: all .3s ease;
+  box-shadow: 0 15px 40px rgba(0,0,0,0.08);
 }
+
+.admin-stat-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 25px 55px rgba(0,0,0,0.15);
+}
+
 
 
 .admin-stat-card .stat-value {
