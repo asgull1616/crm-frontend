@@ -334,6 +334,16 @@ body {
 .modal-actions button:first-child {
   background: #f3f4f6;
 }
+.modal-field select {
+  padding: 14px 18px;
+  border-radius: 18px;
+  border: none;
+  background: rgba(255,255,255,0.8);
+  backdrop-filter: blur(20px);
+  box-shadow: 0 15px 40px rgba(0,0,0,.05);
+  font-weight: 500;
+  
+}
 
 
 
