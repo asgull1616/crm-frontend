@@ -1,16 +1,11 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState, useCallback, useRef } from "react";
 
 const API_BASE = process.env.NEXT_PUBLIC_API_URL;
 
-// Backend status -> UI status
 const toUiStatus = (s) => (s === "ACTIVE" ? "AKTİF" : "PASİF");
 
-// UI status -> Backend status
-const toApiStatus = (s) => (s === "AKTİF" ? "ACTIVE" : "PASSIVE");
-
-// Backend date -> "tr-TR" string
 const formatTrDate = (iso) => {
   if (!iso) return "-";
   return new Date(iso).toLocaleDateString("tr-TR");
@@ -18,18 +13,27 @@ const formatTrDate = (iso) => {
 
 export default function ContractsPage() {
   const [contracts, setContracts] = useState([]);
-  const [isOpen, setIsOpen] = useState(false);
+  const [customers, setCustomers] = useState([]);
 
-  // Modal fields (UI bozmayalım diye ekledik)
+  const [isOpen, setIsOpen] = useState(false);
+  const [loading, setLoading] = useState(false);
+
+  const [mode, setMode] = useState("create"); // create | view | edit
+  const [selectedId, setSelectedId] = useState(null);
+
   const [newTitle, setNewTitle] = useState("");
   const [newDesc, setNewDesc] = useState("");
   const [newFile, setNewFile] = useState(null);
+  const [selectedCustomer, setSelectedCustomer] = useState("");
+  const [startDate, setStartDate] = useState("");
+  const [endDate, setEndDate] = useState("");
+  const [status, setStatus] = useState("ACTIVE");
 
-  const [loading, setLoading] = useState(false);
+  const fileRef = useRef(null);
 
   const token = useMemo(() => {
     if (typeof window === "undefined") return null;
-    return localStorage.getItem("accessToken"); // sende farklı key ise değiştir
+    return localStorage.getItem("accessToken");
   }, []);
 
   const authHeaders = useMemo(() => {
@@ -38,142 +42,212 @@ export default function ContractsPage() {
     return h;
   }, [token]);
 
-  // ✅ 1) LIST: sayfa açılınca backend’den çek
-  useEffect(() => {
-    const fetchContracts = async () => {
-      try {
-        setLoading(true);
-        const res = await fetch(`${API_BASE}/api/files/contracts?page=1&limit=50`, {
-          method: "GET",
-          headers: authHeaders,
-        });
+  const authOnlyHeaders = useMemo(() => {
+    const h = {};
+    if (token) h.Authorization = `Bearer ${token}`;
+    return h;
+  }, [token]);
 
-        if (!res.ok) {
-          console.error("Contracts list failed:", res.status);
-          setLoading(false);
-          return;
-        }
+  /* ================= LIST ================= */
 
-        const json = await res.json();
+  const fetchContracts = useCallback(async () => {
+    setLoading(true);
 
-        // Bizim backend list response: { meta, data }
-        const items = (json?.data || []).map((x) => ({
-          id: x.id,
-          title: x.title,
-          date: formatTrDate(x.createdAt),
-          status: toUiStatus(x.status),
-          fileUrl: x.fileUrl, // indir için
-          description: x.description ?? null,
-        }));
+    const res = await fetch(`${API_BASE}/api/files/contracts?page=1&limit=50`, {
+      headers: authHeaders,
+    });
 
-        setContracts(items);
-      } catch (e) {
-        console.error("Contracts list error:", e);
-      } finally {
-        setLoading(false);
-      }
-    };
+    if (res.ok) {
+      const json = await res.json();
+      const items = (json?.data || []).map((x) => ({
+        id: x.id,
+        title: x.title,
+        date: formatTrDate(x.createdAt),
+        status: toUiStatus(x.status),
+        customerName: x.customer?.companyName || x.customer?.fullName || "-",
+        startDate: formatTrDate(x.startDate),
+        endDate: formatTrDate(x.endDate),
+        fileUrl: x.fileUrl || null,
+      }));
+      setContracts(items);
+    }
 
-    fetchContracts();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    setLoading(false);
   }, [authHeaders]);
 
-  // ✅ 2) DELETE
-  const handleDelete = async (id) => {
-    // UI bozmadan optimistic sil
-    const prev = contracts;
-    setContracts((p) => p.filter((c) => c.id !== id));
+  useEffect(() => {
+    fetchContracts();
+  }, [fetchContracts]);
 
-    try {
-      const res = await fetch(`${API_BASE}/api/files/contracts/${id}`, {
-        method: "DELETE",
-        headers: token ? { Authorization: `Bearer ${token}` } : {},
-      });
+  /* ================= CUSTOMERS ================= */
 
-      if (!res.ok) {
-        console.error("Delete failed:", res.status);
-        setContracts(prev); // geri al
-      }
-    } catch (e) {
-      console.error("Delete error:", e);
-      setContracts(prev); // geri al
-    }
-  };
-
-  // ✅ 3) CREATE
-  const handleCreate = async () => {
-    if (!newTitle.trim()) return;
-
-    // Şu an backend ContractFile create dto: title, fileUrl, status
-    // Frontta file upload var ama backend’te upload endpoint yok. Şimdilik fileUrl zorunlu.
-    // Upload’u sonraki adımda (multer/s3) ekleyeceğiz.
-    const fileUrl = newFile ? newFile.name : ""; // şimdilik placeholder
-    // 👉 Eğer backend fileUrl required ise boş gönderme: aşağıdaki satırı değiştir.
-    const safeFileUrl = fileUrl || "https://example.com/placeholder.pdf";
-
-    try {
-      const res = await fetch(`${API_BASE}/api/files/contracts`, {
-        method: "POST",
+  useEffect(() => {
+    const fetchCustomers = async () => {
+      const res = await fetch(`${API_BASE}/api/customers`, {
         headers: authHeaders,
-        body: JSON.stringify({
-          title: newTitle,
-          fileUrl: safeFileUrl,
-          status: "ACTIVE",
-          // description backend’de yoksa ignored olur (istersen schema/service’e ekleriz)
-          description: newDesc || undefined,
-        }),
       });
 
-      if (!res.ok) {
-        console.error("Create failed:", res.status);
-        return;
-      }
+      if (!res.ok) return;
 
-      const created = await res.json();
+      const json = await res.json();
+      setCustomers(json?.data || []);
+    };
 
-      const newItem = {
-        id: created.id,
-        title: created.title,
-        date: formatTrDate(created.createdAt),
-        status: toUiStatus(created.status),
-        fileUrl: created.fileUrl,
-        description: created.description ?? null,
-      };
+    fetchCustomers();
+  }, [authHeaders]);
 
-      setContracts((prev) => [...prev, newItem]);
-      setNewTitle("");
-      setNewDesc("");
-      setNewFile(null);
-      setIsOpen(false);
-    } catch (e) {
-      console.error("Create error:", e);
+  /* ================= DETAIL ================= */
+
+  const fetchDetail = async (id) => {
+    const res = await fetch(`${API_BASE}/api/files/contracts/${id}`, {
+      headers: authHeaders,
+    });
+
+    if (!res.ok) return null;
+
+    const json = await res.json();
+    return json?.data || json;
+  };
+
+  const fillForm = (data) => {
+    setNewTitle(data.title || "");
+    setNewDesc(data.description || "");
+    setSelectedCustomer(data.customerId || data.customer?.id || "");
+    setStartDate(data.startDate?.slice(0, 10) || "");
+    setEndDate(data.endDate?.slice(0, 10) || "");
+    setStatus(data.status || "ACTIVE");
+    setNewFile(null);
+
+    if (fileRef.current) fileRef.current.value = "";
+  };
+
+  const resetForm = () => {
+    setNewTitle("");
+    setNewDesc("");
+    setSelectedCustomer("");
+    setStartDate("");
+    setEndDate("");
+    setStatus("ACTIVE");
+    setNewFile(null);
+    setSelectedId(null);
+
+    if (fileRef.current) fileRef.current.value = "";
+  };
+
+  const openCreate = () => {
+    resetForm();
+    setMode("create");
+    setIsOpen(true);
+  };
+
+  const openView = async (item) => {
+    const detail = await fetchDetail(item.id);
+    if (!detail) return;
+
+    fillForm(detail);
+    setSelectedId(item.id);
+    setMode("view");
+    setIsOpen(true);
+  };
+
+  const openEdit = async (item) => {
+    const detail = await fetchDetail(item.id);
+    if (!detail) return;
+
+    fillForm(detail);
+    setSelectedId(item.id);
+    setMode("edit");
+    setIsOpen(true);
+  };
+
+  /* ================= SUBMIT ================= */
+
+  const handleSubmit = async () => {
+    const normalizedStatus = status === "ACTIVE" ? "ACTIVE" : "INACTIVE";
+
+    const fd = new FormData();
+    fd.append("title", newTitle);
+    fd.append("status", normalizedStatus);
+
+    if (newDesc) fd.append("description", newDesc);
+    if (selectedCustomer) fd.append("customerId", selectedCustomer);
+    if (startDate) fd.append("startDate", startDate);
+    if (endDate) fd.append("endDate", endDate);
+
+    const fileToSend = newFile || fileRef.current?.files?.[0];
+    if (fileToSend) fd.append("file", fileToSend);
+
+    if (mode === "create") {
+      await fetch(`${API_BASE}/api/files/contracts`, {
+        method: "POST",
+        headers: authOnlyHeaders,
+        body: fd,
+      });
     }
+
+    if (mode === "edit" && selectedId) {
+      await fetch(`${API_BASE}/api/files/contracts/${selectedId}`, {
+        method: "PATCH",
+        headers: authOnlyHeaders,
+        body: fd,
+      });
+    }
+
+    await fetchContracts();
+    setIsOpen(false);
+    resetForm();
   };
 
-  // ✅ 4) DOWNLOAD (indir)
-  const handleDownload = (item) => {
-    if (!item.fileUrl) return;
-    // yeni sekmede aç
-    window.open(item.fileUrl, "_blank", "noopener,noreferrer");
+  /* ================= DELETE ================= */
+
+  const handleDelete = async (id) => {
+    await fetch(`${API_BASE}/api/files/contracts/${id}`, {
+      method: "DELETE",
+      headers: token ? { Authorization: `Bearer ${token}` } : {},
+    });
+
+    await fetchContracts();
   };
+
+  /* ================= RENDER ================= */
 
   return (
     <div className="contracts-wrapper">
-      {/* HEADER */}
+      {/* ✅ sadece bu sayfaya özel layout fix */}
+      <style jsx>{`
+        /* kart footer: 4 butonu 2x2 grid yap */
+        .contract-card .card-footer {
+          display: grid;
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+          gap: 10px;
+          align-items: stretch;
+        }
+
+        /* butonlar kartta eşit genişlikte dursun */
+        .contract-card .card-footer .btn-soft,
+        .contract-card .card-footer .btn-danger-soft {
+          width: 100%;
+          justify-content: center;
+        }
+
+        /* kart iç boşluk biraz artsın (taşmayı engeller) */
+        .contract-card .card-body h3 {
+          word-break: break-word;
+        }
+      `}</style>
+
       <div className="contracts-header">
         <div>
           <h2>Sözleşmeler</h2>
           <p>Proje ile ilgili hukuki belgeler</p>
         </div>
-        <button className="btn-gradient" onClick={() => setIsOpen(true)}>
+        <button className="btn-gradient" onClick={openCreate}>
           + Yeni Dosya
         </button>
       </div>
 
-      {/* küçük bilgi (UI bozmadan) */}
-      {loading && <p style={{ marginTop: 10 }}>Yükleniyor...</p>}
+      {loading && <p>Yükleniyor...</p>}
 
-      {/* GRID */}
       <div className="contracts-grid">
         {contracts.map((item) => (
           <div key={item.id} className="contract-card">
@@ -188,56 +262,151 @@ export default function ContractsPage() {
             </div>
 
             <div className="card-footer">
-              <button className="btn-soft" onClick={() => handleDownload(item)}>
-                İndir
+              <button className="btn-soft" onClick={() => openView(item)}>
+                Görüntüle
               </button>
+
+              <button className="btn-soft" onClick={() => openEdit(item)}>
+                Düzenle
+              </button>
+
               <button className="btn-danger-soft" onClick={() => handleDelete(item.id)}>
                 Sil
               </button>
+
+              {item.fileUrl ? (
+                <button
+                  className="btn-soft"
+                  onClick={() =>
+                    window.open(
+                      item.fileUrl.startsWith("http") ? item.fileUrl : `${API_BASE}${item.fileUrl}`,
+                      "_blank"
+                    )
+                  }
+                >
+                  Dosyayı Aç
+                </button>
+              ) : (
+                // dosya yoksa grid bozulmasın diye disabled buton
+                <button className="btn-soft" disabled style={{ opacity: 0.6, cursor: "not-allowed" }}>
+                  Dosya Yok
+                </button>
+              )}
             </div>
           </div>
         ))}
       </div>
 
-      {/* MODAL */}
+      {/* ================= MODAL ================= */}
+
       {isOpen && (
         <div className="modal-overlay">
           <div className="modal-card">
-            <h3>Yeni Sözleşme Oluştur</h3>
+            <h3>
+              {mode === "create"
+                ? "Yeni Sözleşme"
+                : mode === "edit"
+                  ? "Sözleşmeyi Düzenle"
+                  : "Sözleşme Detayı"}
+            </h3>
 
             <div className="modal-field">
               <label>Sözleşme Adı</label>
               <input
-                type="text"
+                disabled={mode === "view"}
                 value={newTitle}
                 onChange={(e) => setNewTitle(e.target.value)}
-                placeholder="Örn: Hizmet Sözleşmesi"
               />
+            </div>
+
+            <div className="modal-field">
+              <label>Firma Adı</label>
+              <select
+                disabled={mode === "view"}
+                value={selectedCustomer}
+                onChange={(e) => setSelectedCustomer(e.target.value)}
+              >
+                <option value="">Firma Seçiniz</option>
+                {customers.map((c) => (
+                  <option key={c.id} value={c.id}>
+                    {c.companyName || c.fullName}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            <div className="modal-field">
+              <label>Başlangıç Tarihi</label>
+              <input
+                type="date"
+                disabled={mode === "view"}
+                value={startDate}
+                onChange={(e) => setStartDate(e.target.value)}
+              />
+            </div>
+
+            <div className="modal-field">
+              <label>Bitiş Tarihi</label>
+              <input
+                type="date"
+                disabled={mode === "view"}
+                value={endDate}
+                onChange={(e) => setEndDate(e.target.value)}
+              />
+            </div>
+
+            <div className="modal-field">
+              <label>Sözleşme Durumu</label>
+              <select
+                disabled={mode === "view"}
+                value={status}
+                onChange={(e) => setStatus(e.target.value)}
+              >
+                <option value="ACTIVE">Aktif</option>
+                <option value="INACTIVE">Pasif</option>
+              </select>
             </div>
 
             <div className="modal-field">
               <label>Açıklama</label>
               <textarea
-                placeholder="Sözleşme hakkında kısa açıklama..."
+                disabled={mode === "view"}
                 value={newDesc}
                 onChange={(e) => setNewDesc(e.target.value)}
               />
             </div>
 
             <div className="modal-field">
-              <label>Dosya Yükle</label>
+              <label>Dosya</label>
               <input
+                ref={fileRef}
                 type="file"
+                disabled={mode === "view"}
                 onChange={(e) => setNewFile(e.target.files?.[0] || null)}
               />
-              {/* Not: gerçek upload endpoint yoksa fileUrl üretilemez. */}
+
+              {newFile && (
+                <div style={{ fontSize: 12, marginTop: 6 }}>
+                  Seçilen dosya: <b>{newFile.name}</b> ({Math.round(newFile.size / 1024)} KB)
+                </div>
+              )}
             </div>
 
             <div className="modal-actions">
-              <button onClick={() => setIsOpen(false)}>İptal</button>
-              <button className="btn-gradient" onClick={handleCreate}>
-                Oluştur
+              <button
+                onClick={() => {
+                  setIsOpen(false);
+                  resetForm();
+                }}
+              >
+                Kapat
               </button>
+
+              {mode !== "view" && (
+                <button className="btn-gradient" onClick={handleSubmit}>
+                  {mode === "create" ? "Oluştur" : "Güncelle"}
+                </button>
+              )}
             </div>
           </div>
         </div>
