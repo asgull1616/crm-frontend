@@ -249,6 +249,25 @@ export default function ContractsPage() {
               >
                 Sil
               </button>
+
+              {item.fileUrl ? (
+                <button
+                  className="btn-soft"
+                  onClick={() =>
+                    window.open(
+                      item.fileUrl.startsWith("http") ? item.fileUrl : `${API_BASE}${item.fileUrl}`,
+                      "_blank"
+                    )
+                  }
+                >
+                  Dosyayı Aç
+                </button>
+              ) : (
+                // dosya yoksa grid bozulmasın diye disabled buton
+                <button className="btn-soft" disabled style={{ opacity: 0.6, cursor: "not-allowed" }}>
+                  Dosya Yok
+                </button>
+              )}
             </div>
 
           </div>
@@ -352,6 +371,7 @@ export default function ContractsPage() {
             <div className="modal-field">
               <label>Dosya</label>
               <input
+                ref={fileRef}
                 type="file"
                 disabled={mode === "view"}
                 onChange={(e) =>
