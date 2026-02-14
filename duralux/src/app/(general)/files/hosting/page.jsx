@@ -20,6 +20,7 @@ export default function HostingPage() {
     dbPassword: "",
   });
 
+
   const [loading, setLoading] = useState(false);
 
   const token = useMemo(() => {
@@ -220,7 +221,6 @@ export default function HostingPage() {
             </button>
 
             <h3 className="hosting-title">{item.name}</h3>
-
             <div className="hosting-item">
               <span>Sunucu</span>
               <div>
@@ -302,13 +302,19 @@ export default function HostingPage() {
               />
             </div>
 
-            <div className="modal-field">
-              <label>DB Şifre</label>
-              <input
-                value={formData.dbPassword}
-                onChange={(e) => setFormData({ ...formData, dbPassword: e.target.value })}
-              />
-            </div>
+     <div className="modal-field">
+  <label>DB Şifre</label>
+  <input
+    type="password"
+    value={formData.dbPassword}
+    onChange={(e) =>
+      setFormData({ ...formData, dbPassword: e.target.value })
+    }
+  />
+</div>
+
+
+
 
             <div className="modal-actions">
               <button onClick={() => setIsOpen(false)}>İptal</button>

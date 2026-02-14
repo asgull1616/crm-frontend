@@ -53,11 +53,11 @@ const LatestLeads = ({title}) => {
                                                 </div>
                                             </td>
                                             <td>
-                                                <span className="badge bg-gray-200 text-dark">{proposal}</span>
+                                                <span className="crm-badge bg-gray-200 text-dark">{proposal}</span>
                                             </td>
                                             <td>{date}</td>
                                             <td>
-                                                <span className={`badge bg-soft-${color} text-${color}`}>{user_status}</span>
+                                                <span className={`crm-badge bg-soft-${color} text-${color}`}>{user_status}</span>
                                             </td>
                                         </tr>
                                     )

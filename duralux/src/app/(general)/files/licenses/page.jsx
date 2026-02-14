@@ -27,24 +27,29 @@ export default function LicensesPage() {
   }, [token]);
 
   // Backend -> UI map
-  const toUiItem = (x) => {
-    const today = new Date();
-    const end = new Date(x.endDate);
+const toUiItem = (x) => {
+  const today = new Date();
+  const end = new Date(x.endDate);
 
-    let status = "Aktif";
-    if (end < today) status = "Süresi Doldu";
-    else if ((end - today) / (1000 * 60 * 60 * 24) < 30)
-      status = "Yaklaşıyor";
+  const diffDays = Math.ceil(
+    (end - today) / (1000 * 60 * 60 * 24)
+  );
 
-    return {
-      id: x.id,
-      name: x.title,
-      provider: x.provider,
-      start: new Date(x.startDate).toLocaleDateString("tr-TR"),
-      end: new Date(x.endDate).toLocaleDateString("tr-TR"),
-      status,
-    };
+  let status = "ACTIVE";
+  if (diffDays < 0) status = "EXPIRED";
+  else if (diffDays <= 30) status = "SOON";
+
+  return {
+    id: x.id,
+    name: x.title,
+    provider: x.provider,
+    start: new Date(x.startDate).toLocaleDateString("tr-TR"),
+    end: new Date(x.endDate).toLocaleDateString("tr-TR"),
+    status,
+    remainingDays: diffDays,
   };
+};
+
 
   // ✅ LIST
   useEffect(() => {
@@ -159,31 +164,44 @@ export default function LicensesPage() {
 
       <div className="licenses-grid">
         {licenses.map((item) => (
-          <div key={item.id} className="license-card">
-            <button
-              className="license-delete"
-              onClick={() => handleDelete(item.id)}
-            >
-              ✕
-            </button>
+         <div
+  key={item.id}
+  className={`license-card ${item.status}`}
+>
+  <button
+    className="license-delete"
+    onClick={() => handleDelete(item.id)}
+  >
+    ✕
+  </button>
 
-            <div className="license-top">
-              <div className="license-icon">🔐</div>
-              <div className={`license-badge ${item.status}`}>
-                {item.status}
-              </div>
-            </div>
+  <div className="license-top">
+    <div className="license-icon">🔐</div>
 
-            <div className="license-body">
-              <h3>{item.name}</h3>
-              <p>{item.provider}</p>
+    <div className={`license-badge ${item.status}`}>
+      {item.status === "ACTIVE" && "Aktif"}
+      {item.status === "SOON" && "Yaklaşıyor"}
+      {item.status === "EXPIRED" && "Süresi Doldu"}
+    </div>
+  </div>
 
-              <div className="license-dates">
-                <span>Başlangıç: {item.start}</span>
-                <span>Bitiş: {item.end}</span>
-              </div>
-            </div>
-          </div>
+  <div className="license-body">
+    <h3>{item.name}</h3>
+    <p>{item.provider}</p>
+
+    <div className="license-dates">
+      <span>Başlangıç: {item.start}</span>
+      <span>Bitiş: {item.end}</span>
+    </div>
+
+    {item.status !== "EXPIRED" && (
+      <div className="license-remaining">
+        {item.remainingDays} gün kaldı
+      </div>
+    )}
+  </div>
+</div>
+
         ))}
       </div>
 
