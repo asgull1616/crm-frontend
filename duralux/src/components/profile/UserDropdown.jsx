@@ -48,7 +48,7 @@ const UserDropdown = () => {
   const handleLogoutClick = () => {
     localStorage.removeItem("accessToken");
     localStorage.removeItem("refreshToken");
-    window.location.href = "/authentication/login/minimal";
+    window.location.href = "/";
   };
 
   return (

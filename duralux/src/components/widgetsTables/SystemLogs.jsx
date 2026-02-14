@@ -13,7 +13,7 @@ const logsData = [
 
 const getBadge = (type) => {
     switch (type) {
-        case 'login': return <span className="badge bg-soft-info text-info">Giriş</span>
+        case 'login': return <span className="badge  bg-soft-info text-info">Giriş</span>
         case 'update': return <span className="badge bg-soft-primary text-primary">Güncelleme</span>
         case 'create': return <span className="badge bg-soft-success text-success">Oluşturma</span>
         case 'warning': return <span className="badge bg-soft-warning text-warning">Kritik</span>
