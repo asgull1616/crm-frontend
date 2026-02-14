@@ -1,9 +1,13 @@
 "use client";
 
-import { useEffect, useMemo, useState, useCallback, useRef } from "react";
+import { useEffect, useState, useCallback, useRef } from "react";
 import ContractCard from "@/components/contracts/ContractCard";
 import ContractModal from "@/components/contracts/ContractModal";
-import { API_BASE, formatTrDate, toUiStatus } from "@/components/contracts/contracts.helpers";
+import { formatTrDate, toUiStatus } from "@/components/contracts/contracts.helpers";
+
+// ✅ servisler
+import { contractsService } from "@/lib/services/contracts.service";
+import { customerService } from "@/lib/services/customer.service"; // sende yolu farklıysa düzelt
 
 export default function ContractsContent() {
   const [contracts, setContracts] = useState([]);
@@ -25,51 +29,38 @@ export default function ContractsContent() {
 
   const fileRef = useRef(null);
 
-  const token = useMemo(() => {
-    if (typeof window === "undefined") return null;
-    return localStorage.getItem("accessToken");
-  }, []);
-
-  const authHeaders = useMemo(() => {
-    const h = { "Content-Type": "application/json" };
-    if (token) h.Authorization = `Bearer ${token}`;
-    return h;
-  }, [token]);
-
-  const authOnlyHeaders = useMemo(() => {
-    const h = {};
-    if (token) h.Authorization = `Bearer ${token}`;
-    return h;
-  }, [token]);
+  const resetFileInput = () => {
+    setNewFile(null);
+    if (fileRef.current) fileRef.current.value = "";
+  };
 
   /* ================= LIST ================= */
 
   const fetchContracts = useCallback(async () => {
     setLoading(true);
+    try {
+      const res = await contractsService.list({
+        page: 1,
+        limit: 50,
+        _t: Date.now(), // cache bust
+      });
 
-    const url = `${API_BASE}/api/files/contracts?page=1&limit=50&_t=${Date.now()}`;
-
-    const res = await fetch(url, {
-      headers: authHeaders,
-      cache: "no-store",
-    });
-
-    if (res.ok) {
-      const json = await res.json();
-      const items = (json?.data || []).map((x) => ({
+      const data = res?.data?.data || [];
+      const items = data.map((x) => ({
         id: x.id,
         title: x.title,
         date: formatTrDate(x.createdAt),
         status: toUiStatus(x.status),
         fileUrl: x.fileUrl || null,
       }));
-      setContracts(items);
-    } else {
-      console.error("fetchContracts failed:", res.status);
-    }
 
-    setLoading(false);
-  }, [authHeaders]);
+      setContracts(items);
+    } catch (e) {
+      console.error("fetchContracts failed:", e);
+    } finally {
+      setLoading(false);
+    }
+  }, []);
 
   useEffect(() => {
     fetchContracts();
@@ -79,44 +70,37 @@ export default function ContractsContent() {
 
   useEffect(() => {
     const fetchCustomers = async () => {
-      const res = await fetch(`${API_BASE}/api/customers?_t=${Date.now()}`, {
-        headers: authHeaders,
-        cache: "no-store",
-      });
-
-      if (!res.ok) return;
-
-      const json = await res.json();
-      setCustomers(json?.data || []);
+      try {
+        const res = await customerService.list({ _t: Date.now() });
+        setCustomers(res?.data?.data || []);
+      } catch (e) {
+        console.error("fetchCustomers failed:", e);
+      }
     };
 
     fetchCustomers();
-  }, [authHeaders]);
+  }, []);
 
   /* ================= DETAIL ================= */
 
   const fetchDetail = async (id) => {
-    const res = await fetch(`${API_BASE}/api/files/contracts/${id}?_t=${Date.now()}`, {
-      headers: authHeaders,
-      cache: "no-store",
-    });
-
-    if (!res.ok) return null;
-
-    const json = await res.json();
-    return json?.data || json;
+    try {
+      const res = await contractsService.getById(id);
+      return res?.data?.data || res?.data || null;
+    } catch (e) {
+      console.error("fetchDetail failed:", e);
+      return null;
+    }
   };
 
   const fillForm = (data) => {
-    setNewTitle(data.title || "");
-    setNewDesc(data.description || "");
-    setSelectedCustomer(data.customerId || data.customer?.id || "");
-    setStartDate(data.startDate?.slice(0, 10) || "");
-    setEndDate(data.endDate?.slice(0, 10) || "");
-    setStatus(data.status || "ACTIVE");
-    setNewFile(null);
-
-    if (fileRef.current) fileRef.current.value = "";
+    setNewTitle(data?.title || "");
+    setNewDesc(data?.description || "");
+    setSelectedCustomer(data?.customerId || data?.customer?.id || "");
+    setStartDate(data?.startDate?.slice(0, 10) || "");
+    setEndDate(data?.endDate?.slice(0, 10) || "");
+    setStatus(data?.status || "ACTIVE");
+    resetFileInput();
   };
 
   const resetForm = () => {
@@ -126,10 +110,8 @@ export default function ContractsContent() {
     setStartDate("");
     setEndDate("");
     setStatus("ACTIVE");
-    setNewFile(null);
     setSelectedId(null);
-
-    if (fileRef.current) fileRef.current.value = "";
+    resetFileInput();
   };
 
   const openCreate = () => {
@@ -163,66 +145,52 @@ export default function ContractsContent() {
   const handleSubmit = async () => {
     const normalizedStatus = status === "ACTIVE" ? "ACTIVE" : "INACTIVE";
 
-    const fd = new FormData();
-    fd.append("title", newTitle);
-    fd.append("status", normalizedStatus);
+    // ✅ LOG BURADA (API çağrısından ÖNCE)
+    console.log("newFile state (before):", newFile);
+    console.log("fileRef.current?.files?.[0] (before):", fileRef.current?.files?.[0]);
 
-    if (newDesc) fd.append("description", newDesc);
-    if (selectedCustomer) fd.append("customerId", selectedCustomer);
-    if (startDate) fd.append("startDate", startDate);
-    if (endDate) fd.append("endDate", endDate);
+    const fileToSend = newFile || fileRef.current?.files?.[0] || null;
 
-    const fileToSend = newFile || fileRef.current?.files?.[0];
-    if (fileToSend) fd.append("file", fileToSend);
+    console.log("fileToSend (before):", fileToSend);
+    console.log("is File? (before):", fileToSend instanceof File);
 
-    let res;
+    const payload = {
+      title: newTitle,
+      status: normalizedStatus,
+      description: newDesc || undefined,
+      customerId: selectedCustomer || undefined,
+      startDate: startDate || undefined,
+      endDate: endDate || undefined,
+    };
 
-    if (mode === "create") {
-      res = await fetch(`${API_BASE}/api/files/contracts`, {
-        method: "POST",
-        headers: authOnlyHeaders,
-        body: fd,
-      });
+    try {
+      if (mode === "create") {
+        await contractsService.create(payload, fileToSend);
+      }
+
+      if (mode === "edit" && selectedId) {
+        await contractsService.update(selectedId, payload, fileToSend);
+      }
+
+      await fetchContracts();
+      setIsOpen(false);
+      resetForm();
+    } catch (e) {
+      console.error("save failed:", e);
+      alert("Kaydetme başarısız!");
     }
-
-    if (mode === "edit" && selectedId) {
-      res = await fetch(`${API_BASE}/api/files/contracts/${selectedId}`, {
-        method: "PATCH",
-        headers: authOnlyHeaders,
-        body: fd,
-      });
-    }
-
-    if (!res || !res.ok) {
-      const txt = res ? await res.text().catch(() => "") : "";
-      console.error("save failed:", res?.status, txt);
-      alert(`Kaydetme başarısız! (${res?.status || "no response"})`);
-      return;
-    }
-
-    if (mode === "edit" && selectedId) {
-      setContracts((prev) => prev.map((c) => (c.id === selectedId ? { ...c, title: newTitle } : c)));
-    }
-
-    await fetchContracts();
-    setIsOpen(false);
-    resetForm();
   };
 
   /* ================= DELETE ================= */
 
   const handleDelete = async (id) => {
-    const res = await fetch(`${API_BASE}/api/files/contracts/${id}`, {
-      method: "DELETE",
-      headers: token ? { Authorization: `Bearer ${token}` } : {},
-    });
-
-    if (!res.ok) {
+    try {
+      await contractsService.delete(id);
+      await fetchContracts();
+    } catch (e) {
+      console.error("delete failed:", e);
       alert("Silme başarısız!");
-      return;
     }
-
-    await fetchContracts();
   };
 
   /* ================= RENDER ================= */
@@ -237,11 +205,17 @@ export default function ContractsContent() {
           gap: 10px;
           align-items: stretch;
         }
-        .contract-card .card-footer .btn-soft,
-        .contract-card .card-footer .btn-danger-soft {
+
+        /* ✅ taşma/kayma fix */
+        .contract-card .card-footer :global(button) {
           width: 100%;
+          min-width: 0;
           justify-content: center;
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
         }
+
         .contract-card .card-body h3 {
           word-break: break-word;
         }
