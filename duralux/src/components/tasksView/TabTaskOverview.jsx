@@ -3,7 +3,7 @@ import React, { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { FiCalendar, FiClock, FiUser, FiUserCheck, FiExternalLink, FiFileText } from "react-icons/fi";
 import { taskService } from "@/lib/services/task.service";
-import { userService } from "@/lib/services/user.service";
+import { userService } from "@/lib/services/profile.service";
 
 const statusLabel = { NEW: "Yeni", IN_PROGRESS: "Devam Ediyor", ON_HOLD: "Beklemede", COMPLETED: "Tamamlandı" };
 const statusColors = { NEW: "#6c757d", IN_PROGRESS: "#0d6efd", ON_HOLD: "#ffc107", COMPLETED: "#198754" };

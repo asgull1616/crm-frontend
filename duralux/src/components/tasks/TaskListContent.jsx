@@ -2,7 +2,7 @@
 import React, { useEffect, useState, useCallback, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import { taskService } from "@/lib/services/task.service";
-import { userService } from "@/lib/services/user.service";
+import { userService } from "@/lib/services/profile.service";
 
 const statusMeta = {
   NEW: { label: "Yeni", chipBg: "#F1F5F9", chipText: "#0F172A" },
