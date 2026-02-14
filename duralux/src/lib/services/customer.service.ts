@@ -10,4 +10,8 @@ export const customerService = {
   update: (id: string, data: any) => api.patch(`customers/${id}`, data),
 
   delete: (id: string) => api.delete(`customers/${id}`),
+
+
+  getTransactions: (id: string, params?: any) => 
+    api.get(`customers/${id}/transactions`, { params }),
 };
