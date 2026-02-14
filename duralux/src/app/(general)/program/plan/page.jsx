@@ -1,5 +1,7 @@
 "use client";
 import React, { useMemo, useState } from "react";
+import PageHeader from "@/components/shared/pageHeader/PageHeader";
+
 
 const PRIMARY = "#E92B63";
 const PRIMARY_LIGHT = "#FFE4EC";
@@ -208,6 +210,9 @@ export default function ProgramPlanPage() {
   }
 
   return (
+    <>
+      <PageHeader title="Program Plan" />
+  
     <div style={wrap}>
       {/* Header */}
       <div style={cardHeader}>
@@ -416,7 +421,7 @@ export default function ProgramPlanPage() {
           </div>
         </div>
       )}
-    </div>
+    </div></>
   );
 }
 
@@ -426,7 +431,7 @@ function Field({ label, children }) {
     <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
       <div style={{ fontSize: 13, fontWeight: 950, color: "#344054" }}>{label}</div>
       {children}
-    </div>
+    </div>  
   );
 }
 

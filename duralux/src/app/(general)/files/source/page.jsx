@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import PageHeader from "@/components/shared/pageHeader/PageHeader";
 
 const API_BASE = process.env.NEXT_PUBLIC_API_URL;
 
@@ -141,7 +142,7 @@ export default function SourceLinksPage() {
     }
   };
 
-  return (
+  return (  <><PageHeader />
     <div className="source-wrapper">
       <div className="contracts-header">
         <div>
@@ -228,6 +229,6 @@ export default function SourceLinksPage() {
           </div>
         </div>
       )}
-    </div>
+    </div></>
   );
 }

@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-
+import PageHeader from "@/components/shared/pageHeader/PageHeader";
 const API_BASE = process.env.NEXT_PUBLIC_API_URL;
 
 export default function HostingPage() {
@@ -196,7 +196,7 @@ export default function HostingPage() {
     }));
   };
 
-  return (
+  return (  <><PageHeader />
     <div className="hosting-wrapper">
       {/* HEADER */}
       <div className="contracts-header">
@@ -325,6 +325,6 @@ export default function HostingPage() {
           </div>
         </div>
       )}
-    </div>
+    </div></>
   );
 }

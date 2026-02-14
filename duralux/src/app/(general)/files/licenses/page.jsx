@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-
+import PageHeader from "@/components/shared/pageHeader/PageHeader";
 const API_BASE = process.env.NEXT_PUBLIC_API_URL;
 
 export default function LicensesPage() {
@@ -147,7 +147,7 @@ const toUiItem = (x) => {
     }
   };
 
-  return (
+  return (  <><PageHeader />
     <div className="licenses-wrapper">
       <div className="contracts-header">
         <div>
@@ -255,6 +255,6 @@ const toUiItem = (x) => {
           </div>
         </div>
       )}
-    </div>
+    </div></>
   );
 }

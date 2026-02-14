@@ -3,9 +3,12 @@ import React from 'react'
 import CustomersTable from '@/components/customers/CustomersTable'
 import CustomersHeader from '@/components/customers/CustomersHeader'
 import CustomersStatistics from '@/components/widgetsStatistics/CustomersStatistics'
-
+import PageHeader from '@/components/shared/pageHeader/PageHeader'
 export default function Page() {
-  return (
+  return (<>
+
+      <PageHeader />
+
     <div className="main-content container-fluid" style={{ padding: '25px' }}>
       
       {/* 1. En Üst: Arama Barı ve Filtreler (Türkçe) */}
@@ -33,6 +36,6 @@ export default function Page() {
           </div>
         </div>
       </div>
-    </div>
+    </div>  </>
   )
 }

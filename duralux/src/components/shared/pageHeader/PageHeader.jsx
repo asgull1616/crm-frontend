@@ -1,47 +1,61 @@
 'use client'
 import React, { useState } from 'react'
 import { FiAlignRight, FiArrowLeft } from 'react-icons/fi'
-import { usePathname } from 'next/navigation'
+import { usePathname, useRouter } from 'next/navigation'
 import Link from 'next/link'
 
 const PageHeader = ({ children }) => {
     const [openSidebar, setOpenSidebar] = useState(false)
-    const pathName = usePathname()
-    let folderName = ""
-    let fileName = ""
-    if (pathName === "/") {
-        folderName = "Dashboard"
-        fileName = "Dashboard"
-    } else {
-        folderName = pathName.split("/")[1]
-        fileName = pathName.split("/")[2]
+    const pathname = usePathname()
+    const router = useRouter()
+
+    const segments = pathname.split('/').filter(Boolean)
+
+    const moduleName = segments[0] || "dashboard"
+    const lastSegment = segments[segments.length - 1]
+
+    let action = "Liste"
+
+    if (segments.length === 1) {
+        action = "Liste"
+    } else if (lastSegment === "create") {
+        action = "Yeni Oluştur"
+    } else if (lastSegment === "edit") {
+        action = "Düzenleme"
+    } else if (!isNaN(lastSegment)) {
+        action = "Detay Görüntüleme"
     }
+
+    const handleBack = (e) => {
+        e.preventDefault()
+
+        if (window.history.length > 1) {
+            router.back()
+        } else {
+            router.push(`/${moduleName}`)
+        }
+    }
+
     return (
         <div className="page-header">
             <div className="page-header-left d-flex align-items-center">
+
+                <a href="#" onClick={handleBack} className="back-btn me-3">
+                    <FiArrowLeft size={18} />
+                </a>
+
                 <div className="page-header-title">
-                    <h5 className="m-b-10 text-capitalize">{folderName}</h5>
+                    <span className="module-name text-capitalize">
+                        {moduleName}
+                    </span>
+                    <h4 className="page-main-title">
+                        {action}
+                    </h4>
                 </div>
-                <ul className="breadcrumb">
-                    <li className="breadcrumb-item"><Link href="/">Ana Sayfa</Link></li>
-                    <li className="breadcrumb-item text-capitalize">{fileName}</li>
-                </ul>
             </div>
+
             <div className="page-header-right ms-auto">
-                <div className={`page-header-right-items ${openSidebar ? "page-header-right-open" : ""}`}>
-                    <div className="d-flex d-md-none">
-                        <Link href="#" onClick={() => setOpenSidebar(false)} className="page-header-right-close-toggle">
-                            <FiArrowLeft size={16} className="me-2" />
-                            <span>Geri Dönün</span>
-                        </Link>
-                    </div>
-                    {children}
-                </div>
-                <div className="d-md-none d-flex align-items-center">
-                    <Link href="#" onClick={() => setOpenSidebar(true)} className="page-header-right-open-toggle">
-                        <FiAlignRight className="fs-20" />
-                    </Link>
-                </div>
+                {children}
             </div>
         </div>
     )

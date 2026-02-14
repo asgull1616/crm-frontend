@@ -1,7 +1,8 @@
 "use client";
 
-import { useEffect, useMemo, useState, useCallback } from "react";
-
+import { useEffect, useMemo, useState, useCallback ,fileRef
+} from "react";
+import PageHeader from "@/components/shared/pageHeader/PageHeader";
 const API_BASE = process.env.NEXT_PUBLIC_API_URL;
 
 const toUiStatus = (s) => (s === "ACTIVE" ? "AKTİF" : "PASİF");
@@ -200,6 +201,7 @@ export default function ContractsPage() {
   /* ================= RENDER ================= */
 
   return (
+    <><PageHeader />
     <div className="contracts-wrapper">
       <div className="contracts-header">
         <div>
@@ -401,6 +403,6 @@ export default function ContractsPage() {
           </div>
         </div>
       )}
-    </div>
+    </div></>
   );
 }

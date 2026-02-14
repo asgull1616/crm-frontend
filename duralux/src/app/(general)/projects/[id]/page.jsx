@@ -2,6 +2,7 @@
 
 import { useParams } from "next/navigation";
 import React, { useEffect, useMemo, useState } from "react";
+import PageHeader from "@/components/shared/pageHeader/PageHeader";
 
 const PRIMARY = "#E92B63";
 const SOFT = "#FFE4EC";
@@ -63,7 +64,8 @@ export default function ProjectDetailPage() {
 
   if (!project) return <div style={{ padding: 30, fontWeight: 900 }}>Yükleniyor...</div>;
 
-  return (
+  return (<>
+    <PageHeader />
     <div style={{ padding: 30 }}>
       {/* HEADER */}
       <div style={header}>
@@ -133,7 +135,7 @@ export default function ProjectDetailPage() {
           )}
         </Card>
       </div>
-    </div>
+    </div></>
   );
 }
 

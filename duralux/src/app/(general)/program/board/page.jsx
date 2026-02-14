@@ -17,6 +17,7 @@ import {
   arrayMove,
 } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
+import PageHeader from "@/components/shared/pageHeader/PageHeader";
 
 const PRIMARY = "#E92B63";
 const PRIMARY_LIGHT = "#FFE4EC";
@@ -630,6 +631,7 @@ export default function ProgramBoardPage() {
   if (!activeProgram) return null;
 
   return (
+    <><PageHeader />
     <div style={pageWrap}>
       {/* Header */}
       <div style={headerWrap}>
@@ -801,7 +803,7 @@ export default function ProgramBoardPage() {
           </div>
         ) : null}
       </Modal>
-    </div>
+    </div></>
   );
 }
 

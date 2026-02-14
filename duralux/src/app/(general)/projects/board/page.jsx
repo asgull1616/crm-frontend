@@ -1,6 +1,6 @@
 "use client";
 import React, { useMemo, useState } from "react";
-
+import PageHeader from "@/components/shared/pageHeader/PageHeader";
 const PRIMARY = "#E92B63";
 const PRIMARY_LIGHT = "#FFE4EC";
 
@@ -115,6 +115,9 @@ export default function ProjectsBoardPage() {
   }
 
   return (
+    <>
+      <PageHeader />
+
     <div style={{ padding: 20 }}>
       {/* ÜST KART */}
       <div style={topCard}>
@@ -215,7 +218,7 @@ export default function ProjectsBoardPage() {
             </div>
         </div>
       )}
-    </div>
+    </div>    </>
   );
 }
 
