@@ -29,6 +29,7 @@ export default function ContractsPage() {
   const [endDate, setEndDate] = useState("");
   const [status, setStatus] = useState("ACTIVE");
 
+  // ✅ fileRef tanımlı olmalı
   const fileRef = useRef(null);
 
   const token = useMemo(() => {
@@ -43,10 +44,7 @@ export default function ContractsPage() {
     return h;
   }, [token]);
 
-<<<<<<< Updated upstream
-=======
-  // FormData istekleri (POST/PATCH file upload)
->>>>>>> Stashed changes
+  // FormData istekleri (POST/PATCH file upload) -> Content-Type koyma!
   const authOnlyHeaders = useMemo(() => {
     const h = {};
     if (token) h.Authorization = `Bearer ${token}`;
@@ -58,17 +56,12 @@ export default function ContractsPage() {
   const fetchContracts = useCallback(async () => {
     setLoading(true);
 
-<<<<<<< Updated upstream
-    const res = await fetch(`${API_BASE}/api/files/contracts?page=1&limit=50`, {
-      headers: authHeaders,
-=======
-    // ✅ cache bust + no-store (304/Cache yüzünden eski data gelmesin)
+    // ✅ cache bust + no-store (304/cache yüzünden eski data gelmesin)
     const url = `${API_BASE}/api/files/contracts?page=1&limit=50&_t=${Date.now()}`;
 
     const res = await fetch(url, {
       headers: authHeaders,
       cache: "no-store",
->>>>>>> Stashed changes
     });
 
     if (res.ok) {
@@ -78,17 +71,10 @@ export default function ContractsPage() {
         title: x.title,
         date: formatTrDate(x.createdAt),
         status: toUiStatus(x.status),
-<<<<<<< Updated upstream
-        customerName: x.customer?.companyName || x.customer?.fullName || "-",
-        startDate: formatTrDate(x.startDate),
-        endDate: formatTrDate(x.endDate),
-=======
->>>>>>> Stashed changes
         fileUrl: x.fileUrl || null,
       }));
       setContracts(items);
     } else {
-      // küçük log
       console.error("fetchContracts failed:", res.status);
     }
 
@@ -120,14 +106,9 @@ export default function ContractsPage() {
   /* ================= DETAIL ================= */
 
   const fetchDetail = async (id) => {
-<<<<<<< Updated upstream
-    const res = await fetch(`${API_BASE}/api/files/contracts/${id}`, {
-      headers: authHeaders,
-=======
     const res = await fetch(`${API_BASE}/api/files/contracts/${id}?_t=${Date.now()}`, {
       headers: authHeaders,
       cache: "no-store",
->>>>>>> Stashed changes
     });
 
     if (!res.ok) return null;
@@ -145,6 +126,7 @@ export default function ContractsPage() {
     setStatus(data.status || "ACTIVE");
     setNewFile(null);
 
+    // ✅ file input'u temizle (aynı dosyayı tekrar seçebilmek için)
     if (fileRef.current) fileRef.current.value = "";
   };
 
@@ -190,6 +172,7 @@ export default function ContractsPage() {
   /* ================= SUBMIT ================= */
 
   const handleSubmit = async () => {
+    // backend enum: ACTIVE / INACTIVE
     const normalizedStatus = status === "ACTIVE" ? "ACTIVE" : "INACTIVE";
 
     const fd = new FormData();
@@ -201,13 +184,11 @@ export default function ContractsPage() {
     if (startDate) fd.append("startDate", startDate);
     if (endDate) fd.append("endDate", endDate);
 
+    // ✅ state null kalsa bile ref'ten dosyayı al
     const fileToSend = newFile || fileRef.current?.files?.[0];
     if (fileToSend) fd.append("file", fileToSend);
-<<<<<<< Updated upstream
-=======
 
     let res;
->>>>>>> Stashed changes
 
     if (mode === "create") {
       res = await fetch(`${API_BASE}/api/files/contracts`, {
@@ -218,17 +199,11 @@ export default function ContractsPage() {
     }
 
     if (mode === "edit" && selectedId) {
-<<<<<<< Updated upstream
-      await fetch(`${API_BASE}/api/files/contracts/${selectedId}`, {
-=======
       res = await fetch(`${API_BASE}/api/files/contracts/${selectedId}`, {
->>>>>>> Stashed changes
         method: "PATCH",
         headers: authOnlyHeaders,
         body: fd,
       });
-<<<<<<< Updated upstream
-=======
     }
 
     // ✅ hata varsa sessiz geçme
@@ -239,12 +214,11 @@ export default function ContractsPage() {
       return;
     }
 
-    // ✅ UI’yı garanti güncelle (cache olsa bile anında görünsün)
+    // ✅ UI’yı anında güncelle (cache olsa bile görünsün)
     if (mode === "edit" && selectedId) {
       setContracts((prev) =>
         prev.map((c) => (c.id === selectedId ? { ...c, title: newTitle } : c))
       );
->>>>>>> Stashed changes
     }
 
     await fetchContracts();
@@ -272,34 +246,19 @@ export default function ContractsPage() {
 
   return (
     <div className="contracts-wrapper">
-<<<<<<< Updated upstream
       {/* ✅ sadece bu sayfaya özel layout fix */}
       <style jsx>{`
-        /* kart footer: 4 butonu 2x2 grid yap */
-=======
-      <style jsx>{`
->>>>>>> Stashed changes
         .contract-card .card-footer {
           display: grid;
           grid-template-columns: repeat(2, minmax(0, 1fr));
           gap: 10px;
           align-items: stretch;
         }
-<<<<<<< Updated upstream
-
-        /* butonlar kartta eşit genişlikte dursun */
-=======
->>>>>>> Stashed changes
         .contract-card .card-footer .btn-soft,
         .contract-card .card-footer .btn-danger-soft {
           width: 100%;
           justify-content: center;
         }
-<<<<<<< Updated upstream
-
-        /* kart iç boşluk biraz artsın (taşmayı engeller) */
-=======
->>>>>>> Stashed changes
         .contract-card .card-body h3 {
           word-break: break-word;
         }
@@ -364,6 +323,8 @@ export default function ContractsPage() {
           </div>
         ))}
       </div>
+
+      {/* ================= MODAL ================= */}
 
       {isOpen && (
         <div className="modal-overlay">
