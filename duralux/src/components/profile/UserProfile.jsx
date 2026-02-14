@@ -84,6 +84,7 @@ const UserProfile = () => {
       // Backend mail değişimine izin veriyorsa email'i dışarıda bırakmıyoruz
       const { id, userId, createdAt, updatedAt, ...updateData } = userData;
       const res = await profileService.updateMe(updateData);
+      console.log("✅ Profil güncelleme cevabı:", res);
       
       if (res.data) {
         setUserData(res.data);
