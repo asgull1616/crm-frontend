@@ -1,13 +1,12 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import Link from "next/link";
 import { FiEye, FiEdit3, FiTrash2, FiMoreHorizontal } from "react-icons/fi";
 import { useRouter } from "next/navigation";
 import Table from "@/components/shared/table/Table";
 import Dropdown from "@/components/shared/Dropdown";
 import { proposalService } from "@/lib/services/proposal.service";
-import { customerService } from "@/lib/services/customer.service";
 import Swal from 'sweetalert2';
 
 const mapStatus = (status) => {
@@ -16,17 +15,52 @@ const mapStatus = (status) => {
     case "SENT": return { content: "Gönderildi", color: "bg-info" };
     case "APPROVED": return { content: "Onaylandı", color: "bg-success" };
     case "REJECTED": return { content: "Reddedildi", color: "bg-danger" };
-    default: return { content: status, color: "bg-secondary" };
+    default: return { content: status || "Belirsiz", color: "bg-secondary" };
   }
 };
 
 const ProposalTable = () => {
   const router = useRouter();
   const [data, setData] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-  // 🔹 PEMBE SADE SİLME MODALI
+  const fetchProposals = useCallback(async () => {
+    try {
+      setLoading(true);
+      // Sadece teklifleri çekiyoruz. Backend zaten müşteri adını (customerName) içine ekledi.
+      const res = await proposalService.list({ page: 1, limit: 100 });
+      
+      // Backend yapına göre veriyi güvenli bir şekilde alalım
+      const proposals = res?.data?.items || res?.data?.data || res?.data || [];
+
+      const mappedData = Array.isArray(proposals) ? proposals.map((p) => ({
+        id: p.id,
+        // ID'nin son 8 hanesini büyük harf yap (Profesyonel görünüm)
+        proposal: p.id ? p.id.toString().slice(-8).toUpperCase() : "ID-YOK",
+        client: {
+          id: p.customerId,
+          name: p.customerName || "Bilinmeyen Müşteri",
+        },
+        subject: p.title || "CRM Projesi",
+        amount: p.totalAmount ? `₺${Number(p.totalAmount).toLocaleString('tr-TR')}` : "-",
+        date: p.createdAt ? new Date(p.createdAt).toLocaleDateString("tr-TR") : "-",
+        status: mapStatus(p.status),
+      })) : [];
+
+      setData(mappedData);
+    } catch (err) {
+      console.error("Teklif listesi yüklenemedi:", err);
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    fetchProposals();
+  }, [fetchProposals]);
+
   const handleDelete = async (id) => {
-    Swal.fire({
+    const result = await Swal.fire({
       title: 'Emin misiniz?',
       text: "Bu teklif silinecektir.",
       icon: 'question',
@@ -36,98 +70,42 @@ const ProposalTable = () => {
       confirmButtonText: 'Evet, sil',
       cancelButtonText: 'Vazgeç',
       reverseButtons: true,
-      borderRadius: '12px',
-      width: '380px'
-    }).then(async (result) => {
-      if (result.isConfirmed) {
-        try {
-          await proposalService.remove(id);
-          setData((prev) => prev.filter((item) => item.id !== id));
-          router.refresh(); // Grafiğin güncellenmesi için Next.js'i tetikle
-
-          const Toast = Swal.mixin({
-            toast: true,
-            position: 'top-end',
-            showConfirmButton: false,
-            timer: 2000,
-          });
-          Toast.fire({ icon: 'success', title: 'Başarıyla silindi' });
-        } catch (err) {
-          Swal.fire({ title: 'Hata!', text: 'İşlem başarısız oldu.', icon: 'error', confirmButtonColor: '#E92B63' });
-        }
-      }
+      borderRadius: '12px'
     });
-  };
 
-  useEffect(() => {
-    const fetchData = async () => {
+    if (result.isConfirmed) {
       try {
-        const [customerRes, proposalRes] = await Promise.all([
-          customerService.list({ page: 1, limit: 1000 }),
-          proposalService.list({ page: 1, limit: 100 })
-        ]);
-
-        // 🔹 BURASI KRİTİK: Verinin nerede olduğunu arıyoruz
-        const customers = customerRes?.data?.items || customerRes?.data?.data || customerRes?.data || [];
-        const proposals = proposalRes?.data?.items || proposalRes?.data?.data || proposalRes?.data || [];
-
-        const mappedData = Array.isArray(proposals) ? proposals.map((p) => {
-          const matched = customers.find(c => 
-            c.id === p.customerId || 
-            (p.customerName && c.fullName?.trim().toLowerCase() === p.customerName.trim().toLowerCase())
-          );
-
-          return {
-            id: p.id,
-            proposal: p.id?.slice(0, 8),
-            client: {
-              id: matched?.id || p.customerId, 
-              name: matched?.fullName || p.customerName || "Bilinmeyen Müşteri",
-            },
-            subject: p.title || "CRM Projesi",
-            amount: p.totalAmount ? `TRY ${p.totalAmount}` : "-",
-            date: p.createdAt ? new Date(p.createdAt).toLocaleDateString("tr-TR") : "-",
-            status: mapStatus(p.status),
-          };
-        }) : [];
-
-        setData(mappedData);
+        await proposalService.remove(id);
+        setData((prev) => prev.filter((item) => item.id !== id));
+        Swal.fire({ icon: 'success', title: 'Başarıyla silindi', timer: 1500, showConfirmButton: false });
+        router.refresh();
       } catch (err) {
-        console.error("Tablo yükleme hatası:", err);
+        Swal.fire({ title: 'Hata!', text: 'İşlem başarısız oldu.', icon: 'error' });
       }
-    };
-    fetchData();
-  }, []);
+    }
+  };
 
   const columns = [
     { accessorKey: "proposal", header: "TEKLİF ID", cell: (info) => <span className="fw-bold text-dark">{info.getValue()}</span> },
     {
       accessorKey: "client",
       header: "MÜŞTERİ",
-      cell: (info) => {
-        const client = info.getValue();
-        return (
-          <Link href={`/customers/view/${client.id}`} className="fw-bold text-dark text-decoration-none hover-pink">
-            {client.name}
-          </Link>
-        );
-      },
+      cell: (info) => (
+        <Link href={`/customers/view/${info.getValue().id}`} className="fw-bold text-dark text-decoration-none hover-pink">
+          {info.getValue().name}
+        </Link>
+      ),
     },
     { accessorKey: "subject", header: "KONU" },
     { accessorKey: "amount", header: "TUTAR", meta: { className: "fw-bold text-dark" } },
     { accessorKey: "date", header: "TARİH" },
-    { accessorKey: "status", header: "DURUM", cell: (info) => (
-        <span className={`badge ${info.getValue().color}`}>{info.getValue().content}</span>
-      )
-    },
+    { accessorKey: "status", header: "DURUM", cell: (info) => <span className={`badge ${info.getValue().color}`}>{info.getValue().content}</span> },
     {
       accessorKey: "actions",
       header: "İŞLEMLER",
       cell: ({ row }) => (
         <div className="hstack gap-2 justify-content-end">
-          <Link href={`/proposal/view/${row.original.id}`} className="avatar-text avatar-md">
-            <FiEye />
-          </Link>
+          <Link href={`/proposal/view/${row.original.id}`} className="avatar-text avatar-md"><FiEye /></Link>
           <Dropdown
             dropdownItems={[
               { label: "Düzenle", icon: <FiEdit3 />, onClick: () => router.push(`/proposal/edit/${row.original.id}`) },
@@ -142,12 +120,12 @@ const ProposalTable = () => {
     },
   ];
 
+  if (loading) return <div className="text-center p-5"><div className="spinner-border text-primary"></div></div>;
+
   return (
     <>
       <Table data={data} columns={columns} />
-      <style jsx global>{`
-        .hover-pink:hover { color: #E92B63 !important; text-decoration: underline !important; cursor: pointer; }
-      `}</style>
+      <style jsx global>{` .hover-pink:hover { color: #E92B63 !important; text-decoration: underline !important; } `}</style>
     </>
   );
 };
