@@ -43,6 +43,7 @@
     "react-phone-input-2": "^2.15.1",
     "react-select": "^5.9.0",
     "react-tooltip": "^5.28.0",
+    "recharts": "^3.7.0",
     "sass": "^1.83.1",
     "sweetalert2": "^11.26.18",
     "sweetalert2-react-content": "^5.0.7"

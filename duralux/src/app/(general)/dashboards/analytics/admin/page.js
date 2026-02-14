@@ -5,12 +5,13 @@ import PageHeader from '@/components/shared/pageHeader/PageHeader';
 import PageHeaderDate from '@/components/shared/pageHeader/PageHeaderDate';
 import LatestLeads from '@/components/widgetsTables/LatestLeads';
 import TeamProgress from '@/components/widgetsList/Progress';
-import Sales from '@/components/widgetsCharts/SalesPipelineChart';
-import TrendAnalysisChart from '@/components/widgetsCharts/TrendAnalysisChart';
 import ActivityAnalysis from '@/components/widgetsCharts/ActivityAnalysis';
 import SystemLogs from '@/components/widgetsTables/SystemLogs';
 import { authService } from '@/lib/services/auth.service';
 import WelcomePopup from '@/components/widgetsCharts/WelcomePopup';
+import TransactionSummaryGraph from '@/components/widgetsStatistics/TransactionSummaryGraph';
+import CustomerMiniStats from '@/components/widgetsStatistics/CustomerMiniStats';
+import LeavesCalendar from '@/components/teams/leaves/admin/LeavesCalendar';
 import '@/app/globals.css';
 
 const Home = () => {
@@ -38,13 +39,14 @@ const Home = () => {
 
       <div className="main-content">
         <div className="row">
-          <TrendAnalysisChart />
-          <Sales />
+          <TransactionSummaryGraph />
+          <CustomerMiniStats />
           <ActivityAnalysis />
           <SystemLogs />
 
           <LatestLeads title={'Teklif & Görev Süreçleri (Demo)'} />
           <TeamProgress title={'CODYOL Ekip Performansı'} footerShow={true} />
+          <LeavesCalendar />
         </div>
       </div>
     </>
