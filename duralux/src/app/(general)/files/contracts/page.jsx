@@ -36,12 +36,17 @@ export default function ContractsPage() {
     return localStorage.getItem("accessToken");
   }, []);
 
+  // JSON istekleri (GET liste vb)
   const authHeaders = useMemo(() => {
     const h = { "Content-Type": "application/json" };
     if (token) h.Authorization = `Bearer ${token}`;
     return h;
   }, [token]);
 
+<<<<<<< Updated upstream
+=======
+  // FormData istekleri (POST/PATCH file upload)
+>>>>>>> Stashed changes
   const authOnlyHeaders = useMemo(() => {
     const h = {};
     if (token) h.Authorization = `Bearer ${token}`;
@@ -53,8 +58,17 @@ export default function ContractsPage() {
   const fetchContracts = useCallback(async () => {
     setLoading(true);
 
+<<<<<<< Updated upstream
     const res = await fetch(`${API_BASE}/api/files/contracts?page=1&limit=50`, {
       headers: authHeaders,
+=======
+    // ✅ cache bust + no-store (304/Cache yüzünden eski data gelmesin)
+    const url = `${API_BASE}/api/files/contracts?page=1&limit=50&_t=${Date.now()}`;
+
+    const res = await fetch(url, {
+      headers: authHeaders,
+      cache: "no-store",
+>>>>>>> Stashed changes
     });
 
     if (res.ok) {
@@ -64,12 +78,18 @@ export default function ContractsPage() {
         title: x.title,
         date: formatTrDate(x.createdAt),
         status: toUiStatus(x.status),
+<<<<<<< Updated upstream
         customerName: x.customer?.companyName || x.customer?.fullName || "-",
         startDate: formatTrDate(x.startDate),
         endDate: formatTrDate(x.endDate),
+=======
+>>>>>>> Stashed changes
         fileUrl: x.fileUrl || null,
       }));
       setContracts(items);
+    } else {
+      // küçük log
+      console.error("fetchContracts failed:", res.status);
     }
 
     setLoading(false);
@@ -83,8 +103,9 @@ export default function ContractsPage() {
 
   useEffect(() => {
     const fetchCustomers = async () => {
-      const res = await fetch(`${API_BASE}/api/customers`, {
+      const res = await fetch(`${API_BASE}/api/customers?_t=${Date.now()}`, {
         headers: authHeaders,
+        cache: "no-store",
       });
 
       if (!res.ok) return;
@@ -99,8 +120,14 @@ export default function ContractsPage() {
   /* ================= DETAIL ================= */
 
   const fetchDetail = async (id) => {
+<<<<<<< Updated upstream
     const res = await fetch(`${API_BASE}/api/files/contracts/${id}`, {
       headers: authHeaders,
+=======
+    const res = await fetch(`${API_BASE}/api/files/contracts/${id}?_t=${Date.now()}`, {
+      headers: authHeaders,
+      cache: "no-store",
+>>>>>>> Stashed changes
     });
 
     if (!res.ok) return null;
@@ -176,9 +203,14 @@ export default function ContractsPage() {
 
     const fileToSend = newFile || fileRef.current?.files?.[0];
     if (fileToSend) fd.append("file", fileToSend);
+<<<<<<< Updated upstream
+=======
+
+    let res;
+>>>>>>> Stashed changes
 
     if (mode === "create") {
-      await fetch(`${API_BASE}/api/files/contracts`, {
+      res = await fetch(`${API_BASE}/api/files/contracts`, {
         method: "POST",
         headers: authOnlyHeaders,
         body: fd,
@@ -186,11 +218,33 @@ export default function ContractsPage() {
     }
 
     if (mode === "edit" && selectedId) {
+<<<<<<< Updated upstream
       await fetch(`${API_BASE}/api/files/contracts/${selectedId}`, {
+=======
+      res = await fetch(`${API_BASE}/api/files/contracts/${selectedId}`, {
+>>>>>>> Stashed changes
         method: "PATCH",
         headers: authOnlyHeaders,
         body: fd,
       });
+<<<<<<< Updated upstream
+=======
+    }
+
+    // ✅ hata varsa sessiz geçme
+    if (!res || !res.ok) {
+      const txt = res ? await res.text().catch(() => "") : "";
+      console.error("save failed:", res?.status, txt);
+      alert(`Kaydetme başarısız! (${res?.status || "no response"})`);
+      return;
+    }
+
+    // ✅ UI’yı garanti güncelle (cache olsa bile anında görünsün)
+    if (mode === "edit" && selectedId) {
+      setContracts((prev) =>
+        prev.map((c) => (c.id === selectedId ? { ...c, title: newTitle } : c))
+      );
+>>>>>>> Stashed changes
     }
 
     await fetchContracts();
@@ -201,10 +255,15 @@ export default function ContractsPage() {
   /* ================= DELETE ================= */
 
   const handleDelete = async (id) => {
-    await fetch(`${API_BASE}/api/files/contracts/${id}`, {
+    const res = await fetch(`${API_BASE}/api/files/contracts/${id}`, {
       method: "DELETE",
       headers: token ? { Authorization: `Bearer ${token}` } : {},
     });
+
+    if (!res.ok) {
+      alert("Silme başarısız!");
+      return;
+    }
 
     await fetchContracts();
   };
@@ -213,24 +272,34 @@ export default function ContractsPage() {
 
   return (
     <div className="contracts-wrapper">
+<<<<<<< Updated upstream
       {/* ✅ sadece bu sayfaya özel layout fix */}
       <style jsx>{`
         /* kart footer: 4 butonu 2x2 grid yap */
+=======
+      <style jsx>{`
+>>>>>>> Stashed changes
         .contract-card .card-footer {
           display: grid;
           grid-template-columns: repeat(2, minmax(0, 1fr));
           gap: 10px;
           align-items: stretch;
         }
+<<<<<<< Updated upstream
 
         /* butonlar kartta eşit genişlikte dursun */
+=======
+>>>>>>> Stashed changes
         .contract-card .card-footer .btn-soft,
         .contract-card .card-footer .btn-danger-soft {
           width: 100%;
           justify-content: center;
         }
+<<<<<<< Updated upstream
 
         /* kart iç boşluk biraz artsın (taşmayı engeller) */
+=======
+>>>>>>> Stashed changes
         .contract-card .card-body h3 {
           word-break: break-word;
         }
@@ -287,7 +356,6 @@ export default function ContractsPage() {
                   Dosyayı Aç
                 </button>
               ) : (
-                // dosya yoksa grid bozulmasın diye disabled buton
                 <button className="btn-soft" disabled style={{ opacity: 0.6, cursor: "not-allowed" }}>
                   Dosya Yok
                 </button>
@@ -296,8 +364,6 @@ export default function ContractsPage() {
           </div>
         ))}
       </div>
-
-      {/* ================= MODAL ================= */}
 
       {isOpen && (
         <div className="modal-overlay">
