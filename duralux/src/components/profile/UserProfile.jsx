@@ -3,15 +3,15 @@ import React, { useState, useEffect } from 'react';
 import {
   FaUser, FaEnvelope, FaPhone, FaMapMarkerAlt, FaCalendarAlt, 
   FaUserEdit, FaSave, FaTimes, FaCreditCard, FaBriefcase, 
-  FaIdCard, FaCamera
+  FaArrowLeft, FaIdCard, FaTint, FaHospital, FaUniversity
 } from 'react-icons/fa';
-import toast, { Toaster } from 'react-hot-toast';
 import { profileService } from '../../lib/services/profile.service'; 
 
 const UserProfile = () => {
   const [isEditing, setIsEditing] = useState(false);
   const [loading, setLoading] = useState(true);
   
+  // ProfileResponseDto'daki tüm alanları kapsayan state
   const [userData, setUserData] = useState({
     firstName: "", lastName: "", birthDate: "", bloodGroup: "",
     avatarUrl: "", bio: "", phone: "", address: "",
@@ -39,14 +39,7 @@ const UserProfile = () => {
     inputGroup: { display: 'flex', flexDirection: 'column', gap: '5px' },
     label: { fontSize: '11px', fontWeight: 'bold', color: colors.textLight, textTransform: 'uppercase', letterSpacing: '0.5px' },
     input: { padding: '12px', borderRadius: '10px', border: '1px solid #e2e8f0', backgroundColor: colors.inputBg, outline: 'none', fontSize: '14px' },
-    displayValue: { fontSize: '15px', fontWeight: '600', padding: '5px 0', color: colors.textMain },
-    avatarWrapper: { position: 'relative', width: '130px', height: '130px', margin: '0 auto' },
-    avatarOverlay: { 
-        position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', 
-        borderRadius: '50%', backgroundColor: 'rgba(0,0,0,0.4)', 
-        display: 'flex', alignItems: 'center', justifyContent: 'center', 
-        color: 'white', cursor: 'pointer', opacity: 0, transition: '0.3s' 
-    }
+    displayValue: { fontSize: '15px', fontWeight: '600', padding: '5px 0', color: colors.textMain }
   };
 
   const bloodGroups = ["A Rh+", "A Rh-", "B Rh+", "B Rh-", "AB Rh+", "AB Rh-", "0 Rh+", "0 Rh-"];
@@ -67,32 +60,18 @@ const UserProfile = () => {
     fetchProfile();
   }, []);
 
-  const handleImageChange = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setUserData(prev => ({ ...prev, avatarUrl: reader.result }));
-      };
-      reader.readAsDataURL(file);
-    }
-  };
-
   const handleSave = async () => {
-    const loadingToast = toast.loading('Profil güncelleniyor...');
     try {
-      // Backend mail değişimine izin veriyorsa email'i dışarıda bırakmıyoruz
-      const { id, userId, createdAt, updatedAt, ...updateData } = userData;
+      // UpdateProfileDto'ya uygun şekilde veriyi temizleyerek gönderiyoruz
+      const { email, id, userId, createdAt, updatedAt, ...updateData } = userData;
       const res = await profileService.updateMe(updateData);
-      console.log("✅ Profil güncelleme cevabı:", res);
-      
       if (res.data) {
         setUserData(res.data);
         setIsEditing(false);
-        toast.success('Profil başarıyla güncellendi!', { id: loadingToast, duration: 4000 });
+        alert("Profil başarıyla güncellendi!");
       }
     } catch (error) {
-      toast.error('Güncelleme sırasında bir hata oluştu!', { id: loadingToast });
+      alert("Hata: " + (error.response?.data?.message || "İşlem başarısız"));
     }
   };
 
@@ -107,30 +86,17 @@ const UserProfile = () => {
 
   return (
     <div style={styles.container}>
-      <Toaster />
       <div style={styles.wrapper}>
         
-        {/* SOL KOLON */}
+        {/* SOL KOLON: Özet Bilgiler */}
         <div style={{ flex: '1', minWidth: '300px' }}>
           <div style={styles.card}>
             <div style={{ textAlign: 'center' }}>
-              <div 
-                style={styles.avatarWrapper}
-                onMouseEnter={(e) => isEditing && (e.currentTarget.querySelector('.overlay').style.opacity = 1)}
-                onMouseLeave={(e) => isEditing && (e.currentTarget.querySelector('.overlay').style.opacity = 0)}
-              >
-                <img 
-                  src={userData.avatarUrl || 'https://via.placeholder.com/150'} 
-                  style={{ width: '130px', height: '130px', borderRadius: '50%', objectFit: 'cover', border: `4px solid ${colors.primarySoft}` }} 
-                  alt="Avatar"
-                />
-                {isEditing && (
-                    <label className="overlay" style={styles.avatarOverlay} htmlFor="avatar-input">
-                        <FaCamera size={24} />
-                        <input type="file" id="avatar-input" hidden accept="image/*" onChange={handleImageChange} />
-                    </label>
-                )}
-              </div>
+              <img 
+                src={userData.avatarUrl || 'https://via.placeholder.com/150'} 
+                style={{ width: '130px', height: '130px', borderRadius: '50%', objectFit: 'cover', border: `4px solid ${colors.primarySoft}` }} 
+                alt="Avatar"
+              />
               <h2 style={{ margin: '20px 0 5px', fontSize: '24px' }}>{userData.firstName} {userData.lastName}</h2>
               <p style={{ color: colors.textLight, fontWeight: '500' }}>{userData.position || 'Pozisyon Belirtilmedi'}</p>
               <div style={{ marginTop: '15px', padding: '10px', backgroundColor: colors.primarySoft, borderRadius: '10px', fontSize: '13px', fontStyle: 'italic' }}>
@@ -153,8 +119,10 @@ const UserProfile = () => {
           </div>
         </div>
 
-        {/* SAĞ KOLON */}
+        {/* SAĞ KOLON: Detaylı Bilgiler */}
         <div style={{ flex: '2.5' }}>
+          
+          {/* 1. KURUMSAL BİLGİLER */}
           <div style={styles.card}>
             <div style={styles.sectionTitle}><FaIdCard /> Kurumsal Bilgiler</div>
             <div style={styles.grid}>
@@ -167,6 +135,7 @@ const UserProfile = () => {
             </div>
           </div>
 
+          {/* 2. KİŞİSEL BİLGİLER */}
           <div style={styles.card}>
             <div style={styles.sectionTitle}><FaCalendarAlt /> Kişisel & İletişim Bilgileri</div>
             <div style={styles.grid}>
@@ -180,10 +149,6 @@ const UserProfile = () => {
                   </select>
                 ) : <div style={styles.displayValue}>{userData.bloodGroup || "-"}</div>}
               </div>
-
-              {/* MAİL ALANI: Düzenle deyince artık yazılabilir kutucuk olur */}
-              <InputOrDisplay label="E-Posta" name="email" value={userData.email} isEditing={isEditing} onChange={handleChange} styles={styles} />
-
               <InputOrDisplay label="Telefon" name="phone" value={userData.phone} isEditing={isEditing} onChange={handleChange} styles={styles} />
               <InputOrDisplay label="Şehir / Ülke" name="location" value={userData.location} isEditing={isEditing} onChange={handleChange} styles={styles} />
               <div style={{ gridColumn: 'span 2', ...styles.inputGroup }}>
@@ -192,6 +157,7 @@ const UserProfile = () => {
             </div>
           </div>
 
+          {/* 3. FİNANSAL & ACİL DURUM */}
           <div style={styles.card}>
             <div style={styles.sectionTitle}><FaCreditCard /> Finansal & Acil Durum</div>
             <div style={styles.grid}>
