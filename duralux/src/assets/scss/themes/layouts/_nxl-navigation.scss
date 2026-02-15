@@ -1,6 +1,6 @@
 /*
 <--!----------------------------------------------------------------!-->
-<--! Navigarion CSS Start !-->
+<--! Navigation CSS Start !-->
 <--!----------------------------------------------------------------!-->
 */
 .nxl-navigation {
@@ -8,32 +8,67 @@
   bottom: 0;
   z-index: 1026;
   position: fixed;
-  background: $white;
+  background: #ffffff;
   width: $navigation-width;
   transition: all 0.3s ease;
+  box-shadow: 2px 0 10px rgba(0, 0, 0, 0.03);
 
   .m-header {
-    z-index: 1;
-    overflow: hidden;
-    position: relative;
     display: flex;
-    padding: 15px 30px;
     align-items: center;
+    justify-content: center;
     height: $header-height;
-    background: $white;
-    border-right: 1px solid $border-color;
-    border-bottom: 1px solid $border-color;
+    padding: 0 20px;
+    background: #ffffff;
+    border-right: none;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+    position: relative;
+
+    &::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 20px;
+      right: 20px;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(233, 43, 99, 0.2), transparent);
+    }
 
     .logo-sm {
       display: none;
     }
+
+    img {
+      max-height: 32px;
+      transition: all 0.3s ease;
+    }
   }
 
   .navbar-content {
-    padding: 10px 0;
+    padding: 20px 0;
     position: relative;
-    border-right: 1px solid $border-color;
+    border-right: 1px solid rgba(0, 0, 0, 0.06);
     height: calc(100vh - #{$header-height});
+    overflow-y: auto;
+    overflow-x: hidden;
+
+    /* Custom Scrollbar */
+    &::-webkit-scrollbar {
+      width: 5px;
+    }
+
+    &::-webkit-scrollbar-track {
+      background: transparent;
+    }
+
+    &::-webkit-scrollbar-thumb {
+      background: rgba(233, 43, 99, 0.2);
+      border-radius: 10px;
+    }
+
+    &::-webkit-scrollbar-thumb:hover {
+      background: rgba(233, 43, 99, 0.4);
+    }
 
     ul {
       list-style: none;
@@ -43,11 +78,11 @@
 
     .nxl-caption {
       display: block;
-      color: $brand-muted;
+      color: #94a3b8;
       font-size: $font-10;
       font-weight: $font-700;
-      letter-spacing: 0.07em;
-      padding: 15px 20px 10px;
+      letter-spacing: 0.1em;
+      padding: 20px 20px 12px;
       text-transform: uppercase;
 
       label {
@@ -56,69 +91,119 @@
 
       span:not(.badge) {
         display: block;
-        color: #67758a;
+        color: #94a3b8;
         text-transform: $font-capitalize;
-
         font: {
           size: 10px;
-          weight: 500;
+          weight: 600;
         }
       }
     }
 
     .nxl-micon {
-      margin-right: 12px;
-      display: inline-block;
+      margin-right: 14px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 22px;
+      height: 22px;
       vertical-align: middle;
-
+      flex-shrink: 0;
 
       svg {
-        font-size: 18px;
-        stroke-width: 1.7px;
+        font-size: 20px;
+        stroke-width: 1.8px;
       }
 
+      i {
+        font-size: 20px;
+      }
+    }
+
+    .nxl-mtext {
+      flex: 1;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
     }
 
     .nxl-link {
-      display: block;
-      line-height: 1.4;
-      padding: 10px 15px;
-      font-size: 16px;
-      color: $brand-dark;
+      display: flex;
+      align-items: center;
+      line-height: 1.5;
+      padding: 12px 20px;
+      font-size: 15px;
+      color: #475569;
       font-weight: $font-600;
-      transition: all 0.3s ease;
+      transition: all 0.2s ease;
+      position: relative;
+
+      &::before {
+        content: '';
+        position: absolute;
+        left: 0;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 3px;
+        height: 0;
+        background: linear-gradient(180deg, #E92B63, #ff6b9d);
+        border-radius: 0 3px 3px 0;
+        transition: height 0.2s ease;
+      }
 
       &.active,
       &:hover {
         text-decoration: none;
-        color: $brand-dark;
-        transition: all 0.3s ease;
+        color: #E92B63;
+        background-color: rgba(233, 43, 99, 0.08);
+        transition: all 0.2s ease;
+
+        &::before {
+          height: 60%;
+        }
 
         .nxl-micon {
-          i {
-            color: $brand-dark;
-            transition: all 0.3s ease;
+          i, svg {
+            color: #E92B63;
+            transition: all 0.2s ease;
           }
         }
       }
     }
 
     .nxl-arrow {
-      float: right;
-      //display: inline-block;
+      margin-left: auto;
+      flex-shrink: 0;
       transition: all 0.2s ease-in-out;
+      color: #94a3b8;
+      font-size: 14px;
     }
 
     .nxl-badge {
-      margin-left: 8px;
+      margin-left: auto;
+      flex-shrink: 0;
+      padding: 2px 8px;
+      border-radius: 10px;
+      font-size: 11px;
+      font-weight: 600;
     }
 
     .nxl-submenu {
+      background: rgba(248, 250, 252, 0.5);
+      
       .nxl-link {
         font-size: 14px;
-        padding: 10px 20px;
+        padding: 10px 20px 10px 15px;
         margin-left: 35px !important;
         margin-right: 5px !important;
+        
+        &::before {
+          display: none;
+        }
+
+        .nxl-mtext {
+          font-weight: 500;
+        }
       }
 
       .nxl-submenu {
@@ -139,20 +224,21 @@
         a {
           cursor: not-allowed;
           user-select: none;
+          opacity: 0.5;
         }
       }
 
       &.active,
       &:hover {
-        >.nxl-link {
-          color: $darken;
-          background-color: $brand-light;
-          transition: all 0.3s ease;
+        > .nxl-link {
+          color: #E92B63;
+          background-color: rgba(233, 43, 99, 0.08);
+          transition: all 0.2s ease;
 
           .nxl-micon {
-            i {
-              color: $darken;
-              transition: all 0.3s ease;
+            i, svg {
+              color: #E92B63;
+              transition: all 0.2s ease;
             }
           }
         }
@@ -160,14 +246,13 @@
     }
 
     .nxl-navbar {
-      >.nxl-item {
-
+      > .nxl-item {
         &.active,
         &:hover {
-          >.nxl-link {
-            color: $darken;
-            background-color: $brand-light;
-            transition: all 0.3s ease;
+          > .nxl-link {
+            color: #E92B63;
+            background-color: rgba(233, 43, 99, 0.08);
+            transition: all 0.2s ease;
           }
         }
       }
@@ -175,12 +260,12 @@
 
     .nxl-hasmenu {
       &.nxl-trigger {
-        >.nxl-submenu {
+        > .nxl-submenu {
           display: block;
         }
 
-        >.nxl-link {
-          >.nxl-arrow {
+        > .nxl-link {
+          > .nxl-arrow {
             transform: rotate(90deg);
           }
         }
@@ -190,8 +275,10 @@
     .card {
       margin: 20px;
       color: $brand-dark;
-      background: $gray-100;
-      border-color: $border-color;
+      background: linear-gradient(135deg, #fff5f9 0%, #ffe5f0 100%);
+      border: 1px solid rgba(233, 43, 99, 0.15);
+      border-radius: 12px;
+      box-shadow: 0 2px 8px rgba(233, 43, 99, 0.08);
     }
   }
 
@@ -200,7 +287,7 @@
     visibility: hidden;
     max-height: 0;
     overflow: hidden;
-    transition: all 0.5s ease-in-out;
+    transition: all 0.3s ease-in-out;
   }
 
   .nxl-menu-visible {
@@ -208,9 +295,8 @@
     visibility: visible;
     max-height: 500px;
     overflow: hidden;
-    transition: all 0.5s ease-in-out;
+    transition: all 0.3s ease-in-out;
   }
-
 }
 
 .nxl-menu-overlay {
@@ -220,14 +306,15 @@
   width: 100vw;
   height: 100vh;
   z-index: 1;
-  background: rgba(0, 0, 0, 0.2);
+  background: rgba(233, 43, 99, 0.1);
+  backdrop-filter: blur(2px);
 }
 
 html:not(.minimenu) {
   .nxl-navigation {
     .nxl-link {
-      margin: 3px 15px;
-      border-radius: 5px;
+      margin: 4px 12px;
+      border-radius: 8px;
     }
 
     .nxl-submenu {
@@ -235,18 +322,18 @@ html:not(.minimenu) {
 
       .nxl-item {
         margin: 3px 10px;
-        border-radius: 5px;
+        border-radius: 8px;
       }
 
       .nxl-submenu {
-        >.nxl-item {
+        > .nxl-item {
           &:before {
             left: 60px;
           }
         }
 
         .nxl-submenu {
-          >.nxl-item {
+          > .nxl-item {
             &:before {
               left: 80px;
             }
@@ -281,31 +368,53 @@ html.minimenu {
       transition: all 0.3s ease;
 
       .nxl-link {
-        margin: 0 20px;
-        padding: 12px 20px;
-        border-radius: 6px 6px;
+        margin: 4px 20px;
+        padding: 14px 20px;
+        border-radius: 10px;
+        justify-content: center;
+
+        &::before {
+          display: none;
+        }
+
+        .nxl-micon {
+          margin-right: 0;
+        }
+      }
+
+      // Submenu'yu tamamen gizle collapsed durumda
+      .nxl-submenu {
+        display: none !important;
       }
 
       .nxl-hasmenu.nxl-trigger {
-        >.nxl-submenu {
-          display: none;
+        > .nxl-submenu {
+          display: none !important;
+        }
+
+        > .nxl-link {
+          > .nxl-arrow {
+            transform: rotate(0deg);
+          }
         }
       }
 
       .nxl-caption {
         position: relative;
+        padding: 20px 0 12px;
+        text-align: center;
 
         &:before {
-          top: -6px;
-          display: flex;
-          align-items: center;
+          position: static;
+          display: block;
           width: 100%;
-          height: 100%;
+          height: auto;
           font-size: 20px;
-          padding-left: 20px;
-          content: "...";
-          position: absolute;
-          letter-spacing: -2px;
+          padding: 0;
+          content: "•••";
+          letter-spacing: 3px;
+          color: #E92B63;
+          line-height: 1;
         }
 
         label {
@@ -318,11 +427,22 @@ html.minimenu {
   /*minimenu-hover-expend*/
   .nxl-navigation {
     &:hover {
+      width: $navigation-width;
+      box-shadow: 4px 0 20px rgba(233, 43, 99, 0.15);
+
+      .logo-sm {
+        display: none;
+      }
+
+      .logo-lg {
+        display: block;
+      }
+
       .navbar-content {
         position: absolute !important;
         width: $navigation-width;
         background-color: $white;
-        border-right: 1px solid $border-color;
+        border-right: 1px solid rgba(0, 0, 0, 0.06);
         transition: all 0.3s ease;
 
         .nxl-caption,
@@ -334,39 +454,53 @@ html.minimenu {
         }
 
         .nxl-link {
-          margin: 0 15px;
-          margin-bottom: 3px;
-          padding: 10px 20px;
+          margin: 4px 12px;
+          padding: 12px 20px;
+          justify-content: flex-start;
+
+          &::before {
+            display: block;
+          }
+
+          .nxl-micon {
+            margin-right: 14px;
+          }
         }
 
+        // Hover durumunda submenu'yu göster
         .nxl-submenu {
+          display: block !important;
+
           .nxl-link {
             margin-bottom: 3px;
-            padding-left: 20px;
-            margin-left: 50px !important;
-            margin-right: 15px !important;
+            padding: 10px 20px 10px 15px;
+            margin-left: 35px !important;
+            margin-right: 12px !important;
           }
 
           .nxl-submenu {
             .nxl-link {
-              margin-left: 65px !important;
+              margin-left: 45px !important;
             }
 
             .nxl-submenu {
               .nxl-link {
-                margin-left: 80px !important;
+                margin-left: 55px !important;
               }
             }
           }
         }
 
         .nxl-hasmenu.nxl-trigger {
-          >.nxl-submenu {
-            display: block;
+          > .nxl-submenu {
+            display: block !important;
           }
         }
 
         .nxl-caption {
+          padding: 20px 20px 12px;
+          text-align: left;
+
           &:before {
             content: none;
           }
