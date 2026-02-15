@@ -48,7 +48,8 @@ const AvatarStack = ({ members = [], max = 3 }) => {
 /* ---------------------------------------
    Teams Table
 --------------------------------------- */
-const TeamsTable = () => {
+const TeamsTable = ({ filters = {} }) => {
+
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [isAdmin, setIsAdmin] = useState(false);
@@ -170,10 +171,24 @@ const confirmDelete = async () => {
       </div>
     );
   }
+const filteredData = data.filter(team => {
+
+  // 🔎 Search
+  if (
+    filters.search &&
+    !team.name
+      ?.toLowerCase()
+      .includes(filters.search.toLowerCase())
+  ) {
+    return false;
+  }
+
+  return true;
+});
 
   return (
     <>
-      <Table data={data} columns={columns} loading={loading} />
+      <Table data={filteredData} columns={columns} loading={loading} />
       {deleteId && (
         <div className="modal show d-block" style={{ backgroundColor: "rgba(0,0,0,0.5)" }}>
           <div className="modal-dialog">
