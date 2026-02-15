@@ -1,226 +1,382 @@
 "use client";
-
-import React, { useEffect, useState, useCallback } from "react";
-import Link from "next/link";
+import React, { useEffect, useState, useCallback, useMemo } from "react";
 import { useRouter } from "next/navigation";
-import { FiEye, FiEdit3, FiTrash2, FiMoreHorizontal, FiPlus } from "react-icons/fi";
-import Swal from 'sweetalert2';
+import { taskService } from "@/lib/services/task.service";
+import { userService } from "@/lib/services/user.service";
 
-// Bileşenler
-import Table from "@/components/shared/table/Table";
-import Dropdown from "@/components/shared/Dropdown";
-import CardLoader from "@/components/shared/CardLoader";
-
-// Servisler
-import { proposalService } from "@/lib/services/proposal.service";
-
-// Durum eşleştirme (Backend'deki ProposalStatus Enum ile tam uyumlu)
-const statusMap = {
-  DRAFT: { label: "Taslak", class: "bg-warning-subtle text-warning border-warning-subtle" },
-  SENT: { label: "Gönderildi", class: "bg-info-subtle text-info border-info-subtle" },
-  APPROVED: { label: "Onaylandı", class: "bg-success-subtle text-success border-success-subtle" },
-  REJECTED: { label: "Reddedildi", class: "bg-danger-subtle text-danger border-danger-subtle" },
-  EXPIRED: { label: "Süresi Doldu", class: "bg-secondary-subtle text-secondary border-secondary-subtle" },
+const statusMeta = {
+  NEW: { label: "Yeni", chipBg: "#F1F5F9", chipText: "#0F172A" },
+  IN_PROGRESS: { label: "İşlemde", chipBg: "#EEF2FF", chipText: "#3730A3" },
+  ON_HOLD: { label: "Beklemede", chipBg: "#FFFBEB", chipText: "#92400E" },
+  COMPLETED: { label: "Tamamlandı", chipBg: "#ECFDF5", chipText: "#065F46" },
 };
 
-const ProposalTable = () => {
-  const router = useRouter();
-  const [data, setData] = useState([]);
-  const [loading, setLoading] = useState(true);
+const formatDate = (val) =>
+  val ? new Date(val).toLocaleDateString("tr-TR") : "-";
 
-  // Veri Çekme Fonksiyonu
-  const fetchProposals = useCallback(async () => {
+export default function TaskListContent() {
+  const router = useRouter();
+  const [tasks, setTasks] = useState([]);
+  const [users, setUsers] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [filter, setFilter] = useState("ALL");
+
+  const stats = useMemo(() => {
+    return {
+      total: tasks.length,
+      NEW: tasks.filter((t) => t.status === "NEW").length,
+      IN_PROGRESS: tasks.filter((t) => t.status === "IN_PROGRESS").length,
+      ON_HOLD: tasks.filter((t) => t.status === "ON_HOLD").length,
+      COMPLETED: tasks.filter((t) => t.status === "COMPLETED").length,
+    };
+  }, [tasks]);
+
+  const filteredTasks = useMemo(() => {
+    if (filter === "ALL") return tasks;
+    return tasks.filter((t) => t.status === filter);
+  }, [tasks, filter]);
+
+  const userMap = useMemo(() => {
+    const m = new Map();
+    users.forEach((u) => m.set(u.id, u));
+    return m;
+  }, [users]);
+
+  const getUserLabel = (id) => {
+    if (!id) return "-";
+    const u = userMap.get(id);
+    return u ? `${u.username} (${u.email})` : id;
+  };
+
+  const fetchAll = useCallback(async () => {
+    setLoading(true);
     try {
-      setLoading(true);
-      const res = await proposalService.list({ page: 1, limit: 100, sortBy: 'createdAt', order: 'desc' });
-      
-      // Backend'deki yeni return yapısına göre veriyi alıyoruz: { data: { items: [...] } }
-      const items = res?.data?.items || res?.data?.data || res?.data || [];
-      
-      setData(items);
+      const [taskRes, userRes] = await Promise.all([
+        taskService.list({ page: 1, limit: 100 }),
+        userService.list({ page: 1, limit: 100 }),
+      ]);
+      const taskData = taskRes?.data?.data ?? [];
+      const userData = userRes?.data?.data ?? [];
+      setTasks(Array.isArray(taskData) ? taskData : []);
+      setUsers(Array.isArray(userData) ? userData : []);
     } catch (err) {
-      console.error("Teklif listesi yüklenirken hata:", err);
+      console.error(err);
     } finally {
       setLoading(false);
     }
   }, []);
 
   useEffect(() => {
-    fetchProposals();
-  }, [fetchProposals]);
+    fetchAll();
+  }, [fetchAll]);
 
-  // Silme İşlemi
   const handleDelete = async (id) => {
-    const result = await Swal.fire({
-      title: 'Emin misiniz?',
-      text: "Bu teklif kalıcı olarak silinecektir.",
-      icon: 'warning',
-      showCancelButton: true,
-      confirmButtonColor: '#E92B63',
-      cancelButtonColor: '#6c757d',
-      confirmButtonText: 'Evet, Sil',
-      cancelButtonText: 'Vazgeç',
-      reverseButtons: true,
-      borderRadius: '12px'
-    });
-
-    if (result.isConfirmed) {
-      try {
-        await proposalService.remove(id);
-        setData((prev) => prev.filter((item) => item.id !== id));
-        
-        Swal.fire({
-          icon: 'success',
-          title: 'Silindi!',
-          text: 'Teklif başarıyla kaldırıldı.',
-          timer: 1500,
-          showConfirmButton: false
-        });
-        
-        router.refresh();
-      } catch (err) {
-        Swal.fire('Hata!', 'Silme işlemi başarısız oldu.', 'error');
-      }
+    if (!confirm("Silmek istediğinize emin misiniz?")) return;
+    try {
+      await taskService.delete(id);
+      setTasks((prev) => prev.filter((t) => t.id !== id));
+    } catch (err) {
+      alert("Hata oluştu.");
     }
   };
 
-  // Tablo Kolon Tanımları
-  const columns = [
+  const statCards = [
+    { key: "ALL", title: "Tümü", subtitle: "Toplam görev", value: stats.total },
+    { key: "NEW", title: "Yeni", subtitle: "Yeni açılan", value: stats.NEW },
     {
-      accessorKey: "id",
-      header: "TEKLİF ID",
-      cell: (info) => (
-        <span className="fw-bold text-dark">
-          #{info.getValue().slice(-6).toUpperCase()}
-        </span>
-      ),
+      key: "IN_PROGRESS",
+      title: "İşlemde",
+      subtitle: "Devam eden",
+      value: stats.IN_PROGRESS,
     },
     {
-      accessorKey: "customerName",
-      header: "MÜŞTERİ",
-      cell: (info) => (
-        <div className="d-flex flex-column">
-          <span className="fw-bold text-dark">{info.getValue() || "Bilinmeyen Müşteri"}</span>
-          <small className="text-muted">{info.row.original.customerEmail}</small>
-        </div>
-      ),
+      key: "ON_HOLD",
+      title: "Beklemede",
+      subtitle: "Duraklatılan",
+      value: stats.ON_HOLD,
     },
     {
-      accessorKey: "title",
-      header: "KONU / BAŞLIK",
-      cell: (info) => <span className="text-truncate d-inline-block" style={{maxWidth: '200px'}}>{info.getValue()}</span>
-    },
-    {
-      accessorKey: "totalAmount",
-      header: "TUTAR",
-      cell: (info) => (
-        <span className="fw-bold text-dark">
-          {new Intl.NumberFormat('tr-TR', { style: 'currency', currency: info.row.original.currency || 'TRY' }).format(info.getValue() || 0)}
-        </span>
-      ),
-    },
-    {
-      accessorKey: "status",
-      header: "DURUM",
-      cell: (info) => {
-        const status = info.getValue();
-        const meta = statusMap[status] || { label: status, class: "bg-secondary text-white" };
-        return (
-          <span className={`badge border ${meta.class} px-3 py-2`} style={{ borderRadius: '8px', fontSize: '11px' }}>
-            {meta.label}
-          </span>
-        );
-      },
-    },
-    {
-      accessorKey: "createdAt",
-      header: "TARİH",
-      cell: (info) => (
-        <div className="text-muted small">
-          {new Date(info.getValue()).toLocaleDateString('tr-TR')}
-        </div>
-      ),
-    },
-    {
-      accessorKey: "actions",
-      header: () => <div className="text-end">İŞLEMLER</div>,
-      cell: ({ row }) => (
-        <div className="hstack gap-2 justify-content-end">
-          <Link 
-            href={`/proposals/view/${row.original.id}`} 
-            className="btn btn-sm btn-light-primary avatar-text avatar-md"
-            title="Görüntüle"
-          >
-            <FiEye />
-          </Link>
-          <Dropdown
-            dropdownItems={[
-              { 
-                label: "Düzenle", 
-                icon: <FiEdit3 />, 
-                onClick: () => router.push(`/proposals/edit/${row.original.id}`) 
-              },
-              { type: "divider" },
-              { 
-                label: "Sil", 
-                icon: <FiTrash2 />, 
-                variant: "danger", 
-                onClick: () => handleDelete(row.original.id) 
-              }
-            ]}
-            triggerIcon={<FiMoreHorizontal />}
-            triggerClass="btn btn-sm btn-light avatar-md"
-          />
-        </div>
-      ),
+      key: "COMPLETED",
+      title: "Tamamlandı",
+      subtitle: "Bitirilen",
+      value: stats.COMPLETED,
     },
   ];
 
+  if (loading) {
+    return (
+      <div className="py-5 text-center">
+        <div className="fw-semibold text-muted">Yükleniyor…</div>
+      </div>
+    );
+  }
+
   return (
-    <div className="position-relative">
-      <div className="card border-0 shadow-sm" style={{ borderRadius: '16px' }}>
-        <div className="card-header bg-white border-0 py-3 d-flex justify-content-between align-items-center">
-          <div>
-            <h5 className="mb-0 fw-bold text-dark">Teklif Yönetimi</h5>
-            <small className="text-muted">Toplam {data.length} teklif listeleniyor</small>
+    <div className="col-12">
+      {/* ÜST BAR */}
+      <div className="d-flex align-items-center justify-content-end mb-3">
+
+
+        <button
+          className="btn btn-sm text-white px-3"
+          style={{
+            backgroundColor: "#E92B63",
+            borderRadius: "10px",
+            fontWeight: 700,
+          }}
+          onClick={() => router.push("/tasks/create")}
+        >
+          + Yeni Görev
+        </button>
+      </div>
+
+      {/* İSTATİSTİK / FİLTRE KARTLARI */}
+      <div className="row g-3 mb-4">
+        {statCards.map((c) => {
+          const active = filter === c.key;
+          const width =
+            stats.total === 0 ? 0 : Math.min(100, (c.value / stats.total) * 100);
+
+          return (
+            <div className="col-12 col-md" key={c.key}>
+              <button
+                type="button"
+                className="w-100 text-start border-0 p-0 bg-transparent"
+                onClick={() => setFilter(c.key)}
+                style={{ cursor: "pointer" }}
+              >
+                <div
+                  className="card h-100 task-filter-card"
+                  style={{
+                    borderRadius: 14,
+                    border: active ? "1px solid #111827" : "1px solid #E5E7EB",
+                    boxShadow: active
+                      ? "0 8px 24px rgba(17,24,39,0.12)"
+                      : "0 6px 18px rgba(17,24,39,0.06)",
+                    transition: "all .2s ease",
+                  }}
+                >
+
+                  <div className="card-body py-3">
+                    <div className="d-flex align-items-start justify-content-between">
+                      <div>
+                        <div className="fw-semibold text-dark">{c.title}</div>
+                        <div className="text-muted small">{c.subtitle}</div>
+                      </div>
+                      <div
+                        className="fw-bold"
+                        style={{
+                          fontSize: 22,
+                          color: active ? "#111827" : "#374151",
+                        }}
+                      >
+                        {c.value}
+                      </div>
+                    </div>
+
+                    <div className="mt-3">
+                      <div
+                        style={{
+                          height: 4,
+                          borderRadius: 999,
+                          background: "#F3F4F6",
+                          overflow: "hidden",
+                        }}
+                      >
+                        <div
+                          style={{
+                            height: "100%",
+                            width: `${width}%`,
+                            background: active ? "#111827" : "#9CA3AF",
+                            borderRadius: 999,
+                            transition: "width .18s ease",
+                          }}
+                        />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </button>
+            </div>
+          );
+        })}
+      </div>
+
+      {/* LİSTE KARTI */}
+      <div
+        className="card border-0"
+        style={{
+          borderRadius: 16,
+          boxShadow: "0 10px 28px rgba(17,24,39,0.08)",
+        }}
+      >
+        <div
+          className="card-header bg-white border-0 d-flex align-items-center justify-content-between"
+          style={{ borderTopLeftRadius: 16, borderTopRightRadius: 16 }}
+        >
+          <div className="fw-bold text-dark">
+            Görev Listesi{" "}
+            <span className="text-muted fw-normal">({filteredTasks.length})</span>
           </div>
-          <button 
-            onClick={() => router.push('/proposals/create')}
-            className="btn btn-pink d-flex align-items-center gap-2"
+
+          <button
+            className="btn btn-sm btn-outline-secondary"
+            onClick={() => fetchAll()}
+            title="Yenile"
           >
-            <FiPlus /> Yeni Teklif Oluştur
+            ↻ Yenile
           </button>
         </div>
-        
+
         <div className="card-body p-0">
-          <Table data={data} columns={columns} />
+          {filteredTasks.length === 0 ? (
+            <div className="p-5 text-center">
+              <div className="fw-semibold text-dark mb-1">Kayıt bulunamadı</div>
+              <div className="text-muted small mb-3">
+                Bu filtre için gösterilecek görev yok.
+              </div>
+              <button
+                className="btn btn-sm btn-outline-dark"
+                onClick={() => setFilter("ALL")}
+              >
+                Filtreyi kaldır
+              </button>
+            </div>
+          ) : (
+            <div className="table-responsive">
+              <table className="table align-middle mb-0">
+                <thead style={{ background: "#F8FAFC" }}>
+                  <tr className="text-muted small">
+                    <th className="ps-4 py-3 border-0 fw-semibold">Başlık</th>
+                    <th className="py-3 border-0 fw-semibold">Durum</th>
+                    <th className="py-3 border-0 fw-semibold">Atanan</th>
+                    <th className="py-3 border-0 fw-semibold">Bitiş</th>
+                    <th className="py-3 pe-4 border-0 fw-semibold text-end">
+                      Aksiyon
+                    </th>
+                  </tr>
+                </thead>
+
+                <tbody>
+                  {filteredTasks.map((task) => {
+                    const meta =
+                      statusMeta[task.status] || {
+                        label: task.status,
+                        chipBg: "#F3F4F6",
+                        chipText: "#111827",
+                      };
+
+                    return (
+                      <tr
+                        key={task.id}
+                        style={{ borderTop: "1px solid #F1F5F9" }}
+                      >
+                        <td className="ps-4 py-3">
+                          <div className="fw-semibold text-dark">{task.title}</div>
+                        </td>
+
+                        <td className="py-3">
+                          <span
+                            className="px-2 py-1"
+                            style={{
+                              display: "inline-flex",
+                              alignItems: "center",
+                              gap: 6,
+                              borderRadius: 999,
+                              background: meta.chipBg,
+                              color: meta.chipText,
+                              fontSize: 12,
+                              fontWeight: 700,
+                            }}
+                          >
+                            <span
+                              style={{
+                                width: 6,
+                                height: 6,
+                                borderRadius: 999,
+                                background: meta.chipText,
+                                display: "inline-block",
+                              }}
+                            />
+                            {meta.label}
+                          </span>
+                        </td>
+
+                        <td className="py-3 text-muted small">
+                          {getUserLabel(task.assignedUserId)}
+                        </td>
+
+                        <td className="py-3 text-muted small">
+                          {formatDate(task.endDate)}
+                        </td>
+
+                        <td className="py-3 pe-4">
+                          <div className="d-flex justify-content-end gap-2">
+                            <button
+                              className="btn btn-sm btn-outline-secondary"
+                              title="Görüntüle"
+                              onClick={() => router.push(`/tasks/view/${task.id}`)}
+                            >
+                              Görüntüle
+                            </button>
+
+                            <button
+                              className="btn btn-sm btn-outline-primary"
+                              title="Güncelle"
+                              onClick={() => router.push(`/tasks/edit/${task.id}`)}
+                            >
+                              Düzenle
+                            </button>
+
+                            <button
+                              className="btn btn-sm btn-outline-danger"
+                              title="Sil"
+                              onClick={() => handleDelete(task.id)}
+                            >
+                              Sil
+                            </button>
+                          </div>
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            </div>
+          )}
         </div>
-        
-        {loading && <CardLoader refreshKey={loading} />}
       </div>
 
       <style jsx global>{`
-        .btn-pink {
-          background-color: #E92B63;
-          color: white;
-          border-radius: 10px;
-          font-weight: 600;
-          padding: 8px 20px;
-          transition: all 0.2s;
-        }
-        .btn-pink:hover {
-          background-color: #d12255;
-          color: white;
-          transform: translateY(-1px);
-          box-shadow: 0 4px 12px rgba(233, 43, 99, 0.2);
-        }
-        .bg-warning-subtle { background-color: #fff3cd !important; }
-        .bg-success-subtle { background-color: #d1e7dd !important; }
-        .bg-info-subtle { background-color: #cff4fc !important; }
-        .bg-danger-subtle { background-color: #f8d7da !important; }
-      `}</style>
+  /* ===== FILTRE KARTLARI PEMBE HOVER ===== */
+
+  .task-filter-card {
+    transition: all 0.25s ease;
+  }
+
+  .task-filter-card:hover {
+    transform: translateY(-4px);
+    background: #fff0f6; /* çok soft pembe */
+    border: 1px solid #f8a5c2 !important;
+    box-shadow: 0 12px 28px rgba(233, 43, 99, 0.18);
+  }
+
+  /* Aktif kart hover'da daha koyu pembe olsun */
+  .task-filter-card.active,
+  .task-filter-card.active:hover {
+    background: linear-gradient(
+      135deg,
+      #ffe4ec,
+      #ffc1d6
+    ) !important;
+    border: 1px solid #e92b63 !important;
+    box-shadow: 0 14px 34px rgba(233, 43, 99, 0.25);
+  }
+`}</style>
+
+
+
+
     </div>
   );
-};
-
-export default ProposalTable;
+}

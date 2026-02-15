@@ -1,4 +1,3 @@
-
 export const menuList = [
   {
     id: 0,
@@ -9,42 +8,57 @@ export const menuList = [
   },
 
   {
-    id: 3,
-    name: "Teklifler",
+    id: 10,
+    name: "Projelerimiz",
     path: "#",
-    icon: "feather-file-text",
+    icon: "feather-folder",
     dropdownMenu: [
       {
         id: 1,
-        name: "Teklifleri Görüntüle",
-        path: "/proposal/list",
-        subdropdownMenu: false,
-      },
-      {
-        id: 4,
-        name: "Teklif Oluştur",
-        path: "/proposal/create",
+        name: "Proje Kartları",
+        path: "/projects/board",
         subdropdownMenu: false,
       },
     ],
   },
 
   {
-    id: 5,
-    name: "Müşteriler",
+    id: 9,
+    name: "Plan & Akış",
     path: "#",
-    icon: "feather-user",
+    icon: "feather-layers",
     dropdownMenu: [
       {
         id: 1,
-        name: "Müşterileri Görüntüle",
-        path: "/customers/list",
+        name: "Pano",
+        path: "/program/board",
         subdropdownMenu: false,
       },
       {
-        id: 3,
-        name: "Müşteri Oluştur",
-        path: "/customers/create",
+        id: 2,
+        name: "Plan",
+        path: "/program/plan",
+        subdropdownMenu: false,
+      },
+    ],
+  },
+
+  {
+    id: 8,
+    name: "Ödemeler",
+    path: "#",
+    icon: "feather-dollar-sign",
+    dropdownMenu: [
+      {
+        id: 1,
+        name: "Gelir/Gider Görüntüle",
+        path: "/income-expense/list",
+        subdropdownMenu: false,
+      },
+      {
+        id: 2,
+        name: "Gelir/Gider Oluştur",
+        path: "/income-expense/create",
         subdropdownMenu: false,
       },
     ],
@@ -105,57 +119,42 @@ export const menuList = [
   },
 
   {
-    id: 8,
-    name: "Ödemeler",
+    id: 5,
+    name: "Müşteriler",
     path: "#",
-    icon: "feather-dollar-sign",
+    icon: "feather-user",
     dropdownMenu: [
       {
         id: 1,
-        name: "Gelir/Gider Görüntüle",
-        path: "/income-expense/list",
+        name: "Müşterileri Görüntüle",
+        path: "/customers/list",
         subdropdownMenu: false,
       },
       {
-        id: 2,
-        name: "Gelir/Gider Oluştur",
-        path: "/income-expense/create",
+        id: 3,
+        name: "Müşteri Oluştur",
+        path: "/customers/create",
         subdropdownMenu: false,
       },
     ],
   },
 
   {
-    id: 9,
-    name: "Plan & Akış",
+    id: 3,
+    name: "Teklifler",
     path: "#",
-    icon: "feather-layers",
+    icon: "feather-file-text",
     dropdownMenu: [
       {
         id: 1,
-        name: "Pano",
-        path: "/program/board",
+        name: "Teklifleri Görüntüle",
+        path: "/proposal/list",
         subdropdownMenu: false,
       },
       {
-        id: 2,
-        name: "Plan",
-        path: "/program/plan",
-        subdropdownMenu: false,
-      },
-    ],
-  },
-
-  {
-    id: 10,
-    name: "Projelerimiz",
-    path: "#",
-    icon: "feather-folder",
-    dropdownMenu: [
-      {
-        id: 1,
-        name: "Proje Kartları",
-        path: "/projects/board",
+        id: 4,
+        name: "Teklif Oluştur",
+        path: "/proposal/create",
         subdropdownMenu: false,
       },
     ],
