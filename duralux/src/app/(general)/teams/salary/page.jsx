@@ -12,9 +12,9 @@ const TeamsLeavesPage = () => {
       .me()
       .then((res) => {
         if (res.data.role === "ADMIN") {
-          router.replace("/teams/payroll/admin");
+          router.replace("/teams/salary/admin");
         } else {
-          router.replace("/teams/payroll/user");
+          router.replace("/teams/salary/user");
         }
       })
       .catch(() => {

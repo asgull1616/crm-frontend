@@ -77,7 +77,7 @@ export const menuList = [
       {
         id: 5,
         name: "Maaş & Ödemeler",
-        path: "/teams/payroll",
+        path: "/teams/salary",
         subdropdownMenu: false,
       },
     ],
