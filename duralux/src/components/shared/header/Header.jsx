@@ -29,17 +29,6 @@ const Header = () => {
     }
   }, [openMegaMenu])
 
-  const handleThemeMode = (type) => {
-    if (type === "dark") {
-      document.documentElement.classList.add("app-skin-dark")
-      localStorage.setItem("skinTheme", "dark");
-    }
-    else {
-      document.documentElement.classList.remove("app-skin-dark")
-      localStorage.setItem("skinTheme", "light");
-    }
-  }
-
   useEffect(() => {
     const handleResize = () => {
       const newWindowWidth = window.innerWidth;
@@ -62,9 +51,6 @@ const Header = () => {
     window.addEventListener('resize', handleResize);
 
     handleResize();
-
-    const savedSkinTheme = localStorage.getItem("skinTheme");
-    handleThemeMode(savedSkinTheme)
 
     return () => {
       window.removeEventListener('resize', handleResize);
@@ -157,13 +143,7 @@ const Header = () => {
               <FiArrowRight size={24} />
             </a>
           </div>
-          {/* */}
-          <div className="nxl-lavel-mega-menu-toggle d-flex d-lg-none">
-            <a href="#" onClick={(e) => { e.preventDefault(), setOpenMegaMenu(true) }} id="nxl-lavel-mega-menu-open">
-              <FiAlignLeft size={24} />
-            </a>
-          </div>
-          {/* */}
+     
           <div className="nxl-drp-link nxl-lavel-mega-menu">
             <div className="nxl-lavel-mega-menu-toggle d-flex d-lg-none">
               <a href="#" onClick={(e) => { e.preventDefault(), setOpenMegaMenu(false) }} id="nxl-lavel-mega-menu-hide">
@@ -173,7 +153,7 @@ const Header = () => {
             </div>
             {/* */}
             <div className="nxl-lavel-mega-menu-wrapper d-flex gap-3">
-              <HeaderDropDownModal />
+              {/* <HeaderDropDownModal /> */}
               <MegaMenu />
             </div>
           </div>
@@ -189,14 +169,6 @@ const Header = () => {
                   <FiMaximize size={20} className="maximize" onClick={fullScreenMaximize} />
                   <FiMinimize size={20} className="minimize" onClick={fullScreenMinimize} />
                 </span>
-              </div>
-            </div>
-            <div className="nxl-h-item dark-light-theme">
-              <div className="nxl-head-link me-0 dark-button" onClick={() => handleThemeMode("dark")}>
-                <FiMoon size={20} />
-              </div>
-              <div className="nxl-head-link me-0 light-button" onClick={() => handleThemeMode("light")} style={{ display: "none" }}>
-                <FiSun size={20} />
               </div>
             </div>
             {/* <TimesheetsModal /> */}

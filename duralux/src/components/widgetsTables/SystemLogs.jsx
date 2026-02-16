@@ -94,12 +94,12 @@ const SystemLogs = () => {
                         </div>
                         <div>
                           <span className="fw-bold d-block text-dark mb-0 fs-14">{log.user}</span>
-                          <span className="text-muted" style={{ fontSize: "11px" }}>IP Adresi Gizlendi</span>
+                          <span className="text-muted" style={{ fontSize: "13px" }}>IP Adresi Gizlendi</span>
                         </div>
                       </div>
                     </td>
                     <td>
-                      <div className="d-flex align-items-center text-muted fs-13">
+                      <div className="d-flex align-items-center text-muted fs-15">
                         <FiZap className="me-2 text-warning opacity-50" />
                         {log.action}
                       </div>
