@@ -1,332 +1,257 @@
 "use client";
 
-import { useParams } from "next/navigation";
+import { useParams, useSearchParams, useRouter } from "next/navigation";
 import React, { useEffect, useMemo, useState } from "react";
 import PageHeader from "@/components/shared/pageHeader/PageHeader";
 
 const PRIMARY = "#E92B63";
 const SOFT = "#FFE4EC";
+const STAGES = ["Analiz", "Tasarım", "Kodlama", "Test", "Yayın"];
+const FLOW_STATUSES = ["Teklif", "Geliştirme", "Test"];
 
 export default function ProjectDetailPage() {
   const { id } = useParams();
+  const searchParams = useSearchParams();
+  const router = useRouter();
+  
   const [project, setProject] = useState(null);
+  const [customers, setCustomers] = useState([]); 
+  const [isEditing, setIsEditing] = useState(searchParams.get("edit") === "true");
 
   useEffect(() => {
-    // 1) sessionStorage (board'dan tıklayınca gelir)
-    const ss = safeParse(sessionStorage.getItem("selectedProject"));
-    if (ss && String(ss.id) === String(id)) {
-      setProject(normalize(ss, id));
-      return;
+    const data = sessionStorage.getItem("selectedProject");
+    if (data) {
+      setProject(normalize(JSON.parse(data), id));
+    } else {
+      setProject(normalize({ id }, id));
     }
 
-    // 2) localStorage (projeleri sakladıysan buradan bulur)
-    const ls = safeParse(localStorage.getItem("projects"));
-    if (Array.isArray(ls)) {
-      const found = ls.find((p) => String(p.id) === String(id));
-      if (found) {
-        setProject(normalize(found, id));
-        return;
-      }
-    }
-
-    // 3) fallback: hiç data yoksa bile sayfa çalışsın
-    setProject(
-      normalize(
-        {
-          id,
-          project: "Proje bulunamadı",
-          customer: "—",
-          type: "—",
-          team: "—",
-          deliveryDate: "",
-          flowStatus: "Teklif",
-          stage: "Analiz",
-          price: 0,
-          deposit: 0,
-          paymentDates: [],
-        },
-        id
-      )
-    );
+    const mockCustomers = [
+      { id: "c1", name: "CK Paslanmaz" },
+      { id: "c2", name: "Dadaylılar" },
+      { id: "c3", name: "Empet" },
+      { id: "c4", name: "Kartepe Group" }
+    ];
+    setCustomers(mockCustomers);
   }, [id]);
 
   const finance = useMemo(() => {
-    if (!project) return null;
+    if (!project) return { total: 0, deposit: 0, remaining: 0, progress: 0 };
     const total = toNumber(project.price);
     const deposit = toNumber(project.deposit);
-    const remaining =
-      project.remaining === "" || project.remaining == null
-        ? Math.max(total - deposit, 0)
-        : toNumber(project.remaining);
-    const progress = total ? Math.min(100, Math.round((deposit / total) * 100)) : 0;
-    return { total, deposit, remaining, progress };
+    return {
+      total,
+      deposit,
+      remaining: Math.max(total - deposit, 0),
+      progress: total ? Math.min(100, Math.round((deposit / total) * 100)) : 0
+    };
   }, [project]);
 
-  if (!project) return <div style={{ padding: 30, fontWeight: 900 }}>Yükleniyor...</div>;
+  if (!project) return <div style={{ padding: 50, fontWeight: 900, color: PRIMARY }}>Yükleniyor...</div>;
 
-  return (<>
-    <PageHeader />
-    <div style={{ padding: 30 }}>
-      {/* HEADER */}
-      <div style={header}>
-        <div>
-          <div style={miniTitle}>Proje Kartı</div>
-          <div style={mainTitle}>{project.project}</div>
-          <div style={customer}>{project.customer}</div>
-
-          <div style={{ marginTop: 14, display: "flex", gap: 10, flexWrap: "wrap" }}>
-            <span style={pillSoft}>{project.type || "—"}</span>
-            <span style={pillStrong}>{project.flowStatus || "—"}</span>
-            <span style={pillSoft}>{project.stage || "—"}</span>
+  return (
+    <>
+      <PageHeader />
+      <div style={{ padding: 30 }}>
+        {/* HEADER */}
+        <div style={header}>
+          <div style={{ flex: 1 }}>
+            <div style={miniTitle}>Proje Kartı</div>
+            {isEditing ? (
+              <div style={{ display: "flex", flexDirection: "column", gap: 10, marginTop: 10 }}>
+                <input 
+                  style={inputTransparent} 
+                  value={project.project} 
+                  onChange={(e) => setProject({...project, project: e.target.value})} 
+                />
+                <select 
+                  style={selectHeader}
+                  value={project.customer}
+                  onChange={(e) => setProject({...project, customer: e.target.value})}
+                >
+                  <option value="">Müşteri Seç...</option>
+                  {customers.map(c => <option key={c.id} value={c.name} style={{color: '#333'}}>{c.name}</option>)}
+                </select>
+              </div>
+            ) : (
+              <>
+                <div style={mainTitle}>{project.project}</div>
+                <div style={customerText}>{project.customer}</div>
+              </>
+            )}
           </div>
         </div>
 
-        <button style={backBtn} onClick={() => window.history.back()}>
-          ← Geri
-        </button>
-      </div>
+        <div style={grid}>
+          {/* GENEL BİLGİ */}
+          <Card title="Genel Bilgi">
+            <InfoRow label="Tür" isEditing={isEditing} value={project.type} onChange={(v) => setProject({...project, type: v})} />
+            <InfoRow label="Sorumlu" isEditing={isEditing} value={project.team} onChange={(v) => setProject({...project, team: v})} />
+            <InfoRow label="Teslim" type="date" isEditing={isEditing} value={project.deliveryDate} onChange={(v) => setProject({...project, deliveryDate: v})} />
+          </Card>
 
-      {/* GRID */}
-      <div style={grid}>
-        {/* GENEL */}
-        <Card title="Genel Bilgi">
-          <Info label="Tür" value={project.type} />
-          <Info label="Sorumlu" value={project.team || "—"} />
-          <Info label="Teslim Tarihi" value={project.deliveryDate ? formatTR(project.deliveryDate) : "—"} />
-        </Card>
-
-        {/* AŞAMA / TIMELINE */}
-        <Card title="Aşamalar">
-          <Timeline stage={project.stage || "Analiz"} />
-        </Card>
-
-        {/* FİNANS */}
-        <Card title="Finans">
-          <Info label="Toplam Fiyat" value={formatTL(finance.total)} />
-          <Info label="Peşinat" value={formatTL(finance.deposit)} />
-          <Info label="Kalan" value={formatTL(finance.remaining)} />
-
-          <div style={{ marginTop: 16 }}>
-            <div style={progressBarBg}>
-              <div style={{ ...progressBarFill, width: `${finance.progress}%` }} />
+          {/* DURUM SEÇİMİ */}
+          <Card title="Durum">
+            <div style={{ marginTop: 12 }}>
+              {FLOW_STATUSES.map((fs) => (
+                <div key={fs} style={timelineRow} onClick={() => isEditing && setProject({...project, flowStatus: fs})}>
+                  <div style={{ ...timelineDot, background: project.flowStatus === fs ? PRIMARY : "#e5e7eb" }} />
+                  <div style={{ fontWeight: project.flowStatus === fs ? 950 : 800, color: project.flowStatus === fs ? PRIMARY : "#344054", cursor: isEditing ? "pointer" : "default" }}>{fs}</div>
+                </div>
+              ))}
             </div>
-            <div style={progressText}>%{finance.progress} ödendi</div>
+          </Card>
 
-            <div style={{ marginTop: 10 }}>
-              <span style={badgePay(project.paidStatus || "Bekliyor")}>
-                {project.paidStatus || "Bekliyor"}
-              </span>
+          {/* AŞAMALAR */}
+          <Card title="Aşamalar">
+            <div style={{ marginTop: 12 }}>
+              {STAGES.map((s) => (
+                <div key={s} style={timelineRow} onClick={() => isEditing && setProject({...project, stage: s})}>
+                  <div style={{ ...timelineDot, background: project.stage === s ? PRIMARY : "#e5e7eb" }} />
+                  <div style={{ fontWeight: project.stage === s ? 950 : 800, color: project.stage === s ? PRIMARY : "#344054", cursor: isEditing ? "pointer" : "default" }}>{s}</div>
+                </div>
+              ))}
+            </div>
+          </Card>
+
+          {/* FİNANS */}
+          <Card title="Finans">
+            <EditInfoRow label="Toplam Fiyat" type="number" isEditing={isEditing} value={project.price} onChange={(v) => setProject({...project, price: v})} />
+            <EditInfoRow label="Peşinat" type="number" isEditing={isEditing} value={project.deposit} onChange={(v) => setProject({...project, deposit: v})} />
+            <div style={infoRowStyle}>
+              <span style={infoLabel}>Kalan</span>
+              <span style={{...infoValue, color: PRIMARY}}>{finance.remaining} TL</span>
+            </div>
+          </Card>
+
+          {/* ÖDEME TARİHLERİ + BUTON GRUBU */}
+          <div style={paymentSectionWrapper}>
+            <div style={{ flex: 2 }}>
+              <Card title="Ödeme Tarihleri">
+                {(project.paymentDates || []).map((date, idx) => (
+                  <div key={idx} style={paymentCardSmall}>
+                    {isEditing ? (
+                      <input 
+                        type="date" 
+                        style={innerInput} 
+                        value={date} 
+                        onChange={(e) => {
+                          const newDates = [...project.paymentDates];
+                          newDates[idx] = e.target.value;
+                          setProject({...project, paymentDates: newDates});
+                        }} 
+                      />
+                    ) : (
+                      <div style={{ color: PRIMARY, fontWeight: 650 }}>{formatTR(date)}</div>
+                    )}
+                  </div>
+                ))}
+              </Card>
+            </div>
+
+            {/* BUTONLARIN OLDUĞU YAN ALAN */}
+            <div style={actionButtonGroup}>
+              {isEditing ? (
+                <button style={saveBtnSide} onClick={() => { setIsEditing(false); sessionStorage.setItem("selectedProject", JSON.stringify(project)); }}>
+                  Kaydet
+                </button>
+              ) : (
+                <button style={editBtnSide} onClick={() => setIsEditing(true)}>
+                  Düzenle
+                </button>
+              )}
+              <button style={backBtnSide} onClick={() => router.back()}>
+                Geri
+              </button>
             </div>
           </div>
-        </Card>
-
-        {/* ÖDEME PLAN */}
-        <Card title="Ödeme Tarihleri">
-          {Array.isArray(project.paymentDates) && project.paymentDates.length > 0 ? (
-            project.paymentDates.map((d, i) => (
-              <div key={i} style={paymentCard}>
-                {formatTR(d)}
-              </div>
-            ))
-          ) : (
-            <div style={{ color: "#667085", fontWeight: 800 }}>
-              Ödeme tarihi eklenmemiş.
-            </div>
-          )}
-        </Card>
+        </div>
       </div>
-    </div></>
+    </>
   );
 }
 
-/* ---------- helpers ---------- */
-function safeParse(v) {
-  try {
-    return v ? JSON.parse(v) : null;
-  } catch {
-    return null;
-  }
+/* --- YARDIMCI BİLEŞENLER --- */
+function Card({ title, children }) {
+  return <div style={cardStyle}><div style={cardTitleStyle}>{title}</div>{children}</div>;
 }
 
+function InfoRow({ label, value, isEditing, onChange, type="text" }) {
+  return (
+    <div style={infoRowStyle}>
+      <span style={infoLabel}>{label}</span>
+      {isEditing ? (
+        <input type={type} style={inputStyle} value={value || ""} onChange={(e) => onChange(e.target.value)} />
+      ) : (
+        <span style={infoValue}>{value || "—"}</span>
+      )}
+    </div>
+  );
+}
+
+function EditInfoRow({ label, value, isEditing, onChange, type="text" }) {
+  return (
+    <div style={infoRowStyle}>
+      <span style={infoLabel}>{label}</span>
+      {isEditing ? (
+        <input type={type} style={inputStyle} value={value || ""} onChange={(e) => onChange(e.target.value)} />
+      ) : (
+        <span style={infoValue}>{type === "number" ? `${value} TL` : (value || "—")}</span>
+      )}
+    </div>
+  );
+}
+
+/* --- FONKSİYONLAR --- */
 function normalize(p, id) {
   return {
     id: p.id ?? id,
-    project: p.project ?? p.name ?? "",
-    customer: p.customer ?? "—",
-    type: p.type ?? "—",
-    team: p.team ?? p.owner ?? "—",
+    project: p.project ?? "Yeni Proje",
+    customer: p.customer ?? "Müşteri Seçilmedi",
+    type: p.type ?? "Web",
+    team: p.team ?? "—",
     deliveryDate: p.deliveryDate ?? "",
     flowStatus: p.flowStatus ?? "Teklif",
     stage: p.stage ?? "Analiz",
     price: p.price ?? 0,
     deposit: p.deposit ?? 0,
-    remaining: p.remaining ?? "",
-    paidStatus: p.paidStatus ?? "Bekliyor",
-    paymentDates: p.paymentDates ?? [],
+    paymentDates: p.paymentDates ?? []
   };
 }
 
 function toNumber(v) {
-  if (v === null || v === undefined || v === "") return 0;
-  const s = String(v).replaceAll(".", "").replaceAll(",", ".");
-  const n = Number(s);
-  return Number.isFinite(n) ? n : 0;
+  const n = Number(String(v).replace(/[^0-9.-]+/g, ""));
+  return isNaN(n) ? 0 : n;
 }
 
 function formatTR(iso) {
   const d = new Date(iso);
-  if (Number.isNaN(d.getTime())) return "—";
-  return d.toLocaleDateString("tr-TR", { day: "2-digit", month: "2-digit", year: "numeric" });
+  return isNaN(d.getTime()) ? "—" : d.toLocaleDateString("tr-TR");
 }
 
-function formatTL(n) {
-  try {
-    return new Intl.NumberFormat("tr-TR", {
-      style: "currency",
-      currency: "TRY",
-      maximumFractionDigits: 0,
-    }).format(Number(n || 0));
-  } catch {
-    return `${n} TL`;
-  }
-}
-
-/* ---------- UI components ---------- */
-function Card({ title, children }) {
-  return (
-    <div style={card}>
-      <div style={cardTitle}>{title}</div>
-      {children}
-    </div>
-  );
-}
-
-function Info({ label, value }) {
-  return (
-    <div style={infoRow}>
-      <span style={infoLabel}>{label}</span>
-      <span style={infoValue}>{value}</span>
-    </div>
-  );
-}
-
-function Timeline({ stage }) {
-  const stages = ["Analiz", "Tasarım", "Kodlama", "Test", "Yayın"];
-  return (
-    <div style={{ marginTop: 12 }}>
-      {stages.map((s) => {
-        const active = s === stage;
-        return (
-          <div key={s} style={timelineRow}>
-            <div style={{ ...timelineDot, background: active ? PRIMARY : "#e5e7eb" }} />
-            <div style={{ fontWeight: active ? 950 : 800, color: active ? PRIMARY : "#344054" }}>
-              {s}
-            </div>
-          </div>
-        );
-      })}
-    </div>
-  );
-}
-
-/* ---------- styles ---------- */
-const header = {
-  background: `linear-gradient(135deg, ${PRIMARY}, #ff6b9a)`,
-  padding: 26,
-  borderRadius: 22,
-  color: "#fff",
-  marginBottom: 18,
-  display: "flex",
-  justifyContent: "space-between",
-  alignItems: "flex-start",
-  gap: 14,
-  boxShadow: "0 18px 50px rgba(233,43,99,0.28)",
-};
-
+/* --- STİLLER --- */
+const header = { background: `linear-gradient(135deg, ${PRIMARY}, #ff6b9a)`, padding: 26, borderRadius: 22, color: "#fff", marginBottom: 18, display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: 14 };
 const miniTitle = { fontSize: 13, fontWeight: 900, opacity: 0.95 };
 const mainTitle = { fontSize: 30, fontWeight: 950, marginTop: 6 };
-const customer = { fontSize: 14, fontWeight: 900, opacity: 0.92, marginTop: 6 };
-
-const pillSoft = {
-  background: "rgba(255,255,255,0.18)",
-  border: "1px solid rgba(255,255,255,0.25)",
-  padding: "8px 12px",
-  borderRadius: 999,
-  fontSize: 13,
-  fontWeight: 950,
-};
-
-const pillStrong = {
-  background: "#fff",
-  color: PRIMARY,
-  padding: "8px 12px",
-  borderRadius: 999,
-  fontSize: 13,
-  fontWeight: 950,
-};
-
-const backBtn = {
-  padding: "10px 14px",
-  borderRadius: 14,
-  border: "1px solid rgba(255,255,255,0.35)",
-  background: "rgba(255,255,255,0.16)",
-  color: "#fff",
-  fontWeight: 950,
-  cursor: "pointer",
-};
-
-const grid = {
-  display: "grid",
-  gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))",
-  gap: 16,
-};
-
-const card = {
-  background: "#fff",
-  borderRadius: 20,
-  padding: 18,
-  boxShadow: "0 16px 40px rgba(0,0,0,0.06)",
-  border: "1px solid rgba(233,43,99,0.10)",
-};
-
-const cardTitle = {
-  fontSize: 15,
-  fontWeight: 950,
-  marginBottom: 12,
-  color: PRIMARY,
-  borderBottom: "1px solid rgba(233,43,99,0.12)",
-  paddingBottom: 10,
-};
-
-const infoRow = { display: "flex", justifyContent: "space-between", marginBottom: 10, gap: 12 };
+const customerText = { fontSize: 16, fontWeight: 900, opacity: 0.9, marginTop: 4 };
+const grid = { display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))", gap: 16 };
+const cardStyle = { background: "#fff", borderRadius: 20, padding: 18, boxShadow: "0 16px 40px rgba(0,0,0,0.06)", border: "1px solid rgba(233,43,99,0.10)" };
+const cardTitleStyle = { fontSize: 15, fontWeight: 950, marginBottom: 12, color: PRIMARY, borderBottom: "1px solid rgba(233,43,99,0.12)", paddingBottom: 10 };
+const infoRowStyle = { display: "flex", justifyContent: "space-between", marginBottom: 10, alignItems: "center" };
 const infoLabel = { color: "#667085", fontWeight: 900, fontSize: 13 };
-const infoValue = { fontWeight: 950, color: "#101828", fontSize: 14, textAlign: "right" };
-
+const infoValue = { fontWeight: 950, color: "#101828", fontSize: 14 };
+const inputStyle = { padding: "6px 10px", borderRadius: 8, border: "1px solid #ddd", textAlign: "right", width: "130px", outline: "none", fontWeight: "900" };
+const inputTransparent = { background: "rgba(255,255,255,0.1)", border: "1px solid #fff", borderRadius: 8, color: "#fff", fontSize: "24px", fontWeight: "900", outline: "none", width: "100%", padding: "5px" };
+const selectHeader = { ...inputTransparent, fontSize: "16px", cursor: "pointer" };
 const timelineRow = { display: "flex", alignItems: "center", gap: 10, marginBottom: 10 };
 const timelineDot = { width: 12, height: 12, borderRadius: 999 };
+const paymentCardSmall = { background: SOFT, padding: "12px 20px", borderRadius: 14, border: "1px solid rgba(233,43,99,0.14)", marginBottom: 10 };
+const innerInput = { background: "transparent", border: "none", fontWeight: 950, color: PRIMARY, width: "100%", outline: "none", cursor: "pointer" };
 
-const progressBarBg = { background: "#f2f4f7", borderRadius: 999, height: 10, overflow: "hidden" };
-const progressBarFill = { background: PRIMARY, height: 10, borderRadius: 999 };
-const progressText = { fontSize: 12, fontWeight: 900, color: "#667085", marginTop: 6 };
-
-const paymentCard = {
-  background: SOFT,
-  padding: 12,
-  borderRadius: 14,
-  marginBottom: 10,
-  fontWeight: 950,
-  border: "1px solid rgba(233,43,99,0.14)",
-};
-
-function badgePay(paid) {
-  const isPaid = paid === "Ödendi";
-  return {
-    background: isPaid ? "#ECFDF3" : SOFT,
-    color: isPaid ? "#027A48" : PRIMARY,
-    padding: "8px 12px",
-    borderRadius: 999,
-    fontWeight: 950,
-    fontSize: 12,
-    border: "1px solid rgba(0,0,0,0.04)",
-  };
-}
+/* YENİ BUTON ALANI STİLLERİ */
+const paymentSectionWrapper = { display: "flex", gap: 16, gridColumn: "span 2" };
+const actionButtonGroup = { display: "flex", flexDirection: "column", gap: 10, justifyContent: "center" };
+const sideBtnBase = { padding: "15px 30px", borderRadius: "16px", fontWeight: "900", cursor: "pointer", border: "none", fontSize: "14px", minWidth: "120px" };
+const saveBtnSide = { ...sideBtnBase, background: PRIMARY, color: "#fff" };
+const editBtnSide = { ...sideBtnBase, background: "#fff", color: PRIMARY, border: `2px solid ${PRIMARY}` };
+const backBtnSide = { ...sideBtnBase, background: "#f2f4f7", color: "#667085" };
