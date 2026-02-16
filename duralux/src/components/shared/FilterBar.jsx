@@ -10,6 +10,7 @@ export default function FilterBar({
     showStatus = false,
     showUser = false,
     showCustomer = false,
+    showType = false,
     customers = [],
     users = [],
     onChange
@@ -98,15 +99,26 @@ export default function FilterBar({
                     <FiUser />
                     <select onChange={e => handleChange('customerId', e.target.value)}>
                         <option value="">Müşteri</option>
-                       {customers.map(c => (
-  <option key={c.id} value={c.id}>
-    {c.fullName || c.name}
-  </option>
-))}
+                        {customers.map(c => (
+                            <option key={c.id} value={c.id}>
+                                {c.fullName || c.name}
+                            </option>
+                        ))}
 
                     </select>
                 </div>
             )}
+            {showType && (
+                <div className="filter-item">
+                    <FiFilter />
+                    <select onChange={e => handleChange('type', e.target.value)}>
+                        <option value="">Tür</option>
+                        <option value="INCOME">Gelir</option>
+                        <option value="EXPENSE">Gider</option>
+                    </select>
+                </div>
+            )}
+
 
 
         </div>
