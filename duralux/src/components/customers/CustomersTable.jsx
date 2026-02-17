@@ -5,10 +5,41 @@ import Link from 'next/link'
 import { customerService } from '@/lib/services/customer.service'
 import Swal from 'sweetalert2';
 
-const CustomersTable = () => {
+const CustomersTable = ({ filters = {} }) => {
+
     const [customers, setCustomers] = useState([])
     const [loading, setLoading] = useState(true)
-    
+    const [search, setSearch] = useState('')
+    const [statusFilter, setStatusFilter] = useState('')
+
+    const filteredCustomers = customers.filter(customer => {
+
+  // 🔎 SEARCH
+  if (filters.search) {
+    const searchText = filters.search.toLowerCase()
+
+    const fullName = customer.fullName?.toLowerCase() || ''
+    const email = customer.email?.toLowerCase() || ''
+    const phone = customer.phone?.toLowerCase() || ''
+
+    if (
+      !fullName.includes(searchText) &&
+      !email.includes(searchText) &&
+      !phone.includes(searchText)
+    ) {
+      return false
+    }
+  }if (filters.customerId) {
+  if (String(customer.id) !== String(filters.customerId)) {
+    return false
+  }
+}
+
+
+  return true
+})
+
+
     // --- SAYFALAMA STATE'LERİ ---
     const [currentPage, setCurrentPage] = useState(1)
     const itemsPerPage = 8 // Her sayfada gösterilecek kart sayısı
@@ -30,59 +61,60 @@ const CustomersTable = () => {
     }
 
     const handleDelete = async (id) => {
-    // Fotoğraftaki eski kutu yerine bu modern modal açılacak
-    Swal.fire({
-        title: 'Müşteriyi Sil?',
-        text: "Bu işlem geri alınamaz ve tüm veriler kaybolur!",
-        icon: 'warning',
-        showCancelButton: true,
-        confirmButtonColor: '#E92B63', // Senin buton rengin
-        cancelButtonColor: '#6c757d',
-        confirmButtonText: 'Evet, Silinsin',
-        cancelButtonText: 'Vazgeç',
-        background: '#ffffff',
-        customClass: {
-            popup: 'rounded-5 shadow-lg',
-            confirmButton: 'rounded-pill px-4',
-            cancelButton: 'rounded-pill px-4'
-        }
-    }).then(async (result) => {
-        if (result.isConfirmed) {
-            try {
-                // Silme isteğini gönderiyoruz
-                await customerService.delete(id);
-                
-                // State'i güncelle (Listeden anında kalksın)
-                setCustomers(prev => prev.filter(c => c.id !== id));
-                
-                // Başarı bildirimi
-                Swal.fire({
-                    title: 'Başarılı!',
-                    text: 'Müşteri kaydı silindi.',
-                    icon: 'success',
-                    timer: 1500,
-                    showConfirmButton: false,
-                    borderRadius: '20px'
-                });
-            } catch (error) {
-                // Konsoldaki 400/500 hatalarını burada yakalıyoruz
-                console.error("Silme hatası:", error);
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Hata!',
-                    text: 'Müşteri silinemedi. Sunucuyla bağlantı kurulamıyor.',
-                    confirmButtonColor: '#E92B63'
-                });
+        // Fotoğraftaki eski kutu yerine bu modern modal açılacak
+        Swal.fire({
+            title: 'Müşteriyi Sil?',
+            text: "Bu işlem geri alınamaz ve tüm veriler kaybolur!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#E92B63', // Senin buton rengin
+            cancelButtonColor: '#6c757d',
+            confirmButtonText: 'Evet, Silinsin',
+            cancelButtonText: 'Vazgeç',
+            background: '#ffffff',
+            customClass: {
+                popup: 'rounded-5 shadow-lg',
+                confirmButton: 'rounded-pill px-4',
+                cancelButton: 'rounded-pill px-4'
             }
-        }
-    });
-};
+        }).then(async (result) => {
+            if (result.isConfirmed) {
+                try {
+                    // Silme isteğini gönderiyoruz
+                    await customerService.delete(id);
+
+                    // State'i güncelle (Listeden anında kalksın)
+                    setCustomers(prev => prev.filter(c => c.id !== id));
+
+                    // Başarı bildirimi
+                    Swal.fire({
+                        title: 'Başarılı!',
+                        text: 'Müşteri kaydı silindi.',
+                        icon: 'success',
+                        timer: 1500,
+                        showConfirmButton: false,
+                        borderRadius: '20px'
+                    });
+                } catch (error) {
+                    // Konsoldaki 400/500 hatalarını burada yakalıyoruz
+                    console.error("Silme hatası:", error);
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Hata!',
+                        text: 'Müşteri silinemedi. Sunucuyla bağlantı kurulamıyor.',
+                        confirmButtonColor: '#E92B63'
+                    });
+                }
+            }
+        });
+    };
 
     // --- SAYFALAMA MANTIĞI ---
     const indexOfLastItem = currentPage * itemsPerPage;
     const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-    const currentItems = customers.slice(indexOfFirstItem, indexOfLastItem);
-    const totalPages = Math.ceil(customers.length / itemsPerPage);
+    const currentItems = filteredCustomers.slice(indexOfFirstItem, indexOfLastItem);
+
+    const totalPages = Math.ceil(filteredCustomers.length / itemsPerPage);
 
     const paginate = (pageNumber) => {
         setCurrentPage(pageNumber);
@@ -101,31 +133,32 @@ const CustomersTable = () => {
     )
 
     return (
+
         <div className="p-4 bg-transparent">
             {/* 1. Müşteri Kartları Listesi */}
             <div className="row g-4">
                 {currentItems.length > 0 ? (
                     currentItems.map((c) => (
                         <div key={c.id || Math.random()} className="col-xxl-3 col-lg-4 col-md-6">
-                            <div className="card border-0 shadow-sm h-100 customer-card-hover" 
-                                 style={{ 
-                                     borderRadius: '24px',
-                                     borderLeft: `5px solid ${c.status === 'NEW' ? '#9FB8A0' : '#E92B63'}` 
-                                 }}>
+                            <div className="card border-0 shadow-sm h-100 customer-card-hover"
+                                style={{
+                                    borderRadius: '24px',
+                                    borderLeft: `5px solid ${c.status === 'NEW' ? '#9FB8A0' : '#E92B63'}`
+                                }}>
                                 <div className="card-body p-4">
                                     <div className="d-flex align-items-center justify-content-between mb-4">
-                                        <div className="avatar-text rounded-circle fw-bold d-flex align-items-center justify-content-center shadow-sm" 
-                                             style={{ width: '50px', height: '50px', backgroundColor: 'rgba(233, 43, 99, 0.1)', color: '#E92B63' }}>
+                                        <div className="avatar-text rounded-circle fw-bold d-flex align-items-center justify-content-center shadow-sm"
+                                            style={{ width: '50px', height: '50px', backgroundColor: 'rgba(233, 43, 99, 0.1)', color: '#E92B63' }}>
                                             {getInitials(c.fullName)}
                                         </div>
-                                        
+
                                         {/* Sadece NEW yazısı yeşil (Adaçayı Yeşili) */}
-                                        <span className="badge rounded-pill px-3 py-2 fw-bold" 
-                                              style={{ 
-                                                  backgroundColor: 'rgba(159, 184, 160, 0.15)', 
-                                                  color: '#9FB8A0', 
-                                                  fontSize: '10px' 
-                                              }}>
+                                        <span className="badge rounded-pill px-3 py-2 fw-bold"
+                                            style={{
+                                                backgroundColor: 'rgba(159, 184, 160, 0.15)',
+                                                color: '#9FB8A0',
+                                                fontSize: '10px'
+                                            }}>
                                             {c.status === 'NEW' ? 'YENİ' : 'AKTİF'}
                                         </span>
                                     </div>
@@ -149,9 +182,9 @@ const CustomersTable = () => {
                                     </div>
 
                                     <div className="pt-3 border-top d-flex gap-2">
-                                        <Link href={`/customers/view/${c.id}`} 
-                                              className="btn flex-grow-1 rounded-3 fw-bold small py-2 text-white shadow-sm"
-                                              style={{ backgroundColor: '#9FB8A0', border: 'none' }}>
+                                        <Link href={`/customers/view/${c.id}`}
+                                            className="btn flex-grow-1 rounded-3 fw-bold small py-2 text-white shadow-sm"
+                                            style={{ backgroundColor: '#9FB8A0', border: 'none' }}>
                                             DETAYLARI GÖR
                                         </Link>
                                         <Link href={`/customers/edit/${c.id}`} className="btn btn-light rounded-3 shadow-sm border px-3 d-flex align-items-center">
@@ -181,7 +214,7 @@ const CustomersTable = () => {
                     <div className="text-muted small">
                         Toplam <strong>{customers.length}</strong> kayıttan <strong>{indexOfFirstItem + 1}-{Math.min(indexOfLastItem, customers.length)}</strong> arası gösteriliyor
                     </div>
-                    
+
                     <nav>
                         <ul className="pagination mb-0 gap-2">
                             <li className={`page-item ${currentPage === 1 ? 'disabled' : ''}`}>
@@ -189,13 +222,13 @@ const CustomersTable = () => {
                                     <FiChevronLeft />
                                 </button>
                             </li>
-                            
+
                             {[...Array(totalPages)].map((_, i) => (
                                 <li key={i} className={`page-item ${currentPage === i + 1 ? 'active' : ''}`}>
-                                    <button 
+                                    <button
                                         className="page-link rounded-3 border-0 shadow-sm px-3"
                                         onClick={() => paginate(i + 1)}
-                                        style={{ 
+                                        style={{
                                             backgroundColor: currentPage === i + 1 ? '#9FB8A0' : '#f1f5f9',
                                             color: currentPage === i + 1 ? 'white' : '#64748b'
                                         }}

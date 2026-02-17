@@ -1,0 +1,43 @@
+.modern-filter-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  padding: 16px 20px;
+  border-radius: 18px;
+  background: rgba(255,255,255,0.75);
+  backdrop-filter: blur(10px);
+  box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+  margin-bottom: 20px;
+}
+
+.filter-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: white;
+  padding: 8px 14px;
+  border-radius: 14px;
+  border: 1px solid #f1f1f1;
+  transition: all .2s ease;
+
+  &:hover {
+    border-color: #e93b62;
+    box-shadow: 0 4px 12px rgba(233, 59, 98, 0.15);
+  }
+
+  svg {
+    color: #9ca3af;
+  }
+
+  input,
+  select {
+    border: none;
+    outline: none;
+    font-size: 14px;
+    background: transparent;
+  }
+}
+
+.filter-item.search {
+  flex: 1;
+}

@@ -4,6 +4,8 @@ import { useEffect, useState } from 'react'
 import { useParams } from 'next/navigation'
 import api from '@/lib/axios'
 import AdminSalaryHistory from '@/components/teams/salary/AdminSalaryHistory'
+import PageHeader from '@/components/shared/pageHeader/PageHeader'
+
 
 export default function SalaryHistoryPage() {
 
@@ -41,7 +43,8 @@ export default function SalaryHistoryPage() {
         .filter(d => d.status === 'PAID')
         .reduce((sum, d) => sum + (d.netSalary || 0), 0)
     return (
-        <div className="container-fluid mt-4">
+        <><PageHeader/>
+        <div className="container-fluid">
 
             <div className="history-header mb-4">
                 <h4 className="mb-1">Maaş Geçmişi</h4>
@@ -55,6 +58,6 @@ export default function SalaryHistoryPage() {
 
             <AdminSalaryHistory data={data} />
 
-        </div>
+        </div></>
     )
 }

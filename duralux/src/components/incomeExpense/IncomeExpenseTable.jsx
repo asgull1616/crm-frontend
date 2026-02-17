@@ -16,7 +16,8 @@ import {
 
 import { TransactionType } from "../../lib/services/enums/transaction.enums";
 
-export default function IncomeExpenseTable() {
+export default function IncomeExpenseTable({ filters }) {
+
   const router = useRouter();
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -78,43 +79,97 @@ export default function IncomeExpenseTable() {
   };
 
   const processedItems = useMemo(() => {
-    // 1. Filtreleme
-    let filtered = items;
-    if (activeFilter !== "ALL") {
-      filtered = items.filter(item => {
-        const remaining = Number(item.amount) - (Number(item.paidAmount) || 0);
-        const isOverdue = item.dueDate && new Date(item.dueDate) < new Date();
-        if (activeFilter === "INCOME") return item.type === TransactionType.INCOME;
-        if (activeFilter === "EXPENSE") return item.type === TransactionType.EXPENSE;
-        if (activeFilter === "PENDING") return remaining > 0;
-        if (activeFilter === "COLLECTED") return Number(item.paidAmount) > 0;
-        return true;
-      });
+  let filtered = [...items];
+
+  // 🔎 SEARCH
+  if (filters?.search) {
+    const text = filters.search.toLowerCase();
+    filtered = filtered.filter(item =>
+      item.customer?.fullName?.toLowerCase().includes(text)
+    );
+  }
+
+  // 📅 MONTH
+  if (filters?.month) {
+    filtered = filtered.filter(item => {
+      const itemMonth = new Date(item.date).getMonth() + 1;
+      return itemMonth === Number(filters.month);
+    });
+  }
+
+  // 📆 YEAR
+  if (filters?.year) {
+    filtered = filtered.filter(item => {
+      const itemYear = new Date(item.date).getFullYear();
+      return itemYear === Number(filters.year);
+    });
+  }
+
+  // 💰 TYPE (Gelir / Gider)
+  if (filters?.type) {
+    filtered = filtered.filter(item =>
+      item.type === filters.type
+    );
+  }
+
+  // 👤 CUSTOMER
+  if (filters?.customerId) {
+    filtered = filtered.filter(item =>
+      item.customer?.id === filters.customerId
+    );
+  }
+
+  // 🎯 ÜST KART FİLTRESİ (dokunmadık)
+  if (activeFilter !== "ALL") {
+    filtered = filtered.filter(item => {
+      const remaining =
+        Number(item.amount) - (Number(item.paidAmount) || 0);
+
+      if (activeFilter === "INCOME")
+        return item.type === TransactionType.INCOME;
+
+      if (activeFilter === "EXPENSE")
+        return item.type === TransactionType.EXPENSE;
+
+      if (activeFilter === "PENDING")
+        return remaining > 0;
+
+      if (activeFilter === "COLLECTED")
+        return Number(item.paidAmount) > 0;
+
+      return true;
+    });
+  }
+
+  // 📊 Sıralama (aynen bırakıyoruz)
+  const sortableItems = [...filtered];
+
+  sortableItems.sort((a, b) => {
+    let aVal, bVal;
+
+    if (sortConfig.key === 'remainingDays') {
+      aVal = calculateDaysDiff(a.dueDate);
+      bVal = calculateDaysDiff(b.dueDate);
+    } else if (sortConfig.key === 'remainingAmount') {
+      aVal = Number(a.amount) - Number(a.paidAmount || 0);
+      bVal = Number(b.amount) - Number(b.paidAmount || 0);
+    } else if (sortConfig.key === 'customer') {
+      aVal = a.customer?.fullName || "";
+      bVal = b.customer?.fullName || "";
+    } else {
+      aVal = a[sortConfig.key];
+      bVal = b[sortConfig.key];
     }
 
-    // 2. Sıralama
-    const sortableItems = [...filtered];
-    sortableItems.sort((a, b) => {
-      let aVal, bVal;
-      if (sortConfig.key === 'remainingDays') {
-        aVal = calculateDaysDiff(a.dueDate);
-        bVal = calculateDaysDiff(b.dueDate);
-      } else if (sortConfig.key === 'remainingAmount') {
-        aVal = Number(a.amount) - Number(a.paidAmount || 0);
-        bVal = Number(b.amount) - Number(b.paidAmount || 0);
-      } else if (sortConfig.key === 'customer') {
-        aVal = a.customer?.fullName || "";
-        bVal = b.customer?.fullName || "";
-      } else {
-        aVal = a[sortConfig.key];
-        bVal = b[sortConfig.key];
-      }
-      if (aVal < bVal) return sortConfig.direction === 'asc' ? -1 : 1;
-      if (aVal > bVal) return sortConfig.direction === 'asc' ? 1 : -1;
-      return 0;
-    });
-    return sortableItems;
-  }, [items, activeFilter, sortConfig]);
+    if (aVal < bVal) return sortConfig.direction === 'asc' ? -1 : 1;
+    if (aVal > bVal) return sortConfig.direction === 'asc' ? 1 : -1;
+    return 0;
+  });
+
+  return sortableItems;
+
+}, [items, activeFilter, sortConfig, filters]);
+
 
   const formatMoney = (amount) => {
     return new Intl.NumberFormat("tr-TR", { minimumFractionDigits: 2 }).format(Number(amount) || 0) + " ₺";

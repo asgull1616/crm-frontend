@@ -19,9 +19,67 @@ const mapStatus = (status) => {
   }
 };
 
-const ProposalTable = () => {
-  const router = useRouter();
+const ProposalTable = ({ filters = {} }) => {
   const [data, setData] = useState([]);
+
+
+  const filteredData = data.filter(item => {
+
+    // 🔎 SEARCH
+    if (filters.search) {
+      const searchText = filters.search.toLowerCase()
+
+      const clientName = item.client?.name?.toLowerCase() || ''
+      const subject = item.subject?.toLowerCase() || ''
+      const proposalNo = item.proposal?.toLowerCase() || ''
+
+      if (
+        !clientName.includes(searchText) &&
+        !subject.includes(searchText) &&
+        !proposalNo.includes(searchText)
+      ) {
+        return false
+      }
+    }
+
+    // 📅 MONTH
+    if (filters.month) {
+      const itemMonth = new Date(item.date.split('.').reverse().join('-')).getMonth() + 1
+      if (String(itemMonth) !== String(filters.month)) {
+        return false
+      }
+    }
+
+    // 📆 YEAR
+    if (filters.year) {
+      const itemYear = new Date(item.date.split('.').reverse().join('-')).getFullYear()
+      if (String(itemYear) !== String(filters.year)) {
+        return false
+      }
+    }
+
+    // 👤 CUSTOMER
+if (filters.customerId) {
+  if (String(item.customerId) !== String(filters.customerId)) {
+    return false
+  }
+}
+
+
+    // 📌 STATUS
+    if (filters.status) {
+      if (item.status?.content !== filters.status) {
+        return false
+      }
+    }
+
+    return true
+  })
+
+
+
+
+  const router = useRouter();
   const [loading, setLoading] = useState(true);
 
   const fetchProposals = useCallback(async () => {
@@ -29,12 +87,13 @@ const ProposalTable = () => {
       setLoading(true);
       // Sadece teklifleri çekiyoruz. Backend zaten müşteri adını (customerName) içine ekledi.
       const res = await proposalService.list({ page: 1, limit: 100 });
-      
+
       // Backend yapına göre veriyi güvenli bir şekilde alalım
       const proposals = res?.data?.items || res?.data?.data || res?.data || [];
 
       const mappedData = Array.isArray(proposals) ? proposals.map((p) => ({
         id: p.id,
+        customerId: p.customerId,
         // ID'nin son 8 hanesini büyük harf yap (Profesyonel görünüm)
         proposal: p.id ? p.id.toString().slice(-8).toUpperCase() : "ID-YOK",
         client: {
@@ -124,7 +183,8 @@ const ProposalTable = () => {
 
   return (
     <>
-      <Table data={data} columns={columns} />
+      <Table data={filteredData} columns={columns} />
+
       <style jsx global>{` .hover-pink:hover { color: #E92B63 !important; text-decoration: underline !important; } `}</style>
     </>
   );
