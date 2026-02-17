@@ -36,10 +36,10 @@ const ProposalCreateContent = () => {
         fetchCustomers();
     }, []);
 
-    const handleItemsChange = useCallback((updatedItems) => {
+    // ✅ AddProposal'dan gelen güncel kalemleri ve hesaplanmış toplam tutarı yakalıyoruz
+    const handleItemsChange = useCallback((updatedItems, calculatedTotal) => {
         setItems(updatedItems);
-        const grandTotal = updatedItems.reduce((acc, item) => acc + Number(item.price || 0), 0);
-        setTotalAmount(grandTotal);
+        setTotalAmount(Number(calculatedTotal));
     }, []);
 
     const handleCreateProposal = async () => {
@@ -50,20 +50,14 @@ const ProposalCreateContent = () => {
 
         setLoading(true);
         try {
+            // ✅ Backend DTO yapısına tam uyumlu Payload
             const payload = {
                 title,
                 customerId,
                 validUntil: validUntil.toISOString(),
                 status: "SENT",
-                totalAmount: totalAmount.toString(),
-                items: items.map(item => ({
-                    product: item.product,
-                    description: item.description,
-                    warranty: item.warranty,
-                    qty: 1,
-                    price: Number(item.price),
-                    tax: 0
-                }))
+                totalAmount: totalAmount.toString(), // Kalemlerin toplamı
+                items: items // AddProposal'dan gelen description, quantity, unitPrice, taxRate
             };
 
             await proposalService.create(payload);
@@ -88,7 +82,7 @@ const ProposalCreateContent = () => {
                             <div className="row">
                                 <div className="col-md-5 mb-3">
                                     <label className="form-label fw-bold text-muted small text-uppercase">Proje Adı / Referans</label>
-                                    <input type="text" className="form-control border-2 bg-light-subtle" value={title} onChange={(e) => setTitle(e.target.value)} placeholder="Örn: Gemi İnşa Projesi" />
+                                    <input type="text" className="form-control border-2 bg-light-subtle" value={title} onChange={(e) => setTitle(e.target.value)} placeholder="Örn: Portlink Yazılım Projesi" />
                                 </div>
                                 <div className="col-md-4 mb-3">
                                     <label className="form-label fw-bold text-muted small text-uppercase">Muhatap Müşteri</label>
@@ -107,6 +101,7 @@ const ProposalCreateContent = () => {
                         </div>
                     </div>
 
+                    {/* ✅ Kalem Ekleme Bileşeni */}
                     <AddProposal onItemsChange={handleItemsChange} />
 
                     {/* Gradyanlı Özet Kartı */}
@@ -123,17 +118,14 @@ const ProposalCreateContent = () => {
                             
                             <div className="col-md-5 p-4 text-white" style={{ background: 'linear-gradient(135deg, #FF4081 0%, #E92B63 50%, #C2185B 100%)' }}>
                                 <div className="text-md-end text-center">
-                                    {/* BEYAZ BAŞLIK */}
                                     <p className="small text-uppercase fw-bold text-white mb-1">ÖDENECEK TOPLAM TUTAR</p>
                                     
-                                    {/* BEYAZ TUTAR */}
                                     <h1 className="display-5 fw-bold mb-4 text-white">
                                         <small className="fs-3 fw-normal">₺</small>
                                         {totalAmount.toLocaleString('tr-TR', { minimumFractionDigits: 2 })}
                                     </h1>
                                     
                                     <div className="d-flex gap-4 justify-content-md-end justify-content-center align-items-center">
-                                        {/* BEYAZ VAZGEÇ */}
                                         <button type="button" onClick={() => router.back()} className="btn btn-link text-white text-decoration-none fw-bold px-0">
                                             VAZGEÇ
                                         </button>
