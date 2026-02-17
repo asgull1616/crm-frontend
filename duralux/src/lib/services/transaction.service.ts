@@ -99,6 +99,11 @@ export const transactionService = {
     q?: string;
     dateFrom?: string;
     dateTo?: string;
+    customerId?: string;
+    paymentMethod?: PaymentMethod;
+    minAmount?: string;
+    maxAmount?: string;
+    isPaid?: boolean;
   }) => api.get<TransactionListResponse>("transactions", { params }),
 
   // 🔍 GET BY ID (VIEW)
