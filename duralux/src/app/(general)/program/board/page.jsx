@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import {
   DndContext,
   PointerSensor,
@@ -19,11 +19,31 @@ import {
 import { CSS } from "@dnd-kit/utilities";
 import PageHeader from "@/components/shared/pageHeader/PageHeader";
 
+import {
+  getPrograms,
+  createProgram,
+  updateProgram,
+  deleteProgram,
+  createColumn,
+  updateColumn,
+  deleteColumn,
+  createCard,
+  updateCard,
+  deleteCard,
+  moveCard,
+  moveColumn,
+  getUsers,
+} from "@/lib/services/programBoard.service";
+
 const PRIMARY = "#E92B63";
 const PRIMARY_LIGHT = "#FFE4EC";
 
-function uid() {
-  return Math.random().toString(36).slice(2, 10);
+function getToken() {
+  return (
+    localStorage.getItem("accessToken") ||
+    localStorage.getItem("token") ||
+    ""
+  );
 }
 
 /* -------------------- Modal -------------------- */
@@ -51,7 +71,9 @@ function Modal({ open, title, children, onClose, footer }) {
 function Field({ label, children }) {
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-      <div style={{ fontSize: 13, fontWeight: 900, color: "#344054" }}>{label}</div>
+      <div style={{ fontSize: 13, fontWeight: 900, color: "#344054" }}>
+        {label}
+      </div>
       {children}
     </div>
   );
@@ -107,7 +129,14 @@ function Card({ card, onEdit, onDelete, overlay = false }) {
     >
       <div style={{ display: "flex", justifyContent: "space-between", gap: 12 }}>
         <div style={{ minWidth: 0 }}>
-          <div style={{ fontWeight: 950, fontSize: 18, color: "#111", lineHeight: 1.3 }}>
+          <div
+            style={{
+              fontWeight: 950,
+              fontSize: 18,
+              color: "#111",
+              lineHeight: 1.3,
+            }}
+          >
             {card.title}
           </div>
 
@@ -161,8 +190,9 @@ function SortableColumn({
   onEditCard,
   onDeleteCard,
 }) {
-  const { attributes, listeners, setNodeRef, transform, transition } =
-    useSortable({ id: column.id });
+  const { attributes, listeners, setNodeRef, transform, transition } = useSortable({
+    id: column.id,
+  });
 
   const style = {
     transform: CSS.Transform.toString(transform),
@@ -248,58 +278,28 @@ function SortableColumn({
 export default function ProgramBoardPage() {
   const sensors = useSensors(useSensor(PointerSensor, { activationConstraint: { distance: 8 } }));
 
-  // Programs (multiple)
-  const [programs, setPrograms] = useState(() => {
-    const p1 = {
-      id: "p1",
-      title: "CRM PROJESİ",
-      columns: [
-        { id: "p1-col-todo", title: "Yapılacaklar" },
-        { id: "p1-col-doing", title: "Yapılıyor" },
-        { id: "p1-col-done", title: "Tamamlandı" },
-      ],
-      cardsByColumn: {
-        "p1-col-todo": [
-          { id: "p1-c1", title: "CRM teklif ekranı", assignee: "Ayşegül" },
-          { id: "p1-c2", title: "Sanallaştırma ödevi", assignee: "Sudenur" },
-        ],
-        "p1-col-doing": [{ id: "p1-c3", title: "Swagger düzenleme", assignee: "Sudenur" }],
-        "p1-col-done": [{ id: "p1-c4", title: "Login ekranı tamamlandı", assignee: "Sudenur" }],
-      },
-    };
+  const [programs, setPrograms] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [activeProgramId, setActiveProgramId] = useState(null);
 
-    const p2 = {
-      id: "p2",
-      title: "Portlink Demo",
-      columns: [
-        { id: "p2-col-todo", title: "Backlog" },
-        { id: "p2-col-doing", title: "In Progress" },
-        { id: "p2-col-done", title: "Done" },
-      ],
-      cardsByColumn: {
-        "p2-col-todo": [{ id: "p2-c1", title: "Demo senaryosu çıkar", assignee: "Sude" }],
-        "p2-col-doing": [],
-        "p2-col-done": [],
-      },
-    };
+  const [activeId, setActiveId] = useState(null);
 
-    return [p1, p2];
-  });
+  const [modal, setModal] = useState({ open: false, type: null, payload: null });
+  const [form, setForm] = useState({ title: "", assigneeUserId: "" });
 
-  const [activeProgramId, setActiveProgramId] = useState("p1");
+
+  const [users, setUsers] = useState([]);
+  const [usersLoading, setUsersLoading] = useState(false);
 
   const activeProgram = useMemo(
     () => programs.find((p) => p.id === activeProgramId),
     [programs, activeProgramId]
   );
 
-  const [activeId, setActiveId] = useState(null);
-
-  // Modal state
-  const [modal, setModal] = useState({ open: false, type: null, payload: null });
-  const [form, setForm] = useState({ title: "", assignee: "" });
-
-  const columnIds = useMemo(() => activeProgram?.columns?.map((c) => c.id) || [], [activeProgram]);
+  const columnIds = useMemo(
+    () => activeProgram?.columns?.map((c) => c.id) || [],
+    [activeProgram]
+  );
 
   const activeCard = useMemo(() => {
     if (!activeId || !activeProgram) return null;
@@ -316,10 +316,91 @@ export default function ProgramBoardPage() {
     return activeProgram.columns.find((c) => c.id === activeId) || null;
   }, [activeId, activeProgram]);
 
+  async function loadPrograms() {
+    try {
+      const token = getToken();
+      if (!token) {
+        console.warn("Token yok. Login ol.");
+        setPrograms([]);
+        setActiveProgramId(null);
+        setLoading(false);
+        return;
+      }
+
+      const res = await getPrograms(token);
+      const apiPrograms = res.data || [];
+
+      const mapped = apiPrograms.map((p) => {
+        const cols = (p.columns || []).slice().sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
+
+        const cardsByColumn = {};
+        cols.forEach((col) => {
+          const cards = (col.cards || []).slice().sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
+          cardsByColumn[col.id] = cards.map((c) => ({
+            id: c.id,
+            title: c.title,
+            assigneeUserId: c.assigneeUser?.id || "",
+            assignee: c.assigneeUser?.username || "",
+          }));
+
+        });
+
+        return {
+          id: p.id,
+          title: p.name,
+          columns: cols.map((c) => ({ id: c.id, title: c.title || c.name })),
+          cardsByColumn,
+        };
+      });
+
+      setPrograms(mapped);
+      if (mapped[0]?.id) setActiveProgramId(mapped[0].id);
+      else setActiveProgramId(null);
+    } catch (e) {
+      console.error("getPrograms error:", e?.response?.data || e.message);
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  useEffect(() => {
+    loadPrograms();
+  }, []);
+
+  async function fetchUsersIfNeeded() {
+    const token = getToken();
+    if (!token) return;
+
+    // zaten doluysa tekrar çekme
+    if (users.length > 0) return;
+
+    try {
+      setUsersLoading(true);
+      const res = await getUsers(token); // ✅ /api/users
+      const list = Array.isArray(res.data) ? res.data : (res.data?.data ?? []);
+      setUsers(list);
+    } catch (e) {
+      console.error("getUsers error:", e?.response?.data || e.message);
+      setUsers([]);
+    } finally {
+      setUsersLoading(false);
+    }
+  }
+
   function openModal(type, payload = null, initial = {}) {
-    setForm({ title: initial.title ?? "", assignee: initial.assignee ?? "" });
+    setForm({
+      title: initial.title ?? "",
+      assigneeUserId: initial.assigneeUserId ?? "",
+    });
+
+    // Kart modalında users lazımsa çek
+    if (type === "addCard" || type === "editCard") {
+      fetchUsersIfNeeded();
+    }
+
     setModal({ open: true, type, payload });
   }
+
 
   function closeModal() {
     setModal({ open: false, type: null, payload: null });
@@ -327,9 +408,7 @@ export default function ProgramBoardPage() {
   }
 
   function updateActiveProgram(updater) {
-    setPrograms((prev) =>
-      prev.map((p) => (p.id === activeProgramId ? updater(p) : p))
-    );
+    setPrograms((prev) => prev.map((p) => (p.id === activeProgramId ? updater(p) : p)));
   }
 
   function findCardContainer(cardId) {
@@ -345,17 +424,24 @@ export default function ProgramBoardPage() {
     setActiveId(event.active.id);
   }
 
-  function handleDragEnd(event) {
+  async function handleDragEnd(event) {
     const { active, over } = event;
     setActiveId(null);
     if (!over || !activeProgram) return;
 
+    const token = getToken();
+    if (!token) return;
+
     const aId = active.id;
     const oId = over.id;
 
-    // Column drag
+    // rollback snapshot
+    const snapshot = JSON.parse(JSON.stringify(programs));
+
+    // Column reorder
     if (columnIds.includes(aId) && columnIds.includes(oId)) {
       if (aId === oId) return;
+
       const oldIndex = activeProgram.columns.findIndex((c) => c.id === aId);
       const newIndex = activeProgram.columns.findIndex((c) => c.id === oId);
 
@@ -363,6 +449,13 @@ export default function ProgramBoardPage() {
         ...p,
         columns: arrayMove(p.columns, oldIndex, newIndex),
       }));
+
+      try {
+        await moveColumn(aId, newIndex, token);
+      } catch (e) {
+        console.error("moveColumn error:", e?.response?.data || e.message);
+        setPrograms(snapshot);
+      }
       return;
     }
 
@@ -373,10 +466,13 @@ export default function ProgramBoardPage() {
     const toCol = columnIds.includes(oId) ? oId : findCardContainer(oId);
     if (!toCol) return;
 
+    const fromListNow = activeProgram.cardsByColumn[fromCol] || [];
+    const toListNow = activeProgram.cardsByColumn[toCol] || [];
+
+    // Same column reorder
     if (fromCol === toCol) {
-      const list = activeProgram.cardsByColumn[fromCol] || [];
-      const oldIndex = list.findIndex((c) => c.id === aId);
-      const newIndex = list.findIndex((c) => c.id === oId);
+      const oldIndex = fromListNow.findIndex((c) => c.id === aId);
+      const newIndex = fromListNow.findIndex((c) => c.id === oId);
       if (oldIndex === -1 || newIndex === -1) return;
 
       updateActiveProgram((p) => ({
@@ -386,10 +482,25 @@ export default function ProgramBoardPage() {
           [fromCol]: arrayMove(p.cardsByColumn[fromCol], oldIndex, newIndex),
         },
       }));
+
+      try {
+        await moveCard(aId, fromCol, newIndex, token);
+      } catch (e) {
+        console.error("moveCard same-col error:", e?.response?.data || e.message);
+        setPrograms(snapshot);
+      }
       return;
     }
 
-    // Move between columns
+    // Cross-column move: compute toIndex before optimistic
+    let toIndex = 0;
+    if (!columnIds.includes(oId)) {
+      const overIndex = toListNow.findIndex((c) => c.id === oId);
+      toIndex = overIndex >= 0 ? overIndex : toListNow.length;
+    } else {
+      toIndex = toListNow.length;
+    }
+
     updateActiveProgram((p) => {
       const fromList = [...(p.cardsByColumn[fromCol] || [])];
       const toList = [...(p.cardsByColumn[toCol] || [])];
@@ -398,14 +509,7 @@ export default function ProgramBoardPage() {
       if (movingIndex === -1) return p;
 
       const [moving] = fromList.splice(movingIndex, 1);
-
-      if (!columnIds.includes(oId)) {
-        const overIndex = toList.findIndex((c) => c.id === oId);
-        if (overIndex >= 0) toList.splice(overIndex, 0, moving);
-        else toList.push(moving);
-      } else {
-        toList.push(moving);
-      }
+      toList.splice(toIndex, 0, moving);
 
       return {
         ...p,
@@ -416,9 +520,16 @@ export default function ProgramBoardPage() {
         },
       };
     });
+
+    try {
+      await moveCard(aId, toCol, toIndex, token);
+    } catch (e) {
+      console.error("moveCard cross-col error:", e?.response?.data || e.message);
+      setPrograms(snapshot);
+    }
   }
 
-  /* ---------- Program actions ---------- */
+  /* ---------- Actions ---------- */
   function requestAddProgram() {
     openModal("addProgram", null, { title: "" });
   }
@@ -433,175 +544,141 @@ export default function ProgramBoardPage() {
     openModal("deleteProgram", activeProgram);
   }
 
-  /* ---------- Column actions ---------- */
   function requestAddColumn() {
     openModal("addCol", null, { title: "" });
   }
+
   function requestRenameColumn(column) {
     openModal("renameCol", column, { title: column.title });
   }
+
   function requestDeleteColumn(column) {
     openModal("deleteCol", column);
   }
 
-  /* ---------- Card actions ---------- */
   function requestAddCard(column) {
-    openModal("addCard", column, { title: "", assignee: "" });
+    openModal("addCard", column, { title: "", assigneeUserId: "" });
   }
+
   function requestEditCard(card) {
-    openModal("editCard", card, { title: card.title, assignee: card.assignee || "" });
+    openModal("editCard", card, {
+      title: card.title,
+      assigneeUserId: card.assigneeUserId || "",
+    });
   }
+
+
   function requestDeleteCard(card) {
     openModal("deleteCard", card);
   }
 
-  /* ---------- Submit modal ---------- */
-  function submitModal() {
+  /* ---------- Submit modal (BACKEND CRUD) ---------- */
+  async function submitModal() {
     const t = modal.type;
+    const token = getToken();
+    if (!token) return;
 
-    // Programs
-    if (t === "addProgram") {
-      if (!form.title.trim()) return;
-      const pid = `p-${uid()}`;
-      const colTodo = `${pid}-col-todo`;
-      const colDoing = `${pid}-col-doing`;
-      const colDone = `${pid}-col-done`;
+    try {
+      // Program create
+      if (t === "addProgram") {
+        if (!form.title.trim()) return;
+        await createProgram({ name: form.title.trim() }, token);
+        await loadPrograms();
+        closeModal();
+        return;
+      }
 
-      const newProgram = {
-        id: pid,
-        title: form.title.trim(),
-        columns: [
-          { id: colTodo, title: "Yapılacaklar" },
-          { id: colDoing, title: "Yapılıyor" },
-          { id: colDone, title: "Tamamlandı" },
-        ],
-        cardsByColumn: { [colTodo]: [], [colDoing]: [], [colDone]: [] },
-      };
+      // Program rename
+      if (t === "renameProgram") {
+        if (!form.title.trim() || !activeProgram) return;
+        await updateProgram(activeProgram.id, { name: form.title.trim() }, token);
+        await loadPrograms();
+        closeModal();
+        return;
+      }
 
-      setPrograms((prev) => [newProgram, ...prev]);
-      setActiveProgramId(pid);
-      closeModal();
-      return;
-    }
+      // Program delete
+      if (t === "deleteProgram") {
+        const prog = modal.payload;
+        if (!prog) return;
+        await deleteProgram(prog.id, token);
+        await loadPrograms();
+        closeModal();
+        return;
+      }
 
-    if (t === "renameProgram") {
-      if (!form.title.trim()) return;
-      updateActiveProgram((p) => ({ ...p, title: form.title.trim() }));
-      closeModal();
-      return;
-    }
+      if (!activeProgram) return;
 
-    if (t === "deleteProgram") {
-      const prog = modal.payload;
-      setPrograms((prev) => prev.filter((p) => p.id !== prog.id));
-      // fallback active
-      setTimeout(() => {
-        setPrograms((prev) => {
-          const next = prev.filter((p) => p.id !== prog.id);
-          const pick = next[0]?.id;
-          if (pick) setActiveProgramId(pick);
-          return next;
-        });
-      }, 0);
-      closeModal();
-      return;
-    }
+      // Column create
+      if (t === "addCol") {
+        if (!form.title.trim()) return;
+        await createColumn(activeProgram.id, { title: form.title.trim() }, token);
+        await loadPrograms();
+        closeModal();
+        return;
+      }
 
-    if (!activeProgram) return;
+      // Column rename
+      if (t === "renameCol") {
+        if (!form.title.trim()) return;
+        const col = modal.payload;
+        if (!col) return;
+        await updateColumn(col.id, { name: form.title.trim() }, token);
+        await loadPrograms();
+        closeModal();
+        return;
+      }
 
-    // Columns
-    if (t === "addCol") {
-      if (!form.title.trim()) return;
-      const id = `${activeProgram.id}-col-${uid()}`;
+      // Column delete
+      if (t === "deleteCol") {
+        const col = modal.payload;
+        if (!col) return;
+        await deleteColumn(col.id, token);
+        await loadPrograms();
+        closeModal();
+        return;
+      }
 
-      updateActiveProgram((p) => ({
-        ...p,
-        columns: [...p.columns, { id, title: form.title.trim() }],
-        cardsByColumn: { ...p.cardsByColumn, [id]: [] },
-      }));
-      closeModal();
-      return;
-    }
+      // Card create
+      if (t === "addCard") {
+        if (!form.title.trim()) return;
+        const col = modal.payload;
+        if (!col) return;
+        await createCard(col.id, {
+          title: form.title.trim(),
+          assigneeUserId: form.assigneeUserId || null,
+        }, token);
+        await loadPrograms();
+        closeModal();
+        return;
+      }
 
-    if (t === "renameCol") {
-      if (!form.title.trim()) return;
-      const col = modal.payload;
+      // Card update
+      if (t === "editCard") {
+        if (!form.title.trim()) return;
+        const card = modal.payload;
+        if (!card) return;
+        await updateCard(card.id, {
+          title: form.title.trim(),
+          content: "",
+          assigneeUserId: form.assigneeUserId === "" ? null : form.assigneeUserId,
+        }, token);
+        await loadPrograms();
+        closeModal();
+        return;
+      }
 
-      updateActiveProgram((p) => ({
-        ...p,
-        columns: p.columns.map((c) => (c.id === col.id ? { ...c, title: form.title.trim() } : c)),
-      }));
-      closeModal();
-      return;
-    }
-
-    if (t === "deleteCol") {
-      const col = modal.payload;
-
-      updateActiveProgram((p) => {
-        const copy = { ...p.cardsByColumn };
-        delete copy[col.id];
-
-        return {
-          ...p,
-          columns: p.columns.filter((c) => c.id !== col.id),
-          cardsByColumn: copy,
-        };
-      });
-      closeModal();
-      return;
-    }
-
-    // Cards
-    if (t === "addCard") {
-      if (!form.title.trim()) return;
-      const col = modal.payload;
-      const newCard = {
-        id: `${activeProgram.id}-card-${uid()}`,
-        title: form.title.trim(),
-        assignee: form.assignee.trim(),
-      };
-
-      updateActiveProgram((p) => ({
-        ...p,
-        cardsByColumn: {
-          ...p.cardsByColumn,
-          [col.id]: [...(p.cardsByColumn[col.id] || []), newCard],
-        },
-      }));
-      closeModal();
-      return;
-    }
-
-    if (t === "editCard") {
-      if (!form.title.trim()) return;
-      const card = modal.payload;
-
-      updateActiveProgram((p) => {
-        const copy = { ...p.cardsByColumn };
-        for (const colId of Object.keys(copy)) {
-          copy[colId] = copy[colId].map((c) =>
-            c.id === card.id ? { ...c, title: form.title.trim(), assignee: form.assignee.trim() } : c
-          );
-        }
-        return { ...p, cardsByColumn: copy };
-      });
-      closeModal();
-      return;
-    }
-
-    if (t === "deleteCard") {
-      const card = modal.payload;
-
-      updateActiveProgram((p) => {
-        const copy = { ...p.cardsByColumn };
-        for (const colId of Object.keys(copy)) {
-          copy[colId] = copy[colId].filter((c) => c.id !== card.id);
-        }
-        return { ...p, cardsByColumn: copy };
-      });
-      closeModal();
-      return;
+      // Card delete
+      if (t === "deleteCard") {
+        const card = modal.payload;
+        if (!card) return;
+        await deleteCard(card.id, token);
+        await loadPrograms();
+        closeModal();
+        return;
+      }
+    } catch (e) {
+      console.error("submitModal error:", e?.response?.data || e.message);
     }
   }
 
@@ -609,201 +686,229 @@ export default function ProgramBoardPage() {
     modal.type === "addProgram"
       ? "Yeni Program"
       : modal.type === "renameProgram"
-      ? "Program Adı"
-      : modal.type === "deleteProgram"
-      ? "Program Sil"
-      : modal.type === "addCard"
-      ? "Kart Ekle"
-      : modal.type === "editCard"
-      ? "Kart Düzenle"
-      : modal.type === "deleteCard"
-      ? "Kart Sil"
-      : modal.type === "addCol"
-      ? "Kolon Ekle"
-      : modal.type === "renameCol"
-      ? "Kolon Adı"
-      : modal.type === "deleteCol"
-      ? "Kolon Sil"
-      : "";
+        ? "Program Adı"
+        : modal.type === "deleteProgram"
+          ? "Program Sil"
+          : modal.type === "addCard"
+            ? "Kart Ekle"
+            : modal.type === "editCard"
+              ? "Kart Düzenle"
+              : modal.type === "deleteCard"
+                ? "Kart Sil"
+                : modal.type === "addCol"
+                  ? "Kolon Ekle"
+                  : modal.type === "renameCol"
+                    ? "Kolon Adı"
+                    : modal.type === "deleteCol"
+                      ? "Kolon Sil"
+                      : "";
 
   const isConfirm = ["deleteCard", "deleteCol", "deleteProgram"].includes(modal.type);
 
-  if (!activeProgram) return null;
+  if (loading) return <div style={{ padding: 28 }}>Yükleniyor...</div>;
+  if (!activeProgram) return <div style={{ padding: 28 }}>Program bulunamadı.</div>;
 
   return (
-    <><PageHeader />
-    <div style={pageWrap}>
-      {/* Header */}
-      <div style={headerWrap}>
-        <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
-          <div style={{ fontSize: 14, fontWeight: 950, color: PRIMARY }}>Program</div>
+    <>
+      <PageHeader />
 
-          {/* Program selector row */}
-          <div style={{ display: "flex", alignItems: "center", gap: 10, flexWrap: "wrap" }}>
-            <select
-              value={activeProgramId}
-              onChange={(e) => setActiveProgramId(e.target.value)}
-              style={selectStyle}
-            >
-              {programs.map((p) => (
-                <option key={p.id} value={p.id}>
-                  {p.title}
-                </option>
-              ))}
-            </select>
+      <div style={pageWrap}>
+        {/* Header */}
+        <div style={headerWrap}>
+          <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+            <div style={{ fontSize: 14, fontWeight: 950, color: PRIMARY }}>
+              Program
+            </div>
 
-            <button onClick={requestAddProgram} style={btnGhost}>
-              + Yeni Program
-            </button>
+            <div style={{ display: "flex", alignItems: "center", gap: 10, flexWrap: "wrap" }}>
+              <select
+                value={activeProgramId || ""}
+                onChange={(e) => setActiveProgramId(e.target.value)}
+                style={selectStyle}
+              >
+                {programs.map((p) => (
+                  <option key={p.id} value={p.id}>
+                    {p.title}
+                  </option>
+                ))}
+              </select>
 
-            <button onClick={requestRenameProgram} style={btnGhost}>
-              Program Adı
-            </button>
+              <button onClick={requestAddProgram} style={btnGhost}>
+                + Yeni Program
+              </button>
 
-            <button onClick={requestDeleteProgram} style={btnDanger}>
-              Program Sil
-            </button>
+              <button onClick={requestRenameProgram} style={btnGhost}>
+                Program Adı
+              </button>
+
+              <button onClick={requestDeleteProgram} style={btnDanger}>
+                Program Sil
+              </button>
+            </div>
+
+            <div style={{ fontSize: 28, fontWeight: 950, color: "#111" }}>
+              {activeProgram.title}
+            </div>
+            <div style={{ fontSize: 13, fontWeight: 800, color: "#667085" }}>
+              Kolonları ve kartları sürükleyip bırakabilirsin.
+            </div>
           </div>
 
-          <div style={{ fontSize: 28, fontWeight: 950, color: "#111" }}>{activeProgram.title}</div>
-          <div style={{ fontSize: 13, fontWeight: 800, color: "#667085" }}>
-            Kolonları ve kartları sürükleyip bırakabilirsin.
-          </div>
+          <button onClick={requestAddColumn} style={btnPrimary}>
+            + Kolon ekle
+          </button>
         </div>
 
-        <button onClick={requestAddColumn} style={btnPrimary}>
-          + Kolon ekle
-        </button>
-      </div>
+        {/* Board */}
+        <div style={{ marginTop: 22, overflowX: "auto", paddingBottom: 10 }}>
+          <DndContext
+            sensors={sensors}
+            collisionDetection={closestCorners}
+            onDragStart={handleDragStart}
+            onDragEnd={handleDragEnd}
+          >
+            <SortableContext items={columnIds} strategy={horizontalListSortingStrategy}>
+              <div style={{ display: "flex", gap: 16, alignItems: "flex-start" }}>
+                {activeProgram.columns.map((col) => (
+                  <SortableColumn
+                    key={col.id}
+                    column={col}
+                    cards={activeProgram.cardsByColumn[col.id] || []}
+                    onAddCard={requestAddCard}
+                    onRenameColumn={requestRenameColumn}
+                    onDeleteColumn={requestDeleteColumn}
+                    onEditCard={requestEditCard}
+                    onDeleteCard={requestDeleteCard}
+                  />
+                ))}
+              </div>
+            </SortableContext>
 
-      {/* Board */}
-      <div style={{ marginTop: 22, overflowX: "auto", paddingBottom: 10 }}>
-        <DndContext
-          sensors={sensors}
-          collisionDetection={closestCorners}
-          onDragStart={handleDragStart}
-          onDragEnd={handleDragEnd}
-        >
-          <SortableContext items={columnIds} strategy={horizontalListSortingStrategy}>
-            <div style={{ display: "flex", gap: 16, alignItems: "flex-start" }}>
-              {activeProgram.columns.map((col) => (
-                <SortableColumn
-                  key={col.id}
-                  column={col}
-                  cards={activeProgram.cardsByColumn[col.id] || []}
-                  onAddCard={requestAddCard}
-                  onRenameColumn={requestRenameColumn}
-                  onDeleteColumn={requestDeleteColumn}
-                  onEditCard={requestEditCard}
-                  onDeleteCard={requestDeleteCard}
-                />
-              ))}
+            <DragOverlay>
+              {activeCard ? (
+                <div style={{ width: 360 }}>
+                  <Card card={activeCard} overlay onEdit={() => { }} onDelete={() => { }} />
+                </div>
+              ) : activeColumn ? (
+                <div
+                  style={{
+                    minWidth: 360,
+                    background: "#fff",
+                    borderRadius: 22,
+                    padding: 18,
+                    boxShadow: "0 20px 60px rgba(0,0,0,0.2)",
+                    border: "1px solid #f3f3f3",
+                  }}
+                >
+                  <div style={{ fontWeight: 950, fontSize: 20, color: "#111" }}>
+                    {activeColumn.title}
+                  </div>
+                </div>
+              ) : null}
+            </DragOverlay>
+          </DndContext>
+        </div>
+
+        {/* Modal */}
+        <Modal
+          open={modal.open}
+          title={modalTitle}
+          onClose={closeModal}
+          footer={
+            <div style={{ display: "flex", justifyContent: "flex-end", gap: 10 }}>
+              <button onClick={closeModal} style={btnGhost}>
+                İptal
+              </button>
+              <button onClick={submitModal} style={btnPrimary}>
+                {isConfirm ? "Evet, Sil" : "Kaydet"}
+              </button>
             </div>
-          </SortableContext>
+          }
+        >
+          {["addProgram", "renameProgram"].includes(modal.type) ? (
+            <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
+              <Field label="Program adı">
+                <Input
+                  value={form.title}
+                  onChange={(e) => setForm((p) => ({ ...p, title: e.target.value }))}
+                  placeholder="Örn: CRM Projesi / Portlink Demo"
+                />
+              </Field>
+            </div>
+          ) : null}
 
-          <DragOverlay>
-            {activeCard ? (
-              <div style={{ width: 360 }}>
-                <Card card={activeCard} overlay onEdit={() => {}} onDelete={() => {}} />
-              </div>
-            ) : activeColumn ? (
-              <div
-                style={{
-                  minWidth: 360,
-                  background: "#fff",
-                  borderRadius: 22,
-                  padding: 18,
-                  boxShadow: "0 20px 60px rgba(0,0,0,0.2)",
-                  border: "1px solid #f3f3f3",
-                }}
-              >
-                <div style={{ fontWeight: 950, fontSize: 20, color: "#111" }}>{activeColumn.title}</div>
-              </div>
-            ) : null}
-          </DragOverlay>
-        </DndContext>
+          {["addCard", "editCard"].includes(modal.type) ? (
+            <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
+              <Field label="Kart adı">
+                <Input
+                  value={form.title}
+                  onChange={(e) => setForm((p) => ({ ...p, title: e.target.value }))}
+                  placeholder="Örn: Swagger düzenleme"
+                />
+              </Field>
+
+              <Field label="Kim yapıyor?">
+                <select
+                  value={form.assigneeUserId}
+                  onChange={(e) => setForm((p) => ({ ...p, assigneeUserId: e.target.value }))}
+                  style={selectStyle}
+                >
+                  <option value="">
+                    {usersLoading ? "Yükleniyor..." : "Atanan yok"}
+                  </option>
+
+                  {users.map((u) => (
+                    <option key={u.id} value={u.id}>
+                      {u.username} {u.email ? `(${u.email})` : ""}
+                    </option>
+                  ))}
+                </select>
+              </Field>
+
+            </div>
+          ) : null}
+
+          {["addCol", "renameCol"].includes(modal.type) ? (
+            <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
+              <Field label="Kolon adı">
+                <Input
+                  value={form.title}
+                  onChange={(e) => setForm((p) => ({ ...p, title: e.target.value }))}
+                  placeholder="Örn: Beklemede"
+                />
+              </Field>
+            </div>
+          ) : null}
+
+          {modal.type === "deleteCard" ? (
+            <div style={{ fontSize: 14, fontWeight: 900, color: "#475467" }}>
+              <span style={{ color: PRIMARY, fontWeight: 950 }}>
+                "{modal.payload?.title}"
+              </span>{" "}
+              kartını silmek istiyor musun?
+            </div>
+          ) : null}
+
+          {modal.type === "deleteCol" ? (
+            <div style={{ fontSize: 14, fontWeight: 900, color: "#475467" }}>
+              <span style={{ color: PRIMARY, fontWeight: 950 }}>
+                "{modal.payload?.title}"
+              </span>{" "}
+              kolonu silinecek ve içindeki kartlar da silinir. Emin misin?
+            </div>
+          ) : null}
+
+          {modal.type === "deleteProgram" ? (
+            <div style={{ fontSize: 14, fontWeight: 900, color: "#475467" }}>
+              <span style={{ color: PRIMARY, fontWeight: 950 }}>
+                "{modal.payload?.title}"
+              </span>{" "}
+              programı tamamen silinsin mi?
+            </div>
+          ) : null}
+        </Modal>
       </div>
-
-      {/* Modal */}
-      <Modal
-        open={modal.open}
-        title={modalTitle}
-        onClose={closeModal}
-        footer={
-          <div style={{ display: "flex", justifyContent: "flex-end", gap: 10 }}>
-            <button onClick={closeModal} style={btnGhost}>
-              İptal
-            </button>
-            <button onClick={submitModal} style={btnPrimary}>
-              {isConfirm ? "Evet, Sil" : "Kaydet"}
-            </button>
-          </div>
-        }
-      >
-        {["addProgram", "renameProgram"].includes(modal.type) ? (
-          <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
-            <Field label="Program adı">
-              <Input
-                value={form.title}
-                onChange={(e) => setForm((p) => ({ ...p, title: e.target.value }))}
-                placeholder="Örn: CRM Projesi / Portlink Demo"
-              />
-            </Field>
-          </div>
-        ) : null}
-
-        {["addCard", "editCard"].includes(modal.type) ? (
-          <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
-            <Field label="Kart adı">
-              <Input
-                value={form.title}
-                onChange={(e) => setForm((p) => ({ ...p, title: e.target.value }))}
-                placeholder="Örn: Swagger düzenleme"
-              />
-            </Field>
-
-            <Field label="Kim yapıyor?">
-              <Input
-                value={form.assignee}
-                onChange={(e) => setForm((p) => ({ ...p, assignee: e.target.value }))}
-                placeholder="Örn: Sudenur"
-              />
-            </Field>
-          </div>
-        ) : null}
-
-        {["addCol", "renameCol"].includes(modal.type) ? (
-          <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
-            <Field label="Kolon adı">
-              <Input
-                value={form.title}
-                onChange={(e) => setForm((p) => ({ ...p, title: e.target.value }))}
-                placeholder="Örn: Beklemede"
-              />
-            </Field>
-          </div>
-        ) : null}
-
-        {modal.type === "deleteCard" ? (
-          <div style={{ fontSize: 14, fontWeight: 900, color: "#475467" }}>
-            <span style={{ color: PRIMARY, fontWeight: 950 }}>"{modal.payload?.title}"</span> kartını silmek istiyor musun?
-          </div>
-        ) : null}
-
-        {modal.type === "deleteCol" ? (
-          <div style={{ fontSize: 14, fontWeight: 900, color: "#475467" }}>
-            <span style={{ color: PRIMARY, fontWeight: 950 }}>"{modal.payload?.title}"</span> kolonu silinecek ve içindeki
-            kartlar da silinir. Emin misin?
-          </div>
-        ) : null}
-
-        {modal.type === "deleteProgram" ? (
-          <div style={{ fontSize: 14, fontWeight: 900, color: "#475467" }}>
-            <span style={{ color: PRIMARY, fontWeight: 950 }}>"{modal.payload?.title}"</span> programı tamamen silinsin mi?
-          </div>
-        ) : null}
-      </Modal>
-    </div></>
+    </>
   );
 }
 
