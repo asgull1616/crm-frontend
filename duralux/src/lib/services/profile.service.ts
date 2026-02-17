@@ -6,4 +6,7 @@ export const profileService = {
 
   // Profili günceller
   updateMe: (data: any) => api.patch("profile/me", data),
+
+  // 🔥 Şifreyi günceller (Yeni eklenen kısım)
+  updatePassword: (data: any) => api.patch("profile/change-password", data),
 };
