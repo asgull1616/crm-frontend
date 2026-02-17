@@ -11,7 +11,9 @@ import {
   FiEdit2,
   FiEye,
   FiChevronUp,
-  FiChevronDown
+  FiChevronDown,
+  FiSearch,
+  FiX
 } from "react-icons/fi";
 
 import { TransactionType } from "../../lib/services/enums/transaction.enums";
@@ -21,7 +23,8 @@ export default function IncomeExpenseTable() {
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(false);
   const [activeFilter, setActiveFilter] = useState("ALL");
-  const [sortConfig, setSortConfig] = useState({ key: 'date', direction: 'desc' }); // ✅ Sıralama State'i geri geldi
+  const [searchTerm, setSearchTerm] = useState(""); 
+  const [sortConfig, setSortConfig] = useState({ key: 'date', direction: 'desc' });
   
   const [stats, setStats] = useState({
     totalSales: 0,
@@ -48,7 +51,7 @@ export default function IncomeExpenseTable() {
         });
       }
     } catch (err) {
-      console.error("Raporlama hatası:", err);
+      console.error("Veri çekme hatası:", err);
     } finally {
       setLoading(false);
     }
@@ -56,12 +59,10 @@ export default function IncomeExpenseTable() {
 
   useEffect(() => { fetchData(); }, []);
 
-  // ✅ Toggle Özelliği
   const handleFilterClick = (filterId) => {
     setActiveFilter((prev) => (prev === filterId ? "ALL" : filterId));
   };
 
-  // ✅ Sıralama Fonksiyonu
   const requestSort = (key) => {
     let direction = 'asc';
     if (sortConfig.key === key && sortConfig.direction === 'asc') {
@@ -78,21 +79,28 @@ export default function IncomeExpenseTable() {
   };
 
   const processedItems = useMemo(() => {
-    // 1. Filtreleme
-    let filtered = items;
-    if (activeFilter !== "ALL") {
-      filtered = items.filter(item => {
-        const remaining = Number(item.amount) - (Number(item.paidAmount) || 0);
-        const isOverdue = item.dueDate && new Date(item.dueDate) < new Date();
-        if (activeFilter === "INCOME") return item.type === TransactionType.INCOME;
-        if (activeFilter === "EXPENSE") return item.type === TransactionType.EXPENSE;
-        if (activeFilter === "PENDING") return remaining > 0;
-        if (activeFilter === "COLLECTED") return Number(item.paidAmount) > 0;
-        return true;
-      });
-    }
+    // 1. FİLTRELEME (Hem Kategori Hem Arama)
+    let filtered = items.filter(item => {
+      // ✅ AKILLI ARAMA: Hem Müşteri Adı hem Açıklama (Kategori altındaki metin) kontrol edilir
+      const fullName = (item.customer?.fullName || "").toLowerCase();
+      const description = (item.description || "").toLowerCase();
+      const search = searchTerm.toLowerCase();
 
-    // 2. Sıralama
+      const searchMatch = fullName.includes(search) || description.includes(search);
+      
+      if (!searchMatch) return false;
+
+      // Üst Kart Filtreleri
+      if (activeFilter === "ALL") return true;
+      const remaining = Number(item.amount) - (Number(item.paidAmount) || 0);
+      if (activeFilter === "INCOME") return item.type === TransactionType.INCOME;
+      if (activeFilter === "EXPENSE") return item.type === TransactionType.EXPENSE;
+      if (activeFilter === "PENDING") return remaining > 0;
+      if (activeFilter === "COLLECTED") return Number(item.paidAmount) > 0;
+      return true;
+    });
+
+    // 2. SIRALAMA
     const sortableItems = [...filtered];
     sortableItems.sort((a, b) => {
       let aVal, bVal;
@@ -114,7 +122,7 @@ export default function IncomeExpenseTable() {
       return 0;
     });
     return sortableItems;
-  }, [items, activeFilter, sortConfig]);
+  }, [items, activeFilter, searchTerm, sortConfig]);
 
   const formatMoney = (amount) => {
     return new Intl.NumberFormat("tr-TR", { minimumFractionDigits: 2 }).format(Number(amount) || 0) + " ₺";
@@ -130,7 +138,7 @@ export default function IncomeExpenseTable() {
 
   return (
     <div className="col-12 px-3">
-      {/* ÜST PANEL: PASTEL KARTLAR */}
+      {/* ÜST PANEL KARTLAR */}
       <div className="row g-3 mb-4">
         {[
           { id: "INCOME", label: "Toplam Satış", val: stats.totalSales, color: "#cfe2ff", text: "#084298", icon: <FiTrendingUp /> },
@@ -142,18 +150,18 @@ export default function IncomeExpenseTable() {
           return (
             <div className="col-md-3" key={card.id} style={{ cursor: 'pointer' }} onClick={() => handleFilterClick(card.id)}>
               <div 
-                className="card border-0 shadow-sm transition-all h-100" 
+                className="card border-0 shadow-sm h-100" 
                 style={{ 
                   backgroundColor: card.color, 
-                  opacity: activeFilter === "ALL" || isActive ? 1 : 0.5, // Saydamlık
-                  transform: isActive ? 'translateY(-8px)' : 'none', // Animasyon
-                  borderLeft: isActive ? `6px solid ${card.text}` : 'none',
-                  transition: 'all 0.3s ease-in-out'
+                  opacity: activeFilter === "ALL" || isActive ? 1 : 0.6,
+                  transform: isActive ? 'translateY(-5px)' : 'none',
+                  borderBottom: isActive ? `4px solid ${card.text}` : 'none',
+                  transition: 'all 0.2s ease'
                 }}
               >
                 <div className="card-body">
                   <div className="d-flex justify-content-between align-items-center mb-1">
-                    <small className="fw-bold text-uppercase" style={{ color: card.text, fontSize: '11px' }}>{card.label}</small>
+                    <small className="fw-bold text-uppercase" style={{ color: card.text, fontSize: '10px', letterSpacing: '0.5px' }}>{card.label}</small>
                     <span style={{ color: card.text }}>{card.icon}</span>
                   </div>
                   <h4 className="fw-bold mb-0" style={{ color: card.text }}>{formatMoney(card.val)}</h4>
@@ -164,14 +172,44 @@ export default function IncomeExpenseTable() {
         })}
       </div>
 
-      {/* TABLO: SIRALAMA ÖZELLİĞİ AKTİF */}
+      {/* TABLO */}
       <div className="card border-0 shadow-sm" style={{ borderRadius: "16px", overflow: "hidden" }}>
         <div className="table-responsive">
           <table className="table table-hover mb-0 align-middle">
             <thead style={{ backgroundColor: "#f8f9fa" }}>
               <tr className="small fw-bold text-uppercase text-muted">
-                <th className="py-4 ps-4 pointer" onClick={() => requestSort('customer')}>
-                  Müşteri {sortConfig.key === 'customer' && (sortConfig.direction === 'asc' ? <FiChevronUp /> : <FiChevronDown />)}
+                {/* ✅ MÜŞTERİ + AKILLI ARAMA BAŞLIĞI */}
+                <th className="py-3 ps-4" style={{ minWidth: '320px' }}>
+                  <div className="d-flex align-items-center gap-3">
+                    <div className="pointer d-flex align-items-center flex-shrink-0" onClick={() => requestSort('customer')}>
+                      Müşteri {sortConfig.key === 'customer' && (sortConfig.direction === 'asc' ? <FiChevronUp /> : <FiChevronDown />)}
+                    </div>
+                    
+                    {/* Arama Kutusu */}
+                    <div className="position-relative w-100">
+                      <FiSearch className="position-absolute top-50 start-0 translate-middle-y ms-2 text-muted" size={13} />
+                      <input
+                        type="text"
+                        className="form-control form-control-sm border-0 ps-4 bg-white shadow-sm"
+                        placeholder="Müşteri veya açıklama ara..."
+                        value={searchTerm}
+                        onChange={(e) => setSearchTerm(e.target.value)}
+                        style={{ 
+                          fontSize: '11px', 
+                          borderRadius: '8px', 
+                          border: '1px solid #e2e8f0',
+                          paddingRight: '25px'
+                        }}
+                      />
+                      {searchTerm && (
+                        <FiX 
+                          className="position-absolute top-50 end-0 translate-middle-y me-2 text-muted pointer" 
+                          size={13} 
+                          onClick={() => setSearchTerm("")}
+                        />
+                      )}
+                    </div>
+                  </div>
                 </th>
                 <th>Tür</th>
                 <th className="pointer" onClick={() => requestSort('amount')}>
@@ -183,48 +221,56 @@ export default function IncomeExpenseTable() {
                 </th>
                 <th>Vade</th>
                 <th className="pointer text-primary" onClick={() => requestSort('remainingDays')}>
-                   Kalan Gün {sortConfig.key === 'remainingDays' && (sortConfig.direction === 'asc' ? <FiChevronUp /> : <FiChevronDown />)}
+                   Gün {sortConfig.key === 'remainingDays' && (sortConfig.direction === 'asc' ? <FiChevronUp /> : <FiChevronDown />)}
                 </th>
                 <th>Durum</th>
                 <th className="text-end pe-4">İşlem</th>
               </tr>
             </thead>
             <tbody>
-              {processedItems.map((x) => {
+              {processedItems.length > 0 ? processedItems.map((x) => {
                 const remainingAmount = Number(x.amount) - (Number(x.paidAmount) || 0);
                 const dayInfo = getRemainingDays(x.dueDate);
                 const isGecikti = dayInfo.text.includes("geçti");
                 
                 return (
-                  <tr key={x.id} style={{ backgroundColor: isGecikti ? "#fff8f8" : "transparent" }}>
+                  <tr key={x.id} style={{ backgroundColor: isGecikti ? "#fffcfc" : "transparent" }}>
                     <td className="ps-4">
-                      <div className="fw-bold text-dark" style={{ fontSize: '14px' }}>{x.customer?.fullName || "—"}</div>
-                      <small className="text-muted opacity-75">{x.description}</small>
+                      {/* Müşteri İsmi */}
+                      <div className="fw-bold text-dark" style={{ fontSize: '13px' }}>{x.customer?.fullName || "—"}</div>
+                      {/* Altındaki Kategori/Açıklama Alanı (Aramaya dahil) */}
+                      <small className="text-muted text-truncate d-block" style={{ fontSize: '11px', maxWidth: '200px' }}>{x.description}</small>
                     </td>
                     <td>
-                      <span className={`badge rounded-pill fw-medium ${x.type === TransactionType.INCOME ? 'bg-success-subtle text-success' : 'bg-danger-subtle text-danger'}`} style={{ fontSize: '11px', padding: '5px 12px' }}>
+                      <span className={`badge rounded-pill fw-medium ${x.type === TransactionType.INCOME ? 'bg-success-subtle text-success' : 'bg-danger-subtle text-danger'}`} style={{ fontSize: '10px', padding: '4px 10px' }}>
                         {x.type === TransactionType.INCOME ? "Gelir" : "Gider"}
                       </span>
                     </td>
-                    <td className="fw-bold text-secondary">{formatMoney(x.amount)}</td>
-                    <td className="text-success opacity-75">{formatMoney(x.paidAmount || 0)}</td>
-                    <td className="text-danger opacity-75 fw-medium">{formatMoney(remainingAmount)}</td>
-                    <td className="text-muted small">{x.dueDate ? new Date(x.dueDate).toLocaleDateString("tr-TR") : "—"}</td>
-                    <td className={`small ${dayInfo.class}`}>{dayInfo.text}</td>
+                    <td className="fw-bold text-secondary" style={{ fontSize: '13px' }}>{formatMoney(x.amount)}</td>
+                    <td className="text-success small">{formatMoney(x.paidAmount || 0)}</td>
+                    <td className="text-danger fw-medium" style={{ fontSize: '13px' }}>{formatMoney(remainingAmount)}</td>
+                    <td className="text-muted" style={{ fontSize: '12px' }}>{x.dueDate ? new Date(x.dueDate).toLocaleDateString("tr-TR") : "—"}</td>
+                    <td className={`small fw-medium ${dayInfo.class}`}>{dayInfo.text}</td>
                     <td>
-                        <span className={`badge opacity-75 ${remainingAmount <= 0 ? 'bg-success' : isGecikti ? 'bg-danger' : 'bg-warning text-dark'}`}>
+                        <span className={`badge ${remainingAmount <= 0 ? 'bg-success' : isGecikti ? 'bg-danger' : 'bg-warning text-dark'}`} style={{ fontSize: '10px' }}>
                             {remainingAmount <= 0 ? 'Ödendi' : isGecikti ? 'Gecikti' : 'Bekliyor'}
                         </span>
                     </td>
                     <td className="text-end pe-4">
-                        <div className="d-flex justify-content-end gap-2">
-                            <button className="btn btn-sm btn-link text-muted p-0" onClick={() => router.push(`/income-expense/view/${x.id}`)}><FiEye size={18}/></button>
-                            <button className="btn btn-sm btn-link text-primary p-0" onClick={() => router.push(`/income-expense/edit/${x.id}`)}><FiEdit2 size={16}/></button>
+                        <div className="d-flex justify-content-end gap-1">
+                            <button className="btn btn-sm btn-light avatar-sm" onClick={() => router.push(`/income-expense/view/${x.id}`)} title="Görüntüle"><FiEye size={14}/></button>
+                            <button className="btn btn-sm btn-light avatar-sm text-primary" onClick={() => router.push(`/income-expense/edit/${x.id}`)} title="Düzenle"><FiEdit2 size={14}/></button>
                         </div>
                     </td>
                   </tr>
                 );
-              })}
+              }) : (
+                <tr>
+                  <td colSpan="9" className="text-center py-5 text-muted small">
+                    Aranan kriterlere uygun kayıt bulunamadı.
+                  </td>
+                </tr>
+              )}
             </tbody>
           </table>
         </div>
@@ -232,7 +278,26 @@ export default function IncomeExpenseTable() {
       
       <style jsx>{`
         .pointer { cursor: pointer; }
-        .pointer:hover { background-color: rgba(0,0,0,0.02); }
+        .pointer:hover { color: #000 !important; }
+        .form-control:focus {
+           border-color: #cbd5e1 !important;
+           background-color: #fff !important;
+           box-shadow: 0 0 0 2px rgba(203, 213, 225, 0.2) !important;
+        }
+        .avatar-sm {
+          width: 30px;
+          height: 30px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          border-radius: 8px;
+          background: #f1f5f9;
+          border: none;
+          transition: background 0.2s;
+        }
+        .avatar-sm:hover {
+          background: #e2e8f0;
+        }
       `}</style>
     </div>
   );

@@ -5,21 +5,36 @@ import React, { useState, useEffect } from 'react';
 const AddProposal = ({ previtems, onItemsChange }) => {
     const [items, setItems] = useState(previtems || []);
 
+    // Dinamik Hesaplamalar
+    const subTotal = items.reduce((acc, item) => acc + (Number(item.unitPrice || 0) * Number(item.quantity || 0)), 0);
+    const totalTax = items.reduce((acc, item) => {
+        const lineTotal = Number(item.unitPrice || 0) * Number(item.quantity || 0);
+        return acc + (lineTotal * (Number(item.taxRate || 0) / 100));
+    }, 0);
+    const grandTotal = subTotal + totalTax;
+
     useEffect(() => {
         if (onItemsChange) {
-            onItemsChange(items);
+            // Backend'in beklediği temizlenmiş veriyi ve hesaplanmış toplam tutarı gönderiyoruz
+            const cleanedItems = items.map(({ id, ...rest }) => ({
+                ...rest,
+                quantity: Number(rest.quantity),
+                unitPrice: Number(rest.unitPrice),
+                taxRate: Number(rest.taxRate)
+            }));
+
+            // Hem kalemleri hem de bu kalemlerden doğan toplam tutarı üst komponente iletiyoruz
+            onItemsChange(cleanedItems, grandTotal.toFixed(2));
         }
-    }, [items, onItemsChange]);
+    }, [items, grandTotal, onItemsChange]);
 
     const addItem = () => {
         const newItem = {
             id: Date.now(),
-            product: '',      
-            description: '',  
-            warranty: '',     
-            price: 0,         
-            qty: 1,           
-            tax: 0            
+            description: '', 
+            quantity: 1,      
+            unitPrice: 0,     
+            taxRate: 20       
         };
         setItems([...items, newItem]);
     };
@@ -38,8 +53,6 @@ const AddProposal = ({ previtems, onItemsChange }) => {
         setItems(updatedItems);
     };
 
-    const totalAmount = items?.reduce((acc, item) => acc + Number(item.price || 0), 0) || 0;
-
     return (
         <div className="col-12">
             <div className="card border-0 shadow-sm" style={{ borderRadius: '12px' }}>
@@ -50,7 +63,7 @@ const AddProposal = ({ previtems, onItemsChange }) => {
                             <div className="mb-4 d-flex justify-content-between align-items-center">
                                 <div>
                                     <h5 className="fw-bold mb-1 text-dark">Teklif Kalemleri</h5>
-                                    <span className="fs-13 text-muted">Hizmet detaylarını ve garanti sürelerini aşağıya giriniz.</span>
+                                    <span className="fs-13 text-muted">Hizmet detaylarını ve birim fiyatları aşağıya giriniz.</span>
                                 </div>
                                 <button
                                     className="btn btn-md text-white fw-bold px-4 shadow-sm"
@@ -66,10 +79,10 @@ const AddProposal = ({ previtems, onItemsChange }) => {
                                     <thead className="bg-light">
                                         <tr className="text-muted small text-uppercase">
                                             <th className="text-center" style={{ width: '50px' }}>#</th>
-                                            <th>Ürün / Hizmet</th>
-                                            <th>İçerik Açıklaması</th>
-                                            <th className="text-center">Garanti</th>
-                                            <th className="text-end">Satış Fiyatı</th>
+                                            <th>Ürün / Hizmet Açıklaması</th>
+                                            <th className="text-center" style={{ width: '100px' }}>Adet</th>
+                                            <th className="text-end" style={{ width: '160px' }}>Birim Fiyat</th>
+                                            <th className="text-center" style={{ width: '100px' }}>KDV (%)</th>
                                             <th></th>
                                         </tr>
                                     </thead>
@@ -78,19 +91,40 @@ const AddProposal = ({ previtems, onItemsChange }) => {
                                             <tr key={item.id}>
                                                 <td className="text-center fw-bold text-muted">{index + 1}</td>
                                                 <td>
-                                                    <input type="text" className="form-control border-light" placeholder="Örn: Yazılım Paketi" value={item.product} onChange={(e) => handleInputChange(item.id, 'product', e.target.value)} />
+                                                    <input 
+                                                        type="text" 
+                                                        className="form-control border-light" 
+                                                        placeholder="Örn: Portlink Yazılım Lisansı" 
+                                                        value={item.description} 
+                                                        onChange={(e) => handleInputChange(item.id, 'description', e.target.value)} 
+                                                    />
                                                 </td>
                                                 <td>
-                                                    <textarea className="form-control border-light" rows="1" placeholder="Detaylar..." value={item.description} onChange={(e) => handleInputChange(item.id, 'description', e.target.value)} />
-                                                </td>
-                                                <td>
-                                                    <input type="text" className="form-control text-center border-light" placeholder="2 Yıl" value={item.warranty} onChange={(e) => handleInputChange(item.id, 'warranty', e.target.value)} />
+                                                    <input 
+                                                        type="number" 
+                                                        className="form-control text-center border-light" 
+                                                        value={item.quantity} 
+                                                        onChange={(e) => handleInputChange(item.id, 'quantity', e.target.value)} 
+                                                    />
                                                 </td>
                                                 <td>
                                                     <div className="input-group">
                                                         <span className="input-group-text bg-light text-muted border-light">₺</span>
-                                                        <input type="number" className="form-control text-end fw-bold border-light" value={item.price} onChange={(e) => handleInputChange(item.id, 'price', parseFloat(e.target.value) || 0)} />
+                                                        <input 
+                                                            type="number" 
+                                                            className="form-control text-end fw-bold border-light" 
+                                                            value={item.unitPrice} 
+                                                            onChange={(e) => handleInputChange(item.id, 'unitPrice', e.target.value)} 
+                                                        />
                                                     </div>
+                                                </td>
+                                                <td>
+                                                    <input 
+                                                        type="number" 
+                                                        className="form-control text-center border-light" 
+                                                        value={item.taxRate} 
+                                                        onChange={(e) => handleInputChange(item.id, 'taxRate', e.target.value)} 
+                                                    />
                                                 </td>
                                                 <td className="text-center">
                                                     <button className="btn btn-link text-danger p-0" onClick={() => removeItem(item.id)}>
@@ -104,23 +138,23 @@ const AddProposal = ({ previtems, onItemsChange }) => {
                             </div>
                         </div>
 
-                        {/* Sağ Taraf: İSTEDİĞİN ÖZET TUTAR KISMI */}
+                        {/* Sağ Taraf: Özet Tutar */}
                         <div className="col-lg-3">
                             <div className="card border shadow-none h-100" style={{ backgroundColor: '#f8fafc', borderRadius: '10px' }}>
                                 <div className="card-body p-4">
                                     <h6 className="fw-bold mb-3">Özet Tutar</h6>
                                     <div className="d-flex justify-content-between mb-2">
                                         <span className="text-muted small">Ara Toplam:</span>
-                                        <span className="fw-bold small">₺{totalAmount.toLocaleString('tr-TR', { minimumFractionDigits: 2 })}</span>
+                                        <span className="fw-bold small">₺{subTotal.toLocaleString('tr-TR', { minimumFractionDigits: 2 })}</span>
                                     </div>
                                     <div className="d-flex justify-content-between mb-2">
                                         <span className="text-muted small">Toplam KDV:</span>
-                                        <span className="fw-bold small text-danger">₺0,00</span>
+                                        <span className="fw-bold small text-danger">₺{totalTax.toLocaleString('tr-TR', { minimumFractionDigits: 2 })}</span>
                                     </div>
                                     <hr />
-                                    <div className="d-flex justify-content-between">
+                                    <div className="d-flex justify-content-between bg-white p-2 rounded border mb-3">
                                         <span className="fw-bold">Genel Toplam:</span>
-                                        <span className="fw-bold text-primary">₺{totalAmount.toLocaleString('tr-TR', { minimumFractionDigits: 2 })}</span>
+                                        <span className="fw-bold text-primary">₺{grandTotal.toLocaleString('tr-TR', { minimumFractionDigits: 2 })}</span>
                                     </div>
                                 </div>
                             </div>
