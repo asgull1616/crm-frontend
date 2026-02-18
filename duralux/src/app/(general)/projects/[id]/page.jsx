@@ -6,6 +6,10 @@ import PageHeader from "@/components/shared/pageHeader/PageHeader";
 import { projectsApi } from "@/lib/services/projects.service";
 import { customerService } from "@/lib/services/customer.service";
 
+// ✅ EKLENDİ
+import { taskService } from "@/lib/services/task.service";
+import { userService } from "@/lib/services/user.service";
+
 const PRIMARY = "#E92B63";
 const SOFT = "#FFE4EC";
 const STAGES = ["Analiz", "Tasarım", "Kodlama", "Test", "Yayın"];
@@ -34,6 +38,15 @@ export default function ProjectDetailPage() {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [err, setErr] = useState("");
+
+  // ✅ EKLENDİ: görevler + filtreler
+  const [taskUsers, setTaskUsers] = useState([]);
+  const [tasks, setTasks] = useState([]);
+  const [tasksLoading, setTasksLoading] = useState(true);
+  const [taskFilters, setTaskFilters] = useState({
+    assignedUserId: "",
+    status: "",
+  });
 
   useEffect(() => {
     let mounted = true;
@@ -92,6 +105,61 @@ export default function ProjectDetailPage() {
       mounted = false;
     };
   }, [id]);
+
+  // ✅ EKLENDİ: proje bazlı görevleri çek
+  useEffect(() => {
+    let mounted = true;
+
+    async function loadTasks() {
+      if (!id) return;
+      setTasksLoading(true);
+
+      try {
+        const [taskRes, userRes] = await Promise.all([
+          taskService.list({
+            page: 1,
+            limit: 200,
+            projectId: id,
+            assignedUserId: taskFilters.assignedUserId || undefined,
+            status: taskFilters.status || undefined,
+          }),
+          userService.list({ page: 1, limit: 200 }),
+        ]);
+
+        const taskData = taskRes?.data?.data ?? [];
+        const userData = userRes?.data?.data ?? [];
+
+        if (!mounted) return;
+        setTasks(Array.isArray(taskData) ? taskData : []);
+        setTaskUsers(Array.isArray(userData) ? userData : []);
+      } catch (e) {
+        console.error(e);
+        if (!mounted) return;
+        setTasks([]);
+        setTaskUsers([]);
+      } finally {
+        if (mounted) setTasksLoading(false);
+      }
+    }
+
+    loadTasks();
+
+    return () => {
+      mounted = false;
+    };
+  }, [id, taskFilters.assignedUserId, taskFilters.status]);
+
+  const taskUserMap = useMemo(() => {
+    const m = new Map();
+    taskUsers.forEach((u) => m.set(u.id, u));
+    return m;
+  }, [taskUsers]);
+
+  const getUserLabel = (uid) => {
+    if (!uid) return "-";
+    const u = taskUserMap.get(uid);
+    return u ? `${u.username ?? u.email ?? "Kullanıcı"}` : uid;
+  };
 
   const finance = useMemo(() => {
     if (!project) return { total: 0, deposit: 0, remaining: 0, progress: 0 };
@@ -238,6 +306,184 @@ export default function ProjectDetailPage() {
               <span style={infoLabel}>Kalan</span>
               <span style={{ ...infoValue, color: PRIMARY }}>{finance.remaining} TL</span>
             </div>
+          </Card>
+
+          {/* ✅ EKLENDİ: GÖREVLER */}
+          <Card title="Görevler">
+            <div style={{ display: "flex", gap: 10, flexWrap: "wrap", marginBottom: 12 }}>
+              <select
+                style={{ ...inputStyle, width: "220px", textAlign: "left" }}
+                value={taskFilters.assignedUserId}
+                onChange={(e) => setTaskFilters((p) => ({ ...p, assignedUserId: e.target.value }))}
+              >
+                <option value="">Tüm Çalışanlar</option>
+                {taskUsers.map((u) => (
+                  <option key={u.id} value={u.id}>
+                    {u.username || u.email}
+                  </option>
+                ))}
+              </select>
+
+              <select
+                style={{ ...inputStyle, width: "200px", textAlign: "left" }}
+                value={taskFilters.status}
+                onChange={(e) => setTaskFilters((p) => ({ ...p, status: e.target.value }))}
+              >
+                <option value="">Tüm Durumlar</option>
+                <option value="NEW">Yeni</option>
+                <option value="IN_PROGRESS">İşlemde</option>
+                <option value="ON_HOLD">Beklemede</option>
+                <option value="COMPLETED">Tamamlandı</option>
+              </select>
+
+              <button
+                onClick={() => setTaskFilters({ assignedUserId: "", status: "" })}
+                style={{
+                  ...sideBtnBase,
+                  padding: "10px 14px",
+                  minWidth: 0,
+                  background: "#fff",
+                  color: PRIMARY,
+                  border: `1px solid rgba(233,43,99,0.35)`,
+                }}
+                type="button"
+              >
+                Filtreyi Sıfırla
+              </button>
+
+              <button
+                onClick={() => router.push(`/tasks/create?projectId=${id}`)}
+                style={{
+                  ...sideBtnBase,
+                  padding: "10px 14px",
+                  minWidth: 0,
+                  background: PRIMARY,
+                  color: "#fff",
+                }}
+                type="button"
+              >
+                + Görev Ekle
+              </button>
+            </div>
+
+            {tasksLoading ? (
+              <div style={{ padding: 12, fontWeight: 900, color: "#667085" }}>
+                Görevler yükleniyor...
+              </div>
+            ) : tasks.length === 0 ? (
+              <div style={{ padding: 12, fontWeight: 900, color: "#667085" }}>
+                Bu projede görev bulunamadı.
+              </div>
+            ) : (
+              <div style={{ overflowX: "auto" }}>
+                <table style={{ width: "100%", borderCollapse: "separate", borderSpacing: "0 10px" }}>
+                  <thead>
+                    <tr style={{ color: "#667085", fontSize: 12, fontWeight: 900, textTransform: "uppercase" }}>
+                      <th style={{ textAlign: "left", padding: "6px 10px" }}>Görev Adı</th>
+                      <th style={{ textAlign: "left", padding: "6px 10px" }}>Durum</th>
+                      <th style={{ textAlign: "left", padding: "6px 10px" }}>Atanan</th>
+                      <th style={{ textAlign: "left", padding: "6px 10px" }}>Bitiş</th>
+                      <th style={{ textAlign: "right", padding: "6px 10px" }}>Aksiyon</th>
+                    </tr>
+                  </thead>
+
+                  <tbody>
+                    {tasks.map((t) => (
+                      <tr
+                        key={t.id}
+                        style={{
+                          background: "#fff",
+                          boxShadow: "0 10px 24px rgba(16,24,40,0.06)",
+                          borderRadius: 14,
+                        }}
+                      >
+                        <td style={{ padding: "12px 10px", fontWeight: 950, color: "#101828" }}>
+                          {t.title}
+                        </td>
+
+                        <td style={{ padding: "12px 10px", fontWeight: 900 }}>
+                          <span
+                            style={{
+                              display: "inline-flex",
+                              alignItems: "center",
+                              gap: 8,
+                              padding: "6px 10px",
+                              borderRadius: 999,
+                              background:
+                                t.status === "COMPLETED"
+                                  ? "#ECFDF5"
+                                  : t.status === "ON_HOLD"
+                                    ? "#FFFBEB"
+                                    : t.status === "IN_PROGRESS"
+                                      ? "#EEF2FF"
+                                      : "#F1F5F9",
+                              color:
+                                t.status === "COMPLETED"
+                                  ? "#065F46"
+                                  : t.status === "ON_HOLD"
+                                    ? "#92400E"
+                                    : t.status === "IN_PROGRESS"
+                                      ? "#3730A3"
+                                      : "#0F172A",
+                              fontSize: 12,
+                            }}
+                          >
+                            {t.status === "NEW"
+                              ? "Yeni"
+                              : t.status === "IN_PROGRESS"
+                                ? "İşlemde"
+                                : t.status === "ON_HOLD"
+                                  ? "Beklemede"
+                                  : "Tamamlandı"}
+                          </span>
+                        </td>
+
+                        <td style={{ padding: "12px 10px", fontWeight: 900, color: "#344054" }}>
+                          {getUserLabel(t.assignedUserId)}
+                        </td>
+
+                        <td style={{ padding: "12px 10px", fontWeight: 900, color: "#344054" }}>
+                          {t.endDate ? new Date(t.endDate).toLocaleDateString("tr-TR") : "-"}
+                        </td>
+
+                        <td style={{ padding: "12px 10px", textAlign: "right" }}>
+                          <div style={{ display: "flex", justifyContent: "flex-end", gap: 8 }}>
+                            <button
+                              type="button"
+                              onClick={() => router.push(`/tasks/view/${t.id}`)}
+                              style={{
+                                ...sideBtnBase,
+                                padding: "10px 12px",
+                                minWidth: 0,
+                                background: "#fff",
+                                color: "#344054",
+                                border: "1px solid #e5e7eb",
+                              }}
+                            >
+                              Görüntüle
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() => router.push(`/tasks/edit/${t.id}`)}
+                              style={{
+                                ...sideBtnBase,
+                                padding: "10px 12px",
+                                minWidth: 0,
+                                background: "#fff",
+                                color: PRIMARY,
+                                border: `1px solid rgba(233,43,99,0.35)`,
+                              }}
+                            >
+                              Düzenle
+                            </button>
+                          </div>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            )}
           </Card>
 
           <div style={paymentSectionWrapper}>

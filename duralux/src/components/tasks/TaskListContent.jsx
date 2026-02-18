@@ -3,6 +3,7 @@ import React, { useEffect, useState, useCallback, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import { taskService } from "@/lib/services/task.service";
 import { userService } from "@/lib/services/user.service";
+import { projectsApi } from "@/lib/services/projects.service"; // ✅ EKLENDİ
 
 const statusMeta = {
   NEW: { label: "Yeni", chipBg: "#F1F5F9", chipText: "#0F172A" },
@@ -18,8 +19,13 @@ export default function TaskListContent() {
   const router = useRouter();
   const [tasks, setTasks] = useState([]);
   const [users, setUsers] = useState([]);
+  const [projects, setProjects] = useState([]);
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState("ALL");
+
+  // ✅ Backend filtreleri
+  const [selectedUser, setSelectedUser] = useState("");
+  const [selectedProject, setSelectedProject] = useState("");
 
   const stats = useMemo(() => {
     return {
@@ -31,6 +37,7 @@ export default function TaskListContent() {
     };
   }, [tasks]);
 
+  // ✅ Stat filtreleri UI tarafında kalsın
   const filteredTasks = useMemo(() => {
     if (filter === "ALL") return tasks;
     return tasks.filter((t) => t.status === filter);
@@ -51,20 +58,30 @@ export default function TaskListContent() {
   const fetchAll = useCallback(async () => {
     setLoading(true);
     try {
-      const [taskRes, userRes] = await Promise.all([
-        taskService.list({ page: 1, limit: 100 }),
+      const [taskRes, userRes, projectRes] = await Promise.all([
+        taskService.list({
+          page: 1,
+          limit: 100,
+          projectId: selectedProject || undefined,
+          assignedUserId: selectedUser || undefined,
+        }),
         userService.list({ page: 1, limit: 100 }),
+        projectsApi.list({ page: 1, limit: 200 }),
       ]);
+
       const taskData = taskRes?.data?.data ?? [];
       const userData = userRes?.data?.data ?? [];
+      const projectData = projectRes?.data ?? projectRes?.items ?? projectRes ?? [];
+
       setTasks(Array.isArray(taskData) ? taskData : []);
       setUsers(Array.isArray(userData) ? userData : []);
+      setProjects(Array.isArray(projectData) ? projectData : []);
     } catch (err) {
       console.error(err);
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [selectedProject, selectedUser]);
 
   useEffect(() => {
     fetchAll();
@@ -83,24 +100,9 @@ export default function TaskListContent() {
   const statCards = [
     { key: "ALL", title: "Tümü", subtitle: "Toplam görev", value: stats.total },
     { key: "NEW", title: "Yeni", subtitle: "Yeni açılan", value: stats.NEW },
-    {
-      key: "IN_PROGRESS",
-      title: "İşlemde",
-      subtitle: "Devam eden",
-      value: stats.IN_PROGRESS,
-    },
-    {
-      key: "ON_HOLD",
-      title: "Beklemede",
-      subtitle: "Duraklatılan",
-      value: stats.ON_HOLD,
-    },
-    {
-      key: "COMPLETED",
-      title: "Tamamlandı",
-      subtitle: "Bitirilen",
-      value: stats.COMPLETED,
-    },
+    { key: "IN_PROGRESS", title: "İşlemde", subtitle: "Devam eden", value: stats.IN_PROGRESS },
+    { key: "ON_HOLD", title: "Beklemede", subtitle: "Duraklatılan", value: stats.ON_HOLD },
+    { key: "COMPLETED", title: "Tamamlandı", subtitle: "Bitirilen", value: stats.COMPLETED },
   ];
 
   if (loading) {
@@ -115,8 +117,6 @@ export default function TaskListContent() {
     <div className="col-12">
       {/* ÜST BAR */}
       <div className="d-flex align-items-center justify-content-end mb-3">
-
-
         <button
           className="btn btn-sm text-white px-3"
           style={{
@@ -156,7 +156,6 @@ export default function TaskListContent() {
                     transition: "all .2s ease",
                   }}
                 >
-
                   <div className="card-body py-3">
                     <div className="d-flex align-items-start justify-content-between">
                       <div>
@@ -202,6 +201,56 @@ export default function TaskListContent() {
         })}
       </div>
 
+      {/* ✅ ÇALIŞAN + PROJE FİLTRELERİ */}
+      <div className="row g-3 mb-4">
+        <div className="col-12 col-md-4">
+          <label className="text-muted small fw-semibold mb-1 d-block">Çalışan</label>
+          <select
+            className="form-select"
+            value={selectedUser}
+            onChange={(e) => setSelectedUser(e.target.value)}
+            style={{ borderRadius: 12 }}
+          >
+            <option value="">Tümü</option>
+            {users.map((u) => (
+              <option key={u.id} value={u.id}>
+                {u.username || u.email}
+              </option>
+            ))}
+          </select>
+        </div>
+
+        <div className="col-12 col-md-5">
+          <label className="text-muted small fw-semibold mb-1 d-block">Proje</label>
+          <select
+            className="form-select"
+            value={selectedProject}
+            onChange={(e) => setSelectedProject(e.target.value)}
+            style={{ borderRadius: 12 }}
+          >
+            <option value="">Tümü</option>
+            {projects.map((p) => (
+              <option key={p.id} value={p.id}>
+                {p.name}
+              </option>
+            ))}
+          </select>
+        </div>
+
+        <div className="col-12 col-md-3 d-flex align-items-end">
+          <button
+            className="btn btn-outline-secondary w-100"
+            style={{ borderRadius: 12 }}
+            onClick={() => {
+              setSelectedUser("");
+              setSelectedProject("");
+            }}
+          >
+            Filtreyi Temizle
+          </button>
+        </div>
+      </div>
+
       {/* LİSTE KARTI */}
       <div
         className="card border-0"
@@ -243,15 +292,16 @@ export default function TaskListContent() {
               </button>
             </div>
           ) : (
-            <div className="table-responsive">
+            <div className="table-responsive task-table-wrap">
               <table className="table align-middle mb-0">
                 <thead style={{ background: "#F8FAFC" }}>
                   <tr className="text-muted small">
-                    <th className="ps-4 py-3 border-0 fw-semibold">Başlık</th>
+                    <th className="ps-4 py-3 border-0 fw-semibold">Görev Adı</th>
+                    <th className="py-3 border-0 fw-semibold">Proje</th>
                     <th className="py-3 border-0 fw-semibold">Durum</th>
                     <th className="py-3 border-0 fw-semibold">Atanan</th>
                     <th className="py-3 border-0 fw-semibold">Bitiş</th>
-                    <th className="py-3 pe-4 border-0 fw-semibold text-end">
+                    <th className="py-3 border-0 fw-semibold task-actions-th">
                       Aksiyon
                     </th>
                   </tr>
@@ -267,12 +317,13 @@ export default function TaskListContent() {
                       };
 
                     return (
-                      <tr
-                        key={task.id}
-                        style={{ borderTop: "1px solid #F1F5F9" }}
-                      >
+                      <tr key={task.id} style={{ borderTop: "1px solid #F1F5F9" }}>
                         <td className="ps-4 py-3">
                           <div className="fw-semibold text-dark">{task.title}</div>
+                        </td>
+
+                        <td className="py-3 text-muted small">
+                          {task.project?.name ?? "-"}
                         </td>
 
                         <td className="py-3">
@@ -310,10 +361,10 @@ export default function TaskListContent() {
                           {formatDate(task.endDate)}
                         </td>
 
-                        <td className="py-3 pe-4">
-                          <div className="d-flex justify-content-end gap-2">
+                        <td className="py-3 task-actions-td">
+                          <div className="task-actions">
                             <button
-                              className="btn btn-sm btn-outline-secondary"
+                              className="btn btn-sm btn-outline-secondary task-action-btn"
                               title="Görüntüle"
                               onClick={() => router.push(`/tasks/view/${task.id}`)}
                             >
@@ -321,7 +372,7 @@ export default function TaskListContent() {
                             </button>
 
                             <button
-                              className="btn btn-sm btn-outline-primary"
+                              className="btn btn-sm btn-outline-primary task-action-btn"
                               title="Güncelle"
                               onClick={() => router.push(`/tasks/edit/${task.id}`)}
                             >
@@ -329,7 +380,7 @@ export default function TaskListContent() {
                             </button>
 
                             <button
-                              className="btn btn-sm btn-outline-danger"
+                              className="btn btn-sm btn-outline-danger task-action-btn"
                               title="Sil"
                               onClick={() => handleDelete(task.id)}
                             >
@@ -348,35 +399,82 @@ export default function TaskListContent() {
       </div>
 
       <style jsx global>{`
-  /* ===== FILTRE KARTLARI PEMBE HOVER ===== */
+        /* ===== FILTRE KARTLARI PEMBE HOVER ===== */
+        .task-filter-card {
+          transition: all 0.25s ease;
+        }
+        .task-filter-card:hover {
+          transform: translateY(-4px);
+          background: #fff0f6;
+          border: 1px solid #f8a5c2 !important;
+          box-shadow: 0 12px 28px rgba(233, 43, 99, 0.18);
+        }
+        .task-filter-card.active,
+        .task-filter-card.active:hover {
+          background: linear-gradient(135deg, #ffe4ec, #ffc1d6) !important;
+          border: 1px solid #e92b63 !important;
+          box-shadow: 0 14px 34px rgba(233, 43, 99, 0.25);
+        }
 
-  .task-filter-card {
-    transition: all 0.25s ease;
-  }
+        /* ✅ EN KRİTİK DÜZELTME: SAĞDAN KIRPILMAYI BİTİR */
+        .task-table-wrap {
+          padding-right: 18px; /* butonlar sağa yapışmasın */
+        }
 
-  .task-filter-card:hover {
-    transform: translateY(-4px);
-    background: #fff0f6; /* çok soft pembe */
-    border: 1px solid #f8a5c2 !important;
-    box-shadow: 0 12px 28px rgba(233, 43, 99, 0.18);
-  }
+        /* ✅ SADECE AKSİYON BUTONLARINI ZORLA DÜZELT (theme override'ını kır) */
+.task-actions {
+  display: flex !important;
+  justify-content: flex-end !important;
+  align-items: center !important;
+  gap: 10px !important;
+  flex-wrap: nowrap !important;
+}
 
-  /* Aktif kart hover'da daha koyu pembe olsun */
-  .task-filter-card.active,
-  .task-filter-card.active:hover {
-    background: linear-gradient(
-      135deg,
-      #ffe4ec,
-      #ffc1d6
-    ) !important;
-    border: 1px solid #e92b63 !important;
-    box-shadow: 0 14px 34px rgba(233, 43, 99, 0.25);
-  }
-`}</style>
+.task-action-btn {
+  /* theme’in verdiği fixed width/padding’i ez */
+  width: auto !important;
+  min-width: 88px !important;     /* yazılar sığsın */
+  padding: 7px 12px !important;   /* rahat */
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+
+  white-space: nowrap !important;
+  line-height: 1 !important;
+  letter-spacing: 0 !important;
+  font-size: 12px !important;
+}
+
+/* Aksiyon kolonunun daralmasını engelle */
+.task-actions-th,
+.task-actions-td {
+  min-width: 300px !important;
+  white-space: nowrap !important;
+}
+
+.task-actions-td {
+  text-align: right !important;
+}
 
 
-
-
+        @media (max-width: 520px) {
+          .task-table-wrap {
+            padding-right: 10px;
+          }
+          .task-actions-th,
+          .task-actions-td {
+            width: 220px;
+            min-width: 220px;
+          }
+          .task-actions {
+            flex-wrap: wrap;
+            gap: 6px;
+          }
+          .task-action-btn {
+            padding: 6px 8px;
+          }
+        }
+      `}</style>
     </div>
   );
 }
