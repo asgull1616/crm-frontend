@@ -1,6 +1,9 @@
+'use client'
 import React from 'react'
 import CardHeader from '@/components/shared/CardHeader'
-import WorldMap from './WorldMap';
+import dynamic from 'next/dynamic'
+
+const WorldMap = dynamic(() => import('./WorldMap'), { ssr: false });
 
 const ActivityAnalysis = () => {
     return (

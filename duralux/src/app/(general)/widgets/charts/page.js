@@ -5,7 +5,7 @@ import SiteOverviewChart from "@/components/widgetsCharts/SiteOverviewChart";
 import EstimateBarChat from "@/components/widgetsCharts/EstimateBarChart";
 import EstimateAreaChart from "@/components/widgetsCharts/EstimateAreaChart";
 import EstimateAreaChartTwo from "@/components/widgetsCharts/EstimateAreaChartTwo";
-import TasksOverviewChart from "@/components/widgetsCharts/CoFounderShowcaseCard";
+import TasksOverviewChart from "@/components/widgetsCharts/FounderShowcaseCard";
 import InquiryChannelChart from "@/components/widgetsCharts/InquiryChannelChart";
 import InquiryTrackingChart from "@/components/widgetsCharts/InquiryTrackingChart";
 import TimeLoggedChart from "@/components/widgetsCharts/TimeLoggedChart";
