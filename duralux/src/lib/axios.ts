@@ -11,9 +11,11 @@ const api = axios.create({
 
 api.interceptors.request.use(
   (config) => {
-    const token = localStorage.getItem("accessToken");
-    if (token) {
-      config.headers.Authorization = `Bearer ${token}`;
+    if (typeof window !== "undefined") {
+      const token = localStorage.getItem("accessToken");
+      if (token) {
+        config.headers.Authorization = `Bearer ${token}`;
+      }
     }
     return config;
   },
@@ -27,27 +29,29 @@ api.interceptors.response.use(
 
     if (error.response?.status === 401 && !originalRequest._retry) {
       originalRequest._retry = true;
-      const refreshToken = localStorage.getItem("refreshToken");
+      if (typeof window !== "undefined") {
+        const refreshToken = localStorage.getItem("refreshToken");
 
-      if (!refreshToken) {
-        handleLogout();
-        return Promise.reject(error);
-      }
+        if (!refreshToken) {
+          handleLogout();
+          return Promise.reject(error);
+        }
 
-      try {
-        const response = await axios.post(`${API_BASE_URL}/api/auth/refresh`, {
-          refreshToken,
-        });
+        try {
+          const response = await axios.post(`${API_BASE_URL}/api/auth/refresh`, {
+            refreshToken,
+          });
 
-        const { accessToken, refreshToken: newRefreshToken } = response.data;
-        localStorage.setItem("accessToken", accessToken);
-        localStorage.setItem("refreshToken", newRefreshToken);
+          const { accessToken, refreshToken: newRefreshToken } = response.data;
+          localStorage.setItem("accessToken", accessToken);
+          localStorage.setItem("refreshToken", newRefreshToken);
 
-        originalRequest.headers.Authorization = `Bearer ${accessToken}`;
-        return api(originalRequest);
-      } catch (refreshError) {
-        handleLogout();
-        return Promise.reject(refreshError);
+          originalRequest.headers.Authorization = `Bearer ${accessToken}`;
+          return api(originalRequest);
+        } catch (refreshError) {
+          handleLogout();
+          return Promise.reject(refreshError);
+        }
       }
     }
     return Promise.reject(error);
@@ -56,8 +60,10 @@ api.interceptors.response.use(
 
 // 🔧 DÜZELTİLEN KISIM:
 const handleLogout = () => {
-  localStorage.removeItem("accessToken");
-  localStorage.removeItem("refreshToken");
+  if (typeof window !== "undefined") {
+    localStorage.removeItem("accessToken");
+    localStorage.removeItem("refreshToken");
+  }
   
   // Middleware'in takılmaması için çerezi de temizliyoruz
   if (typeof document !== "undefined") {

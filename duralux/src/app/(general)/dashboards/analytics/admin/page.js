@@ -17,6 +17,10 @@ import '@/app/globals.css';
 const Home = () => {
   const [username, setUsername] = useState('');
 
+  if (typeof window === 'undefined') {
+    return null;
+  }
+
   useEffect(() => {
     const fetchUser = async () => {
       try {
