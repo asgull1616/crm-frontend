@@ -3,12 +3,14 @@ import React, { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import { customerService } from "@/lib/services/customer.service";
 import { FiUser, FiEdit2, FiCreditCard, FiActivity } from "react-icons/fi";
+import Link from "next/link";
 
 // Alt Bileşenler
 import CustomerInfoSection from "./CustomerInfoSection";
 import CustomerPaymentSummary from "./CustomerPaymentSummary";
 import CustomerPaymentTable from "./CustomerPaymentTable";
 import CustomerActivitySection from "./CustomerActivitySection";
+import CustomerProjectsSection from "./CustomerProjectsSection";
 
 const CustomerContent = () => {
   const { id } = useParams();
@@ -74,9 +76,13 @@ const CustomerContent = () => {
               <FiCreditCard /> ÖDEMELER
             </button>
 
-            <button className="btn btn-light rounded-circle d-flex align-items-center justify-content-center shadow-sm" style={{ width: "45px", height: "45px" }}>
+            <Link 
+              href={`/customers/edit/${customer.id}`}
+              className="btn btn-light rounded-circle d-flex align-items-center justify-content-center shadow-sm" 
+              style={{ width: "45px", height: "45px" }}
+            >
               <FiEdit2 size={18} className="text-muted" />
-            </button>
+            </Link>
           </div>
         </div>
       </div>
@@ -99,12 +105,16 @@ const CustomerContent = () => {
         /* Aktivite & Durum Modu */
         <div className="row g-4">
           <div className="col-lg-6">
-            <CustomerInfoSection customer={customer} />
+            <div className="vstack gap-4">
+              <CustomerInfoSection customer={customer} />
+              <CustomerProjectsSection customerId={customer.id} />
+            </div>
           </div>
           <div className="col-lg-6">
             <CustomerActivitySection 
               customerId={customer.id} 
               customerStatus={customer.status} // 🟢 Durum bilgisini buraya bağladık
+              onUpdate={loadCustomer} // 🔄 Durum değişince sayfayı yenile
             />
           </div>
         </div>

@@ -8,6 +8,7 @@ import {
   FiMoreHorizontal,
 } from "react-icons/fi";
 import { activityService } from "@/lib/services/activity.service";
+import { customerService } from "@/lib/services/customer.service";
 
 // Mevcut form ve modal bileşenlerini çağırıyoruz
 import ActivityCreateForm from "./ActivityCreateForm";
@@ -15,16 +16,17 @@ import ActivityDetailModal from "./ActivityDetailModal";
 
 // 🔹 DURUM AŞAMALARI (Backend status ID'leri ile birebir eşleşmeli)
 const STEPS = [
-  { id: 'NEW', label: 'Lead' },
+  { id: 'NEW', label: 'Potansiyel' },
   { id: 'CONTACTED', label: 'Görüşüldü' },
   { id: 'OFFER_SENT', label: 'Teklif' },
   { id: 'WAITING_APPROVAL', label: 'Sözleşme' },
   { id: 'WON', label: 'Kazanıldı' }
 ];
 
-const CustomerActivitySection = ({ customerId, customerStatus = 'NEW' }) => {
+const CustomerActivitySection = ({ customerId, customerStatus = 'NEW', onUpdate }) => {
   const [activities, setActivities] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [updating, setUpdating] = useState(false);
   const [limit, setLimit] = useState(3);
   const [selectedActivityId, setSelectedActivityId] = useState(null);
 
@@ -46,6 +48,21 @@ const CustomerActivitySection = ({ customerId, customerStatus = 'NEW' }) => {
       setActivities(res.data.data || []);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleStatusChange = async (newStatus) => {
+    if (updating || newStatus === customerStatus) return;
+    
+    try {
+      setUpdating(true);
+      await customerService.update(customerId, { status: newStatus });
+      if (onUpdate) onUpdate();
+    } catch (error) {
+      console.error("Durum güncellenemedi:", error);
+      alert("Müşteri durumu güncellenirken bir hata oluştu.");
+    } finally {
+      setUpdating(false);
     }
   };
 
@@ -99,20 +116,28 @@ const CustomerActivitySection = ({ customerId, customerStatus = 'NEW' }) => {
 
           <div
             className="d-flex justify-content-between position-relative"
-            style={{ zIndex: 2 }}
+            style={{ zIndex: 2, opacity: updating ? 0.6 : 1, pointerEvents: updating ? 'none' : 'auto' }}
           >
             {STEPS.map((step, idx) => {
               const isCompleted = idx <= activeIndex;
+              const isClickable = true; // Tüm aşamalar seçilebilir
+
               return (
-                <div key={step.id} className="text-center">
+                <div 
+                  key={step.id} 
+                  className="text-center" 
+                  onClick={() => handleStatusChange(step.id)}
+                  style={{ cursor: "pointer", width: "60px" }}
+                >
                   <div
-                    className="rounded-circle mx-auto mb-2 d-flex align-items-center justify-content-center shadow-sm transition-all"
+                    className="rounded-circle mx-auto mb-2 d-flex align-items-center justify-content-center shadow-sm transition-all status-step"
                     style={{
                       width: "30px",
                       height: "30px",
                       backgroundColor: isCompleted ? "#9FB8A0" : "#fff",
                       border: isCompleted ? "none" : "2px solid #E5E7EB",
-                      transition: 'all 0.3s ease'
+                      transition: 'all 0.3s ease',
+                      transform: isCompleted && activeIndex === idx ? 'scale(1.2)' : 'scale(1)'
                     }}
                   >
                     {isCompleted ? (
@@ -126,7 +151,7 @@ const CustomerActivitySection = ({ customerId, customerStatus = 'NEW' }) => {
                   </div>
                   <span
                     className={`fw-bold ${isCompleted ? 'text-dark' : 'text-muted'}`}
-                    style={{ fontSize: "10px", transition: 'color 0.3s' }}
+                    style={{ fontSize: "10px", transition: 'color 0.3s', display: 'block' }}
                   >
                     {step.label}
                   </span>

@@ -58,7 +58,7 @@ const CustomerInfoSection = ({ customer }) => {
             <div className="d-flex align-items-center gap-2">
               <FiFileText className="text-muted" size={14}/>
               <span className="fw-bold text-dark small">
-                {customer.taxOffice || "Belirtilmemiş"} / {customer.taxNumber || "-"}
+                {customer.taxOffice || "-"} / {customer.vatNumber || "-"}
               </span>
             </div>
           </div>
@@ -69,7 +69,7 @@ const CustomerInfoSection = ({ customer }) => {
             <div className="d-flex align-items-center gap-2">
               <FiCreditCard className="text-muted" size={14}/>
               <span className="fw-bold small" style={{ color: "#E92B63", wordBreak: 'break-all' }}>
-                {customer.bankName || "Banka"} - {customer.iban || "IBAN Girilmemiş"}
+                {customer.bankName || "Belirtilmemiş"} - {customer.iban || "IBAN Girilmemiş"}
               </span>
             </div>
           </div>

@@ -20,6 +20,9 @@ const CustomerEditForm = ({ customerId, onSuccess }) => {
     phone: "",
     companyName: "",
     vatNumber: "",
+    taxOffice: "",
+    bankName: "",
+    iban: "",
     website: "",
     address: "",
     designation: "",
@@ -38,7 +41,22 @@ const CustomerEditForm = ({ customerId, onSuccess }) => {
   };
 
   const updateField = (key, value) => {
-    setForm((prev) => ({ ...prev, [key]: value }));
+    let finalValue = value;
+
+    if (key === "phone") {
+      if (!value.startsWith("+90")) finalValue = "+90";
+      finalValue = finalValue.replace(/[^\d+]/g, "").substring(0, 13);
+    }
+
+    if (key === "vatNumber") {
+      finalValue = value.replace(/[^\d]/g, "").substring(0, 11);
+    }
+
+    if (key === "iban") {
+      finalValue = value.toUpperCase().replace(/[^A-Z0-9]/g, "").substring(0, 26);
+    }
+
+    setForm((prev) => ({ ...prev, [key]: finalValue }));
   };
 
   const submit = async () => {
@@ -98,11 +116,38 @@ const CustomerEditForm = ({ customerId, onSuccess }) => {
           </div>
 
           <div className="col-md-6">
+            <label className="form-label">Vergi Dairesi</label>
+            <input
+              className="form-control"
+              value={form.taxOffice || ""}
+              onChange={(e) => updateField("taxOffice", e.target.value)}
+            />
+          </div>
+
+          <div className="col-md-6">
             <label className="form-label">Vergi No</label>
             <input
               className="form-control"
               value={form.vatNumber || ""}
               onChange={(e) => updateField("vatNumber", e.target.value)}
+            />
+          </div>
+
+          <div className="col-md-6">
+            <label className="form-label">Banka Adı</label>
+            <input
+              className="form-control"
+              value={form.bankName || ""}
+              onChange={(e) => updateField("bankName", e.target.value)}
+            />
+          </div>
+
+          <div className="col-md-6">
+            <label className="form-label">IBAN</label>
+            <input
+              className="form-control"
+              value={form.iban || ""}
+              onChange={(e) => updateField("iban", e.target.value)}
             />
           </div>
 
