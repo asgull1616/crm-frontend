@@ -13,10 +13,16 @@ api.interceptors.request.use((config) => {
   return config;
 });
 
+// src/lib/services/projectsApi.js (Dosyanın son hali)
+
 export const projectsApi = {
-  list: async () => {
+  // ✅ Params desteği ekledik (Müşteri bazlı filtre için)
+  list: async (params = {}) => {
     const res = await api.get("/api/projects", {
-      params: { _ts: Date.now() }, // ✅ cache-buster
+      params: { 
+        ...params, // Dışarıdan gelen customerId vb. filtreler
+        _ts: Date.now() 
+      },
       headers: {
         "Cache-Control": "no-cache",
         Pragma: "no-cache",
@@ -27,7 +33,7 @@ export const projectsApi = {
 
   getById: async (id) => {
     const res = await api.get(`/api/projects/${id}`, {
-      params: { _ts: Date.now() }, // ✅ cache-buster
+      params: { _ts: Date.now() },
       headers: {
         "Cache-Control": "no-cache",
         Pragma: "no-cache",
