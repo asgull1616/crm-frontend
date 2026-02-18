@@ -41,7 +41,6 @@ const Home = () => {
         <div className="row">
           <TransactionSummaryGraph />
           <CustomerMiniStats />
-          <ActivityAnalysis />
           <SystemLogs />
 
           <LatestLeads title={'Teklif & Görev Süreçleri (Demo)'} />

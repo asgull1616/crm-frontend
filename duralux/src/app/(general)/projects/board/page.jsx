@@ -187,8 +187,8 @@ export default function ProjectsBoardPage() {
         {/* ÜST KART */}
         <div style={topCard}>
           <div>
-            <div style={{ fontSize: 14, fontWeight: 950, color: PRIMARY }}>Projelerimiz</div>
-            <div style={{ fontSize: 30, fontWeight: 950, marginTop: 8, color: "#111" }}>Proje Kartları</div>
+            <div style={{ fontSize: 14, fontWeight: 500, color: PRIMARY }}>Projelerimiz</div>
+            <div style={{ fontSize: 30, fontWeight: 500, marginTop: 8, color: "#111" }}>Proje Kartları</div>
 
             <div style={topControls}>
               <div style={filterGroup}>
@@ -212,8 +212,8 @@ export default function ProjectsBoardPage() {
               </button>
             </div>
 
-            {err ? <div style={{ marginTop: 10, color: "red", fontWeight: 900 }}>{err}</div> : null}
-            {loading ? <div style={{ marginTop: 10, color: "#667085", fontWeight: 900 }}>Yükleniyor...</div> : null}
+            {err ? <div style={{ marginTop: 10, color: "red", fontWeight: 500 }}>{err}</div> : null}
+            {loading ? <div style={{ marginTop: 10, color: "#667085", fontWeight: 500 }}>Yükleniyor...</div> : null}
           </div>
 
           <div style={statBox}>
@@ -241,7 +241,7 @@ export default function ProjectsBoardPage() {
               <tbody>
                 {filteredProjects.map((p) => (
                   <tr key={p.id} style={rowStyle} onClick={() => handleRowNavigation(p)}>
-                    <td style={{ ...td, fontWeight: 950 }}>{p.project}</td>
+                    <td style={{ ...td, fontWeight: 500 }}>{p.project}</td>
                     <td style={td}>{p.customer || "—"}</td>
                     <td style={td}>{p.type}</td>
                     <td style={td}>{formatTL(p.price)}</td>
@@ -278,7 +278,7 @@ export default function ProjectsBoardPage() {
 
                 {filteredProjects.length === 0 ? (
                   <tr>
-                    <td colSpan={7} style={{ ...td, color: "#667085", fontWeight: 900, padding: 18 }}>
+                    <td colSpan={7} style={{ ...td, color: "#667085", fontWeight: 500, padding: 18 }}>
                       Kayıt yok.
                     </td>
                   </tr>
@@ -294,14 +294,14 @@ export default function ProjectsBoardPage() {
         <div style={modalOverlay} onMouseDown={() => setOpen(false)}>
           <div style={modal} onMouseDown={(e) => e.stopPropagation()}>
             <div style={modalHeader}>
-              <div style={{ fontWeight: 950, fontSize: 16 }}>Proje Ekle</div>
+              <div style={{ fontWeight: 500, fontSize: 16 }}>Proje Ekle</div>
               <button style={xBtn} onClick={() => setOpen(false)}>
                 ✕
               </button>
             </div>
 
             <div style={{ padding: 16, display: "grid", gap: 12 }}>
-              {err ? <div style={{ color: "red", fontWeight: 900 }}>{err}</div> : null}
+              {err ? <div style={{ color: "red", fontWeight: 500 }}>{err}</div> : null}
 
               <Field label="Proje Adı">
                 <Input value={form.name} onChange={(e) => setForm((p) => ({ ...p, name: e.target.value }))} />
@@ -382,14 +382,14 @@ function badgeFlow(flow) {
     Test: { bg: "#FFF7ED", fg: "#9A3412" },
   };
   const c = map[flow] || { bg: "#F2F4F7", fg: "#344054" };
-  return { background: c.bg, color: c.fg, padding: "6px 10px", borderRadius: 999, fontWeight: 900, fontSize: 12 };
+  return { background: c.bg, color: c.fg, padding: "6px 10px", borderRadius: 999, fontWeight: 500, fontSize: 12 };
 }
 
 /* small components */
 function Field({ label, children }) {
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-      <div style={{ fontSize: 13, fontWeight: 950, color: "#344054" }}>{label}</div>
+      <div style={{ fontSize: 13, fontWeight: 500, color: "#344054" }}>{label}</div>
       {children}
     </div>
   );
@@ -413,31 +413,31 @@ const topCard = {
 
 const topControls = { marginTop: 14, display: "flex", gap: 10, alignItems: "center", flexWrap: "wrap" };
 const filterGroup = { display: "flex", background: "#f2f4f7", padding: 4, borderRadius: 14 };
-const filterBtn = { padding: "8px 16px", borderRadius: 10, border: "none", background: "transparent", color: "#667085", fontWeight: 900, fontSize: 13, cursor: "pointer" };
+const filterBtn = { padding: "8px 16px", borderRadius: 10, border: "none", background: "transparent", color: "#667085", fontWeight: 500, fontSize: 13, cursor: "pointer" };
 const filterBtnActive = { ...filterBtn, background: "#fff", color: PRIMARY, boxShadow: "0 4px 12px rgba(0,0,0,0.08)" };
 
 const statBox = { minWidth: 150, background: "#fff", border: "1px solid #f1f1f1", borderRadius: 18, padding: 14, textAlign: "center" };
-const statLabel = { fontSize: 12, fontWeight: 950, color: "#667085" };
-const statValue = { fontSize: 16, fontWeight: 950, color: "#111", marginTop: 4 };
+const statLabel = { fontSize: 12, fontWeight: 500, color: "#667085" };
+const statValue = { fontSize: 16, fontWeight: 500, color: "#111", marginTop: 4 };
 
 const tableCard = { marginTop: 16, background: "#fff", borderRadius: 22, padding: 14, boxShadow: "0 16px 40px rgba(0,0,0,0.06)", border: "1px solid #f1f1f1" };
 const table = { width: "100%", borderCollapse: "separate", borderSpacing: 0 };
-const th = { textAlign: "left", padding: 12, fontSize: 13, fontWeight: 950, color: "#344054", borderBottom: "1px solid #F2F4F7" };
+const th = { textAlign: "left", padding: 12, fontSize: 13, fontWeight: 500, color: "#344054", borderBottom: "1px solid #F2F4F7" };
 const td = { padding: 12, fontSize: 14, color: "#101828", borderBottom: "1px solid #F2F4F7" };
 const rowStyle = { cursor: "pointer", transition: "background 0.2s" };
 
-const btnGhostSmall = { padding: "6px 10px", borderRadius: 8, border: "1px solid #eee", background: "#fff", fontSize: 12, fontWeight: 800, cursor: "pointer" };
+const btnGhostSmall = { padding: "6px 10px", borderRadius: 8, border: "1px solid #eee", background: "#fff", fontSize: 12, fontWeight: 500, cursor: "pointer" };
 const btnDangerSmall = { padding: "6px 10px", borderRadius: 8, border: "1px solid rgba(233,43,99,0.25)", background: "#FFE4EC", color: PRIMARY, fontSize: 12, fontWeight: 900, cursor: "pointer" };
 
-const btnPrimary = { padding: "10px 14px", borderRadius: 14, border: "none", background: PRIMARY, color: "#fff", fontWeight: 950, cursor: "pointer", boxShadow: "0 10px 26px rgba(233,43,99,0.25)" };
-const btnGhost = { padding: "10px 14px", borderRadius: 14, border: "1px solid #eee", background: "#fff", fontWeight: 950, cursor: "pointer" };
+const btnPrimary = { padding: "10px 14px", borderRadius: 14, border: "none", background: PRIMARY, color: "#fff", fontWeight: 500, cursor: "pointer", boxShadow: "0 10px 26px rgba(233,43,99,0.25)" };
+const btnGhost = { padding: "10px 14px", borderRadius: 14, border: "1px solid #eee", background: "#fff", fontWeight: 500, cursor: "pointer" };
 
-const select = { width: "100%", padding: "10px 12px", borderRadius: 14, border: "1px solid #eee", background: "#fff", fontWeight: 900, fontSize: 14, outline: "none" };
-const inputStyle = { width: "100%", padding: "12px 14px", borderRadius: 14, border: "1px solid #eee", outline: "none", fontSize: 14, fontWeight: 900 };
+const select = { width: "100%", padding: "10px 12px", borderRadius: 14, border: "1px solid #eee", background: "#fff", fontWeight: 500, fontSize: 14, outline: "none" };
+const inputStyle = { width: "100%", padding: "12px 14px", borderRadius: 14, border: "1px solid #eee", outline: "none", fontSize: 14, fontWeight: 500 };
 
 const modalOverlay = { position: "fixed", inset: 0, background: "rgba(17,17,17,0.45)", display: "flex", alignItems: "center", justifyContent: "center", padding: 16, zIndex: 9999 };
 const modal = { width: "100%", maxWidth: 640, borderRadius: 20, background: "rgba(255,255,255,0.92)", border: "1px solid rgba(255,255,255,0.7)", boxShadow: "0 26px 80px rgba(0,0,0,0.25)", backdropFilter: "blur(10px)", overflow: "hidden" };
 const modalHeader = { padding: 16, borderBottom: "1px solid #f0f0f0", display: "flex", alignItems: "center", justifyContent: "space-between" };
 const modalFooter = { padding: 16, borderTop: "1px solid #f0f0f0", background: "rgba(255,255,255,0.65)", display: "flex", justifyContent: "flex-end", gap: 10 };
-const xBtn = { width: 38, height: 38, borderRadius: 12, border: "1px solid #eee", background: "#fff", cursor: "pointer", fontWeight: 950 };
+const xBtn = { width: 38, height: 38, borderRadius: 12, border: "1px solid #eee", background: "#fff", cursor: "pointer", fontWeight: 500 };
 const grid2 = { display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 };

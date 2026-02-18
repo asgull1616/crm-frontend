@@ -55,7 +55,7 @@ function Modal({ open, title, children, onClose, footer }) {
         <div style={modalHeader}>
           <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
             <span style={modalDot} />
-            <div style={{ fontWeight: 950, fontSize: 18 }}>{title}</div>
+            <div style={{ fontWeight: 500, fontSize: 18 }}>{title}</div>
           </div>
           <button onClick={onClose} style={xBtn} aria-label="Kapat">
             ✕
@@ -71,7 +71,7 @@ function Modal({ open, title, children, onClose, footer }) {
 function Field({ label, children }) {
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-      <div style={{ fontSize: 13, fontWeight: 900, color: "#344054" }}>
+      <div style={{ fontSize: 13, fontWeight: 500, color: "#344054" }}>
         {label}
       </div>
       {children}
@@ -104,7 +104,7 @@ function Avatar({ name }) {
         display: "grid",
         placeItems: "center",
         fontSize: 13,
-        fontWeight: 900,
+        fontWeight: 500,
         border: "1px solid rgba(233,43,99,0.2)",
         flexShrink: 0,
       }}
@@ -131,7 +131,7 @@ function Card({ card, onEdit, onDelete, overlay = false }) {
         <div style={{ minWidth: 0 }}>
           <div
             style={{
-              fontWeight: 950,
+              fontWeight: 500,
               fontSize: 18,
               color: "#111",
               lineHeight: 1.3,
@@ -142,7 +142,7 @@ function Card({ card, onEdit, onDelete, overlay = false }) {
 
           <div style={{ marginTop: 10, display: "flex", alignItems: "center", gap: 10 }}>
             <Avatar name={card.assignee || "Atanmadı"} />
-            <div style={{ fontSize: 15, fontWeight: 900, color: "#667085" }}>
+            <div style={{ fontSize: 15, fontWeight: 500, color: "#667085" }}>
               {card.assignee || "Atanan yok"}
             </div>
           </div>
@@ -219,7 +219,7 @@ function SortableColumn({
           <div style={{ minWidth: 0 }}>
             <div
               style={{
-                fontWeight: 950,
+                fontWeight: 500,
                 fontSize: 20,
                 color: "#111",
                 overflow: "hidden",
@@ -234,7 +234,7 @@ function SortableColumn({
               style={{
                 marginTop: 8,
                 fontSize: 14,
-                fontWeight: 950,
+                fontWeight: 500,
                 color: PRIMARY,
                 background: PRIMARY_LIGHT,
                 padding: "5px 12px",
@@ -716,7 +716,7 @@ export default function ProgramBoardPage() {
         {/* Header */}
         <div style={headerWrap}>
           <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
-            <div style={{ fontSize: 14, fontWeight: 950, color: PRIMARY }}>
+            <div style={{ fontSize: 14, fontWeight: 500, color: PRIMARY }}>
               Program
             </div>
 
@@ -746,10 +746,10 @@ export default function ProgramBoardPage() {
               </button>
             </div>
 
-            <div style={{ fontSize: 28, fontWeight: 950, color: "#111" }}>
+            <div style={{ fontSize: 28, fontWeight: 500, color: "#111" }}>
               {activeProgram.title}
             </div>
-            <div style={{ fontSize: 13, fontWeight: 800, color: "#667085" }}>
+            <div style={{ fontSize: 13, fontWeight: 500, color: "#667085" }}>
               Kolonları ve kartları sürükleyip bırakabilirsin.
             </div>
           </div>
@@ -800,7 +800,7 @@ export default function ProgramBoardPage() {
                     border: "1px solid #f3f3f3",
                   }}
                 >
-                  <div style={{ fontWeight: 950, fontSize: 20, color: "#111" }}>
+                  <div style={{ fontWeight: 500, fontSize: 20, color: "#111" }}>
                     {activeColumn.title}
                   </div>
                 </div>
@@ -881,8 +881,8 @@ export default function ProgramBoardPage() {
           ) : null}
 
           {modal.type === "deleteCard" ? (
-            <div style={{ fontSize: 14, fontWeight: 900, color: "#475467" }}>
-              <span style={{ color: PRIMARY, fontWeight: 950 }}>
+            <div style={{ fontSize: 14, fontWeight: 500, color: "#475467" }}>
+              <span style={{ color: PRIMARY, fontWeight: 500 }}>
                 "{modal.payload?.title}"
               </span>{" "}
               kartını silmek istiyor musun?
@@ -890,8 +890,8 @@ export default function ProgramBoardPage() {
           ) : null}
 
           {modal.type === "deleteCol" ? (
-            <div style={{ fontSize: 14, fontWeight: 900, color: "#475467" }}>
-              <span style={{ color: PRIMARY, fontWeight: 950 }}>
+            <div style={{ fontSize: 14, fontWeight: 500, color: "#475467" }}>
+              <span style={{ color: PRIMARY, fontWeight: 500 }}>
                 "{modal.payload?.title}"
               </span>{" "}
               kolonu silinecek ve içindeki kartlar da silinir. Emin misin?
@@ -899,8 +899,8 @@ export default function ProgramBoardPage() {
           ) : null}
 
           {modal.type === "deleteProgram" ? (
-            <div style={{ fontSize: 14, fontWeight: 900, color: "#475467" }}>
-              <span style={{ color: PRIMARY, fontWeight: 950 }}>
+            <div style={{ fontSize: 14, fontWeight: 500, color: "#475467" }}>
+              <span style={{ color: PRIMARY, fontWeight: 500 }}>
                 "{modal.payload?.title}"
               </span>{" "}
               programı tamamen silinsin mi?
@@ -938,7 +938,7 @@ const btnPrimary = {
   border: "none",
   background: PRIMARY,
   color: "#fff",
-  fontWeight: 950,
+  fontWeight: 500,
   fontSize: 14,
   cursor: "pointer",
   boxShadow: "0 10px 26px rgba(233,43,99,0.3)",
@@ -949,7 +949,7 @@ const btnGhost = {
   borderRadius: 14,
   border: "1px solid #eee",
   background: "#fff",
-  fontWeight: 950,
+  fontWeight: 500,
   cursor: "pointer",
 };
 
@@ -959,7 +959,7 @@ const btnDanger = {
   border: "1px solid rgba(233,43,99,0.22)",
   background: PRIMARY_LIGHT,
   color: PRIMARY,
-  fontWeight: 950,
+  fontWeight: 500,
   cursor: "pointer",
 };
 
@@ -970,7 +970,7 @@ const btnGrip = {
   border: "1px solid #eee",
   background: "#fff",
   cursor: "grab",
-  fontWeight: 950,
+  fontWeight: 500,
   fontSize: 18,
   color: PRIMARY,
 };
@@ -980,7 +980,7 @@ const selectStyle = {
   borderRadius: 14,
   border: "1px solid #eee",
   background: "#fff",
-  fontWeight: 900,
+  fontWeight: 500,
   fontSize: 14,
   outline: "none",
 };
@@ -1036,7 +1036,7 @@ const xBtn = {
   border: "1px solid #eee",
   background: "#fff",
   cursor: "pointer",
-  fontWeight: 950,
+  fontWeight: 500,
 };
 
 const inputStyle = {
@@ -1046,6 +1046,6 @@ const inputStyle = {
   border: "1px solid #eee",
   outline: "none",
   fontSize: 15,
-  fontWeight: 900,
+  fontWeight: 500,
   boxShadow: "0 10px 26px rgba(0,0,0,0.05)",
 };
