@@ -517,6 +517,48 @@ export default function ContractsPage() {
         .fileOpenBtn:hover {
           background: #f7f7f7;
         }
+
+        /* =========================================================
+           ✅ SADECE SÖZLEŞME KARTI BOYUTU KÜÇÜLTME (KOD BOZULMADAN)
+        ========================================================= */
+        .contract-card {
+          padding: 12px !important;
+          border-radius: 14px !important;
+          gap: 8px !important;
+          min-height: unset !important;
+        }
+
+        .card-icon {
+          width: 34px !important;
+          height: 34px !important;
+          font-size: 16px !important;
+          border-radius: 10px !important;
+        }
+
+        .card-body h3 {
+          font-size: 15px !important;
+        }
+
+        .card-body span {
+          font-size: 11px !important;
+        }
+
+        .status-badge {
+          font-size: 10px !important;
+          padding: 3px 8px !important;
+        }
+
+        /* aynı class'ı küçültme amaçlı override ediyoruz */
+        .actions-grid {
+          gap: 6px !important;
+          padding-top: 6px !important;
+        }
+
+        .actions-grid button {
+          min-height: 34px !important;
+          font-size: 11px !important;
+          border-radius: 10px !important;
+        }
       `}</style>
     </>
   );
