@@ -145,12 +145,9 @@ const leadsSourceOptions = [
 ]
 
 const projectStatusOptions = [
-    { value: "in-projress", label: "Yeni", color: "#3454d1" },
-    { value: "not-started", label: "Devam Ediyor", color: "#ffa21d" },
-    { value: "on-hold", label: "Tamamlandı", color: "#17c666" },
-    { value: "declined", label: "Beklemede", color: "#ea4d4d" },
-    // { value: "finished", label: "Fieeeehed", color: "#41b2c4" },
-    // { value: 'active', label: 'Aeeeve', color: '#17c666' }
+    { value: "TEKLIF", label: "Teklif", color: "#3454d1" },
+    { value: "GELISTIRME", label: "Geliştirme", color: "#ffa21d" },
+    { value: "TEST", label: "Test", color: "#17c666" },
 ]
 const projectBillingOptions = [
     { value: "fixed-rate", label: "Fixed Rate", color: "#3454d1" },
@@ -165,10 +162,17 @@ const projectNotificationsOptions = [
 const projectRoalOptions = [
     { value: "admin", label: "Yönetici", color: "#3454d1" },
     { value: "guest", label: "Ekip Üyesi", color: "#41b2c4" },
-    // { value: "editor", label: "Editor", color: "#ea4d4d" },
-    // { value: "owner", label: "Owner", color: "#ffa21d" },
     { value: "customer", label: "Müşteri", color: "#17c666" }
 ]
+
+const projectTypeOptions = [
+    { value: "WEB", label: "Web Projesi" },
+    { value: "MOBIL", label: "Mobil Proje" },
+    { value: "YAZILIM", label: "Özel Yazılım" },
+    { value: "TASARIM", label: "Tasarım Projesi" },
+    { value: "DIGER", label: "Diğer" },
+]
+
 export {
     propsalRelatedOptions,
     propsalDiscountOptions,
@@ -190,5 +194,6 @@ export {
     projectBillingOptions,
     projectNotificationsOptions,
     projectRoalOptions,
+    projectTypeOptions,
     taskTypeOptions
 }

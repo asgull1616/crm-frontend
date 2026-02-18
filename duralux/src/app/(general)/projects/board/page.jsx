@@ -4,6 +4,7 @@ import React, { useEffect, useMemo, useState, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import PageHeader from "@/components/shared/pageHeader/PageHeader";
 import { projectsApi } from "@/lib/services/projects.service";
+import { customerService } from "@/lib/services/customer.service";
 
 const PRIMARY = "#E92B63";
 const STATUS = ["Teklif", "Geliştirme", "Test"];
@@ -46,6 +47,7 @@ export default function ProjectsBoardPage() {
   const router = useRouter();
 
   const [projects, setProjects] = useState([]);
+  const [customers, setCustomers] = useState([]); // ✅ Müşteri listesi
   const [loading, setLoading] = useState(true);
   const [activeFilter, setActiveFilter] = useState("Hepsi");
 
@@ -56,12 +58,26 @@ export default function ProjectsBoardPage() {
 
   const [form, setForm] = useState({
     name: "",
-    customerName: "",
+    customerId: "", // ✅ customerName yerine customerId
     type: "YAZILIM", // ✅ backend enum
     price: "",
     deliveryDate: "",
     status: "Teklif",
   });
+
+  // ✅ Müşterileri çek
+  useEffect(() => {
+    const fetchCustomers = async () => {
+      try {
+        const res = await customerService.list({ limit: 100 });
+        const list = res.data?.data || res.data || [];
+        setCustomers(Array.isArray(list) ? list : []);
+      } catch (err) {
+        console.error("Customers list error:", err);
+      }
+    };
+    fetchCustomers();
+  }, []);
 
   const loadProjects = useCallback(async () => {
     setErr("");
@@ -106,7 +122,7 @@ export default function ProjectsBoardPage() {
     setErr("");
     setForm({
       name: "",
-      customerName: "",
+      customerId: "",
       type: "YAZILIM",
       price: "",
       deliveryDate: "",
@@ -125,13 +141,11 @@ export default function ProjectsBoardPage() {
     try {
       const payload = {
         name: form.name.trim(),
+        customerId: form.customerId || null, // ✅ Seçilen müşteri ID'si
         type: form.type, // ✅ WEB/MOBIL/YAZILIM/TASARIM/DIGER
         status: STATUS_TO_API[form.status] || "TEKLIF",
         price: Number(form.price),
         deliveryDate: form.deliveryDate ? new Date(form.deliveryDate).toISOString() : null,
-
-        // customerId gerekiyorsa backend'e göre ekleriz
-        // customerName şimdilik sadece UI
       };
 
       await projectsApi.create(payload);
@@ -293,12 +307,19 @@ export default function ProjectsBoardPage() {
                 <Input value={form.name} onChange={(e) => setForm((p) => ({ ...p, name: e.target.value }))} />
               </Field>
 
-              <Field label="Müşteri (şimdilik yazı)">
-                <Input
-                  value={form.customerName}
-                  onChange={(e) => setForm((p) => ({ ...p, customerName: e.target.value }))}
-                  placeholder="CK Paslanmaz"
-                />
+              <Field label="İlgili Müşteri">
+                <select
+                  style={select}
+                  value={form.customerId}
+                  onChange={(e) => setForm((p) => ({ ...p, customerId: e.target.value }))}
+                >
+                  <option value="">Müşteri Seçin</option>
+                  {customers.map((c) => (
+                    <option key={c.id} value={c.id}>
+                      {c.fullName || c.companyName || "İsimsiz Müşteri"}
+                    </option>
+                  ))}
+                </select>
               </Field>
 
               <div style={grid2}>

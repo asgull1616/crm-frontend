@@ -4,6 +4,7 @@ import { useParams, useSearchParams, useRouter } from "next/navigation";
 import React, { useEffect, useMemo, useState } from "react";
 import PageHeader from "@/components/shared/pageHeader/PageHeader";
 import { projectsApi } from "@/lib/services/projects.service";
+import { customerService } from "@/lib/services/customer.service";
 
 const PRIMARY = "#E92B63";
 const SOFT = "#FFE4EC";
@@ -41,21 +42,22 @@ export default function ProjectDetailPage() {
       setLoading(true);
       setErr("");
 
-      setCustomers([
-        { id: "c1", name: "CK Paslanmaz" },
-        { id: "c2", name: "Dadaylılar" },
-        { id: "c3", name: "Empet" },
-        { id: "c4", name: "Kartepe Group" },
-      ]);
-
       try {
-        const data = await projectsApi.getById(id);
+        const [projRes, custRes] = await Promise.all([
+          projectsApi.getById(id),
+          customerService.list({ limit: 100 })
+        ]);
+
+        const data = projRes;
+        const custData = custRes.data?.data || custRes.data || [];
+        setCustomers(Array.isArray(custData) ? custData : []);
 
         const normalized = normalize(
           {
             id: data.id,
             project: data.name,
             customer: data.customer?.companyName || data.customer?.fullName || "",
+            customerId: data.customerId || "",
             type: data.type || "DIGER",
             price: Number(data.price || 0),
             deliveryDate: data.deliveryDate ? toDateInput(data.deliveryDate) : "",
@@ -112,6 +114,7 @@ export default function ProjectDetailPage() {
     try {
       const payload = {
         name: project.project,
+        customerId: project.customerId || null,
         type: project.type || "DIGER",
         status: STATUS_TO_API[project.flowStatus] || "TEKLIF",
         price: Number(toNumber(project.price)),
@@ -125,6 +128,7 @@ export default function ProjectDetailPage() {
           id: updated.id,
           project: updated.name,
           customer: updated.customer?.companyName || updated.customer?.fullName || project.customer,
+          customerId: updated.customerId || project.customerId,
           type: updated.type || project.type,
           price: Number(updated.price || project.price || 0),
           deliveryDate: updated.deliveryDate ? toDateInput(updated.deliveryDate) : project.deliveryDate,
@@ -164,11 +168,23 @@ export default function ProjectDetailPage() {
             {isEditing ? (
               <div style={{ display: "flex", flexDirection: "column", gap: 10, marginTop: 10 }}>
                 <input style={inputTransparent} value={project.project} onChange={(e) => setProject({ ...project, project: e.target.value })} />
-                <select style={selectHeader} value={project.customer} onChange={(e) => setProject({ ...project, customer: e.target.value })}>
+                <select
+                  style={selectHeader}
+                  value={project.customerId || ""}
+                  onChange={(e) => {
+                    const cid = e.target.value;
+                    const c = customers.find((x) => x.id === cid);
+                    setProject({
+                      ...project,
+                      customerId: cid,
+                      customer: c ? c.companyName || c.fullName : "",
+                    });
+                  }}
+                >
                   <option value="">Müşteri Seç...</option>
                   {customers.map((c) => (
-                    <option key={c.id} value={c.name} style={{ color: "#333" }}>
-                      {c.name}
+                    <option key={c.id} value={c.id} style={{ color: "#333" }}>
+                      {c.companyName || c.fullName || "İsimsiz"}
                     </option>
                   ))}
                 </select>
@@ -284,6 +300,7 @@ function normalize(p, id) {
     id: p.id ?? id,
     project: p.project ?? "Yeni Proje",
     customer: p.customer ?? "",
+    customerId: p.customerId ?? "",
     type: p.type ?? "DIGER",
     team: p.team ?? "—",
     deliveryDate: p.deliveryDate ?? "",
