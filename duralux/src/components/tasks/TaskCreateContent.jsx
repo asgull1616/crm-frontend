@@ -1,17 +1,17 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation"; // ✅ EKLENDİ useSearchParams
 import { taskService } from "@/lib/services/task.service";
 import { customerService } from "@/lib/services/customer.service";
-// import { userService } from "@/lib/services/profile.service";
 import { userService } from "@/lib/services/user.service";
-
+import { projectsApi } from "@/lib/services/projects.service";
 
 const initialForm = {
   title: "",
   description: "",
   customerId: "",
+  projectId: "", // ✅ EKLENDİ
   assignedUserId: "",
   startDate: "",
   endDate: "",
@@ -20,22 +20,50 @@ const initialForm = {
 
 const TaskCreateContent = () => {
   const router = useRouter();
+  const searchParams = useSearchParams(); // ✅ EKLENDİ
+
   const [customers, setCustomers] = useState([]);
+  const [projects, setProjects] = useState([]); // ✅ EKLENDİ
   const [users, setUsers] = useState([]);
   const [form, setForm] = useState(initialForm);
   const [errors, setErrors] = useState({});
   const [saving, setSaving] = useState(false);
 
   useEffect(() => {
-    customerService.list().then((res) => setCustomers(res?.data?.data ?? res?.data?.items ?? []));
-    userService.list({ page: 1, limit: 100 }).then((res) => setUsers(res?.data?.data ?? res?.data?.items ?? []));
-  }, []);
+    // ✅ URL'den projectId geldiyse otomatik seç
+    const pid = searchParams.get("projectId");
+    if (pid) {
+      setForm((prev) => ({ ...prev, projectId: pid }));
+    }
 
-  const onChange = (field, value) => setForm((prev) => ({ ...prev, [field]: value }));
+    customerService
+      .list()
+      .then((res) => setCustomers(res?.data?.data ?? res?.data?.items ?? []));
+
+    userService
+      .list({ page: 1, limit: 100 })
+      .then((res) => setUsers(res?.data?.data ?? res?.data?.items ?? []));
+
+    // ✅ PROJELER
+    (async () => {
+      try {
+        const res = await projectsApi.list({ page: 1, limit: 200 });
+
+        // res bazen {data:[...]} bazen direkt array olabilir
+        const list = res?.data ?? res?.items ?? res;
+        setProjects(Array.isArray(list) ? list : []);
+      } catch (e) {
+        setProjects([]);
+      }
+    })();
+  }, [searchParams]);
+
+  const onChange = (field, value) =>
+    setForm((prev) => ({ ...prev, [field]: value }));
 
   const validate = () => {
     const e = {};
-    if (!form.title.trim()) e.title = "Başlık zorunludur.";
+    if (!form.title.trim()) e.title = "Görev adı zorunludur.";
     if (!form.description.trim()) e.description = "Açıklama zorunludur.";
     if (!form.assignedUserId) e.assignedUserId = "Personel seçilmelidir.";
     if (!form.startDate) e.startDate = "Başlangıç zorunludur.";
@@ -50,9 +78,13 @@ const TaskCreateContent = () => {
     try {
       const payload = {
         ...form,
+        // ✅ boşsa backend null alsın
+        projectId: form.projectId || null,
+        customerId: form.customerId || null,
         startDate: `${form.startDate}T00:00:00.000Z`,
         endDate: `${form.endDate}T00:00:00.000Z`,
       };
+
       await taskService.create(payload);
       router.push("/tasks/list");
     } catch (err) {
@@ -68,7 +100,10 @@ const TaskCreateContent = () => {
       <div className="card shadow-sm border-0" style={{ borderRadius: "12px" }}>
         <div className="card-header bg-white border-bottom-0 pt-4 px-4">
           <h5 className="mb-0 fw-bold text-dark d-flex align-items-center">
-            <i className="bi bi-plus-circle-fill me-2" style={{ color: '#E92B63' }}></i>
+            <i
+              className="bi bi-plus-circle-fill me-2"
+              style={{ color: "#E92B63" }}
+            ></i>
             Yeni Görev Oluştur
           </h5>
         </div>
@@ -78,70 +113,156 @@ const TaskCreateContent = () => {
             {/* SOL TARAF */}
             <div className="col-lg-7 border-end-lg pe-lg-5">
               <div className="mb-4">
-                <label className="form-label fw-bold text-muted small text-uppercase mb-2">Görev Başlığı *</label>
+                <label className="form-label fw-bold text-muted small text-uppercase mb-2">
+                  Görev Adı *
+                </label>
                 <input
-                  placeholder="İşin adını giriniz..."
-                  className={`form-control bg-light border-0 ${errors.title ? "is-invalid" : ""}`}
-                  style={{ height: '48px', borderRadius: '8px' }}
+                  placeholder="Görev adını giriniz..."
+                  className={`form-control bg-light border-0 ${errors.title ? "is-invalid" : ""
+                    }`}
+                  style={{ height: "48px", borderRadius: "8px" }}
                   value={form.title}
-                  onChange={(e) => { onChange("title", e.target.value); setErrors({ ...errors, title: null }); }}
+                  onChange={(e) => {
+                    onChange("title", e.target.value);
+                    setErrors({ ...errors, title: null });
+                  }}
                 />
               </div>
 
               <div className="row g-3 mb-4">
-                {/* PERSONEL SEÇİMİ VE AVATAR */}
+                {/* PERSONEL SEÇİMİ */}
                 <div className="col-md-6">
-                  <label className="form-label fw-bold text-muted small text-uppercase mb-2">Atanacak Personel *</label>
+                  <label className="form-label fw-bold text-muted small text-uppercase mb-2">
+                    Atanacak Personel *
+                  </label>
                   <div className="d-flex align-items-center gap-2">
-                    <div 
+                    <div
                       className="rounded-circle d-flex align-items-center justify-content-center text-white bg-secondary"
-                      style={{ width: '42px', height: '42px', minWidth: '42px' }}
+                      style={{
+                        width: "42px",
+                        height: "42px",
+                        minWidth: "42px",
+                      }}
                     >
                       <i className="bi bi-person-fill"></i>
                     </div>
                     <select
-                      className={`form-select bg-light border-0 ${errors.assignedUserId ? "is-invalid" : ""}`}
-                      style={{ height: '48px' }}
+                      className={`form-select bg-light border-0 ${errors.assignedUserId ? "is-invalid" : ""
+                        }`}
+                      style={{ height: "48px" }}
                       value={form.assignedUserId}
-                      onChange={(e) => onChange("assignedUserId", e.target.value)}
+                      onChange={(e) =>
+                        onChange("assignedUserId", e.target.value)
+                      }
                     >
                       <option value="">Personel Seç...</option>
-                      {users.map((u) => <option key={u.id} value={u.id}>{u.username || u.email}</option>)}
+                      {users.map((u) => (
+                        <option key={u.id} value={u.id}>
+                          {u.username || u.email}
+                        </option>
+                      ))}
                     </select>
                   </div>
                 </div>
 
-                {/* MÜŞTERİ SEÇİMİ VE AVATAR */}
+                {/* MÜŞTERİ SEÇİMİ */}
                 <div className="col-md-6">
-                  <label className="form-label fw-bold text-muted small text-uppercase mb-2">İlgili Müşteri</label>
+                  <label className="form-label fw-bold text-muted small text-uppercase mb-2">
+                    İlgili Müşteri
+                  </label>
                   <div className="d-flex align-items-center gap-2">
-                    <div 
+                    <div
                       className="rounded-circle d-flex align-items-center justify-content-center text-white bg-primary-subtle text-primary"
-                      style={{ width: '42px', height: '42px', minWidth: '42px', border: '1px solid #eee' }}
+                      style={{
+                        width: "42px",
+                        height: "42px",
+                        minWidth: "42px",
+                        border: "1px solid #eee",
+                      }}
                     >
                       <i className="bi bi-building"></i>
                     </div>
                     <select
                       className="form-select bg-light border-0"
-                      style={{ height: '48px' }}
+                      style={{ height: "48px" }}
                       value={form.customerId}
                       onChange={(e) => onChange("customerId", e.target.value)}
                     >
                       <option value="">Genel / Müşterisiz</option>
-                      {customers.map((c) => <option key={c.id} value={c.id}>{c.fullName}</option>)}
+                      {customers.map((c) => (
+                        <option key={c.id} value={c.id}>
+                          {c.fullName}
+                        </option>
+                      ))}
                     </select>
                   </div>
+                </div>
+
+                {/* ✅ PROJE SEÇİMİ */}
+                <div className="col-12">
+                  <label className="form-label fw-bold text-muted small text-uppercase mb-2">
+                    İlgili Proje
+                  </label>
+                  <div className="d-flex align-items-center gap-2">
+                    <div
+                      className="rounded-circle d-flex align-items-center justify-content-center"
+                      style={{
+                        width: "42px",
+                        height: "42px",
+                        minWidth: "42px",
+                        background: "#FCE7F3",
+                        color: "#E92B63",
+                        border: "1px solid #FBCFE8",
+                      }}
+                    >
+                      <i className="bi bi-kanban-fill"></i>
+                    </div>
+
+                    <select
+                      className="form-select bg-light border-0"
+                      style={{ height: "48px" }}
+                      value={form.projectId}
+                      onChange={(e) => onChange("projectId", e.target.value)}
+                    >
+                      <option value="">Genel / Projesiz</option>
+                      {projects.map((p) => (
+                        <option key={p.id} value={p.id}>
+                          {p.name}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+
+                  <small className="text-muted d-block mt-2">
+                    Görev hangi projeye ait olacaksa seçebilirsiniz.
+                  </small>
                 </div>
               </div>
 
               <div className="row g-3">
                 <div className="col-md-6">
-                  <label className="form-label fw-bold text-muted small text-uppercase mb-2">Başlangıç Tarihi</label>
-                  <input type="date" className="form-control bg-light border-0" style={{ height: '45px' }} value={form.startDate} onChange={(e) => onChange("startDate", e.target.value)} />
+                  <label className="form-label fw-bold text-muted small text-uppercase mb-2">
+                    Başlangıç Tarihi
+                  </label>
+                  <input
+                    type="date"
+                    className="form-control bg-light border-0"
+                    style={{ height: "45px" }}
+                    value={form.startDate}
+                    onChange={(e) => onChange("startDate", e.target.value)}
+                  />
                 </div>
                 <div className="col-md-6">
-                  <label className="form-label fw-bold text-muted small text-uppercase mb-2">Bitiş Tarihi</label>
-                  <input type="date" className="form-control bg-light border-0" style={{ height: '45px' }} value={form.endDate} onChange={(e) => onChange("endDate", e.target.value)} />
+                  <label className="form-label fw-bold text-muted small text-uppercase mb-2">
+                    Bitiş Tarihi
+                  </label>
+                  <input
+                    type="date"
+                    className="form-control bg-light border-0"
+                    style={{ height: "45px" }}
+                    value={form.endDate}
+                    onChange={(e) => onChange("endDate", e.target.value)}
+                  />
                 </div>
               </div>
             </div>
@@ -149,29 +270,41 @@ const TaskCreateContent = () => {
             {/* SAĞ TARAF */}
             <div className="col-lg-5 ps-lg-4">
               <div className="mb-4">
-                <label className="form-label fw-bold text-muted small text-uppercase mb-2">Mevcut Durum</label>
+                <label className="form-label fw-bold text-muted small text-uppercase mb-2">
+                  Mevcut Durum
+                </label>
                 <div className="d-flex gap-2 flex-wrap">
-                  {['NEW', 'IN_PROGRESS', 'ON_HOLD', 'COMPLETED'].map((s) => (
+                  {["NEW", "IN_PROGRESS", "ON_HOLD", "COMPLETED"].map((s) => (
                     <button
                       key={s}
                       type="button"
                       onClick={() => onChange("status", s)}
-                      className={`btn btn-sm rounded-pill px-3 fw-bold ${form.status === s ? 'btn-dark' : 'btn-outline-secondary'}`}
-                      style={{ fontSize: '0.75rem' }}
+                      className={`btn btn-sm rounded-pill px-3 fw-bold ${form.status === s ? "btn-dark" : "btn-outline-secondary"
+                        }`}
+                      style={{ fontSize: "0.75rem" }}
                     >
-                      {s === 'NEW' ? 'YENİ' : s === 'IN_PROGRESS' ? 'İŞLEMDE' : s === 'ON_HOLD' ? 'BEKLEMEDE' : 'TAMAMLANDI'}
+                      {s === "NEW"
+                        ? "YENİ"
+                        : s === "IN_PROGRESS"
+                          ? "İŞLEMDE"
+                          : s === "ON_HOLD"
+                            ? "BEKLEMEDE"
+                            : "TAMAMLANDI"}
                     </button>
                   ))}
                 </div>
               </div>
 
               <div className="mb-0">
-                <label className="form-label fw-bold text-muted small text-uppercase mb-2">Detaylı Açıklama</label>
+                <label className="form-label fw-bold text-muted small text-uppercase mb-2">
+                  Detaylı Açıklama
+                </label>
                 <textarea
                   rows={8}
                   placeholder="Görev detaylarını yazınız..."
-                  className={`form-control bg-light border-0 ${errors.description ? "is-invalid" : ""}`}
-                  style={{ borderRadius: '10px', resize: 'none' }}
+                  className={`form-control bg-light border-0 ${errors.description ? "is-invalid" : ""
+                    }`}
+                  style={{ borderRadius: "10px", resize: "none" }}
                   value={form.description}
                   onChange={(e) => onChange("description", e.target.value)}
                 />
@@ -179,10 +312,20 @@ const TaskCreateContent = () => {
             </div>
 
             <div className="col-12 mt-4 pt-4 border-top d-flex justify-content-between align-items-center">
-              <button type="button" onClick={() => router.back()} className="btn btn-link text-muted text-decoration-none fw-bold small">VAZGEÇ</button>
+              <button
+                type="button"
+                onClick={() => router.back()}
+                className="btn btn-link text-muted text-decoration-none fw-bold small"
+              >
+                VAZGEÇ
+              </button>
               <button
                 className="btn btn-sm text-white px-3"
-                style={{ backgroundColor: "#E92B63", borderRadius: "10px", border: 'none' }}
+                style={{
+                  backgroundColor: "#E92B63",
+                  borderRadius: "10px",
+                  border: "none",
+                }}
                 onClick={onSubmit}
                 disabled={saving}
               >
