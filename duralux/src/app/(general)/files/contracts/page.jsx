@@ -25,6 +25,11 @@ export default function ContractsPage() {
   const [newTitle, setNewTitle] = useState("");
   const [newDesc, setNewDesc] = useState("");
   const [newFile, setNewFile] = useState(null);
+
+  // ✅ mevcut dosyayı edit/view modunda göstermek için
+  const [existingFileName, setExistingFileName] = useState("");
+  const [existingFileUrl, setExistingFileUrl] = useState("");
+
   const [selectedCustomer, setSelectedCustomer] = useState("");
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
@@ -46,7 +51,7 @@ export default function ContractsPage() {
   const uploadHeaders = useMemo(() => {
     const h = {};
     if (token) h.Authorization = `Bearer ${token}`;
-    return h; // ❌ Content-Type YOK (FormData boundary'i bozmasın)
+    return h;
   }, [token]);
 
   /* ================= LIST ================= */
@@ -116,6 +121,10 @@ export default function ContractsPage() {
     setStatus(data.status || "ACTIVE");
     setNewFile(null);
 
+    // ✅ mevcut dosya bilgisi (input'a basamayız, state'te gösteriyoruz)
+    setExistingFileName(data.fileName || "");
+    setExistingFileUrl(data.fileUrl || "");
+
     if (fileInputRef.current) fileInputRef.current.value = "";
   };
 
@@ -128,6 +137,10 @@ export default function ContractsPage() {
     setStatus("ACTIVE");
     setNewFile(null);
     setSelectedId(null);
+
+    // ✅ mevcut dosya bilgisi reset
+    setExistingFileName("");
+    setExistingFileUrl("");
 
     if (fileInputRef.current) fileInputRef.current.value = "";
   };
@@ -163,8 +176,6 @@ export default function ContractsPage() {
   const handleSubmit = async () => {
     if (!newTitle.trim()) return alert("Sözleşme adı gerekli");
     if (!selectedCustomer) return alert("Firma seçmelisin");
-
-    // create sırasında dosya zorunlu
     if (mode === "create" && !newFile) return alert("Dosya seçmelisin");
 
     // ✅ CREATE: multipart upload
@@ -176,7 +187,7 @@ export default function ContractsPage() {
       formData.append("startDate", startDate || "");
       formData.append("endDate", endDate || "");
       formData.append("status", status || "ACTIVE");
-      if (newFile) formData.append("file", newFile); // ✅ backend: FileInterceptor('file')
+      if (newFile) formData.append("file", newFile);
 
       const res = await fetch(`${API_BASE}/api/files/contracts`, {
         method: "POST",
@@ -184,11 +195,7 @@ export default function ContractsPage() {
         body: formData,
       });
 
-      if (!res.ok) {
-        const t = await res.text().catch(() => "");
-        console.error("CREATE CONTRACT UPLOAD ERROR:", t);
-        return alert("Dosya yükleme başarısız. Backend upload endpointini kontrol et.");
-      }
+      if (!res.ok) return alert("Dosya yükleme başarısız.");
     }
 
     // ✅ EDIT: JSON update (dosya güncellemesi yok)
@@ -203,16 +210,12 @@ export default function ContractsPage() {
       };
 
       const res = await fetch(`${API_BASE}/api/files/contracts/${selectedId}`, {
-        method: "PUT",
+        method: "PATCH",
         headers: jsonHeaders,
         body: JSON.stringify(payload),
       });
 
-      if (!res.ok) {
-        const t = await res.text().catch(() => "");
-        console.error("UPDATE CONTRACT ERROR:", t);
-        return alert("Güncelleme başarısız.");
-      }
+      if (!res.ok) return alert("Güncelleme başarısız.");
     }
 
     await fetchContracts();
@@ -228,12 +231,7 @@ export default function ContractsPage() {
       headers: token ? { Authorization: `Bearer ${token}` } : {},
     });
 
-    if (!res.ok) {
-      const t = await res.text().catch(() => "");
-      console.error("DELETE CONTRACT ERROR:", t);
-      alert("Silme başarısız.");
-    }
-
+    if (!res.ok) alert("Silme başarısız.");
     await fetchContracts();
   };
 
@@ -269,7 +267,7 @@ export default function ContractsPage() {
                 <span>{item.date}</span>
               </div>
 
-              <div className="card-footer">
+              <div className="card-footer actions-grid">
                 <button className="btn-soft" onClick={() => openView(item)}>
                   Görüntüle
                 </button>
@@ -287,7 +285,9 @@ export default function ContractsPage() {
                     className="btn-soft"
                     onClick={() =>
                       window.open(
-                        item.fileUrl.startsWith("http") ? item.fileUrl : `${API_BASE}${item.fileUrl}`,
+                        item.fileUrl.startsWith("http")
+                          ? item.fileUrl
+                          : `${API_BASE}${item.fileUrl}`,
                         "_blank"
                       )
                     }
@@ -295,7 +295,7 @@ export default function ContractsPage() {
                     Dosyayı Aç
                   </button>
                 ) : (
-                  <button className="btn-soft" disabled style={{ opacity: 0.6, cursor: "not-allowed" }}>
+                  <button className="btn-soft" disabled>
                     Dosya Yok
                   </button>
                 )}
@@ -309,7 +309,11 @@ export default function ContractsPage() {
           <div className="modal-overlay">
             <div className="modal-card">
               <h3>
-                {mode === "create" ? "Yeni Sözleşme" : mode === "edit" ? "Sözleşmeyi Düzenle" : "Sözleşme Detayı"}
+                {mode === "create"
+                  ? "Yeni Sözleşme"
+                  : mode === "edit"
+                    ? "Sözleşmeyi Düzenle"
+                    : "Sözleşme Detayı"}
               </h3>
 
               <div className="modal-field">
@@ -378,20 +382,46 @@ export default function ContractsPage() {
                 />
               </div>
 
+              {/* ✅ SADECE DOSYA ALANI GÜNCELLENDİ */}
               <div className="modal-field">
                 <label>Dosya</label>
 
-                <label className="fileInputWrap" style={{ opacity: mode === "view" ? 0.6 : 1 }}>
-                  <input
-                    ref={fileInputRef}
-                    type="file"
-                    disabled={mode === "view"}
-                    onChange={(e) => setNewFile(e.target.files?.[0] || null)}
-                    accept=".pdf,.doc,.docx,.png,.jpg,.jpeg"
-                  />
-                  <span className="fileBtn">Dosya Seç</span>
-                  <span className="fileName">{newFile ? newFile.name : "Dosya seçilmedi"}</span>
-                </label>
+                <div className="fileRow" style={{ opacity: mode === "view" ? 0.6 : 1 }}>
+                  <label className="fileInputWrap">
+                    <input
+                      ref={fileInputRef}
+                      type="file"
+                      disabled={mode === "view"}
+                      onChange={(e) => setNewFile(e.target.files?.[0] || null)}
+                      accept=".pdf,.doc,.docx,.png,.jpg,.jpeg"
+                    />
+                    <span className="fileBtn">Dosya Seç</span>
+                    <span className="fileName">
+                      {newFile
+                        ? newFile.name
+                        : existingFileName
+                          ? `Mevcut dosya: ${existingFileName}`
+                          : "Dosya seçilmedi"}
+                    </span>
+                  </label>
+
+                  {!newFile && existingFileUrl && (
+                    <button
+                      type="button"
+                      className="fileOpenBtn"
+                      onClick={() =>
+                        window.open(
+                          existingFileUrl.startsWith("http")
+                            ? existingFileUrl
+                            : `${API_BASE}${existingFileUrl}`,
+                          "_blank"
+                        )
+                      }
+                    >
+                      Dosyayı Aç
+                    </button>
+                  )}
+                </div>
               </div>
 
               <div className="modal-actions">
@@ -412,38 +442,82 @@ export default function ContractsPage() {
                 )}
               </div>
             </div>
-
-            {/* ✅ küçük css'i buraya koydum; projende global css'e de taşıyabilirsin */}
-            <style jsx>{`
-              .fileInputWrap {
-                display: flex;
-                align-items: center;
-                gap: 10px;
-                padding: 10px 12px;
-                border: 1px solid #eee;
-                border-radius: 12px;
-                background: #fff;
-              }
-              .fileInputWrap input[type="file"] {
-                display: none;
-              }
-              .fileBtn {
-                padding: 8px 12px;
-                border-radius: 10px;
-                background: #f3f4f6;
-                cursor: pointer;
-                user-select: none;
-                border: 1px solid #eee;
-                font-size: 13px;
-              }
-              .fileName {
-                font-size: 13px;
-                color: #6b7280;
-              }
-            `}</style>
           </div>
         )}
       </div>
+
+      {/* ✅ CSS kesin uygulansın diye global verdim */}
+      <style jsx global>{`
+        .actions-grid {
+          display: grid !important;
+          grid-template-columns: 1fr 1fr !important;
+          gap: 12px !important;
+          padding-top: 14px !important;
+          align-items: stretch !important;
+        }
+
+        .actions-grid button {
+          width: 100% !important;
+          min-height: 46px !important;
+          border-radius: 16px !important;
+          white-space: nowrap !important;
+          overflow: hidden !important;
+          text-overflow: ellipsis !important;
+        }
+
+        @media (max-width: 520px) {
+          .actions-grid {
+            grid-template-columns: 1fr !important;
+          }
+        }
+
+        .fileInputWrap {
+          display: flex;
+          align-items: center;
+          gap: 10px;
+          padding: 10px 12px;
+          border: 1px solid #eee;
+          border-radius: 12px;
+          background: #fff;
+        }
+        .fileInputWrap input[type="file"] {
+          display: none;
+        }
+        .fileBtn {
+          padding: 8px 12px;
+          border-radius: 10px;
+          background: #f3f4f6;
+          cursor: pointer;
+          user-select: none;
+          border: 1px solid #eee;
+          font-size: 13px;
+          white-space: nowrap;
+        }
+        .fileName {
+          font-size: 13px;
+          color: #6b7280;
+        }
+
+        /* ✅ yeni eklenenler */
+        .fileRow {
+          display: flex;
+          align-items: center;
+          gap: 10px;
+        }
+        .fileOpenBtn {
+          height: 42px;
+          padding: 0 14px;
+          border-radius: 12px;
+          border: 1px solid #eee;
+          background: #fff;
+          cursor: pointer;
+          font-size: 13px;
+          white-space: nowrap;
+        }
+        .fileOpenBtn:hover {
+          background: #f7f7f7;
+        }
+      `}</style>
     </>
   );
 }
