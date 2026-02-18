@@ -2,20 +2,35 @@
 
 import { useEffect, useState } from "react";
 import { FiLogOut, FiUser } from "react-icons/fi";
-import { authService } from "@/lib/services/auth.service";
+import { profileService } from "@/lib/services/profile.service";
+import api from "@/lib/axios";
 
 const ProfileModal = () => {
-  const [user, setUser] = useState(null);
+  const [user, setUser] = useState < any > null;
 
   useEffect(() => {
-    const token = localStorage.getItem("accessToken");
-    if (!token) return;
+    const fetchProfile = async () => {
+      try {
+        const res = await profileService.getMe();
+        setUser(res.data);
+      } catch (err) {
+        console.error("Profile fetch error:", err);
+        setUser(null);
+      }
+    };
 
-    authService
-      .me()
-      .then((res) => setUser(res.data))
-      .catch(() => setUser(null));
+    fetchProfile();
   }, []);
+
+  const handleLogout = async () => {
+    try {
+      await api.post("/auth/logout");
+    } catch (err) {
+      console.error("Logout error:", err);
+    } finally {
+      window.location.href = "/authentication/login/minimal";
+    }
+  };
 
   return (
     <div className="dropdown nxl-h-item">
@@ -35,14 +50,7 @@ const ProfileModal = () => {
           </span>
         </div>
 
-        <button
-          className="dropdown-item text-danger"
-          onClick={() => {
-            localStorage.removeItem("accessToken");
-            localStorage.removeItem("refreshToken");
-            window.location.href = "/authentication/login/minimal";
-          }}
-        >
+        <button className="dropdown-item text-danger" onClick={handleLogout}>
           <FiLogOut />
           <span>Çıkış Yap</span>
         </button>

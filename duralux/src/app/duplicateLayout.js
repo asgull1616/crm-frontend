@@ -6,32 +6,29 @@ import Header from "@/components/shared/header/Header";
 import NavigationManu from "@/components/shared/navigationMenu/NavigationMenu";
 import SupportDetails from "@/components/supportDetails";
 import useBootstrapUtils from "@/hooks/useBootstrapUtils";
+import { authService } from "@/lib/services/auth.service";
 
 export default function DuplicateLayout({ children }) {
   const pathName = usePathname();
   const router = useRouter();
-  const [mounted, setMounted] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   useBootstrapUtils(pathName);
 
-  // 🔐 SADECE CLIENT TAM HAZIR OLUNCA ÇALIŞ
   useEffect(() => {
-    setMounted(true);
-  }, []);
+    const checkAuth = async () => {
+      try {
+        await authService.me(); // 🔥 gerçek auth kontrolü
+        setLoading(false);
+      } catch {
+        router.replace("/authentication/login/minimal");
+      }
+    };
 
-  useEffect(() => {
-    if (!mounted) return;
+    checkAuth();
+  }, [router]);
 
-    const token = localStorage.getItem("accessToken");
-    console.log("🔐 DUPLICATE TOKEN AFTER MOUNT:", token);
-
-    if (!token) {
-      router.push("/authentication/login/minimal");
-    }
-  }, [mounted, router]);
-
-  // ❗ HAZIR OLMADAN HİÇBİR ŞEY RENDER ETME
-  if (!mounted) return null;
+  if (loading) return null;
 
   return (
     <>

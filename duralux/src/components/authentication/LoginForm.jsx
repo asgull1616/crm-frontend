@@ -17,31 +17,14 @@ const LoginForm = ({ registerPath, resetPath }) => {
   // ✅ GERÇEK LOGIN
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("1️⃣ SUBMIT ÇALIŞTI");
-
     setLoading(true);
 
     try {
-      console.log("2️⃣ BACKEND İSTEĞİ ATILIYOR");
-
-      const res = await authService.authenticate({
+      await authService.authenticate({
         username: email,
         password,
       });
 
-      console.log("3️⃣ BACKEND RESPONSE:", res.data);
-
-      localStorage.setItem("accessToken", res.data.accessToken);
-      localStorage.setItem("refreshToken", res.data.refreshToken);
-
-      console.log(
-        "4️⃣ STORAGE KONTROL:",
-        localStorage.getItem("accessToken"),
-        localStorage.getItem("refreshToken"),
-      );
-
-      console.log("5️⃣ DASHBOARD YÖNLENDİRME");
-      // ✅ sadece login sonrası 1 kere göster
       sessionStorage.setItem("show_welcome_popup", "1");
       router.replace("/");
     } catch (error) {
@@ -104,7 +87,6 @@ const LoginForm = ({ registerPath, resetPath }) => {
             >
               Şifremi Unuttum
             </Link>
-
           </div>
         </div>
 
@@ -115,13 +97,12 @@ const LoginForm = ({ registerPath, resetPath }) => {
             style={{
               backgroundColor: "#E93B62",
               borderColor: "#E93B62",
-              color: "#fff"
+              color: "#fff",
             }}
             disabled={loading}
           >
             {loading ? "Giriş Yapılıyor..." : "Giriş Yap"}
           </button>
-
         </div>
       </form>
 
