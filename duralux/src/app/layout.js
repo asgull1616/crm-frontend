@@ -1,11 +1,13 @@
+import { Inter } from 'next/font/google';
 import '../assets/scss/theme.scss';
-import 'react-circular-progressbar/dist/styles.css';
-import 'react-perfect-scrollbar/dist/css/styles.css';
-import 'react-datepicker/dist/react-datepicker.css';
-import 'react-datetime/css/react-datetime.css';
+import './globals.css';
 import NavigationProvider from '@/contentApi/navigationProvider';
 import SettingSideBarProvider from '@/contentApi/settingSideBarProvider';
-import ThemeCustomizer from '@/components/shared/ThemeCustomizer';
+
+const inter = Inter({ 
+  subsets: ['latin'],
+  display: 'swap',
+});
 
 export const metadata = {
   title: 'Codyol | Dashboard',
@@ -14,12 +16,13 @@ export const metadata = {
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="en">
-      <body>
+    <html lang="en" className={inter.className}>
+      <body className={inter.className}>
         <SettingSideBarProvider>
-          <NavigationProvider>{children}</NavigationProvider>
+          <NavigationProvider>
+            {children}
+          </NavigationProvider>
         </SettingSideBarProvider>
-        {/* <ThemeCustomizer /> */}
       </body>
     </html>
   );

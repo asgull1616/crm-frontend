@@ -1,163 +1,142 @@
 /* ================================================= */
-/* SOFT & PREMIUM CRM TEMA AYARLARI                  */
+/* CODYOL CRM - GLOBAL PREMIUM STYLES                */
 /* ================================================= */
 
-/* 1. Genel Arka Plan: Daha ferah bulut beyazı */
-.main-content {
-    background: #f8fafc !important; 
-    padding: 2.5rem !important;
-    padding-top: 30px !important;
-    min-height: 100vh;
+:root {
+  /* Font & Boyut Standartları */
+  --font-main: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  --text-base: 14px;
+  --text-small: 12px;
+  --text-heading: 18px;
+  
+  /* Renk Paleti */
+  --primary-pink: #E92B63;
+  --primary-hover: #d11a52;
+  --bg-soft: #f8fafc;
+  --text-dark: #334155;
+  --text-muted: #64748b;
+  --border-color: rgba(233, 43, 99, 0.1);
 }
 
-/* 2. Yazı Renkleri: Saf siyah yerine yumuşak antrasit */
-h2, h5, .text-dark, .fw-bold {
-    color: #334155 !important;
+/* 1. TEMEL SIFIRLAMA VE YAZI TİPİ */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: var(--font-main) !important;
+  font-size: var(--text-base) !important;
+  color: var(--text-dark) !important;
+  background-color: var(--bg-soft) !important;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* 2. BAŞLIK STANDARTLARI (Hiyerarşiyi korur) */
+h1, .h1-title {
+  font-size: 24px !important;
+  font-weight: 700 !important;
+  color: #1e293b !important;
+  margin-bottom: 20px !important;
+}
+
+h2, .h2, .section-title {
+  font-size: 20px !important;
+  font-weight: 600 !important;
+  color: var(--text-dark) !important;
+  margin-bottom: 16px !important;
+}
+
+h3, h4, h5, .h3, .h5 {
+  font-size: var(--text-heading) !important;
+  font-weight: 600 !important;
+  color: var(--text-dark) !important;
+}
+
+/* 3. TABLO VE LİSTE AYARLARI (Görsellerdeki Liste Alanı İçin) */
+table, td, th, .list-item {
+  font-size: var(--text-base) !important;
+  font-family: var(--font-main) !important;
+  vertical-align: middle !important;
 }
 
 .text-muted {
-    color: #000000 !important;
+  color: var(--text-muted) !important;
 }
 
-/* 3. Form ve Arama Alanları */
-.form-control:focus {
-    box-shadow: 0 0 0 0.25rem rgba(233, 43, 99, 0.1) !important;
-    border: 1px solid rgba(233, 43, 99, 0.2) !important;
-}
-
-.bg-light {
-    background-color: #f1f5f9 !important; /* Daha yumuşak gri */
-}
-
-/* 4. Müşteri Kartları: Yumuşak geçiş ve pastel vurgu */
+/* 4. KARTLAR VE MÜŞTERİ ALANLARI */
 .customer-card-hover {
-    background: #ffffff !important;
-    border-radius: 24px !important; /* Daha yuvarlak hatlar */
-    border-left: 4px solid rgba(233, 43, 99, 0.1) !important; /* Başlangıçta çok hafif şerit */
-    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-    box-shadow: 0 4px 20px rgba(100, 116, 139, 0.06) !important;
+  background: #ffffff !important;
+  border-radius: 20px !important;
+  border-left: 4px solid var(--border-color) !important;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 4px 20px rgba(100, 116, 139, 0.06) !important;
 }
 
 .customer-card-hover:hover {
-    transform: translateY(-6px) !important;
-    box-shadow: 0 20px 40px rgba(233, 43, 99, 0.08) !important;
-    border-left: 4px solid #E92B63 !important; /* Hover olunca renk belirginleşir */
+  transform: translateY(-5px) !important;
+  border-left: 4px solid var(--primary-pink) !important;
+  box-shadow: 0 15px 30px rgba(233, 43, 99, 0.1) !important;
 }
 
-/* 5. Butonlar: Ana Pembe (#E92B63) Uyumu */
+/* 5. BUTONLAR VE ETKİLEŞİM */
 .btn-primary {
-    background-color: #E92B63 !important;
-    border-color: #E92B63 !important;
-    border-radius: 12px;
+  background-color: var(--primary-pink) !important;
+  border-color: var(--primary-pink) !important;
+  border-radius: 12px !important;
+  font-weight: 500 !important;
 }
 
 .btn-primary:hover {
-    background-color: #d11a52 !important;
-    box-shadow: 0 8px 15px rgba(233, 43, 99, 0.2) !important;
+  background-color: var(--primary-hover) !important;
+  box-shadow: 0 8px 15px rgba(233, 43, 99, 0.2) !important;
 }
 
-/* Silme ve İncele gibi "Soft" butonlar */
-.btn-soft-danger, .btn-soft-primary {
-    color: #E92B63 !important;
-    background-color: rgba(233, 43, 99, 0.08) !important;
-    border: none !important;
+.badge, .status-text {
+  font-size: var(--text-small) !important;
+  font-weight: 600 !important;
+  padding: 5px 12px !important;
+  border-radius: 8px !important;
 }
 
-.btn-soft-danger:hover {
-    background-color: #E92B63 !important;
-    color: #ffffff !important;
-}
-
-/* 6. Founder/Cofounder Kartları Koruma */
-html.app-skin-dark .founder-card,
-html.app-skin-dark .cofounder-card {
-    background-color: #ffffff !important;
-    color: #0f172a !important;
-}
-
-/* İncele ve Detay butonlarını pembe yap */
-.btn-primary, .btn-soft-primary {
-    background-color: #E92B63 !important;
-    border-color: #E92B63 !important;
-    color: #ffffff !important;
-}
-
-/* Kartların solundaki şeridi pembe yap */
-.customer-card-hover {
-    border-left: 4px solid rgba(233, 43, 99, 0.2) !important;
-}
-
-.customer-card-hover:hover {
-    border-left: 4px solid #E92B63 !important;
-    box-shadow: 0 15px 30px rgba(233, 43, 99, 0.1) !important;
-}
-
-/* Görseldeki Soft Tasarım Ayarları */
-.custom-input-group {
-    background: #ffffff !important;
-    transition: all 0.3s ease;
-}
-
-.custom-input-group:focus-within {
-    box-shadow: 0 10px 20px rgba(0,0,0,0.05) !important;
-    transform: translateY(-2px);
-}
-
-.card {
-    transition: transform 0.3s ease;
-}
-
-.card:hover {
-    transform: translateY(-5px);
-}
-
-/* İkon Arka Planı (Siyah Yuvarlak/Kare) */
-.input-group-text {
-    min-width: 50px;
-    justify-content: center;
-    border-radius: 0 !important;
-}
-
-/* Sayfa Arka Planı */
-body {
-    background-color: #f4f7f6;
-}
-
-/* ================================================= */
-/* DASHBOARD – SIDEBAR & CONTENT GAP                */
-/* ================================================= */
-
-.sales-pipeline-wrapper {
-  margin-bottom: 24px;
-}
-
-/* ✅ WELCOME POPUP FIX (merged) */
-.welcome-overlay {
-  position: fixed;
-  inset: 0;
-
-  background: rgba(15, 23, 42, 0.35); /* hafif koyu */
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 9999;
-
-  transition: opacity 0.3s ease;
+/* 6. DASHBOARD & MODAL FIXES */
+.main-content {
+  padding: 2.5rem !important;
+  min-height: 100vh;
 }
 
 .welcome-box {
-  background: #E92B63;
-  backdrop-filter: blur(6px);
-  -webkit-backdrop-filter: blur(6px);
-
-  padding: 40px 50px;
+  background: var(--primary-pink) !important;
+  color: white !important;
   border-radius: 20px;
+  padding: 40px;
   text-align: center;
-  min-width: 320px;
+}
 
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
-  transition: transform 0.3s ease, opacity 0.3s ease;
+/* 7. INPUT GRUPLARI */
+.form-control {
+  font-size: var(--text-base) !important;
+  border-radius: 10px !important;
+}
+
+.form-control:focus {
+  box-shadow: 0 0 0 0.25rem rgba(233, 43, 99, 0.1) !important;
+  border-color: var(--primary-pink) !important;
+}
+
+/* Tüm projede fontu ve boyutu zorla uygula */
+html, body, div, span, app, header, nav, section, main, article, aside, canvas, details, embed, figure, figcaption, footer, h1, h2, h3, h4, h5, h6, p, blockquote, pre, a, abbr, acronym, address, big, cite, code, del, dfn, em, img, ins, kbd, q, s, samp, small, strike, strong, sub, sup, tt, var, b, u, i, center, dl, dt, dd, ol, ul, li, fieldset, form, label, legend, table, caption, tbody, tfoot, thead, tr, th, td {
+  font-family: var(--font-main) !important;
+}
+
+/* Tablo ve Liste metinlerini eşitle */
+.table td, .table th, .list-item, span, p {
+  font-size: var(--text-base) !important;
+}
+
+/* Başlıkları sabitle */
+h1, h2, h3, h4, h5, h6 {
+  font-weight: 600 !important;
 }
