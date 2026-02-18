@@ -1,13 +1,15 @@
 import api from "../axios";
 
 export const taskService = {
-  create: (data) => api.post("tasks", data),
+  create: (data: any) => api.post("tasks", data),
 
   list: (params?: {
     page?: number;
     limit?: number;
     status?: string;
     customerId?: string;
+    projectId?: string;       // ✅ EKLENDİ
+    assignedUserId?: string;  // ✅ EKLENDİ
   }) => api.get("tasks", { params }),
 
   findOne: (id: string) => api.get(`tasks/${id}`),

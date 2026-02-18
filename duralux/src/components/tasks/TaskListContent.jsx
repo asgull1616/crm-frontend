@@ -3,6 +3,7 @@ import React, { useEffect, useState, useCallback, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import { taskService } from "@/lib/services/task.service";
 import { userService } from "@/lib/services/user.service";
+import { projectService } from "@/lib/services/project.service"; // ✅ EKLENDİ
 
 const statusMeta = {
   NEW: { label: "Yeni", chipBg: "#F1F5F9", chipText: "#0F172A" },
@@ -16,11 +17,99 @@ const formatDate = (val) =>
 
 export default function TaskListContent() {
   const router = useRouter();
+
   const [tasks, setTasks] = useState([]);
   const [users, setUsers] = useState([]);
+  const [projects, setProjects] = useState([]); // ✅ EKLENDİ
   const [loading, setLoading] = useState(true);
+
+  // üst stat kart filtresi
   const [filter, setFilter] = useState("ALL");
 
+  // ✅ yeni filtreler
+  const [filters, setFilters] = useState({
+    projectId: "",
+    assignedUserId: "",
+  });
+
+  const onFilterChange = (k, v) =>
+    setFilters((prev) => ({ ...prev, [k]: v }));
+
+  const userMap = useMemo(() => {
+    const m = new Map();
+    users.forEach((u) => m.set(u.id, u));
+    return m;
+  }, [users]);
+
+  const projectMap = useMemo(() => {
+    const m = new Map();
+    projects.forEach((p) => m.set(p.id, p));
+    return m;
+  }, [projects]);
+
+  const getUserLabel = (id) => {
+    if (!id) return "-";
+    const u = userMap.get(id);
+    return u ? `${u.username} (${u.email})` : id;
+  };
+
+  const getProjectLabel = (task) => {
+    // backend project include ediyorsa task.project.name gelir
+    if (task?.project?.name) return task.project.name;
+    if (task?.projectId) {
+      const p = projectMap.get(task.projectId);
+      return p ? p.name : task.projectId;
+    }
+    return "-";
+  };
+
+  // ✅ tek fetch fonksiyonu: görevler + kullanıcılar + projeler
+  const fetchAll = useCallback(
+    async (opts) => {
+      setLoading(true);
+      try {
+        const params = {
+          page: 1,
+          limit: 200,
+          ...(opts?.projectId ? { projectId: opts.projectId } : {}),
+          ...(opts?.assignedUserId ? { assignedUserId: opts.assignedUserId } : {}),
+        };
+
+        const [taskRes, userRes, projectRes] = await Promise.all([
+          taskService.list(params),
+          userService.list({ page: 1, limit: 100 }),
+          projectService.list({ page: 1, limit: 500 }),
+        ]);
+
+        const taskData = taskRes?.data?.data ?? [];
+        const userData = userRes?.data?.data ?? [];
+        const projectData = projectRes?.data?.data ?? [];
+
+        setTasks(Array.isArray(taskData) ? taskData : []);
+        setUsers(Array.isArray(userData) ? userData : []);
+        setProjects(Array.isArray(projectData) ? projectData : []);
+      } catch (err) {
+        console.error(err);
+      } finally {
+        setLoading(false);
+      }
+    },
+    []
+  );
+
+  // ilk açılış
+  useEffect(() => {
+    fetchAll(filters);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  // ✅ filtre değişince listeyi yenile
+  useEffect(() => {
+    fetchAll(filters);
+    // status kart filtresi seçiliyse aynı kalsın, ama istersen ALL’e çekebiliriz
+  }, [filters.projectId, filters.assignedUserId, fetchAll]);
+
+  // ✅ stats artık “filtrelenmiş backend listesinden” üretilecek
   const stats = useMemo(() => {
     return {
       total: tasks.length,
@@ -35,40 +124,6 @@ export default function TaskListContent() {
     if (filter === "ALL") return tasks;
     return tasks.filter((t) => t.status === filter);
   }, [tasks, filter]);
-
-  const userMap = useMemo(() => {
-    const m = new Map();
-    users.forEach((u) => m.set(u.id, u));
-    return m;
-  }, [users]);
-
-  const getUserLabel = (id) => {
-    if (!id) return "-";
-    const u = userMap.get(id);
-    return u ? `${u.username} (${u.email})` : id;
-  };
-
-  const fetchAll = useCallback(async () => {
-    setLoading(true);
-    try {
-      const [taskRes, userRes] = await Promise.all([
-        taskService.list({ page: 1, limit: 100 }),
-        userService.list({ page: 1, limit: 100 }),
-      ]);
-      const taskData = taskRes?.data?.data ?? [];
-      const userData = userRes?.data?.data ?? [];
-      setTasks(Array.isArray(taskData) ? taskData : []);
-      setUsers(Array.isArray(userData) ? userData : []);
-    } catch (err) {
-      console.error(err);
-    } finally {
-      setLoading(false);
-    }
-  }, []);
-
-  useEffect(() => {
-    fetchAll();
-  }, [fetchAll]);
 
   const handleDelete = async (id) => {
     if (!confirm("Silmek istediğinize emin misiniz?")) return;
@@ -103,6 +158,11 @@ export default function TaskListContent() {
     },
   ];
 
+  const clearFilters = () => {
+    setFilters({ projectId: "", assignedUserId: "" });
+    setFilter("ALL");
+  };
+
   if (loading) {
     return (
       <div className="py-5 text-center">
@@ -114,20 +174,70 @@ export default function TaskListContent() {
   return (
     <div className="col-12">
       {/* ÜST BAR */}
-      <div className="d-flex align-items-center justify-content-end mb-3">
+      <div className="d-flex align-items-center justify-content-between mb-3 gap-3 flex-wrap">
+        {/* ✅ Filtreler */}
+        <div className="d-flex gap-2 flex-wrap align-items-center">
+          <select
+            className="form-select form-select-sm bg-white"
+            style={{ minWidth: 220, borderRadius: 10 }}
+            value={filters.projectId}
+            onChange={(e) => onFilterChange("projectId", e.target.value)}
+          >
+            <option value="">Tüm Projeler</option>
+            {projects.map((p) => (
+              <option key={p.id} value={p.id}>
+                {p.name}
+              </option>
+            ))}
+          </select>
 
+          <select
+            className="form-select form-select-sm bg-white"
+            style={{ minWidth: 220, borderRadius: 10 }}
+            value={filters.assignedUserId}
+            onChange={(e) => onFilterChange("assignedUserId", e.target.value)}
+          >
+            <option value="">Tüm Personeller</option>
+            {users.map((u) => (
+              <option key={u.id} value={u.id}>
+                {u.username || u.email}
+              </option>
+            ))}
+          </select>
 
-        <button
-          className="btn btn-sm text-white px-3"
-          style={{
-            backgroundColor: "#E92B63",
-            borderRadius: "10px",
-            fontWeight: 700,
-          }}
-          onClick={() => router.push("/tasks/create")}
-        >
-          + Yeni Görev
-        </button>
+          <button
+            className="btn btn-sm btn-outline-secondary"
+            style={{ borderRadius: 10 }}
+            onClick={clearFilters}
+            disabled={!filters.projectId && !filters.assignedUserId && filter === "ALL"}
+            title="Filtreleri temizle"
+          >
+            Filtreleri Temizle
+          </button>
+        </div>
+
+        <div className="d-flex align-items-center gap-2">
+          <button
+            className="btn btn-sm btn-outline-secondary"
+            onClick={() => fetchAll(filters)}
+            title="Yenile"
+            style={{ borderRadius: 10 }}
+          >
+            ↻ Yenile
+          </button>
+
+          <button
+            className="btn btn-sm text-white px-3"
+            style={{
+              backgroundColor: "#E92B63",
+              borderRadius: "10px",
+              fontWeight: 700,
+            }}
+            onClick={() => router.push("/tasks/create")}
+          >
+            + Yeni Görev
+          </button>
+        </div>
       </div>
 
       {/* İSTATİSTİK / FİLTRE KARTLARI */}
@@ -146,7 +256,7 @@ export default function TaskListContent() {
                 style={{ cursor: "pointer" }}
               >
                 <div
-                  className="card h-100 task-filter-card"
+                  className={`card h-100 task-filter-card ${active ? "active" : ""}`}
                   style={{
                     borderRadius: 14,
                     border: active ? "1px solid #111827" : "1px solid #E5E7EB",
@@ -156,7 +266,6 @@ export default function TaskListContent() {
                     transition: "all .2s ease",
                   }}
                 >
-
                   <div className="card-body py-3">
                     <div className="d-flex align-items-start justify-content-between">
                       <div>
@@ -218,14 +327,6 @@ export default function TaskListContent() {
             Görev Listesi{" "}
             <span className="text-muted fw-normal">({filteredTasks.length})</span>
           </div>
-
-          <button
-            className="btn btn-sm btn-outline-secondary"
-            onClick={() => fetchAll()}
-            title="Yenile"
-          >
-            ↻ Yenile
-          </button>
         </div>
 
         <div className="card-body p-0">
@@ -248,6 +349,7 @@ export default function TaskListContent() {
                 <thead style={{ background: "#F8FAFC" }}>
                   <tr className="text-muted small">
                     <th className="ps-4 py-3 border-0 fw-semibold">Başlık</th>
+                    <th className="py-3 border-0 fw-semibold">Proje</th> {/* ✅ EKLENDİ */}
                     <th className="py-3 border-0 fw-semibold">Durum</th>
                     <th className="py-3 border-0 fw-semibold">Atanan</th>
                     <th className="py-3 border-0 fw-semibold">Bitiş</th>
@@ -273,6 +375,10 @@ export default function TaskListContent() {
                       >
                         <td className="ps-4 py-3">
                           <div className="fw-semibold text-dark">{task.title}</div>
+                        </td>
+
+                        <td className="py-3 text-muted small">
+                          {getProjectLabel(task)}
                         </td>
 
                         <td className="py-3">
@@ -348,35 +454,26 @@ export default function TaskListContent() {
       </div>
 
       <style jsx global>{`
-  /* ===== FILTRE KARTLARI PEMBE HOVER ===== */
+        /* ===== FILTRE KARTLARI PEMBE HOVER ===== */
 
-  .task-filter-card {
-    transition: all 0.25s ease;
-  }
+        .task-filter-card {
+          transition: all 0.25s ease;
+        }
 
-  .task-filter-card:hover {
-    transform: translateY(-4px);
-    background: #fff0f6; /* çok soft pembe */
-    border: 1px solid #f8a5c2 !important;
-    box-shadow: 0 12px 28px rgba(233, 43, 99, 0.18);
-  }
+        .task-filter-card:hover {
+          transform: translateY(-4px);
+          background: #fff0f6;
+          border: 1px solid #f8a5c2 !important;
+          box-shadow: 0 12px 28px rgba(233, 43, 99, 0.18);
+        }
 
-  /* Aktif kart hover'da daha koyu pembe olsun */
-  .task-filter-card.active,
-  .task-filter-card.active:hover {
-    background: linear-gradient(
-      135deg,
-      #ffe4ec,
-      #ffc1d6
-    ) !important;
-    border: 1px solid #e92b63 !important;
-    box-shadow: 0 14px 34px rgba(233, 43, 99, 0.25);
-  }
-`}</style>
-
-
-
-
+        .task-filter-card.active,
+        .task-filter-card.active:hover {
+          background: linear-gradient(135deg, #ffe4ec, #ffc1d6) !important;
+          border: 1px solid #e92b63 !important;
+          box-shadow: 0 14px 34px rgba(233, 43, 99, 0.25);
+        }
+      `}</style>
     </div>
   );
 }
