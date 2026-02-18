@@ -181,7 +181,7 @@ const TaskCreateContent = () => {
             <div className="col-12 mt-4 pt-4 border-top d-flex justify-content-between align-items-center">
               <button type="button" onClick={() => router.back()} className="btn btn-link text-muted text-decoration-none fw-bold small">VAZGEÇ</button>
               <button
-                className="btn px-5 py-2 fw-bold text-white shadow-sm"
+                className="btn btn-sm text-white px-3"
                 style={{ backgroundColor: "#E92B63", borderRadius: "10px", border: 'none' }}
                 onClick={onSubmit}
                 disabled={saving}

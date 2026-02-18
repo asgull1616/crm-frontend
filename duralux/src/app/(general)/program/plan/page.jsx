@@ -83,7 +83,7 @@ function badge(key) {
     color: c.fg,
     padding: "6px 10px",
     borderRadius: 999,
-    fontWeight: 900,
+    fontWeight: 500,
     fontSize: 12,
     border: "1px solid rgba(0,0,0,0.04)",
     whiteSpace: "nowrap",
@@ -231,11 +231,11 @@ export default function ProgramPlanPage() {
         {/* Header */}
         <div style={cardHeader}>
           <div>
-            <div style={{ fontSize: 14, fontWeight: 950, color: PRIMARY }}>Program</div>
-            <div style={{ fontSize: 28, fontWeight: 950, color: "#111", marginTop: 8 }}>
+            <div style={{ fontSize: 14, fontWeight: 500, color: PRIMARY }}>Program</div>
+            <div style={{ fontSize: 28, fontWeight: 500, color: "#111", marginTop: 8 }}>
               Plan & Akış
             </div>
-            <div style={{ fontSize: 13, fontWeight: 800, color: "#667085", marginTop: 8 }}>
+            <div style={{ fontSize: 13, fontWeight: 500, color: "#667085", marginTop: 8 }}>
               Burada işlerin başlangıç–bitiş tarihlerini planlarsın. Pano ise anlık takibi gösterir.
             </div>
           </div>
@@ -277,9 +277,9 @@ export default function ProgramPlanPage() {
         {/* Table */}
         <div style={tableCard}>
           {loading ? (
-            <div style={{ padding: 12, fontWeight: 900 }}>Yükleniyor...</div>
+            <div style={{ padding: 12, fontWeight: 500 }}>Yükleniyor...</div>
           ) : error ? (
-            <div style={{ padding: 12, fontWeight: 900, color: "red" }}>{error}</div>
+            <div style={{ padding: 12, fontWeight: 500, color: "red" }}>{error}</div>
           ) : null}
 
           <div style={{ overflowX: "auto" }}>
@@ -303,7 +303,7 @@ export default function ProgramPlanPage() {
                   <tr key={r.id}>
                     <td style={td}>{formatTR(r.startDate)}</td>
                     <td style={td}>{formatTR(r.endDate)}</td>
-                    <td style={{ ...td, fontWeight: 950 }}>{r.title}</td>
+                    <td style={{ ...td, fontWeight: 500 }}>{r.title}</td>
                     <td style={td}>{r.type}</td>
                     <td style={td}>{r.project}</td>
                     <td style={td}>{r.assignee || "-"}</td>
@@ -343,7 +343,7 @@ export default function ProgramPlanPage() {
               <div style={modalHeader}>
                 <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
                   <span style={dot} />
-                  <div style={{ fontWeight: 950, fontSize: 18 }}>
+                  <div style={{ fontWeight: 500, fontSize: 18 }}>
                     {form.id ? "Plan Düzenle" : "Plan Ekle"}
                   </div>
                 </div>
@@ -449,7 +449,7 @@ export default function ProgramPlanPage() {
 function Field({ label, children }) {
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-      <div style={{ fontSize: 13, fontWeight: 950, color: "#344054" }}>{label}</div>
+      <div style={{ fontSize: 13, fontWeight: 500, color: "#344054" }}>{label}</div>
       {children}
     </div>
   );
@@ -489,7 +489,7 @@ const filterBox = {
   border: "1px solid #f1f1f1",
 };
 
-const filterTitle = { fontWeight: 950, fontSize: 14, color: "#111", marginBottom: 10 };
+const filterTitle = { fontWeight: 500, fontSize: 14, color: "#111", marginBottom: 10 };
 const chips = { display: "flex", gap: 10, flexWrap: "wrap" };
 
 const chip = {
@@ -497,7 +497,7 @@ const chip = {
   borderRadius: 999,
   border: "1px solid #eee",
   background: "#fff",
-  fontWeight: 950,
+  fontWeight: 500,
   cursor: "pointer",
 };
 
@@ -523,7 +523,7 @@ const th = {
   textAlign: "left",
   padding: 12,
   fontSize: 13,
-  fontWeight: 950,
+  fontWeight: 500,
   color: "#344054",
   borderBottom: "1px solid #F2F4F7",
   whiteSpace: "nowrap",
@@ -532,7 +532,7 @@ const th = {
 const td = {
   padding: 12,
   fontSize: 14,
-  fontWeight: 800,
+  fontWeight: 500,
   color: "#101828",
   borderBottom: "1px solid #F2F4F7",
   verticalAlign: "middle",
@@ -544,7 +544,7 @@ const btnPrimary = {
   border: "none",
   background: PRIMARY,
   color: "#fff",
-  fontWeight: 950,
+  fontWeight: 500,
   fontSize: 14,
   cursor: "pointer",
   boxShadow: "0 10px 26px rgba(233,43,99,0.3)",
@@ -555,7 +555,7 @@ const btnGhost = {
   borderRadius: 14,
   border: "1px solid #eee",
   background: "#fff",
-  fontWeight: 950,
+  fontWeight: 500,
   cursor: "pointer",
 };
 
@@ -565,7 +565,7 @@ const btnDanger = {
   border: "1px solid rgba(233,43,99,0.22)",
   background: PRIMARY_LIGHT,
   color: PRIMARY,
-  fontWeight: 950,
+  fontWeight: 500,
   cursor: "pointer",
 };
 
@@ -575,7 +575,7 @@ const select = {
   borderRadius: 14,
   border: "1px solid #eee",
   background: "#fff",
-  fontWeight: 900,
+  fontWeight: 500,
   fontSize: 14,
   outline: "none",
 };
@@ -587,7 +587,7 @@ const inputStyle = {
   border: "1px solid #eee",
   outline: "none",
   fontSize: 14,
-  fontWeight: 900,
+  fontWeight: 500,
 };
 
 const modalOverlay = {
@@ -644,7 +644,7 @@ const xBtn = {
   border: "1px solid #eee",
   background: "#fff",
   cursor: "pointer",
-  fontWeight: 950,
+  fontWeight: 500,
 };
 
 const grid2 = { display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 };
