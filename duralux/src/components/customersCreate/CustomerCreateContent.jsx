@@ -16,6 +16,7 @@ import {
   FiPieChart,
   FiSave,
   FiX,
+  FiCreditCard,
 } from "react-icons/fi";
 import { customerService } from "@/lib/services/customer.service";
 import { validateCustomerForm } from "./validateCustomerForm";
@@ -106,6 +107,9 @@ const CustomerCreateContent = () => {
     designation: "",
     website: "",
     vatNumber: "",
+    taxOffice: "",
+    bankName: "",
+    iban: "",
     address: "",
     description: "",
     status: "NEW",
@@ -116,7 +120,30 @@ const CustomerCreateContent = () => {
   /* ---------------- helpers ---------------- */
 
   const handleChange = (field, value) => {
-    setForm((prev) => ({ ...prev, [field]: value }));
+    let finalValue = value;
+
+    // 📱 Telefon Kısıtlaması: +90 ile başlasın, max 13 karakter, sadece rakam
+    if (field === "phone") {
+      // +90'ın silinmesini engelle
+      if (!value.startsWith("+90")) finalValue = "+90";
+      // Sadece rakamları ve + işaretini koru, max 13 hane (+90 ve 10 hane)
+      const digits = value.replace(/[^\d+]/g, "");
+      finalValue = digits.substring(0, 13);
+    }
+
+    // 📝 Vergi No / TCKN Kısıtlaması: Sadece rakam, max 11 hane
+    if (field === "vatNumber") {
+      finalValue = value.replace(/[^\d]/g, "").substring(0, 11);
+    }
+
+    // 🏦 IBAN Kısıtlaması (Opsiyonel): TR ile başlasın, max 26 hane
+    if (field === "iban") {
+      const upper = value.toUpperCase().replace(/[^A-Z0-9]/g, "");
+      finalValue = upper.substring(0, 26);
+    }
+
+    setForm((prev) => ({ ...prev, [field]: finalValue }));
+    
     // Hata varsa temizle
     if (errors[field]) {
       setErrors((prev) => ({ ...prev, [field]: undefined }));
@@ -280,14 +307,51 @@ const CustomerCreateContent = () => {
                 </div>
               </div>
 
-              <FormInput
-                label="Vergi No (VAT):"
-                name="vatNumber"
-                value={form.vatNumber}
-                error={errors.vatNumber}
-                icon={FiHash}
-                onChange={handleChange}
-              />
+              <div className="row">
+                <div className="col-md-6">
+                  <FormInput
+                    label="Vergi Dairesi:"
+                    name="taxOffice"
+                    value={form.taxOffice}
+                    icon={FiHash}
+                    placeholder="Örn: Büyük Mükellefler"
+                    onChange={handleChange}
+                  />
+                </div>
+                <div className="col-md-6">
+                  <FormInput
+                    label="Vergi No (VAT):"
+                    name="vatNumber"
+                    value={form.vatNumber}
+                    error={errors.vatNumber}
+                    icon={FiHash}
+                    onChange={handleChange}
+                  />
+                </div>
+              </div>
+
+              <div className="row">
+                <div className="col-md-6">
+                  <FormInput
+                    label="Banka Adı:"
+                    name="bankName"
+                    value={form.bankName}
+                    icon={FiBriefcase}
+                    placeholder="Örn: Garanti BBVA"
+                    onChange={handleChange}
+                  />
+                </div>
+                <div className="col-md-6">
+                  <FormInput
+                    label="IBAN:"
+                    name="iban"
+                    value={form.iban}
+                    icon={FiCreditCard}
+                    placeholder="TR00..."
+                    onChange={handleChange}
+                  />
+                </div>
+              </div>
 
               <FormInput
                 label="Adres:"

@@ -19,8 +19,8 @@ export const validateCustomerForm = (form) => {
     errors.phone = "Telefon numarası geçerli bir formatta değil";
   }
 
-  if (form.vatNumber && !/^\d{10}$/.test(form.vatNumber)) {
-    errors.vatNumber = "Vergi numarası 10 haneli olmalıdır";
+  if (form.vatNumber && !/^\d{10,11}$/.test(form.vatNumber)) {
+    errors.vatNumber = "Vergi numarası 10 veya 11 haneli olmalıdır";
   }
 
   if (
