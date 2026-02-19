@@ -196,7 +196,7 @@ export default function HostingPage() {
     }));
   };
 
-  return (  <><PageHeader />
+  return (<><PageHeader />
     <div className="hosting-wrapper">
       {/* HEADER */}
       <div className="contracts-header">
@@ -256,7 +256,7 @@ export default function HostingPage() {
             </div>
 
             <div style={{ marginTop: "20px" }}>
-              <button className="btn-soft" onClick={() => openEdit(item)}>
+              <button className="btn-danger-soft" onClick={() => openEdit(item)}>
                 Düzenle
               </button>
             </div>
@@ -302,16 +302,16 @@ export default function HostingPage() {
               />
             </div>
 
-     <div className="modal-field">
-  <label>DB Şifre</label>
-  <input
-    type="password"
-    value={formData.dbPassword}
-    onChange={(e) =>
-      setFormData({ ...formData, dbPassword: e.target.value })
-    }
-  />
-</div>
+            <div className="modal-field">
+              <label>DB Şifre</label>
+              <input
+                type="password"
+                value={formData.dbPassword}
+                onChange={(e) =>
+                  setFormData({ ...formData, dbPassword: e.target.value })
+                }
+              />
+            </div>
 
 
 
