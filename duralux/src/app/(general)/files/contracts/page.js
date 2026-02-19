@@ -56,7 +56,13 @@ export default function ContractsPage() {
     setMode(targetMode);
     if (item) {
       const res = await contractService.getById(item.id);
-      const d = res.data?.data;
+      const d = res?.data?.data ?? res?.data; // ✅ bazen direkt res.data gelir
+if (!d) {
+  console.error("contract getById response unexpected:", res?.data);
+  alert("Sözleşme detayı alınamadı.");
+  return;
+}
+
       setFormData({
         title: d.title,
         description: d.description || "",

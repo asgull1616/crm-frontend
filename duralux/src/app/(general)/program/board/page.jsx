@@ -38,14 +38,6 @@ import {
 const PRIMARY = "#E92B63";
 const PRIMARY_LIGHT = "#FFE4EC";
 
-function getToken() {
-  return (
-    localStorage.getItem("accessToken") ||
-    localStorage.getItem("token") ||
-    ""
-  );
-}
-
 /* -------------------- Modal -------------------- */
 function Modal({ open, title, children, onClose, footer }) {
   if (!open) return null;
@@ -140,7 +132,14 @@ function Card({ card, onEdit, onDelete, overlay = false }) {
             {card.title}
           </div>
 
-          <div style={{ marginTop: 10, display: "flex", alignItems: "center", gap: 10 }}>
+          <div
+            style={{
+              marginTop: 10,
+              display: "flex",
+              alignItems: "center",
+              gap: 10,
+            }}
+          >
             <Avatar name={card.assignee || "Atanmadı"} />
             <div style={{ fontSize: 15, fontWeight: 500, color: "#667085" }}>
               {card.assignee || "Atanan yok"}
@@ -190,9 +189,8 @@ function SortableColumn({
   onEditCard,
   onDeleteCard,
 }) {
-  const { attributes, listeners, setNodeRef, transform, transition } = useSortable({
-    id: column.id,
-  });
+  const { attributes, listeners, setNodeRef, transform, transition } =
+    useSortable({ id: column.id });
 
   const style = {
     transform: CSS.Transform.toString(transform),
@@ -210,7 +208,14 @@ function SortableColumn({
 
   return (
     <div ref={setNodeRef} style={style}>
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 10 }}>
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          gap: 10,
+        }}
+      >
         <div style={{ display: "flex", alignItems: "center", gap: 12, minWidth: 0 }}>
           <button style={btnGrip} {...attributes} {...listeners} title="Kolonu sürükle">
             ⠿
@@ -261,13 +266,21 @@ function SortableColumn({
         <SortableContext items={cardIds} strategy={verticalListSortingStrategy}>
           <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
             {cards.map((card) => (
-              <SortableCard key={card.id} card={card} onEdit={onEditCard} onDelete={onDeleteCard} />
+              <SortableCard
+                key={card.id}
+                card={card}
+                onEdit={onEditCard}
+                onDelete={onDeleteCard}
+              />
             ))}
           </div>
         </SortableContext>
       </div>
 
-      <button onClick={() => onAddCard(column)} style={{ ...btnPrimary, width: "100%", marginTop: 16 }}>
+      <button
+        onClick={() => onAddCard(column)}
+        style={{ ...btnPrimary, width: "100%", marginTop: 16 }}
+      >
         + Kart ekle
       </button>
     </div>
@@ -276,7 +289,9 @@ function SortableColumn({
 
 /* -------------------- Main -------------------- */
 export default function ProgramBoardPage() {
-  const sensors = useSensors(useSensor(PointerSensor, { activationConstraint: { distance: 8 } }));
+  const sensors = useSensors(
+    useSensor(PointerSensor, { activationConstraint: { distance: 8 } })
+  );
 
   const [programs, setPrograms] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -286,7 +301,6 @@ export default function ProgramBoardPage() {
 
   const [modal, setModal] = useState({ open: false, type: null, payload: null });
   const [form, setForm] = useState({ title: "", assigneeUserId: "" });
-
 
   const [users, setUsers] = useState([]);
   const [usersLoading, setUsersLoading] = useState(false);
@@ -318,31 +332,25 @@ export default function ProgramBoardPage() {
 
   async function loadPrograms() {
     try {
-      const token = getToken();
-      if (!token) {
-        console.warn("Token yok. Login ol.");
-        setPrograms([]);
-        setActiveProgramId(null);
-        setLoading(false);
-        return;
-      }
-
-      const res = await getPrograms(token);
+      const res = await getPrograms(); // ✅ token yok, cookie var
       const apiPrograms = res.data || [];
 
       const mapped = apiPrograms.map((p) => {
-        const cols = (p.columns || []).slice().sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
+        const cols = (p.columns || [])
+          .slice()
+          .sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
 
         const cardsByColumn = {};
         cols.forEach((col) => {
-          const cards = (col.cards || []).slice().sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
+          const cards = (col.cards || [])
+            .slice()
+            .sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
           cardsByColumn[col.id] = cards.map((c) => ({
             id: c.id,
             title: c.title,
             assigneeUserId: c.assigneeUser?.id || "",
             assignee: c.assigneeUser?.username || "",
           }));
-
         });
 
         return {
@@ -354,10 +362,11 @@ export default function ProgramBoardPage() {
       });
 
       setPrograms(mapped);
-      if (mapped[0]?.id) setActiveProgramId(mapped[0].id);
-      else setActiveProgramId(null);
+      setActiveProgramId(mapped[0]?.id ?? null);
     } catch (e) {
       console.error("getPrograms error:", e?.response?.data || e.message);
+      setPrograms([]);
+      setActiveProgramId(null);
     } finally {
       setLoading(false);
     }
@@ -368,16 +377,11 @@ export default function ProgramBoardPage() {
   }, []);
 
   async function fetchUsersIfNeeded() {
-    const token = getToken();
-    if (!token) return;
-
-    // zaten doluysa tekrar çekme
     if (users.length > 0) return;
-
     try {
       setUsersLoading(true);
-      const res = await getUsers(token); // ✅ /api/users
-      const list = Array.isArray(res.data) ? res.data : (res.data?.data ?? []);
+      const res = await getUsers(); // ✅ token yok
+      const list = Array.isArray(res.data) ? res.data : res.data?.data ?? [];
       setUsers(list);
     } catch (e) {
       console.error("getUsers error:", e?.response?.data || e.message);
@@ -393,7 +397,6 @@ export default function ProgramBoardPage() {
       assigneeUserId: initial.assigneeUserId ?? "",
     });
 
-    // Kart modalında users lazımsa çek
     if (type === "addCard" || type === "editCard") {
       fetchUsersIfNeeded();
     }
@@ -401,14 +404,15 @@ export default function ProgramBoardPage() {
     setModal({ open: true, type, payload });
   }
 
-
   function closeModal() {
     setModal({ open: false, type: null, payload: null });
-    setForm({ title: "", assignee: "" });
+    setForm({ title: "", assigneeUserId: "" });
   }
 
   function updateActiveProgram(updater) {
-    setPrograms((prev) => prev.map((p) => (p.id === activeProgramId ? updater(p) : p)));
+    setPrograms((prev) =>
+      prev.map((p) => (p.id === activeProgramId ? updater(p) : p))
+    );
   }
 
   function findCardContainer(cardId) {
@@ -429,13 +433,9 @@ export default function ProgramBoardPage() {
     setActiveId(null);
     if (!over || !activeProgram) return;
 
-    const token = getToken();
-    if (!token) return;
-
     const aId = active.id;
     const oId = over.id;
 
-    // rollback snapshot
     const snapshot = JSON.parse(JSON.stringify(programs));
 
     // Column reorder
@@ -451,7 +451,7 @@ export default function ProgramBoardPage() {
       }));
 
       try {
-        await moveColumn(aId, newIndex, token);
+        await moveColumn(aId, newIndex); // ✅ token yok
       } catch (e) {
         console.error("moveColumn error:", e?.response?.data || e.message);
         setPrograms(snapshot);
@@ -484,7 +484,7 @@ export default function ProgramBoardPage() {
       }));
 
       try {
-        await moveCard(aId, fromCol, newIndex, token);
+        await moveCard(aId, fromCol, newIndex); // ✅ token yok
       } catch (e) {
         console.error("moveCard same-col error:", e?.response?.data || e.message);
         setPrograms(snapshot);
@@ -492,7 +492,6 @@ export default function ProgramBoardPage() {
       return;
     }
 
-    // Cross-column move: compute toIndex before optimistic
     let toIndex = 0;
     if (!columnIds.includes(oId)) {
       const overIndex = toListNow.findIndex((c) => c.id === oId);
@@ -522,7 +521,7 @@ export default function ProgramBoardPage() {
     });
 
     try {
-      await moveCard(aId, toCol, toIndex, token);
+      await moveCard(aId, toCol, toIndex); // ✅ token yok
     } catch (e) {
       console.error("moveCard cross-col error:", e?.response?.data || e.message);
       setPrograms(snapshot);
@@ -567,41 +566,35 @@ export default function ProgramBoardPage() {
     });
   }
 
-
   function requestDeleteCard(card) {
     openModal("deleteCard", card);
   }
 
-  /* ---------- Submit modal (BACKEND CRUD) ---------- */
+  /* ---------- Submit modal ---------- */
   async function submitModal() {
     const t = modal.type;
-    const token = getToken();
-    if (!token) return;
 
     try {
-      // Program create
       if (t === "addProgram") {
         if (!form.title.trim()) return;
-        await createProgram({ name: form.title.trim() }, token);
+        await createProgram({ name: form.title.trim() });
         await loadPrograms();
         closeModal();
         return;
       }
 
-      // Program rename
       if (t === "renameProgram") {
         if (!form.title.trim() || !activeProgram) return;
-        await updateProgram(activeProgram.id, { name: form.title.trim() }, token);
+        await updateProgram(activeProgram.id, { name: form.title.trim() });
         await loadPrograms();
         closeModal();
         return;
       }
 
-      // Program delete
       if (t === "deleteProgram") {
         const prog = modal.payload;
         if (!prog) return;
-        await deleteProgram(prog.id, token);
+        await deleteProgram(prog.id);
         await loadPrograms();
         closeModal();
         return;
@@ -609,37 +602,33 @@ export default function ProgramBoardPage() {
 
       if (!activeProgram) return;
 
-      // Column create
       if (t === "addCol") {
         if (!form.title.trim()) return;
-        await createColumn(activeProgram.id, { title: form.title.trim() }, token);
+        await createColumn(activeProgram.id, { title: form.title.trim() });
         await loadPrograms();
         closeModal();
         return;
       }
 
-      // Column rename
       if (t === "renameCol") {
         if (!form.title.trim()) return;
         const col = modal.payload;
         if (!col) return;
-        await updateColumn(col.id, { name: form.title.trim() }, token);
+        await updateColumn(col.id, { name: form.title.trim() });
         await loadPrograms();
         closeModal();
         return;
       }
 
-      // Column delete
       if (t === "deleteCol") {
         const col = modal.payload;
         if (!col) return;
-        await deleteColumn(col.id, token);
+        await deleteColumn(col.id);
         await loadPrograms();
         closeModal();
         return;
       }
 
-      // Card create
       if (t === "addCard") {
         if (!form.title.trim()) return;
         const col = modal.payload;
@@ -647,13 +636,12 @@ export default function ProgramBoardPage() {
         await createCard(col.id, {
           title: form.title.trim(),
           assigneeUserId: form.assigneeUserId || null,
-        }, token);
+        });
         await loadPrograms();
         closeModal();
         return;
       }
 
-      // Card update
       if (t === "editCard") {
         if (!form.title.trim()) return;
         const card = modal.payload;
@@ -662,17 +650,16 @@ export default function ProgramBoardPage() {
           title: form.title.trim(),
           content: "",
           assigneeUserId: form.assigneeUserId === "" ? null : form.assigneeUserId,
-        }, token);
+        });
         await loadPrograms();
         closeModal();
         return;
       }
 
-      // Card delete
       if (t === "deleteCard") {
         const card = modal.payload;
         if (!card) return;
-        await deleteCard(card.id, token);
+        await deleteCard(card.id);
         await loadPrograms();
         closeModal();
         return;
@@ -686,22 +673,22 @@ export default function ProgramBoardPage() {
     modal.type === "addProgram"
       ? "Yeni Program"
       : modal.type === "renameProgram"
-        ? "Program Adı"
-        : modal.type === "deleteProgram"
-          ? "Program Sil"
-          : modal.type === "addCard"
-            ? "Kart Ekle"
-            : modal.type === "editCard"
-              ? "Kart Düzenle"
-              : modal.type === "deleteCard"
-                ? "Kart Sil"
-                : modal.type === "addCol"
-                  ? "Kolon Ekle"
-                  : modal.type === "renameCol"
-                    ? "Kolon Adı"
-                    : modal.type === "deleteCol"
-                      ? "Kolon Sil"
-                      : "";
+      ? "Program Adı"
+      : modal.type === "deleteProgram"
+      ? "Program Sil"
+      : modal.type === "addCard"
+      ? "Kart Ekle"
+      : modal.type === "editCard"
+      ? "Kart Düzenle"
+      : modal.type === "deleteCard"
+      ? "Kart Sil"
+      : modal.type === "addCol"
+      ? "Kolon Ekle"
+      : modal.type === "renameCol"
+      ? "Kolon Adı"
+      : modal.type === "deleteCol"
+      ? "Kolon Sil"
+      : "";
 
   const isConfirm = ["deleteCard", "deleteCol", "deleteProgram"].includes(modal.type);
 
@@ -713,12 +700,9 @@ export default function ProgramBoardPage() {
       <PageHeader />
 
       <div style={pageWrap}>
-        {/* Header */}
         <div style={headerWrap}>
           <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
-            <div style={{ fontSize: 14, fontWeight: 500, color: PRIMARY }}>
-              Program
-            </div>
+            <div style={{ fontSize: 14, fontWeight: 500, color: PRIMARY }}>Program</div>
 
             <div style={{ display: "flex", alignItems: "center", gap: 10, flexWrap: "wrap" }}>
               <select
@@ -759,7 +743,6 @@ export default function ProgramBoardPage() {
           </button>
         </div>
 
-        {/* Board */}
         <div style={{ marginTop: 22, overflowX: "auto", paddingBottom: 10 }}>
           <DndContext
             sensors={sensors}
@@ -787,7 +770,7 @@ export default function ProgramBoardPage() {
             <DragOverlay>
               {activeCard ? (
                 <div style={{ width: 360 }}>
-                  <Card card={activeCard} overlay onEdit={() => { }} onDelete={() => { }} />
+                  <Card card={activeCard} overlay onEdit={() => {}} onDelete={() => {}} />
                 </div>
               ) : activeColumn ? (
                 <div
@@ -809,7 +792,6 @@ export default function ProgramBoardPage() {
           </DndContext>
         </div>
 
-        {/* Modal */}
         <Modal
           open={modal.open}
           title={modalTitle}
@@ -853,10 +835,7 @@ export default function ProgramBoardPage() {
                   onChange={(e) => setForm((p) => ({ ...p, assigneeUserId: e.target.value }))}
                   style={selectStyle}
                 >
-                  <option value="">
-                    {usersLoading ? "Yükleniyor..." : "Atanan yok"}
-                  </option>
-
+                  <option value="">{usersLoading ? "Yükleniyor..." : "Atanan yok"}</option>
                   {users.map((u) => (
                     <option key={u.id} value={u.id}>
                       {u.username} {u.email ? `(${u.email})` : ""}
@@ -864,7 +843,6 @@ export default function ProgramBoardPage() {
                   ))}
                 </select>
               </Field>
-
             </div>
           ) : null}
 
