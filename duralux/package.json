@@ -47,6 +47,7 @@
     "recharts": "^3.7.0",
     "sass": "^1.83.1",
     "sweetalert2": "^11.26.18",
-    "sweetalert2-react-content": "^5.0.7"
+    "sweetalert2-react-content": "^5.0.7",
+    "vue-toastification": "^2.0.0-rc.5"
   }
 }
