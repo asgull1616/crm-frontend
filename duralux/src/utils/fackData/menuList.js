@@ -192,4 +192,26 @@ export const menuList = [
       },
     ],
   },
+  
+  // Yeni eklenen alan:
+ {
+    id: 12,
+    name: "Üyelik İşlemleri",
+    path: "#",
+    icon: "feather-users",
+    dropdownMenu: [
+      {
+        id: 1, // Diğerleri 1'den başladığı için 1 diyebilirsin
+        name: "Üyelik Bekleyenler",
+        path: "/membership-requests",
+        subdropdownMenu: false, // 👈 Diğer her yerde false olduğu için böyle yapalım
+      },
+      {
+        id: 2,
+        name: "Üyelik Yönetimi",
+        path: "/user-management",
+        subdropdownMenu: false, // 👈 Burayı da false yapalım
+      },
+    ],
+  },
 ];
