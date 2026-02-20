@@ -216,7 +216,14 @@ function SortableColumn({
           gap: 10,
         }}
       >
-        <div style={{ display: "flex", alignItems: "center", gap: 12, minWidth: 0 }}>
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            gap: 12,
+            minWidth: 0,
+          }}
+        >
           <button style={btnGrip} {...attributes} {...listeners} title="Kolonu sürükle">
             ⠿
           </button>
@@ -693,8 +700,93 @@ export default function ProgramBoardPage() {
   const isConfirm = ["deleteCard", "deleteCol", "deleteProgram"].includes(modal.type);
 
   if (loading) return <div style={{ padding: 28 }}>Yükleniyor...</div>;
-  if (!activeProgram) return <div style={{ padding: 28 }}>Program bulunamadı.</div>;
 
+  /* ✅ PROGRAM YOKSA: Empty State + Pano Ekle */
+  if (!activeProgram) {
+    return (
+      <>
+        <PageHeader />
+
+        <div style={pageWrap}>
+          <div style={headerWrap}>
+            <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+              <div style={{ fontSize: 14, fontWeight: 500, color: PRIMARY }}>Program</div>
+
+              <div style={{ fontSize: 28, fontWeight: 500, color: "#111" }}>
+                Plan & Akış
+              </div>
+
+              <div style={{ fontSize: 13, fontWeight: 500, color: "#667085" }}>
+                Henüz pano yok. Yeni bir pano ekleyebilirsin.
+              </div>
+
+              <div style={{ display: "flex", gap: 10, flexWrap: "wrap", marginTop: 6 }}>
+                <button onClick={requestAddProgram} style={btnPrimary}>
+                  + Pano Ekle
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <div style={emptyWrap}>
+            <div style={emptyCard}>
+              <div style={{ fontSize: 44 }}>📋</div>
+              <div style={{ fontSize: 18, fontWeight: 600, color: "#111" }}>
+                Henüz pano oluşturulmamış
+              </div>
+              <div style={{ fontSize: 14, fontWeight: 500, color: "#667085", maxWidth: 520 }}>
+                Plan ve akışını takip etmek için bir pano oluştur. Sonra kolonlar ve kartlarla
+                işlerini sürükle-bırak yönetebilirsin.
+              </div>
+
+              <button onClick={requestAddProgram} style={{ ...btnPrimary, marginTop: 14 }}>
+                + Pano Oluştur
+              </button>
+            </div>
+          </div>
+
+          <Modal
+            open={modal.open}
+            title={modalTitle}
+            onClose={closeModal}
+            footer={
+              <div style={{ display: "flex", justifyContent: "flex-end", gap: 10 }}>
+                <button onClick={closeModal} style={btnGhost}>
+                  İptal
+                </button>
+                <button onClick={submitModal} style={btnPrimary}>
+                  {isConfirm ? "Evet, Sil" : "Kaydet"}
+                </button>
+              </div>
+            }
+          >
+            {["addProgram", "renameProgram"].includes(modal.type) ? (
+              <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
+                <Field label="Program adı">
+                  <Input
+                    value={form.title}
+                    onChange={(e) => setForm((p) => ({ ...p, title: e.target.value }))}
+                    placeholder="Örn: CRM Projesi / Portlink Demo"
+                  />
+                </Field>
+              </div>
+            ) : null}
+
+            {modal.type === "deleteProgram" ? (
+              <div style={{ fontSize: 14, fontWeight: 500, color: "#475467" }}>
+                <span style={{ color: PRIMARY, fontWeight: 500 }}>
+                  "{modal.payload?.title}"
+                </span>{" "}
+                programı tamamen silinsin mi?
+              </div>
+            ) : null}
+          </Modal>
+        </div>
+      </>
+    );
+  }
+
+  /* ✅ PROGRAM VARSA NORMAL BOARD */
   return (
     <>
       <PageHeader />
@@ -832,7 +924,9 @@ export default function ProgramBoardPage() {
               <Field label="Kim yapıyor?">
                 <select
                   value={form.assigneeUserId}
-                  onChange={(e) => setForm((p) => ({ ...p, assigneeUserId: e.target.value }))}
+                  onChange={(e) =>
+                    setForm((p) => ({ ...p, assigneeUserId: e.target.value }))
+                  }
                   style={selectStyle}
                 >
                   <option value="">{usersLoading ? "Yükleniyor..." : "Atanan yok"}</option>
@@ -908,6 +1002,27 @@ const headerWrap = {
   borderRadius: 24,
   boxShadow: "0 16px 40px rgba(0,0,0,0.08)",
   border: "1px solid #f1f1f1",
+};
+
+const emptyWrap = {
+  marginTop: 18,
+  display: "flex",
+  justifyContent: "center",
+};
+
+const emptyCard = {
+  width: "100%",
+  maxWidth: 820,
+  background: "#fff",
+  borderRadius: 24,
+  padding: 32,
+  border: "1px dashed rgba(233,43,99,0.35)",
+  boxShadow: "0 16px 40px rgba(0,0,0,0.06)",
+  display: "flex",
+  flexDirection: "column",
+  alignItems: "center",
+  gap: 10,
+  textAlign: "center",
 };
 
 const btnPrimary = {
