@@ -43,3 +43,14 @@ export const proposalService = {
   // Teklifi siler (Soft delete)
   remove: (id: string) => api.delete(`proposals/${id}`),
 };
+
+export const proposalService2 = {
+  list: (params?: {
+    page?: number;
+    limit?: number;
+    sortBy?: "createdAt" | "updatedAt" | "title" | "status";
+    order?: "asc" | "desc";
+    status?: string;
+    search?: string;
+  }) => api.get("proposals/list", { params }),
+};

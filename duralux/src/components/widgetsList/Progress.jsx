@@ -1,16 +1,39 @@
 "use client";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import CardHeader from "@/components/shared/CardHeader";
 import CircleProgress from "@/components/shared/CircleProgress";
-import { teamMembersList } from "@/utils/fackData/teamMembersList";
 import CardLoader from "@/components/shared/CardLoader";
 import useCardTitleActions from "@/hooks/useCardTitleActions";
 import Image from "next/image";
+import { taskService } from "@/lib/services/task.service";
 
 const Progress = ({ footerShow, title, btnFooter }) => {
   const { refreshKey, isRemoved, isExpanded, handleRefresh, handleExpand, handleDelete } =
     useCardTitleActions();
+
+  const [members, setMembers] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    if (isRemoved) return;
+
+    const fetchMembers = async () => {
+      try {
+        setLoading(true);
+        const res = await taskService.teamProgress({ limit: 4 });
+        const data = res?.data ?? {};
+        setMembers(Array.isArray(data.items) ? data.items : []);
+      } catch (e) {
+        console.log("teamProgress error:", e);
+        setMembers([]);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchMembers();
+  }, [refreshKey, isRemoved]);
 
   if (isRemoved) return null;
 
@@ -29,7 +52,11 @@ const Progress = ({ footerShow, title, btnFooter }) => {
 
         {/* Body */}
         <div className="card-body px-4 pb-4">
-          {teamMembersList.slice(0, 4).map(({ id, name, position, progress, thumbnail, color }) => {
+          {members.slice(0, 4).map(({ id, name, position, progress, thumbnail, color }) => {
+            const safeName = name || "—";
+            const initial = safeName?.trim?.()?.substring?.(0, 1) || "M";
+            const hasThumb = typeof thumbnail === "string" ? thumbnail.trim().length > 0 : !!thumbnail;
+
             return (
               <div
                 key={id}
@@ -42,7 +69,7 @@ const Progress = ({ footerShow, title, btnFooter }) => {
                 }}
               >
                 <div className="d-flex align-items-center gap-3">
-                  {thumbnail ? (
+                  {hasThumb ? (
                     <div
                       style={{
                         width: 38,
@@ -67,7 +94,7 @@ const Progress = ({ footerShow, title, btnFooter }) => {
                         boxShadow: "0 6px 14px rgba(15, 23, 42, 0.08)",
                       }}
                     >
-                      {name.substring(0, 1)}
+                      {initial}
                     </div>
                   )}
 
@@ -81,14 +108,21 @@ const Progress = ({ footerShow, title, btnFooter }) => {
                         color: "#0f172a",
                       }}
                     >
-                      {name}
+                      {safeName}
                     </Link>
-                    <div style={{ fontSize: 11, color: "#94a3b8", marginTop: 4 }}>{position}</div>
+                    <div style={{ fontSize: 11, color: "#94a3b8", marginTop: 4 }}>
+                      {position || "—"}
+                    </div>
                   </div>
                 </div>
 
                 <div style={{ width: 46, height: 46, display: "grid", placeItems: "center" }}>
-                  <CircleProgress value={progress} text_sym={"%"} path_width="6px" path_color={color} />
+                  <CircleProgress
+                    value={Number.isFinite(progress) ? progress : 0}
+                    text_sym={"%"}
+                    path_width="6px"
+                    path_color={color}
+                  />
                 </div>
               </div>
             );
@@ -112,7 +146,6 @@ const Progress = ({ footerShow, title, btnFooter }) => {
                 color: "#64748b",
               }}
             >
-              30 DK ÖNCE GÜNCELLENDİ
             </Link>
           </div>
         ) : null}
@@ -128,7 +161,8 @@ const Progress = ({ footerShow, title, btnFooter }) => {
           </div>
         ) : null}
 
-        <CardLoader refreshKey={refreshKey} />
+        {/* Loader */}
+        <CardLoader refreshKey={refreshKey || loading} />
       </div>
     </div>
   );
