@@ -149,9 +149,12 @@ export default function ContractsPage() {
 
       await fetchContracts();
     } catch (err) {
-      console.error(err);
-      alert("Hata oluştu");
-    }
+  console.log("STATUS:", err?.response?.status);
+  console.log("DATA:", err?.response?.data);   // ✅ asıl sebep burada
+  console.log("HEADERS:", err?.response?.headers);
+  console.error(err);
+  alert("Hata oluştu");
+}
   };
 
   const handleDelete = async (id) => {
