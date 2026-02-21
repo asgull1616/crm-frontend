@@ -11,12 +11,14 @@ export default function ContractsPage() {
   const [contracts, setContracts] = useState([]);
   const [customers, setCustomers] = useState([]);
   const [loading, setLoading] = useState(false);
+
   const [isOpen, setIsOpen] = useState(false);
-  const [mode, setMode] = useState("create");
+  const [mode, setMode] = useState("create"); // create | edit | view
   const [selectedId, setSelectedId] = useState(null);
 
   const fileInputRef = useRef(null);
-  const [formData, setFormData] = useState({
+
+  const emptyForm = {
     title: "",
     description: "",
     customerId: "",
@@ -26,22 +28,43 @@ export default function ContractsPage() {
     file: null,
     existingFileName: "",
     existingFileUrl: "",
-  });
+  };
+
+  const [formData, setFormData] = useState(emptyForm);
+
+  // ✅ sadece backend’in beklediği alanlarla FormData oluştur
+  const buildFormData = (data) => {
+    const fd = new FormData();
+
+    if (data.title) fd.append("title", data.title);
+    if (data.description) fd.append("description", data.description);
+    if (data.customerId) fd.append("customerId", data.customerId);
+    if (data.startDate) fd.append("startDate", data.startDate);
+    if (data.endDate) fd.append("endDate", data.endDate);
+    if (data.status) fd.append("status", data.status);
+
+    // ✅ file (sadece yeni seçildiyse)
+    if (data.file) fd.append("file", data.file);
+
+    return fd;
+  };
 
   const fetchContracts = useCallback(async () => {
     setLoading(true);
     try {
       const res = await contractService.getAll(1, 50);
 
-      setContracts(
-        (res.data || []).map((x) => ({
-          id: x.id,
-          title: x.title,
-          status: x.status === "ACTIVE" ? "AKTİF" : "PASİF",
-          date: new Date(x.createdAt).toLocaleDateString("tr-TR"),
-          fileUrl: x.fileUrl,
-        })),
-      );
+      const list = (res.data || []).map((x) => ({
+        id: x.id,
+        title: x.title,
+        status: x.status === "ACTIVE" ? "AKTİF" : "PASİF",
+        date: x.createdAt
+          ? new Date(x.createdAt).toLocaleDateString("tr-TR")
+          : "-",
+        fileUrl: x.fileUrl,
+      }));
+
+      setContracts(list);
     } finally {
       setLoading(false);
     }
@@ -49,74 +72,109 @@ export default function ContractsPage() {
 
   useEffect(() => {
     fetchContracts();
-    customerService.list().then((res) => setCustomers(res.data?.data || []));
+    customerService
+      .list()
+      .then((res) => setCustomers(res.data?.data || []))
+      .catch(() => setCustomers([]));
   }, [fetchContracts]);
 
   const openForm = async (item = null, targetMode = "create") => {
-    setMode(targetMode);
-    if (item) {
-      const res = await contractService.getById(item.id);
-      const d = res?.data?.data ?? res?.data; // ✅ bazen direkt res.data gelir
-if (!d) {
-  console.error("contract getById response unexpected:", res?.data);
-  alert("Sözleşme detayı alınamadı.");
-  return;
-}
+  console.log("openForm clicked:", item?.id, targetMode);
 
-      setFormData({
-        title: d.title,
-        description: d.description || "",
-        customerId: d.customerId,
-        startDate: d.startDate?.slice(0, 10) || "",
-        endDate: d.endDate?.slice(0, 10) || "",
-        status: d.status,
-        file: null,
-        existingFileName: d.fileName,
-        existingFileUrl: d.fileUrl,
-      });
-      setSelectedId(item.id);
-    } else {
-      setFormData({
-        title: "",
-        description: "",
-        customerId: "",
-        startDate: "",
-        endDate: "",
-        status: "ACTIVE",
-        file: null,
-      });
+  setMode(targetMode);
+  if (fileInputRef.current) fileInputRef.current.value = "";
+
+  // modalı hemen aç
+  setIsOpen(true);
+
+  try {
+    if (!item?.id) {
+      setSelectedId(null);
+      setFormData(emptyForm);
+      return;
     }
-    setIsOpen(true);
+
+    setSelectedId(item.id);
+
+    const res = await contractService.getById(item.id);
+    console.log("getById RES:", res);
+
+    const d = res?.id ? res : (res?.data ?? res);
+    console.log("picked d:", d);
+
+    if (!d || !d.id) {
+      alert("Detay payload boş geliyor. Network/console kontrol et.");
+      return;
+    }
+
+    setFormData({
+      title: d.title ?? "",
+      description: d.description ?? "",
+      customerId: d.customerId ?? "",
+      startDate: d.startDate ? String(d.startDate).slice(0, 10) : "",
+      endDate: d.endDate ? String(d.endDate).slice(0, 10) : "",
+      status: d.status ?? "ACTIVE",
+      file: null,
+      existingFileName: d.fileName ?? d.originalFileName ?? "",
+      existingFileUrl: d.fileUrl ?? "",
+    });
+  } catch (e) {
+    console.error("getById failed:", e);
+    alert("getById hata verdi. Network'te 401/403/404 var mı bak.");
+  }
+};
+
+  const handleCloseModal = () => {
+    // ✅ modal kapanınca file input temizle
+    if (fileInputRef.current) fileInputRef.current.value = "";
+    setIsOpen(false);
   };
 
   const handleSubmit = async () => {
     try {
+      const fd = buildFormData(formData);
+
       if (mode === "create") {
-        const fd = new FormData();
-        Object.entries(formData).forEach(([k, v]) => v && fd.append(k, v));
         await contractService.create(fd);
       } else {
-        await contractService.update(selectedId, formData);
+        // ✅ update de multipart olmalı (dosya güncellemesi buradan çalışır)
+        await contractService.update(selectedId, fd);
       }
+
+      // ✅ UI reset
       setIsOpen(false);
-      fetchContracts();
+      setSelectedId(null);
+      setFormData(emptyForm);
+      if (fileInputRef.current) fileInputRef.current.value = "";
+
+      await fetchContracts();
     } catch (err) {
+      console.error(err);
       alert("Hata oluştu");
     }
   };
 
   const handleDelete = async (id) => {
-    await contractService.delete(id);
-    fetchContracts();
+    try {
+      await contractService.delete(id);
+      await fetchContracts();
+    } catch (err) {
+      console.error(err);
+      alert("Silme sırasında hata oluştu");
+    }
   };
 
   return (
     <>
       <PageHeader />
+
       <div className="contracts-wrapper">
         <div className="contracts-header">
           <h2>Sözleşmeler</h2>
-          <button className="btn-gradient" onClick={() => openForm()}>
+          <button
+            className="btn-gradient"
+            onClick={() => openForm(null, "create")}
+          >
             + Yeni Dosya
           </button>
         </div>
@@ -129,8 +187,8 @@ if (!d) {
               <ContractCard
                 key={item.id}
                 item={item}
-                onOpenView={(i) => openForm(i, "view")}
-                onOpenEdit={(i) => openForm(i, "edit")}
+                onOpenView={() => openForm(item, "view")}
+                onOpenEdit={() => openForm(item, "edit")}
                 onDelete={handleDelete}
               />
             ))}
@@ -139,7 +197,7 @@ if (!d) {
 
         <ContractModal
           isOpen={isOpen}
-          onClose={() => setIsOpen(false)}
+          onClose={handleCloseModal}
           mode={mode}
           customers={customers}
           formData={formData}
@@ -148,6 +206,7 @@ if (!d) {
           fileInputRef={fileInputRef}
         />
       </div>
+
       <style jsx global>{`
         /* Senin CSS kodların buraya */
       `}</style>

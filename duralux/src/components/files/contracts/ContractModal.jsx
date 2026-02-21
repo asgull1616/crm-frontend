@@ -14,6 +14,23 @@ export default function ContractModal({
 
   const isView = mode === "view";
 
+  // ✅ Cache buster ile dosya aç (update sonrası eski dosya gelmesin)
+  const openExistingFile = () => {
+    if (!formData.existingFileUrl) return;
+    const url = formData.existingFileUrl;
+    const sep = url.includes("?") ? "&" : "?";
+    window.open(`${url}${sep}v=${Date.now()}`, "_blank");
+  };
+
+  // ✅ Kapatırken seçili local file'ı temizle (isteğe bağlı ama güvenli)
+  const handleClose = () => {
+    // file input temizle
+    if (fileInputRef?.current) fileInputRef.current.value = "";
+    // formData içindeki file'ı temizle (existing kalsın)
+    setFormData({ ...formData, file: null });
+    onClose();
+  };
+
   return (
     <div className="modal-overlay">
       <div className="modal-card">
@@ -30,9 +47,7 @@ export default function ContractModal({
           <input
             disabled={isView}
             value={formData.title}
-            onChange={(e) =>
-              setFormData({ ...formData, title: e.target.value })
-            }
+            onChange={(e) => setFormData({ ...formData, title: e.target.value })}
           />
         </div>
 
@@ -108,6 +123,7 @@ export default function ContractModal({
 
         <div className="modal-field">
           <label>Dosya</label>
+
           <div className="fileRow" style={{ opacity: isView ? 0.6 : 1 }}>
             <label className="fileInputWrap">
               <input
@@ -129,11 +145,13 @@ export default function ContractModal({
                   : formData.existingFileName || "Dosya seçilmedi"}
               </span>
             </label>
+
+            {/* ✅ mevcut dosya (yeni dosya seçilmediyse) */}
             {formData.existingFileUrl && !formData.file && (
               <button
                 type="button"
                 className="fileOpenBtn"
-                onClick={() => window.open(formData.existingFileUrl, "_blank")}
+                onClick={openExistingFile}
               >
                 Aç
               </button>
@@ -142,9 +160,10 @@ export default function ContractModal({
         </div>
 
         <div className="modal-actions">
-          <button type="button" onClick={onClose}>
+          <button type="button" onClick={handleClose}>
             İptal
           </button>
+
           {!isView && (
             <button type="button" className="btn-gradient" onClick={onSubmit}>
               {mode === "create" ? "Oluştur" : "Güncelle"}
