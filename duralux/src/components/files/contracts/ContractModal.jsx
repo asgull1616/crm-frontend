@@ -106,7 +106,7 @@ export default function ContractModal({
             }
           >
             <option value="ACTIVE">Aktif</option>
-            <option value="PASSIVE">Pasif</option>
+            <option value="INACTIVE">Pasif</option>
           </select>
         </div>
 
