@@ -11,7 +11,7 @@ const TeamsLeavesPage = () => {
     authService
       .me()
       .then((res) => {
-        if (res.data.role === "ADMIN") {
+        if (res.data.role === "ADMIN" || res.data.role === "SUPER_ADMIN") {
           router.replace("/teams/salary/admin");
         } else {
           router.replace("/teams/salary/user");
