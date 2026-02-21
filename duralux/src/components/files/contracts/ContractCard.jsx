@@ -1,11 +1,13 @@
 "use client";
 
-export default function ContractCard({
-  item,
-  onOpenView,
-  onOpenEdit,
-  onDelete,
-}) {
+export default function ContractCard({ item, onOpenView, onOpenEdit, onDelete }) {
+  const openFile = () => {
+    if (!item.fileUrl) return;
+    const url = item.fileUrl;
+    const sep = url.includes("?") ? "&" : "?";
+    window.open(`${url}${sep}v=${Date.now()}`, "_blank");
+  };
+
   return (
     <div className="contract-card">
       <div className="card-top">
@@ -19,11 +21,12 @@ export default function ContractCard({
       </div>
 
       <div className="card-footer actions-grid">
-        <button className="btn-soft" onClick={() => onOpenView(item)}>
+        {/* ✅ artık parametre geçmiyoruz */}
+        <button className="btn-soft" onClick={onOpenView}>
           Görüntüle
         </button>
 
-        <button className="btn-soft" onClick={() => onOpenEdit(item)}>
+        <button className="btn-soft" onClick={onOpenEdit}>
           Düzenle
         </button>
 
@@ -39,10 +42,7 @@ export default function ContractCard({
         </button>
 
         {item.fileUrl ? (
-          <button
-            className="btn-soft"
-            onClick={() => window.open(item.fileUrl, "_blank")}
-          >
+          <button className="btn-soft" onClick={openFile}>
             Dosyayı Aç
           </button>
         ) : (
