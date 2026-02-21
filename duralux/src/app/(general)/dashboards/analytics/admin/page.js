@@ -47,7 +47,7 @@ const Home = () => {
           <CustomerMiniStats />
           <SystemLogs />
 
-          <LatestLeads title={'Teklif & Görev Süreçleri (Demo)'} />
+          <LatestLeads title={'Teklif & Görev Süreçleri'} />
           <TeamProgress title={'CODYOL Ekip Performansı'} footerShow={true} />
           <LeavesCalendar />
         </div>

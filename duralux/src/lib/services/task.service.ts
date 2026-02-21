@@ -2,7 +2,6 @@ import api from "../axios";
 
 export const taskService = {
   create: (data: any) => api.post("tasks", data),
-
   list: (params?: {
     page?: number;
     limit?: number;
@@ -19,4 +18,6 @@ export const taskService = {
   update: (id: string, data: any) => api.patch(`tasks/${id}`, data),
 
   delete: (id: string) => api.delete(`tasks/${id}`),
+
+  teamProgress: (params?: { limit?: number }) => api.get("tasks/team-progress", { params }),
 };
