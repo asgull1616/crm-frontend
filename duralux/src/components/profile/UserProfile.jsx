@@ -129,9 +129,7 @@ const UserProfile = () => {
               />
               <h2 style={{ margin: '20px 0 5px', fontSize: '24px' }}>{userData.firstName} {userData.lastName}</h2>
               <p style={{ color: colors.textLight, fontWeight: '500' }}>{userData.position || 'Pozisyon Belirtilmedi'}</p>
-              <div style={{ marginTop: '15px', padding: '10px', backgroundColor: colors.primarySoft, borderRadius: '10px', fontSize: '13px', fontStyle: 'italic' }}>
-                {userData.bio || "Henüz bir biyografi eklenmemiş."}
-              </div>
+           
             </div>
             
             <div style={{ marginTop: '25px', display: 'flex', flexDirection: 'column', gap: '12px' }}>
