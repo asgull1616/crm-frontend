@@ -16,23 +16,26 @@ const LoginForm = ({ registerPath, resetPath }) => {
 
   // ✅ GERÇEK LOGIN
   const handleSubmit = async (e) => {
-    e.preventDefault();
-    setLoading(true);
+  e.preventDefault();
+  setLoading(true);
 
-    try {
-      await authService.authenticate({
-        username: email,
-        password,
-      });
+  try {
+    await authService.authenticate({
+      username: email,
+      password,
+    });
 
-      sessionStorage.setItem("show_welcome_popup", "1");
-      router.replace("/");
-    } catch (error) {
-      console.error("❌ LOGIN ERROR:", error);
-    } finally {
-      setLoading(false);
-    }
-  };
+    sessionStorage.setItem("show_welcome_popup", "1");
+
+    // 🔥 FULL RELOAD
+    window.location.href = "/";
+
+  } catch (error) {
+    console.error("❌ LOGIN ERROR:", error);
+  } finally {
+    setLoading(false);
+  }
+};
 
   return (
     <>

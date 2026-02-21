@@ -1,9 +1,12 @@
+import { ro } from "date-fns/locale";
+
 export const menuList = [
   {
     id: 0,
     name: "Dashboards",
     path: "/",
     icon: "feather-grid",
+    roles: ["SUPER_ADMIN", "ADMIN","USER"], 
     dropdownMenu: [],
   },
 
@@ -12,6 +15,8 @@ export const menuList = [
     name: "Projelerimiz",
     path: "#",
     icon: "feather-folder",
+    roles: ["SUPER_ADMIN", "ADMIN","USER"], 
+
     dropdownMenu: [
       {
         id: 1,
@@ -27,6 +32,8 @@ export const menuList = [
     name: "Plan & Akış",
     path: "#",
     icon: "feather-layers",
+    roles: ["SUPER_ADMIN", "ADMIN","USER"], 
+
     dropdownMenu: [
       {
         id: 1,
@@ -48,6 +55,7 @@ export const menuList = [
     name: "Ödemeler",
     path: "#",
     icon: "feather-dollar-sign",
+    roles: ["SUPER_ADMIN", "ADMIN"], 
     dropdownMenu: [
       {
         id: 1,
@@ -69,6 +77,8 @@ export const menuList = [
     name: "Ekipler",
     path: "#",
     icon: "feather-users",
+    roles: ["SUPER_ADMIN", "ADMIN","USER"], 
+
     dropdownMenu: [
       {
         id: 2,
@@ -102,6 +112,8 @@ export const menuList = [
     name: "Görevler",
     path: "#",
     icon: "feather-check-circle",
+    roles: ["SUPER_ADMIN", "ADMIN","USER"], 
+
     dropdownMenu: [
       {
         id: 1,
@@ -119,31 +131,33 @@ export const menuList = [
   },
 
   {
-    id: 5,
-    name: "Müşteriler",
-    path: "#",
-    icon: "feather-user",
-    dropdownMenu: [
-      {
-        id: 1,
-        name: "Müşterileri Görüntüle",
-        path: "/customers/list",
-        subdropdownMenu: false,
-      },
-      {
-        id: 3,
-        name: "Müşteri Oluştur",
-        path: "/customers/create",
-        subdropdownMenu: false,
-      },
-    ],
-  },
+  id: 5,
+  name: "Müşteriler",
+  path: "#",
+  icon: "feather-user",
+  roles: ["SUPER_ADMIN", "ADMIN"], 
+  dropdownMenu: [
+    {
+      id: 1,
+      name: "Müşterileri Görüntüle",
+      path: "/customers/list",
+      subdropdownMenu: false,
+    },
+    {
+      id: 3,
+      name: "Müşteri Oluştur",
+      path: "/customers/create",
+      subdropdownMenu: false,
+    },
+  ],
+},
 
   {
     id: 3,
     name: "Teklifler",
     path: "#",
     icon: "feather-file-text",
+    roles: ["SUPER_ADMIN", "ADMIN"], 
     dropdownMenu: [
       {
         id: 1,
@@ -165,6 +179,7 @@ export const menuList = [
     name: "Dosyalar",
     path: "#",
     icon: "feather-file",
+    roles: ["SUPER_ADMIN", "ADMIN"], 
     dropdownMenu: [
       {
         id: 1,
@@ -199,6 +214,9 @@ export const menuList = [
     name: "Üyelik İşlemleri",
     path: "#",
     icon: "feather-users",
+    roles: ["SUPER_ADMIN", "ADMIN"], 
+
+    
     dropdownMenu: [
       {
         id: 1, // Diğerleri 1'den başladığı için 1 diyebilirsin

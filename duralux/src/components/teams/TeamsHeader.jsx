@@ -12,7 +12,7 @@ const TeamsHeader = () => {
     authService
       .me()
       .then((res) => {
-        setIsAdmin(res.data.role === 'ADMIN');
+        setIsAdmin(res.data.role === 'ADMIN' || res.data.role === 'SUPER_ADMIN');
       })
       .catch(() => {
         setIsAdmin(false);
