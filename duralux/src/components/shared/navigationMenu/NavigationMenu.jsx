@@ -36,8 +36,15 @@ const NavigationManu = () => {
             {isDark ? (
               <Image width={140} height={30} src="/images/logo-green-White.png" alt="logo" className="logo logo-lg" style={{ filter: 'none' }} />
             ) : (
-              <Image width={140} height={30} src="/images/logo-green.png" alt="logo" className="logo logo-lg" style={{ filter: 'none' }} />
-            )}
+              <Image
+                src="/images/logo-green.png"
+                alt="logo"
+                className="logo logo-lg"
+                width={0}
+                height={0}
+                sizes="100vw"
+                style={{ width: "200px", height: "auto" }}
+              />)}
             <Image width={140} height={30} src="/images/codyol.png" alt="logo" className="logo logo-sm" />
           </Link>
         </div>
