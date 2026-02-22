@@ -1,7 +1,7 @@
 import api from "../axios";
 
 export const activityService = {
-  list: (params?: any) => api.get("activities", { params }),
+  list: (params?: { page?: number; limit?: number; customerId?: string; taskId?: string; type?: string }) => api.get("activities", { params }),
 
   getById: (id: string) => api.get(`activities/${id}`),
 

@@ -37,8 +37,7 @@ const Home = () => {
       <div className="main-content">
         <div className="row">
           <SystemLogs />
-
-          <LatestLeads title={'Teklif & Görev Süreçleri'} />
+          <LatestLeads title={'Teklif Süreçleri'} />
           <TeamProgress title={'CODYOL Ekip Performansı'} footerShow={true} />
           <LeavesCalendar />
         </div>
